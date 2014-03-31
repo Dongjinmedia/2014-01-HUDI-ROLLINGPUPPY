@@ -7,7 +7,7 @@
   
 # Maven
 target
-#.settings
+.settings
 .project
 .classpath
 bin
