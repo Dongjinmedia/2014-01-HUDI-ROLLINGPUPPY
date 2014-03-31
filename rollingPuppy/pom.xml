@@ -4,7 +4,7 @@
   <groupId>org.nhnnext</groupId>
   <artifactId>rollingPuppy</artifactId>
   <packaging>war</packaging>
-  <version>1.0-SNAPSHOT</version>
+  <version>0.0.1-SNAPSHOT</version>
   <name>rollingPuppy Maven Webapp</name>
   <url>http://maven.apache.org</url>
   <dependencies>
