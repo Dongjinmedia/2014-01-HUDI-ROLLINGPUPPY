@@ -1,9 +1,11 @@
 package com.puppy.dto;
 
+import java.sql.Timestamp;
+
 public class Member {
-	int id;
-	String email;
-	String last_logged_time;
+	private int id;
+	private String email;
+	private Timestamp last_logged_time;
 	
 	public int getId() {
 		return id;
@@ -18,9 +20,9 @@ public class Member {
 		this.email = email;
 	}
 	public String getLast_logged_time() {
-		return last_logged_time;
+		return ""+last_logged_time;
 	}
-	public void setLast_logged_time(String last_logged_time) {
+	public void setLast_logged_time(Timestamp last_logged_time) {
 		this.last_logged_time = last_logged_time;
 	}
 }
