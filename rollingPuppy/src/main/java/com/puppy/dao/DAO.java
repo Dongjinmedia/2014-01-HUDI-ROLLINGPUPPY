@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import com.google.gson.Gson;
+
 /*
  * Data Access Object
  * 데이터베이스와의 연결을 관장한다.
@@ -25,6 +27,21 @@ public class DAO {
 		System.out.println("connection request");
 	}
 
+	public List<?> selectList(Class<?> targetClass, String sql) {
+		List<?> lists = null;
+		try {
+			lists = setReflectionDataToModel(targetClass , selectQuery(sql));
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return lists;
+	}
+	
+	public Object selectOne(Class<?> targetClass, String sql) {
+		return selectList(targetClass, sql).get(0);
+	}
+	
 	/*
 	 * 인자로 전달받는 객체(DTO instance)에 sql결과물 (sqlResult)을 필드명에 맞게 (DTO instance의
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
@@ -40,8 +57,11 @@ public class DAO {
 
 		for (int i = 0; i < sqlResult.size(); ++i) {
 			Object newInstance = targetClass.newInstance();
+			
+			System.out.println("newInstance : "+newInstance);
 			instances.add(newInstance);
-
+			System.out.println("instances size : "+instances.size());
+			
 			LinkedHashMap<String, Object> sqlTargetResult = sqlResult.get(i);
 
 			for (Field field : fields) { // for문을 돌면서 하나씩 가져오기
@@ -51,7 +71,12 @@ public class DAO {
 				Method method = targetClass.getMethod(
 						"set" + fieldName.substring(0, 1).toUpperCase()
 						+ fieldName.substring(1), new Class[] { field.getType() }); // setTest와 같이 메소드명 가져오기
-
+				System.out.println("method name : "+method.getName());
+				System.out.println("field type : "+field.getType());
+				System.out.println("sqlTargetResult : "+sqlTargetResult.get(fieldName));
+				System.out.println(sqlTargetResult.get(fieldName).getClass());
+				System.out.println("\n\n");
+				
 				method.invoke(newInstance, sqlTargetResult.get(fieldName)); // set메소드 호출.
 			}
 		}
@@ -113,6 +138,8 @@ public class DAO {
 		} catch (SQLException e) {
 			System.err.println("DB Error\n" + e);
 		}
+		//Gson gson = new Gson();
+		//System.out.println(gson.toJson(rows));
 		return rows;
 	}
 }
