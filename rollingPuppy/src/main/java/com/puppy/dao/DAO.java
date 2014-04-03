@@ -28,7 +28,7 @@ public class DAO {
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
-	public List<?> selectList(Class<?> targetClass, String sql) {
+	protected List<?> selectList(Class<?> targetClass, String sql) {
 		
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<?> lists = null;
@@ -44,8 +44,9 @@ public class DAO {
 	/*
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
-	public Object selectOne(Class<?> targetClass, String sql) {
-		return selectList(targetClass, sql).get(0);
+	protected Object selectOne(Class<?> targetClass, String sql) {
+		List<?> lists = selectList(targetClass, sql);
+		return lists == null ? null : lists.get(0);
 	}
 	
 	/*
@@ -53,7 +54,7 @@ public class DAO {
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
-	public static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
+	protected static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
 																									throws IllegalAccessException, IllegalArgumentException,
 																												InvocationTargetException, NoSuchMethodException,
 																												SecurityException, InstantiationException {
@@ -116,7 +117,7 @@ public class DAO {
 	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	public List<LinkedHashMap<String, Object>> selectQuery(String query) {
+	protected List<LinkedHashMap<String, Object>> selectQuery(String query) {
 		Connection conn;
 		Statement stmt;
 		ResultSet rs;
