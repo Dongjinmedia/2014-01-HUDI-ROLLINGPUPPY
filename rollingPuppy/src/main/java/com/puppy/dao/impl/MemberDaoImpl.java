@@ -36,7 +36,11 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		Member member = null;
 		
 		try {
-			member = (Member) selectOne(Member.class, sql);
+			
+			Object object = selectOne(Member.class, sql);
+			
+			if ( object != null )
+				member = (Member) selectOne(Member.class, sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

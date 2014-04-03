@@ -46,7 +46,7 @@ public class DAO {
 	 */
 	protected Object selectOne(Class<?> targetClass, String sql) {
 		List<?> lists = selectList(targetClass, sql);
-		return lists == null ? null : lists.get(0);
+		return ( lists == null || lists.size() == 0  ? null : lists.get(0) );
 	}
 	
 	/*
