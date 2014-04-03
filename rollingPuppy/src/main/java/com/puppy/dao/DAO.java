@@ -28,7 +28,8 @@ public class DAO {
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
-	protected List<?> selectList(Class<?> targetClass, String sql) {
+	@SuppressWarnings("unchecked")
+	protected <Any> Any selectList(Class<?> targetClass, String sql) {
 		
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<?> lists = null;
@@ -38,15 +39,16 @@ public class DAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return lists;
+		return (Any) lists;
 	}
-	
+
 	/*
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
-	protected Object selectOne(Class<?> targetClass, String sql) {
+	@SuppressWarnings("unchecked")
+	protected <Any> Any selectOne(Class<?> targetClass, String sql) {
 		List<?> lists = selectList(targetClass, sql);
-		return ( lists == null || lists.size() == 0  ? null : lists.get(0) );
+		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
 	}
 	
 	/*

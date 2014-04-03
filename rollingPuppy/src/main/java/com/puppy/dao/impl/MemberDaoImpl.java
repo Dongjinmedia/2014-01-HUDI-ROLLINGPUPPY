@@ -1,5 +1,7 @@
 package com.puppy.dao.impl;
 
+import java.util.List;
+
 import com.puppy.dao.DAO;
 import com.puppy.dao.MemberDao;
 import com.puppy.dto.Member;
@@ -19,7 +21,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		Member member = null;
 		
 		try {
-			member = (Member) selectOne(Member.class, sql);
+			member = selectOne(Member.class, sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -40,7 +42,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			Object object = selectOne(Member.class, sql);
 			
 			if ( object != null )
-				member = (Member) selectOne(Member.class, sql);
+				member = selectOne(Member.class, sql);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
