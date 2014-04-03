@@ -27,4 +27,25 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		return member;
 	}
 
+	@Override
+	public Member selectCheckLoginInfo(String email, String pw) {
+
+		//DB query
+		String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
+		
+		Member member = null;
+		
+		try {
+			
+			Object object = selectOne(Member.class, sql);
+			
+			if ( object != null )
+				member = (Member) selectOne(Member.class, sql);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return member;
+	}
+
 }

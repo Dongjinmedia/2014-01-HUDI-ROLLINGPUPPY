@@ -5,7 +5,15 @@ import java.sql.Timestamp;
 public class Member {
 	private int id;
 	private String email;
+	private String pw;
 	private Timestamp last_logged_time;
+	
+	public String getPw() {
+		return pw;
+	}
+	public void setPw(String pw) {
+		this.pw = pw;
+	}
 	
 	public int getId() {
 		return id;
