@@ -2,11 +2,17 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import javax.servlet.RequestDispatcher;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 
@@ -18,8 +24,40 @@ public class JoinController  extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
-		RequestDispatcher view = request.getRequestDispatcher("join.jsp");
-		view.forward(request, response);
+	       Connection conn = null;
+	        PreparedStatement pstmt = null;
+	        ResultSet rs = null;
+	         
+	        try{
+	            String jdbcDriver = "jdbc:apache:commons:dbcp:/com/puppy/pool/pool";
+	             
+	            conn = DriverManager.getConnection(jdbcDriver);
+	             
+	            pstmt = conn.prepareStatement("select * from tbl_member");
+	             
+	            rs = pstmt.executeQuery();
+	             
+	            while(rs.next()){
+	            	System.out.println(rs.getString("email"));
+	            	System.out.println(rs.getString("id"));
+	            }
+	        }catch(Exception se){
+	            System.out.println(se);
+	        }finally{
+	        	
+	        	try {
+	        		if(rs != null) rs.close();
+	        		if(pstmt != null) pstmt.close();
+	        		if(conn != null) conn.close();
+	        	} catch (Exception e) {
+	        		System.out.println(e);
+	        	}
+	        }
+		
+		
+		
+		//RequestDispatcher view = request.getRequestDispatcher("join.jsp");
+		//view.forward(request, response);
 		//response.sendRedirect("/");
 		//둘의 차이점을 반드시 이해할것!		
 	}

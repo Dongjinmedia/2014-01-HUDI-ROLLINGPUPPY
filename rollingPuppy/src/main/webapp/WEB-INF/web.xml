@@ -6,6 +6,17 @@
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
 	
+	<servlet>
+    <servlet-name>DBCPInit</servlet-name>
+    <servlet-class>com.puppy.pool.DBCPInit</servlet-class>
+    <init-param>
+        <param-name>jdbcDriver</param-name>
+        <param-value>com.mysql.jdbc.Driver</param-value>
+    </init-param>
+    <load-on-startup>1</load-on-startup>
+</servlet>
+	
+	
 	<!-- Servlet Area -->	
 	<servlet>
 		<servlet-name>Join Request</servlet-name>
