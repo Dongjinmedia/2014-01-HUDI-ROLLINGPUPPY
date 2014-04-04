@@ -115,14 +115,14 @@ public class DAO {
 	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	private boolean insertQuery(String query) {
+	protected boolean insertQuery(String query) {
 		
 		//TODO 중복코드 제거
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
 		ResultSet resultSet = null;
 		
-		boolean executeResult = false;
+		boolean isExecuteSuccess = false;
 		
 		/*
 		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
@@ -137,7 +137,7 @@ public class DAO {
 			Class.forName("com.mysql.jdbc.Driver");
 		} catch (ClassNotFoundException e) {
 			System.err.println("Driver Error\n" + e);
-			return executeResult;
+			return isExecuteSuccess;
 		}
 		System.out.println("Driver Loading Success");
 		
@@ -147,18 +147,20 @@ public class DAO {
 			System.out.println("Connection Success");
 
 			preparedStatement = connection.prepareStatement(query);
-			resultSet = preparedStatement.executeQuery(query);
+			//resultSet = preparedStatement.executeQuery(query);
 
 			preparedStatement.execute();
 			
 			preparedStatement.close();
 			connection.close();
+			
+			isExecuteSuccess = true;
 		} catch (SQLException e) {
 			System.err.println("DB Error\n" + e);
-			return executeResult;
+			return isExecuteSuccess;
 		} 
 		
-		return executeResult;
+		return isExecuteSuccess;
 	}
 
 	/*
