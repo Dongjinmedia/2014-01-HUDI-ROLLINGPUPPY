@@ -31,18 +31,31 @@ public class JoinController  extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		
 		//Member클래스 데이터베이스 요청에 대한 객체생성
+//		MemberDaoImpl memberDao = new MemberDaoImpl();
+//		Member member = memberDao.selectDuplicateMemberExists(request.getParameter("email"));
+//		
+//		if ( member == null ) {
+//			out.println("member instance is Null!!");
+//		} else {
+//			if (member.getId()==0) {
+//				out.println("Email is Not Exists");	
+//			} else {
+//				out.println("Email is Already Exists");
+//			}
+//		}
 		MemberDaoImpl memberDao = new MemberDaoImpl();
-		Member member = memberDao.selectDuplicateMemberExists(request.getParameter("email"));
+		Member member = new Member();
+
+		String email = request.getParameter("email");
+		String password = request.getParameter("password");
 		
-		if ( member == null ) {
-			out.println("member instance is Null!!");
-		} else {
-			if (member.getId()==0) {
-				out.println("Email is Not Exists");	
-			} else {
-				out.println("Email is Already Exists");
-			}
-		}
+		member.setEmail(email);
+		member.setPw(password);
+		
+		out.println(memberDao.insertMemberInfo(member));
+		
+		
+		
 		
 	}
 }

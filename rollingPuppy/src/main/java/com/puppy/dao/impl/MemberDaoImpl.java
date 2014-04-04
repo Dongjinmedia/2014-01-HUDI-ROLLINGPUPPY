@@ -50,4 +50,10 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		return member;
 	}
 
+	@Override
+	public boolean insertMemberInfo(Member member) {
+		String query = "INSERT INTO tbl_member(email, pw) VALUES ( '" + member.getEmail() + "', '" + member.getPw() + "');";
+		return insertQuery(query);
+	}
+
 }
