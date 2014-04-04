@@ -58,7 +58,7 @@ public class DAO {
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
-	protected static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
+	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
 																									throws Exception {
 		//전달받은 targetClass (DTO)에 선언된 모든 Field(변수)를 배열로 리턴한다.
 		Field[] fields = targetClass.getDeclaredFields();
@@ -115,7 +115,7 @@ public class DAO {
 	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	public boolean insertQuery(String query) {
+	private boolean insertQuery(String query) {
 		
 		//TODO 중복코드 제거
 		Connection connection = null;
@@ -168,7 +168,7 @@ public class DAO {
 	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	protected List<LinkedHashMap<String, Object>> selectQuery(String query) {
+	private List<LinkedHashMap<String, Object>> selectQuery(String query) {
 		Connection connection;
 		Statement statement;
 		ResultSet resultSet;
