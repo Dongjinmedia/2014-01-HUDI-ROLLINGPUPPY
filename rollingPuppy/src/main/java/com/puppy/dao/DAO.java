@@ -11,6 +11,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
+import java.sql.PreparedStatement;
 
 /*
  * Data Access Object
@@ -57,9 +59,7 @@ public class DAO {
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
 	protected static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
-																									throws IllegalAccessException, IllegalArgumentException,
-																												InvocationTargetException, NoSuchMethodException,
-																												SecurityException, InstantiationException {
+																									throws Exception {
 		//전달받은 targetClass (DTO)에 선언된 모든 Field(변수)를 배열로 리턴한다.
 		Field[] fields = targetClass.getDeclaredFields();
 		
@@ -108,9 +108,58 @@ public class DAO {
 	}
 
 	/*
-	 * 
+	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
+	 * 리턴되는 데이터는 Query 실행에 대한 성공여부이다.
+	 *  
+	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
+	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
+	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	//public boolean insertQuery
+	public boolean insertQuery(String query) {
+		
+		//TODO 중복코드 제거
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		
+		boolean executeResult = false;
+		
+		/*
+		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
+		 * 	TODO 중복코드 제거
+		 */
+		String jdbcUrl = "jdbc:mysql://10.73.45.135/rolling_puppy";
+		String userID = "root";
+		String userPW = "dlrudals";
+		
+		//TODO 중복코드 제거
+		try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.err.println("Driver Error\n" + e);
+			return executeResult;
+		}
+		System.out.println("Driver Loading Success");
+		
+		//TODO 중복코드 제거
+		try {
+			connection = DriverManager.getConnection(jdbcUrl, userID, userPW);
+			System.out.println("Connection Success");
+
+			preparedStatement = connection.prepareStatement(query);
+			resultSet = preparedStatement.executeQuery(query);
+
+			preparedStatement.execute();
+			
+			preparedStatement.close();
+			connection.close();
+		} catch (SQLException e) {
+			System.err.println("DB Error\n" + e);
+			return executeResult;
+		} 
+		
+		return executeResult;
+	}
 
 	/*
 	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
@@ -120,9 +169,9 @@ public class DAO {
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
 	protected List<LinkedHashMap<String, Object>> selectQuery(String query) {
-		Connection conn;
-		Statement stmt;
-		ResultSet rs;
+		Connection connection;
+		Statement statement;
+		ResultSet resultSet;
 
 		/*
 		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
@@ -143,25 +192,25 @@ public class DAO {
 		System.out.println("Driver Loading Success");
 
 		try {
-			conn = DriverManager.getConnection(jdbcUrl, userID, userPW);
+			connection = DriverManager.getConnection(jdbcUrl, userID, userPW);
 			System.out.println("Connection Success");
 
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
+			statement = connection.createStatement();
+			resultSet = statement.executeQuery(query);
 
-			java.sql.ResultSetMetaData metaData = rs.getMetaData();
+			java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
 			int columnCount = metaData.getColumnCount();
 
-			while (rs.next()) {
+			while (resultSet.next()) {
 				LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
 
 				for (int i = 1; i <= columnCount; i++) {
-					columns.put(metaData.getColumnLabel(i), rs.getObject(i));
+					columns.put(metaData.getColumnLabel(i), resultSet.getObject(i));
 				}
 				rows.add(columns);
 			}
-			stmt.close();
-			conn.close();
+			statement.close();
+			connection.close();
 		} catch (SQLException e) {
 			System.err.println("DB Error\n" + e);
 		}
