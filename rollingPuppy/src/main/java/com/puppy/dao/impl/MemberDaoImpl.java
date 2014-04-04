@@ -33,7 +33,8 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	public Member selectCheckLoginInfo(String email, String pw) {
 
 		//DB query
-		String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
+		//String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
+		String sql = "SELECT id, email, nickname_noun, nickname_adjective FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
 		
 		Member member = null;
 		
