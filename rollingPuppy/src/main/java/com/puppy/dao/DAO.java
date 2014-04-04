@@ -98,6 +98,13 @@ public class DAO {
 						new Class[] { field.getType() }
 				);
 				
+				//test
+				System.out.println(method.getName());
+				System.out.println( sqlTargetResult.get(fieldName));
+				System.out.println(field.getType());
+				if ( sqlTargetResult.get(fieldName) == null)
+					continue;
+				
 				//메소드를 실제로 실행시켜준다.
 				//setMethod(Paramter)를 실행시켜주는것!!
 				method.invoke(newInstance, sqlTargetResult.get(fieldName)); // set메소드 호출.

@@ -16,6 +16,15 @@ public class Member {
 	private Timestamp created_time;
 	private Timestamp updated_time;
 	
+	@Override
+	public String toString() {
+		return "Member [id=" + id + ", email=" + email + ", pw=" + pw
+				+ ", sex=" + sex + ", birth=" + birth + ", point=" + point
+				+ ", nickname_adjective=" + nickname_adjective
+				+ ", nickname_noun=" + nickname_noun + ", last_logged_time="
+				+ last_logged_time + ", created_time=" + created_time
+				+ ", updated_time=" + updated_time + "]";
+	}
 	public String getSex() {
 		return sex;
 	}

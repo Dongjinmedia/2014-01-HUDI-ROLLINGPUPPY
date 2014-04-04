@@ -52,7 +52,14 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public boolean insertMemberInfo(Member member) {
-		String query = "INSERT INTO tbl_member(email, pw) VALUES ( '" + member.getEmail() + "', '" + member.getPw() + "');";
+		
+		String nicknameQuery = "SELECT tbl_adjective.adjective AS nickname_adjective, tbl_noun.noun AS nickname_noun FROM tbl_adjective, tbl_noun WHERE tbl_adjective.grade = 3 ORDER BY rand() LIMIT 1;";
+		
+		//TODO Update 구현후 리팩토링
+		Member tempMember = selectOne(Member.class, nicknameQuery);
+		System.out.println(tempMember.toString());
+		String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES ( '" + member.getEmail() + "', '" + member.getPw() + "', '" + tempMember.getNickname_adjective() + "', '" + tempMember.getNickname_noun() + "');";
+		
 		return insertQuery(query);
 	}
 
