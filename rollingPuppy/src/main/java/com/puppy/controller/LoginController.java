@@ -17,7 +17,7 @@ import com.puppy.dto.Member;
 
 public class LoginController extends HttpServlet {
 
-	final static String POST_KEEP_LOGIN = "keepLogin";
+	final String POST_KEEP_LOGIN = "keepLogin";
 	final String SESSION_NICKNAME_NOUN = "puppyMember.nickname_noun";
 	final String SESSION_NICKNAME_ADJECTIVE = "puppyMember.nickname_adjective";
 	final String COOKIE_MEMBER_ID = "puppyMember.Id";
@@ -33,7 +33,7 @@ public class LoginController extends HttpServlet {
 
 		// 저장된 쿠키가 없다면 로그인 페이지로 보냅니다.
 		if (cookies == null) {
-			RequestDispatcher view = request.getRequestDispatcher("login.jsp");
+			RequestDispatcher view = request.getRequestDispatcher("index.jsp");
 			view.forward(request, response); // login 이라고만 써도 login.jsp를 띄워준
 
 			return;
@@ -66,11 +66,11 @@ public class LoginController extends HttpServlet {
 		// RequestDispatcher view =
 		// request.getRequestDispatcher("main.jsp");
 		// view.forward(request, response);
-		out.println("Already Loggined!");
-		out.println("member id(Cookie info): " + cookies[idxCookie].getValue());
-		// getSession과 setSession을 만들어야 겠다.
-		out.println("nickname: " + nicknameAdjective + " " + nicknameNoun);
-
+//		out.println("Already Loggined!");
+//		out.println("member id(Cookie info): " + cookies[idxCookie].getValue());
+//		// getSession과 setSession을 만들어야 겠다.
+//		out.println("nickname: " + nicknameAdjective + " " + nicknameNoun);
+		response.sendRedirect("/home"); //?
 	}
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -111,15 +111,17 @@ public class LoginController extends HttpServlet {
 //		session.setAttribute(SESSION_NICKNAME_NOUN, nicknameNoun);
 //		session.setMaxInactiveInterval(60 * 30);
 
-		out.println("login success");
-		out.println("member id: " + id);
-		out.println("keep login: " + keepLogin);
+		//test code
+//		out.println("login success");
+//		out.println("member id: " + id);
+//		out.println("keep login: " + keepLogin);
 
 		if (nicknameAdjective.equals("") || nicknameNoun.equals("")) {
 			// 닉네임이 없다. 나중에 닉네임 가져오는 페이지로 request 보내자.
 			out.println("but no nickname T.T");
 		} else {
-			out.println("nickname: " + nicknameAdjective + " " + nicknameNoun);
+			//out.println("nickname: " + nicknameAdjective + " " + nicknameNoun);
+			response.sendRedirect("/main");
 		}
 
 	}

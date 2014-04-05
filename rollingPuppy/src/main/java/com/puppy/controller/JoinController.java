@@ -15,15 +15,6 @@ import com.puppy.dto.Member;
  */
 public class JoinController  extends HttpServlet {
 	
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		RequestDispatcher view = request.getRequestDispatcher("join.jsp");
-		view.forward(request, response);
-		//response.sendRedirect("/");
-		//둘의 차이점을 반드시 이해할것!		
-	}
-	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
@@ -53,9 +44,6 @@ public class JoinController  extends HttpServlet {
 		member.setPw(password);
 		
 		out.println(memberDao.insertMemberInfo(member));
-		
-		
-		
-		
+		response.sendRedirect("/");
 	}
 }
