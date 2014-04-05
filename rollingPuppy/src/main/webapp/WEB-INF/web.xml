@@ -7,6 +7,12 @@
 	<display-name>Archetype Created Web Application</display-name>
 	
 	<!-- Servlet Area -->	
+	
+	<servlet>
+		<servlet-name>Home Request</servlet-name>
+		<servlet-class>com.puppy.controller.HomeController</servlet-class>
+	</servlet>
+	
 	<servlet>
 		<servlet-name>Join Request</servlet-name>
 		<servlet-class>com.puppy.controller.JoinController</servlet-class>
@@ -19,6 +25,12 @@
 	
 	
 	<!-- Servlet-mapping Area -->
+	
+	<servlet-mapping>
+		<servlet-name>Home Request</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+	
 	<servlet-mapping>
 		<servlet-name>Join Request</servlet-name>
 		<url-pattern>/join</url-pattern>
@@ -28,6 +40,7 @@
 		<servlet-name>Login Request</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
+	
 	
 	
 	
