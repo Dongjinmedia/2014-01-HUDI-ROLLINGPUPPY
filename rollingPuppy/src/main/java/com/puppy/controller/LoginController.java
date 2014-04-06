@@ -96,8 +96,9 @@ public class LoginController extends HttpServlet {
 
 		// POST의 email, pw와 맞는 Member 정보를 가져와서 class에 담습니다.
 		Member member = getMember(email, pw);
-		if (member == null) {
+		if (member == null || member.getId() == 0 ) {
 			out.println("No such member! Try again.");
+			return;
 		}
 
 		// int와 같은 기본 자료형에는 toString이 없더라고요. Integer로 캐스팅 후에 toString 사용했습니다. 
@@ -152,6 +153,10 @@ public class LoginController extends HttpServlet {
 	
 	private void invaildateCookies(HttpServletResponse response,
 			Cookie[] cookies) {
+		
+		if ( cookies == null )
+			return;
+		
 		for (Cookie cookie : cookies) {
 			cookie.setMaxAge(0);
 			response.addCookie(cookie);

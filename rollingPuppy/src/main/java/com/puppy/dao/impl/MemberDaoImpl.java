@@ -1,5 +1,6 @@
 package com.puppy.dao.impl;
 
+import java.sql.PreparedStatement;
 import java.util.List;
 
 import com.puppy.dao.DAO;
@@ -15,13 +16,14 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
 		
-		//DB query
-		String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = '"+email+"'";
-		
 		Member member = null;
 		
 		try {
-			member = selectOne(Member.class, sql);
+			String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
+			preparedStatement.setString(1, email);
+
+			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -32,20 +34,17 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	@Override
 	public Member selectCheckLoginInfo(String email, String pw) {
 
-		//DB query
-		//String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
-		String sql = "SELECT id, email, nickname_noun, nickname_adjective FROM tbl_member WHERE email = '"+email+"' AND pw='"+pw+"'" ;
-		
 		Member member = null;
 		
 		try {
-			
-			Object object = selectOne(Member.class, sql);
-			
-			if ( object != null )
-				member = selectOne(Member.class, sql);
+			String sql = "SELECT id, email, nickname_noun, nickname_adjective FROM tbl_member WHERE email = ? AND pw = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
+			preparedStatement.setString(1, email);
+			preparedStatement.setString(2, pw);
+
+			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			e.printStackTrace();
+			System.err.println(e);
 		}
 		
 		return member;
@@ -54,14 +53,26 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	@Override
 	public boolean insertMemberInfo(Member member) {
 		
-		String nicknameQuery = "SELECT tbl_adjective.adjective AS nickname_adjective, tbl_noun.noun AS nickname_noun FROM tbl_adjective, tbl_noun WHERE tbl_adjective.grade = 3 ORDER BY rand() LIMIT 1;";
+		PreparedStatement insertPreparedStatement = null;
 		
-		//TODO Update 구현후 리팩토링
-		Member tempMember = selectOne(Member.class, nicknameQuery);
-		System.out.println(tempMember.toString());
-		String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES ( '" + member.getEmail() + "', '" + member.getPw() + "', '" + tempMember.getNickname_adjective() + "', '" + tempMember.getNickname_noun() + "');";
-		
-		return insertQuery(query);
+		try {
+			String nicknameQuery = 
+					"SELECT tbl_adjective.adjective AS nickname_adjective, tbl_noun.noun AS nickname_noun "
+					+ "FROM tbl_adjective, tbl_noun WHERE tbl_adjective.grade = 3 ORDER BY rand() LIMIT 1;";
+			PreparedStatement selectPreparedStatement = ConnectionPool.getPreparedStatement(nicknameQuery);
+			Member tempMember = selectOne(Member.class, selectPreparedStatement);
+			
+			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES (?, ?, ?, ?)";
+			insertPreparedStatement = ConnectionPool.getPreparedStatement(query);
+			insertPreparedStatement.setString(1, member.getEmail());
+			insertPreparedStatement.setString(2, member.getPw());
+			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
+			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
+			
+		} catch (Exception e) {
+			System.err.println(e);
+		}
+		return insertQuery(insertPreparedStatement);
 	}
 
 }
