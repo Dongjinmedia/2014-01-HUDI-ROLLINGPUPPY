@@ -21,11 +21,14 @@ import java.sql.PreparedStatement;
 public class DAO {
 
 	/*
-	 * TODO 초기화과정에서만 Connection 맺도록 변경되어야 한다.
+	 * Connection Pool로부터 Connection객체를 가져온다.
 	 */
-	protected DAO() {
-		System.out.println("connection request");
+	private Connection getConnection() throws SQLException {
+		String jdbcDriver = "jdbc:apache:commons:dbcp:/com/puppy/pool/pool";
+		return DriverManager.getConnection(jdbcDriver);
 	}
+	
+	protected DAO() {}
 
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
@@ -84,6 +87,13 @@ public class DAO {
 				//Field의 변수명을 가져온다.
 				String fieldName = field.getName();
 				
+				//"행"에 해당하는 Map영역에서, 필드에 해당하는 항목의 데이터를 가져온다.
+				Object sqlTargetData = sqlTargetResult.get(fieldName);
+				
+				//만약 필드에 해당하는 데이터가 null일경우, 다음필드로 넘어간다.
+				if ( sqlTargetData == null)
+					continue;
+				
 				//targetClass(DTO)에 담긴 모든 method(함수)중에서, "set메소드명"해당하는 Method객체를 가져온다.
 				//Parameter는
 				//1. 메소드명  
@@ -98,19 +108,11 @@ public class DAO {
 						new Class[] { field.getType() }
 				);
 				
-				//test
-				System.out.println(method.getName());
-				System.out.println( sqlTargetResult.get(fieldName));
-				System.out.println(field.getType());
-				if ( sqlTargetResult.get(fieldName) == null)
-					continue;
-				
 				//메소드를 실제로 실행시켜준다.
 				//setMethod(Paramter)를 실행시켜주는것!!
 				method.invoke(newInstance, sqlTargetResult.get(fieldName)); // set메소드 호출.
 			}
 		}
-		
 		return instances;
 	}
 
@@ -118,39 +120,20 @@ public class DAO {
 	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
 	 * 리턴되는 데이터는 Query 실행에 대한 성공여부이다.
 	 *  
-	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
 	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
 	 * TODO PrepareStatement로 변경해야 한다.
+	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 */
 	protected boolean insertQuery(String query) {
-		
-		//TODO 중복코드 제거
 		Connection connection = null;
 		PreparedStatement preparedStatement = null;
-		ResultSet resultSet = null;
+		//ResultSet resultSet = null;
 		
 		boolean isExecuteSuccess = false;
 		
-		/*
-		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
-		 * 	TODO 중복코드 제거
-		 */
-		String jdbcUrl = "jdbc:mysql://10.73.45.135/rolling_puppy";
-		String userID = "root";
-		String userPW = "dlrudals";
-		
-		//TODO 중복코드 제거
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("Driver Error\n" + e);
-			return isExecuteSuccess;
-		}
-		System.out.println("Driver Loading Success");
-		
-		//TODO 중복코드 제거
-		try {
-			connection = DriverManager.getConnection(jdbcUrl, userID, userPW);
+			
+			connection = getConnection(); 
 			System.out.println("Connection Success");
 
 			preparedStatement = connection.prepareStatement(query);
@@ -174,7 +157,6 @@ public class DAO {
 	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
 	 * 리턴되는 데이터는 Query결과물 전체를 List (전체행에 해당)에 LinkedHashMap (한행의 모든 열을 담은 맵)이 연결된 형태이다.
 	 *  
-	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
 	private List<LinkedHashMap<String, Object>> selectQuery(String query) {
@@ -182,27 +164,12 @@ public class DAO {
 		Statement statement;
 		ResultSet resultSet;
 
-		/*
-		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
-		 */
-		String jdbcUrl = "jdbc:mysql://10.73.45.135/rolling_puppy";
-		String userID = "root";
-		String userPW = "dlrudals";
-
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
 		//Query결과로 리턴되는 데이터베이스의 정보들은 순서가 보장되어야 하기때문에 LinkedHashMap을 사용했다.
 		List<LinkedHashMap<String, Object>> rows = new ArrayList<LinkedHashMap<String, Object>>();
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("Driver Error\n" + e);
-		}
-		System.out.println("Driver Loading Success");
-
-		try {
-			connection = DriverManager.getConnection(jdbcUrl, userID, userPW);
-			System.out.println("Connection Success");
+			connection = getConnection();
 
 			statement = connection.createStatement();
 			resultSet = statement.executeQuery(query);
