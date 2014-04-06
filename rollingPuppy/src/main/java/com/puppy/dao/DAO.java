@@ -20,27 +20,19 @@ import java.sql.PreparedStatement;
  */
 public class DAO {
 
-	/*
-	 * Connection Pool로부터 Connection객체를 가져온다.
-	 */
-	private Connection getConnection() throws SQLException {
-		String jdbcDriver = "jdbc:apache:commons:dbcp:/com/puppy/pool/pool";
-		return DriverManager.getConnection(jdbcDriver);
-	}
-	
 	protected DAO() {}
 
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <Any> Any selectList(Class<?> targetClass, String sql) {
+	protected <Any> Any selectList(Class<?> targetClass, PreparedStatement preparedStatement) {
 		
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<?> lists = null;
 		try {
 			//데이터베이스 질의를 통해서 얻은 select결과데이터를 DTO객체에 담는 메소드
-			lists = setReflectionDataToModel(targetClass , selectQuery(sql));
+			lists = setReflectionDataToModel(targetClass , selectQuery(preparedStatement));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -51,8 +43,8 @@ public class DAO {
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
 	@SuppressWarnings("unchecked")
-	protected <Any> Any selectOne(Class<?> targetClass, String sql) {
-		List<?> lists = selectList(targetClass, sql);
+	protected <Any> Any selectOne(Class<?> targetClass, PreparedStatement preparedStatement) {
+		List<?> lists = selectList(targetClass, preparedStatement);
 		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
 	}
 	
@@ -124,32 +116,22 @@ public class DAO {
 	 * TODO PrepareStatement로 변경해야 한다.
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 */
-	protected boolean insertQuery(String query) {
-		Connection connection = null;
-		PreparedStatement preparedStatement = null;
+	protected boolean insertQuery(PreparedStatement preparedStatement) {
 		//ResultSet resultSet = null;
-		
 		boolean isExecuteSuccess = false;
 		
 		try {
 			
-			connection = getConnection(); 
-			System.out.println("Connection Success");
-
-			preparedStatement = connection.prepareStatement(query);
 			//resultSet = preparedStatement.executeQuery(query);
 
-			preparedStatement.execute();
-			
-			preparedStatement.close();
+			isExecuteSuccess = preparedStatement.execute();
+			Connection connection = preparedStatement.getConnection();
 			connection.close();
+			preparedStatement.close();
 			
-			isExecuteSuccess = true;
 		} catch (SQLException e) {
 			System.err.println("DB Error\n" + e);
-			return isExecuteSuccess;
 		} 
-		
 		return isExecuteSuccess;
 	}
 
@@ -159,9 +141,7 @@ public class DAO {
 	 *  
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	private List<LinkedHashMap<String, Object>> selectQuery(String query) {
-		Connection connection;
-		Statement statement;
+	private List<LinkedHashMap<String, Object>> selectQuery(PreparedStatement preparedStatement) {
 		ResultSet resultSet;
 
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
@@ -169,10 +149,8 @@ public class DAO {
 		List<LinkedHashMap<String, Object>> rows = new ArrayList<LinkedHashMap<String, Object>>();
 
 		try {
-			connection = getConnection();
 
-			statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
+			resultSet = preparedStatement.executeQuery();
 
 			java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
 			int columnCount = metaData.getColumnCount();
@@ -185,8 +163,10 @@ public class DAO {
 				}
 				rows.add(columns);
 			}
-			statement.close();
+			
+			Connection connection = preparedStatement.getConnection();
 			connection.close();
+			preparedStatement.close();
 		} catch (SQLException e) {
 			System.err.println("DB Error\n" + e);
 		}
