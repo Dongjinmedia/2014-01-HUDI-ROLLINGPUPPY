@@ -10,6 +10,8 @@ public class DBCPInit extends HttpServlet{
  
     @Override
     public void init(ServletConfig config) throws ServletException {
+    	super.init(config);
+    	
         try{
             String drivers = config.getInitParameter("jdbcDriver");
             StringTokenizer st = new StringTokenizer(drivers, ",");
