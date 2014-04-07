@@ -27,7 +27,7 @@
 		<servlet-name>Navermap Request</servlet-name>
 		<servlet-class>com.puppy.controller.MapController</servlet-class>
 	</servlet>
-	
+		
 	<!-- Servlet-mapping Area -->
 	
 	<servlet-mapping>
@@ -49,6 +49,8 @@
 		<servlet-name>Navermap Request</servlet-name>
 		<url-pattern>/navermap</url-pattern>
 	</servlet-mapping>
+	
+
 	
 	
 	
