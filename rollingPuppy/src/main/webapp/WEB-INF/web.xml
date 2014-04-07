@@ -8,7 +8,7 @@
 	
 	<!-- Servlet Area -->	
 	
-		<servlet>
+	<servlet>
 		<servlet-name>DBCPInit</servlet-name>
 		<servlet-class>com.puppy.pool.DBCPInit</servlet-class>
 		<init-param>
@@ -33,7 +33,11 @@
 		<servlet-class>com.puppy.controller.LoginController</servlet-class>
 	</servlet>
 	
-	
+	<servlet>
+		<servlet-name>Navermap Request</servlet-name>
+		<servlet-class>com.puppy.controller.MapController</servlet-class>
+	</servlet>
+		
 	<!-- Servlet-mapping Area -->
 	
 	<servlet-mapping>
@@ -50,6 +54,14 @@
 		<servlet-name>Login Request</servlet-name>
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
+	
+	<servlet-mapping>
+		<servlet-name>Navermap Request</servlet-name>
+		<url-pattern>/navermap</url-pattern>
+	</servlet-mapping>
+	
+
+	
 	
 	
 	
