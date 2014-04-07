@@ -1,4 +1,7 @@
 var naverMap = document.getElementById("naver_map"); 
+var mapDivWidth = window.getComputedStyle(document.getElementById("naver_map"), null).getPropertyValue("width");
+var mapDivHeight = window.getComputedStyle(document.getElementById("naver_map"), null).getPropertyValue("height");
+
 var oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
  nhn.api.map.setDefaultPoint('LatLng');
  oMap = new nhn.api.map.Map(naverMap, {
@@ -11,7 +14,7 @@ var oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
  activateTrafficMap : false,
  activateBicycleMap : false,
  minMaxLevel : [ 1, 14 ],
- size : new nhn.api.map.Size(500, 400)
+ size : new nhn.api.map.Size(mapDivWidth, mapDivHeight)
 });
  var markerCount = 0;
  
