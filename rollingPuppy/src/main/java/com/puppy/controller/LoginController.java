@@ -14,9 +14,9 @@ import com.puppy.dto.Member;
 
 public class LoginController extends HttpServlet {
 
-	final String SESSION_NICKNAME_NOUN = "puppyMember.nickname_noun";
-	final String SESSION_NICKNAME_ADJECTIVE = "puppyMember.nickname_adjective";
-	final String COOKIE_MEMBER_EMAIL = "puppyMember.email";
+	final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
+	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
+	final String COOKIE_LAST_LOGGED_EMAIL = "member.lastLoggedEmail";
 	
 	final String POST_KEEP_LOGIN = "keepLogin";
 	final String POST_EMAIL = "email"; 
@@ -44,7 +44,7 @@ public class LoginController extends HttpServlet {
 		}
 
 		//2주동안 유효한 쿠키생성.
-		Cookie cookie = new Cookie(COOKIE_MEMBER_EMAIL, email);
+		Cookie cookie = new Cookie(COOKIE_LAST_LOGGED_EMAIL, email);
 		cookie.setMaxAge(14 * 24 * 60 * 60);
 		
 		HttpSession session = request.getSession();
