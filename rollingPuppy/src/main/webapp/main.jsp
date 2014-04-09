@@ -6,9 +6,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 <title>Main Page</title>
-<link type="text/css" rel="stylesheet" href="/rollingPuppy/main.css" />
+<link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 <script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
-<script src = "naverMap.js"></script>
+<script src = "/javascripts/naverMap.js"></script>
 </head>
 <body>
 	<!--페이지 전체를 감싸는 영역-->

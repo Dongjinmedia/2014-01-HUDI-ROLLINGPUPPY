@@ -47,7 +47,7 @@
 	
 	<servlet-mapping>
 		<servlet-name>Home Request</servlet-name>
-		<url-pattern>/</url-pattern>
+		<url-pattern>/index</url-pattern>
 	</servlet-mapping>
 	
 	<servlet-mapping>

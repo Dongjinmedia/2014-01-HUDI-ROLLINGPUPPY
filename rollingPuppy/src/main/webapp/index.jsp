@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
+<link rel="stylesheet" type="text/css" href="/stylesheets/reset.css" />
 <title>Rolling Puppy</title>
 
 <style type="text/css">
