@@ -11,8 +11,9 @@ import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 
 /*
- * 회원가입화면 (Get) 및 회원가입요청 (Post)에 대한 클래스
+ * 회원 정보들을 가지고 POST방식으로 들어오는 회원가입 요청을 처리하는 컨트롤러
  */
+
 public class JoinController  extends HttpServlet {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -21,19 +22,6 @@ public class JoinController  extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		//Member클래스 데이터베이스 요청에 대한 객체생성
-//		MemberDaoImpl memberDao = new MemberDaoImpl();
-//		Member member = memberDao.selectDuplicateMemberExists(request.getParameter("email"));
-//		
-//		if ( member == null ) {
-//			out.println("member instance is Null!!");
-//		} else {
-//			if (member.getId()==0) {
-//				out.println("Email is Not Exists");	
-//			} else {
-//				out.println("Email is Already Exists");
-//			}
-//		}
 		MemberDaoImpl memberDao = new MemberDaoImpl();
 		Member member = new Member();
 

@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<link rel="stylesheet" type="text/css" href="/rollingPuppy/stylesheets/reset.css" />
+<link rel="stylesheet" type="text/css" href="stylesheets/reset.css" />
 <title>Rolling Puppy</title>
 
 <style type="text/css">
@@ -12,10 +12,6 @@
 body {
 	margin: 0;
 	height: 100%;
-}
-
-div {
-	
 }
 
 a {
@@ -41,7 +37,7 @@ a {
 	min-width: 1000px;
 	min-height: 600px;
 	width: 100%;
-	height: 100%; 
+	height: 100%;
 }
 
 #header {
@@ -70,9 +66,6 @@ a {
 
 #loginButton {
 	padding: 5px 4px;
-}
-^
-#contentsWrapper  {
 }
 
 #joinBox {
