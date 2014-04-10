@@ -2,6 +2,9 @@ package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.puppy.dao.DAO;
 import com.puppy.dao.MemberDao;
 import com.puppy.dto.Member;
@@ -12,8 +15,11 @@ import com.puppy.dto.Member;
 */
 public class MemberDaoImpl extends DAO implements MemberDao{
 
+	private static final Logger log = LoggerFactory.getLogger(MemberDaoImpl.class);
+	
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
+		log.info("MemberDaoImpl selectDuplicateMemberExists");
 		
 		Member member = null;
 		
@@ -32,7 +38,8 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public Member selectCheckLoginInfo(String email, String pw) {
-
+		log.info("MemberDaoImpl selectCheckLoginInfo");
+		
 		Member member = null;
 		
 		try {
@@ -51,6 +58,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public boolean insertMemberInfo(Member member) {
+		log.info("MemberDaoImpl insertMemberInfo");
 		
 		PreparedStatement insertPreparedStatement = null;
 		

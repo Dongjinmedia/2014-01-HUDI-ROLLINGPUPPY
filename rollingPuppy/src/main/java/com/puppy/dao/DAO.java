@@ -10,6 +10,9 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /*
  * Data Access Object
  * 데이터베이스와의 연결을 관장한다.
@@ -17,13 +20,15 @@ import java.util.List;
 public class DAO {
 
 	protected DAO() {}
-
+	private static final Logger log = LoggerFactory.getLogger(DAO.class);
+	
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
 	@SuppressWarnings("unchecked")
 	protected <Any> Any selectList(Class<?> targetClass, PreparedStatement preparedStatement) {
-		
+		log.info("DAO selectList");
+
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<?> lists = null;
 		try {
@@ -40,6 +45,8 @@ public class DAO {
 	 */
 	@SuppressWarnings("unchecked")
 	protected <Any> Any selectOne(Class<?> targetClass, PreparedStatement preparedStatement) {
+		log.info("DAO selectOne");
+		
 		List<?> lists = selectList(targetClass, preparedStatement);
 		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
 	}
@@ -51,6 +58,8 @@ public class DAO {
 	 */
 	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
 																									throws Exception {
+		log.info("DAO setReflectionDataToModel");
+		
 		//전달받은 targetClass (DTO)에 선언된 모든 Field(변수)를 배열로 리턴한다.
 		Field[] fields = targetClass.getDeclaredFields();
 		
@@ -113,7 +122,8 @@ public class DAO {
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 */
 	protected boolean insertQuery(PreparedStatement preparedStatement) {
-		//ResultSet resultSet = null;
+		log.info("DAO insertQuery");
+		
 		boolean isExecuteSuccess = false;
 		
 		try {
@@ -126,7 +136,7 @@ public class DAO {
 			preparedStatement.close();
 			
 		} catch (SQLException e) {
-			System.err.println("DB Error\n" + e);
+			log.error(e.toString());
 		} 
 		return isExecuteSuccess;
 	}
@@ -138,6 +148,8 @@ public class DAO {
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
 	private List<LinkedHashMap<String, Object>> selectQuery(PreparedStatement preparedStatement) {
+		log.info("DAO selectQuery");
+		
 		ResultSet resultSet;
 
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
@@ -164,7 +176,7 @@ public class DAO {
 			connection.close();
 			preparedStatement.close();
 		} catch (SQLException e) {
-			System.err.println("DB Error\n" + e);
+			log.error(e.toString());
 		}
 		return rows;
 	}
