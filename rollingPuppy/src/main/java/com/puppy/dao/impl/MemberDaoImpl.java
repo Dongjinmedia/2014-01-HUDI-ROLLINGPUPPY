@@ -1,7 +1,6 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
-import java.util.List;
 
 import com.puppy.dao.DAO;
 import com.puppy.dao.MemberDao;

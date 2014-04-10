@@ -8,7 +8,9 @@ import javax.servlet.http.HttpServlet;
  
 public class DBCPInit extends HttpServlet{
  
-    @Override
+	private static final long serialVersionUID = -3316048440038262557L;
+
+	@Override
     public void init(ServletConfig config) throws ServletException {
     	super.init(config);
     	

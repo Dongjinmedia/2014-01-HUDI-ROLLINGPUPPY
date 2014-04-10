@@ -8,7 +8,6 @@
 <title>Main Page</title>
 <link type="text/css" rel="stylesheet" href="/stylesheets/main.css" />
 <script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
-<script src = "/javascripts/main.js"></script>
 </head>
 <body>
 	<!--페이지 전체를 감싸는 영역-->
@@ -50,4 +49,5 @@
 		</div>
 	</div>
 </body>
+<script src = "/javascripts/main.js"></script>
 </html>

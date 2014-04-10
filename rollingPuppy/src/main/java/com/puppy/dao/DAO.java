@@ -1,18 +1,14 @@
 package com.puppy.dao;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
-import javax.swing.text.html.HTMLDocument.HTMLReader.PreAction;
-import java.sql.PreparedStatement;
 
 /*
  * Data Access Object

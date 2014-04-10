@@ -14,6 +14,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 public class HomeController extends HttpServlet{
 	
+	private static final long serialVersionUID = -4541355416746302437L;
+
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 

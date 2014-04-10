@@ -12,8 +12,13 @@ import javax.servlet.http.HttpSession;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 
+/*
+ * 로그인 요청에 대한 컨트롤러
+ */
 public class LoginController extends HttpServlet {
 
+	private static final long serialVersionUID = 2747059096127772597L;
+	
 	final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
 	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 	final String COOKIE_LAST_LOGGED_EMAIL = "member.lastLoggedEmail";
@@ -41,6 +46,8 @@ public class LoginController extends HttpServlet {
 		if (member == null || member.getId() == 0 ) {
 			//Ajax통신으로 구현하기로 했음.
 			//Redirection 505 error page.
+			
+			
 		}
 
 		//2주동안 유효한 쿠키생성.

@@ -60,5 +60,4 @@
 		<servlet-name>Main Request</servlet-name>
 		<url-pattern>/main</url-pattern>
 	</servlet-mapping>
-
 </web-app>
