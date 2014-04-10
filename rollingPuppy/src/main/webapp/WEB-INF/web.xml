@@ -34,11 +34,6 @@
 	</servlet>
 	
 	<servlet>
-		<servlet-name>Navermap Request</servlet-name>
-		<servlet-class>com.puppy.controller.MapController</servlet-class>
-	</servlet>
-	
-	<servlet>
 		<servlet-name>Main Request</servlet-name>
 		<servlet-class>com.puppy.controller.MainController</servlet-class>
 	</servlet>
@@ -60,19 +55,10 @@
 		<url-pattern>/login</url-pattern>
 	</servlet-mapping>
 	
-	<servlet-mapping>
-		<servlet-name>Navermap Request</servlet-name>
-		<url-pattern>/navermap</url-pattern>
-	</servlet-mapping>
 	
 	<servlet-mapping>
 		<servlet-name>Main Request</servlet-name>
 		<url-pattern>/main</url-pattern>
 	</servlet-mapping>
-	
-	<mime-mapping>
-		<extension>css</extension>
-		<mime-type>text/css</mime-type>
-	</mime-mapping>
-	
+
 </web-app>
