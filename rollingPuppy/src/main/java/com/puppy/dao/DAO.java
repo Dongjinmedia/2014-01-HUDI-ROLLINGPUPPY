@@ -1,16 +1,17 @@
 package com.puppy.dao;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
-import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /*
  * Data Access Object
@@ -18,34 +19,36 @@ import java.util.List;
  */
 public class DAO {
 
-	/*
-	 * TODO 초기화과정에서만 Connection 맺도록 변경되어야 한다.
-	 */
-	protected DAO() {
-		System.out.println("connection request");
-	}
-
+	protected DAO() {}
+	private static final Logger log = LoggerFactory.getLogger(DAO.class);
+	
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
-	public List<?> selectList(Class<?> targetClass, String sql) {
-		
+	@SuppressWarnings("unchecked")
+	protected <Any> Any selectList(Class<?> targetClass, PreparedStatement preparedStatement) {
+		log.info("DAO selectList");
+
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<?> lists = null;
 		try {
 			//데이터베이스 질의를 통해서 얻은 select결과데이터를 DTO객체에 담는 메소드
-			lists = setReflectionDataToModel(targetClass , selectQuery(sql));
+			lists = setReflectionDataToModel(targetClass , selectQuery(preparedStatement));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		return lists;
+		return (Any) lists;
 	}
-	
+
 	/*
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
-	public Object selectOne(Class<?> targetClass, String sql) {
-		return selectList(targetClass, sql).get(0);
+	@SuppressWarnings("unchecked")
+	protected <Any> Any selectOne(Class<?> targetClass, PreparedStatement preparedStatement) {
+		log.info("DAO selectOne");
+		
+		List<?> lists = selectList(targetClass, preparedStatement);
+		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
 	}
 	
 	/*
@@ -53,10 +56,10 @@ public class DAO {
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
-	public static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
-																									throws IllegalAccessException, IllegalArgumentException,
-																												InvocationTargetException, NoSuchMethodException,
-																												SecurityException, InstantiationException {
+	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
+																									throws Exception {
+		log.info("DAO setReflectionDataToModel");
+		
 		//전달받은 targetClass (DTO)에 선언된 모든 Field(변수)를 배열로 리턴한다.
 		Field[] fields = targetClass.getDeclaredFields();
 		
@@ -81,6 +84,13 @@ public class DAO {
 				//Field의 변수명을 가져온다.
 				String fieldName = field.getName();
 				
+				//"행"에 해당하는 Map영역에서, 필드에 해당하는 항목의 데이터를 가져온다.
+				Object sqlTargetData = sqlTargetResult.get(fieldName);
+				
+				//만약 필드에 해당하는 데이터가 null일경우, 다음필드로 넘어간다.
+				if ( sqlTargetData == null)
+					continue;
+				
 				//targetClass(DTO)에 담긴 모든 method(함수)중에서, "set메소드명"해당하는 Method객체를 가져온다.
 				//Parameter는
 				//1. 메소드명  
@@ -100,67 +110,73 @@ public class DAO {
 				method.invoke(newInstance, sqlTargetResult.get(fieldName)); // set메소드 호출.
 			}
 		}
-		
 		return instances;
 	}
 
 	/*
-	 * 
+	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
+	 * 리턴되는 데이터는 Query 실행에 대한 성공여부이다.
+	 *  
+	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
+	 * TODO PrepareStatement로 변경해야 한다.
+	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 */
-	//public boolean insertQuery
+	protected boolean insertQuery(PreparedStatement preparedStatement) {
+		log.info("DAO insertQuery");
+		
+		boolean isExecuteSuccess = false;
+		
+		try {
+			
+			//resultSet = preparedStatement.executeQuery(query);
+
+			isExecuteSuccess = preparedStatement.execute();
+			Connection connection = preparedStatement.getConnection();
+			connection.close();
+			preparedStatement.close();
+			
+		} catch (SQLException e) {
+			log.error(e.toString());
+		} 
+		return isExecuteSuccess;
+	}
 
 	/*
 	 * 데이터베이스와의 커넥션을 통해 전달받는 Query를 수행. 
 	 * 리턴되는 데이터는 Query결과물 전체를 List (전체행에 해당)에 LinkedHashMap (한행의 모든 열을 담은 맵)이 연결된 형태이다.
 	 *  
-	 * TODO Connection연결과 같은 부분들을 생성자 항목으로 이동시켜야 한다.
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	public List<LinkedHashMap<String, Object>> selectQuery(String query) {
-		Connection conn;
-		Statement stmt;
-		ResultSet rs;
-
-		/*
-		 * TODO 하단의 정보들은 은닉화, XML화 되어야 한다.
-		 */
-		String jdbcUrl = "jdbc:mysql://10.73.45.135/rolling_puppy";
-		String userID = "root";
-		String userPW = "dlrudals";
+	private List<LinkedHashMap<String, Object>> selectQuery(PreparedStatement preparedStatement) {
+		log.info("DAO selectQuery");
+		
+		ResultSet resultSet;
 
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
 		//Query결과로 리턴되는 데이터베이스의 정보들은 순서가 보장되어야 하기때문에 LinkedHashMap을 사용했다.
 		List<LinkedHashMap<String, Object>> rows = new ArrayList<LinkedHashMap<String, Object>>();
 
 		try {
-			Class.forName("com.mysql.jdbc.Driver");
-		} catch (ClassNotFoundException e) {
-			System.err.println("Driver Error\n" + e);
-		}
-		System.out.println("Driver Loading Success");
 
-		try {
-			conn = DriverManager.getConnection(jdbcUrl, userID, userPW);
-			System.out.println("Connection Success");
+			resultSet = preparedStatement.executeQuery();
 
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-
-			java.sql.ResultSetMetaData metaData = rs.getMetaData();
+			java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
 			int columnCount = metaData.getColumnCount();
 
-			while (rs.next()) {
+			while (resultSet.next()) {
 				LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
 
 				for (int i = 1; i <= columnCount; i++) {
-					columns.put(metaData.getColumnLabel(i), rs.getObject(i));
+					columns.put(metaData.getColumnLabel(i), resultSet.getObject(i));
 				}
 				rows.add(columns);
 			}
-			stmt.close();
-			conn.close();
+			
+			Connection connection = preparedStatement.getConnection();
+			connection.close();
+			preparedStatement.close();
 		} catch (SQLException e) {
-			System.err.println("DB Error\n" + e);
+			log.error(e.toString());
 		}
 		return rows;
 	}
