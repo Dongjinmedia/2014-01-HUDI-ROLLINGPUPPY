@@ -88,7 +88,7 @@
 
 		<!-- embedded tomcat 설정 -->
 		<!-- 설정관련 : http://www.slipp.net/wiki/pages/viewpage.action?pageId=16711743 -->
-		<dependency>
+		<!-- <dependency>
 			<groupId>org.apache.tomcat.embed</groupId>
 			<artifactId>tomcat-embed-core</artifactId>
 			<version>${tomcat.version}</version>
@@ -117,7 +117,7 @@
 			<groupId>org.apache.tomcat</groupId>
 			<artifactId>tomcat-jsp-api</artifactId>
 			<version>${tomcat.version}</version>
-		</dependency>
+		</dependency> -->
 
 	</dependencies>
 	<build>
