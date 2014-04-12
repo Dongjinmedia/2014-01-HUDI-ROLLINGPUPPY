@@ -6,6 +6,7 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Rolling Puppy</title>
 	<link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
+	<link rel="stylesheet" type="text/css" href="/stylesheets/default.css">
 	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
 	<script src="/javascripts/index.js"></script>
 </head>
