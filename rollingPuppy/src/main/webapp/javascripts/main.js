@@ -17,7 +17,7 @@ nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 �
 oMap = new nhn.api.map.Map(naverMap, {
     point: oCenterPoint, //지도 중심점의 좌표 설정
     zoom: 10, // - 초기 줌 레벨은 10으로 둔다.
-    enableWheelZoom: false, //마우스 휠 동작으로 지도를 확대/축소할지 여부
+    enableWheelZoom: true, //마우스 휠 동작으로 지도를 확대/축소할지 여부
     enableDragPan: true, //마우스로 끌어서 지도를 이동할지 여부
     enableDblClickZoom: false, //더블클릭으로 지도를 확대할지 여부
     mapMode: 0, //지도 모드(0 : 일반 지도, 1 : 겹침 지도, 2 : 위성 지도)
@@ -34,7 +34,8 @@ var oOffset = new nhn.api.map.Size(14, 37);
 var oIcon = new nhn.api.map.Icon('http://www.apkdad.com/wp-content/uploads/2013/02/LINE-Card-Icon.png', oSize, oOffset); //마커 설정 정보
 var oMapInfoTestWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드만 삽입 가능
 
-oMapInfoTestWindow.setVisible(false); // - infowindow 표시 여부 지정
+oMapInfoTestWindow.setVisible(false); // - infowindow 표시 여부 지정 
+//여기서는 true로 바꿔도 아무 변화가 없음 
 oMap.addOverlay(oMapInfoTestWindow); // - 지도에 추가
 
 var oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
