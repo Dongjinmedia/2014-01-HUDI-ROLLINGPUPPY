@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -14,7 +14,7 @@
 <body>
 <div id="wrapper">
 	<div id="header">
-		<a href="/"><h1>Rolling Puppy</h1></a>
+		<h1><a href="/">Rolling Puppy</a></h1>
 		<div id="loginBox">
 			<form action="/login" method="post">
 				<input type="text" name="email" placeholder="Email">
