@@ -2,15 +2,16 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
+
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=EmulateIE7">
 	<title>Main Page</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/default.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css">
-	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=07318dd5a6e8fa1230829ba54266ac0c"></script>
+	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
 </head>
+
 <body>
 
 <!--페이지 전체를 감싸는 영역-->
@@ -43,7 +44,7 @@
 					<li><a href="#" class="settings">설정</a></li>
 				</ul>
 			</div>
-
+			
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel"></div>
 		</div>
@@ -57,7 +58,9 @@
 			</div>
 		</div>
 	</div>
+	
+
 </div>
 </body>
-<script type ="text/javascript" src ="/javascripts/main.js"></script>
+<script type="text/javascript" src="/javascripts/main.js"></script>
 </html>
