@@ -14,6 +14,7 @@
 <body>
 <div id="wrapper">
 	<div id="header">
+		<a href="/"><h1>Rolling Puppy</h1></a>
 		<div id="loginBox">
 			<form action="/login" method="post">
 				<input type="text" name="email" placeholder="Email">
