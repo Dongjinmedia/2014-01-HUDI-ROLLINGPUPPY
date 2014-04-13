@@ -52,7 +52,7 @@ div#header {
 	color: black;
 }
 
-#header a h1 {
+#header h1 {
 	position: absolute;
 	top: 12px;
 	left: 20px;
