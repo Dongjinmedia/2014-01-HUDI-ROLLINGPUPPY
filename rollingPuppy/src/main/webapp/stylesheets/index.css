@@ -1,29 +1,21 @@
-#header {
-	position: relative;
-	height: 50px;
-	background-color: #EEE;
-}
-
 #loginBox {
 	position: absolute;
-	margin-top: 7px;
+	top: 7px;
 	right: 20px;
 	font-size: 13px;
+	width: 560px;
 }
 
-.loginField {
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border: 1px solid #ccc;
-	display: inline-block;
-	font-size: 14px;
-	padding: 6px 8px;
-	width: 180px;
+#loginBox input[type=submit] {
+	position: absolute;
+	top: 1px;
+	right: 105px;
 }
 
-#loginButton {
-	padding: 5px 4px;
+#loginBox div#checkbox {
+	position: absolute;
+	top: 10px;
+	right: 10px;
 }
 
 #joinBox {
@@ -40,15 +32,4 @@
 
 #joinBox>form>input {
 	display: block;
-}
-
-.joinField {
-	border-radius: 3px;
-	-moz-border-radius: 3px;
-	-webkit-border-radius: 3px;
-	border: 1px solid #ccc;
-	display: inline-block;
-	font-size: 16px;
-	padding: 6px 8px;
-	width: 180px;
 }

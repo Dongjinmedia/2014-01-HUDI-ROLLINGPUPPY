@@ -16,10 +16,12 @@
 	<div id="header">
 		<div id="loginBox">
 			<form action="/login" method="post">
-				<input type="text" name="email" class="loginField" placeholder="Email">
-				<input type="password" name="pw" class="loginField" placeholder="Password">
-				<input type="submit" value="login"  id="loginButton" class="button">
-				<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
+				<input type="text" name="email" placeholder="Email">
+				<input type="password" name="pw" placeholder="Password">
+				<input type="submit" value="login" class="button">
+				<div id="checkbox">
+					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
+				</div>
 			</form>
 		</div>
 	</div>
@@ -27,9 +29,9 @@
 	<div id="contentsWrapper">
 		<div id="joinBox">
 			<form action="/join"  method="post">
-				<input type="text" name="email" class="joinField" placeholder="Email">
-				<input type="password" name="password" class="joinField" placeholder="Password">
-				<input type="password" name="passwordConfirm" class="joinField" placeholder="Password Confirm">
+				<input type="text" name="email" placeholder="Email">
+				<input type="password" name="password" placeholder="Password">
+				<input type="password" name="passwordConfirm" placeholder="Password Confirm">
 				<div>
 					<input type="radio" value="M" name="radio-input" checked="checked">Male
 					<input type="radio" value="W" name="radio-input">Female
