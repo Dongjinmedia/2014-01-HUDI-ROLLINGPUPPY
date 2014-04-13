@@ -1,6 +1,6 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 
 <head>
@@ -19,7 +19,7 @@
 
 	<!--검색박스를 포함하는 헤더 영역-->
 	<div id="header">
-		<a href="/main"><h1>Rolling Puppy</h1></a>
+		<h1><a href="/main">Rolling Puppy</a></h1>
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
 		<div id="search_box">
