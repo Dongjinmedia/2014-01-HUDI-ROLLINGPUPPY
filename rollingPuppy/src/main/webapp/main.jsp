@@ -37,11 +37,26 @@
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul class="nav_list">
-					<li><a href="#" class="search">검색</a></li>
-					<li><a href="#" class="recommendation">추천방</a></li>
-					<li><a href="#" class="chatting">채팅중</a></li>
-					<li><a href="#" class="bookmark">관심장소</a></li>
-					<li><a href="#" class="settings">설정</a></li>
+					<li>
+						<div class="search"></div>
+						<a href="#">검색</a>
+					</li>
+					<li>
+						<div class="recommendation"></div>
+						<a href="#">추천방</a>
+					</li>
+					<li>
+						<div class="chatting"></div>
+						<a href="#">채팅중</a>
+					</li>
+					<li>
+						<div class="bookmark"></div>
+						<a href="#">관심장소</a>
+					</li>
+					<li>
+						<div class="settings"></div>
+						<a href="#">설정</a>
+					</li>
 				</ul>
 			</div>
 			
