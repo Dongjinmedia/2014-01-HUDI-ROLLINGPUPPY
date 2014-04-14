@@ -75,8 +75,9 @@
 		</div>
 	</div>
 	
-
 </div>
 </body>
 <script type="text/javascript" src="/javascripts/main.js"></script>
+<script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/javascripts/map_menu.js"></script>
 </html>
