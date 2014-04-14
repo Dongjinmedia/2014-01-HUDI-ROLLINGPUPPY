@@ -24,7 +24,7 @@ public class MainController extends HttpServlet {
 			throws ServletException, IOException {
 		log.info("MainController doPost");
 		
-		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("/main.jsp");
 		view.forward(request, response); 
 	}
 }

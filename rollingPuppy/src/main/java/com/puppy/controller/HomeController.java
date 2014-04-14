@@ -24,7 +24,7 @@ public class HomeController extends HttpServlet{
 			throws ServletException, IOException {
 		log.info("HomeController doPost");
 		
-		RequestDispatcher view = request.getRequestDispatcher("index.jsp");
+		RequestDispatcher view = request.getRequestDispatcher("/index.jsp");
 		view.forward(request, response); 
 		
 	}
