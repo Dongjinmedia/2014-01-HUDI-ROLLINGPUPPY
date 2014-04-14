@@ -79,19 +79,33 @@ oMap.attach('click', function(oCustomEvent) {
         if (oCustomEvent.clickCoveredMarker) {
             return;
         }
+        
+        var menuTemplate = 
+        	"<ul id='menu'>" +
+        		"<a class='menu-button navigation' href='#menu' ></a>" +
+        		"<a class='menu-button hide-navigation' href='#' ></a>" +
+        		"<li class='menu-item icon-picture'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-headphones'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-home'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-star'><a class='menu-item-back' href='#menu'></a></li>"+
+        		"<li class='menu-item icon-envelope-alt'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-cloud'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-heart'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-user'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-film'><a class='menu-item-back' href='#menu'></a></li>" +
+        		"<li class='menu-item icon-camera'><a class='menu-item-back' href='#menu'></a></li>" +
+        	"</ul>";
+        
         // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
         // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
         // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
         // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-        oMapInfoTestWindow.setContent('<div style="border-top:1px solid; border-bottom:2px groove black; border-left:1px solid; border-right:2px groove black;margin-bottom:1px;color:black;background-color:white; width:auto; height:auto;"><table style="width:300px;">' +
-            '<tr>' + '<td>Jill</td>' + '<td>Smith</td>' + '<td>50</td>' +
-            '</tr>' + '<tr>' + '<td>Eve</td>' + '<td>Jackson</td>' + '<td>94</td>' +
-            '</tr>' + '</table></div>'); //여기가 info window의 html코드를 넣는 부분
+        oMapInfoTestWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
         oMapInfoTestWindow.setPoint(oTarget.getPoint());
         oMapInfoTestWindow.setVisible(true);
         oMapInfoTestWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
-            right: 15,
-            top: 30
+            right: 0,
+            top: -19
         });
         oMapInfoTestWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
         return;
