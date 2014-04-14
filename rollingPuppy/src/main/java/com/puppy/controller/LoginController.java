@@ -23,6 +23,7 @@ public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 2747059096127772597L;
 	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
+	//TODO JSP등에서 계속적으로 중복되는 코드. 어떻게 처리해야할지 논의 후 통일하도록 하자.
 	final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
 	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 	final String COOKIE_LAST_LOGGED_EMAIL = "member.lastLoggedEmail";

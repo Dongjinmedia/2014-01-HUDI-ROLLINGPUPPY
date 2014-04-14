@@ -2,6 +2,11 @@
 	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
+<%! 
+	final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
+	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
+%>
+
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
@@ -14,7 +19,7 @@
 </head>
 
 <body>
-
+<input type="hidden" id="nickname" value="<%=session.getAttribute(SESSION_NICKNAME_ADJECTIVE) + " " + session.getAttribute(SESSION_NICKNAME_NOUN)%>"/>
 <!--페이지 전체를 감싸는 영역-->
 <div id="wrapper">
 
