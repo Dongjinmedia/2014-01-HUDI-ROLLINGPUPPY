@@ -29,8 +29,8 @@ oMap = new nhn.api.map.Map(naverMap, {
 
 var markerCount = 0;
 
-var oSize = new nhn.api.map.Size(28, 37); 
-var oOffset = new nhn.api.map.Size(14, 37); 
+var oSize = new nhn.api.map.Size(28, 37);
+var oOffset = new nhn.api.map.Size(14, 37);
 var oIcon = new nhn.api.map.Icon('http://www.apkdad.com/wp-content/uploads/2013/02/LINE-Card-Icon.png', oSize, oOffset); //마커 설정 정보
 var oMapInfoTestWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드만 삽입 가능
 
@@ -76,44 +76,41 @@ oMap.attach('click', function(oCustomEvent) {
     // 마커 클릭하면
     if (oTarget instanceof nhn.api.map.Marker) {
         // 겹침 마커 클릭한거면
-        if (oCustomEvent.clickCoveredMarker) {
-            return;
-        }
-        
-        var menuTemplate = 
-        	"<ul id='menu'>" +
-        		"<a class='menu-button navigation' href='#menu' ></a>" +
-        		"<a class='menu-button hide-navigation' href='#' ></a>" +
-        		"<li class='menu-item icon-picture'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-headphones'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-home'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-star'><a class='menu-item-back' href='#menu'></a></li>"+
-        		"<li class='menu-item icon-envelope-alt'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-cloud'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-heart'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-user'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-film'><a class='menu-item-back' href='#menu'></a></li>" +
-        		"<li class='menu-item icon-camera'><a class='menu-item-back' href='#menu'></a></li>" +
-        	"</ul>";
-        
-        // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
-        // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
-        // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
-        // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-        oMapInfoTestWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
-        oMapInfoTestWindow.setPoint(oTarget.getPoint());
-        oMapInfoTestWindow.setVisible(true);
-        oMapInfoTestWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
-            right: 0,
-            top: -19
-        });
-        oMapInfoTestWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
-        return;
-    }
-    var oMarker = new nhn.api.map.Marker(oIcon, {
-        title: '마커 : ' + oPoint.toString()
-    });
-    oMarker.setPoint(oPoint);
-    oMap.addOverlay(oMarker);
-});
+        if (!oCustomEvent.clickCoveredMarker) {
+            var menuTemplate =
+                "<ul id='menu'>" +
+                "<a class='menu-button navigation' href='#menu' ></a>" +
+                "<a class='menu-button hide-navigation' href='#' ></a>" +
+                "<li class='menu-item icon-picture'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-headphones'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-home'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-star'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-envelope-alt'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-cloud'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-heart'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-user'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-film'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-camera'><a class='menu-item-back' href='#menu'></a></li>" +
+                "</ul>";
 
+            // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
+            // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
+            // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
+            // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
+            oMapInfoTestWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
+            oMapInfoTestWindow.setPoint(oTarget.getPoint());
+            oMapInfoTestWindow.setVisible(true);
+            oMapInfoTestWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+                right: 0,
+                top: -19
+            });
+            oMapInfoTestWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
+        }
+    } else {
+        var oMarker = new nhn.api.map.Marker(oIcon, {
+            title: '마커 : ' + oPoint.toString()
+        });
+        oMarker.setPoint(oPoint);
+        oMap.addOverlay(oMarker);
+    }
+});
