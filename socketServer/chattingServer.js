@@ -1,25 +1,14 @@
-var socketio = require('socket.io'), http = require('http'), express = require('express'), fs = require('fs');
-
-var app = express();
-app.set('port', 3080);
-var server = http.createServer(app).listen(app.get('port'), function() {
-	console.log("express server listening on port " + app.get('port'));
-})
-
-app.get('/', function (request, response) {
-	fs.readFile('main.html', function (error, data) {
-		response.writeHead(200, {'Content-Type': 'text/html'});
-		response.end(data);
-	});
-})
-
-var io = socketio.listen(server);
+//socket.io Module load
+var socketio = require('socket.io');
+//3080포트에 대해 listening
+var io = socketio.listen(3080);
 
 //Socket Connection
 io.sockets.on('connection', function (socket) {
 	
 	//Room join
 	//사용자 접속 시 Room Join및 접속한 사용자들 Room참여 인원들에게 알립니다.
+	//'join'에 대한 요청을 받고 있는 function입니다.
 	socket.on('join', function(data) {
 		
 		//Socket Join을 합니다.
