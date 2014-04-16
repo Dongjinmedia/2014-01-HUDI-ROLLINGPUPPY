@@ -18,9 +18,9 @@ import com.puppy.dto.Member;
 /*
  * 로그인 요청에 대한 컨트롤러
  */
+@SuppressWarnings("serial")
 public class LoginController extends HttpServlet {
 
-	private static final long serialVersionUID = 2747059096127772597L;
 	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	//TODO JSP등에서 계속적으로 중복되는 코드. 어떻게 처리해야할지 논의 후 통일하도록 하자.
