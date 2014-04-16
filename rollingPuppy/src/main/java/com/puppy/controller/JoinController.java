@@ -24,7 +24,7 @@ public class JoinController  extends HttpServlet {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("JoinController doPost");
+		log.info("into doPost");
 		
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();

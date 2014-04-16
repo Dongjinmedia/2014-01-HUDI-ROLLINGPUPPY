@@ -22,7 +22,7 @@ public class MainController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("MainController doPost");
+		log.info("into doPost");
 		
 		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
 		view.forward(request, response); 

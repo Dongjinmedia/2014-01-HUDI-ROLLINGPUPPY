@@ -22,7 +22,7 @@ public class HomeController extends HttpServlet{
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("HomeController doGet");
+		log.info("into doGet");
 		
 		RequestDispatcher view = request.getRequestDispatcher("index.jsp");
 		view.forward(request, response); 

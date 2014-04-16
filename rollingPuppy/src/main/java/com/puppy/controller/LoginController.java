@@ -34,7 +34,7 @@ public class LoginController extends HttpServlet {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("LoginController doPost");
+		log.info("into doPost");
 		
 		// POST 정보를 저장합니다.
 		String email = request.getParameter(POST_EMAIL);
