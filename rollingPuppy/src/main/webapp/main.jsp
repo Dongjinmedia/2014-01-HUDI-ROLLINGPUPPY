@@ -50,7 +50,7 @@
 					<li><a href="#" class="settings"></a></li>
 				</ul>
 			</div>
-				
+			
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel"></div>
 		</div>
