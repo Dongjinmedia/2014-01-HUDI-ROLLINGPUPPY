@@ -54,23 +54,38 @@ ul.nav_list {
 }
 
 .nav_list .search {
+	background-position: 0px 0px;
+}
+.nav_list .on .search {
 	background-position: 0px -60px;
 }
 
 .nav_list .recommendation {
 	background-position: -60px 0px;
-} 
+}
+.nav_list .on .recommendation {
+	background-position: -60px -60px;
+}
 
 .nav_list .chatting {
 	background-position: -120px 0px;
+}
+.nav_list .on .chatting {
+	background-position: -120px -60px;
 }
 
 .nav_list .bookmark {
 	background-position: -180px 0px;
 }
+.nav_list .on .bookmark {
+	background-position: -180px -60px;
+}
 
 .nav_list .settings {
 	background-position: -240px 0px;
+}
+.nav_list .on .settings {
+	background-position: -240px -60px;
 }
 
 #panel {
