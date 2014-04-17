@@ -1,7 +1,60 @@
 //socket.io Module load
 var socketio = require('socket.io');
-//3080포트에 대해 listening
+//mysql-connect Module load
+var mysql = require('mysql');
+
+//Use Connection Pool
+var pool = mysql.createPool({
+	host		: '10.73.45.135',
+	user		: 'root',
+	database	: 'rolling_puppy',
+	charset		: 'UTF8_GENERAL_CI',
+	timezone	: 'local',
+	password	: 'dlrudals'
+});
+
+//getConnection
+var connection = pool.getConnection(function(err, connection) {
+	
+	if (err) {
+		console.log(err);
+		throw err;
+	}
+	return connection;
+});
+
+//sql QueryGenerator. 
+//Like Java PreparedStatement Class
+function queryGenerator(sql, ainsertValues) {
+	var query = connection.query(sql, ainsertValues, function(err, results) {
+		if (err) console.log("Generate Sql Query Failed!!");
+		
+		//test code
+		console.log("results : ", results);
+	});
+	
+	console.log(query.sql);
+}
+
+//3080포트에 대해 socket.io listening
 var io = socketio.listen(3080);
+
+
+/*************************
+DB 연동에 대한 TODO LIST
+
+1. Flow
+
+* 유저가 채팅방을 개설
+INSERT tbl_chat_room
+
+* 유저가 채팅방에 입장
+INSERT tbl_chat_room_has_tbl_member
+
+* 유저가 채팅을 입력
+INSERT tbl_message
+*************************/
+
 
 //Socket Connection
 io.sockets.on('connection', function (socket) {
@@ -11,23 +64,38 @@ io.sockets.on('connection', function (socket) {
 	//'join'에 대한 요청을 받고 있는 function입니다.
 	socket.on('join', function(data) {
 		
-		//Socket Join을 합니다.
-		socket.join(data.roomname);
+		//마커에 저장된 정보가 전달된다.
+		//생성은 웹서버단에서 처리.
+		console.log("in join : ", queryGenerator("SELECT * FROM ??", ['tbl_member']));
 		
-		socket.set('room', data.roomname);
+		//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
+		socket.join(data.roomNumber);
 		
-		//Room Join인원들에게 메시지를 보냅니다.
+		//Save Attribute
+		socket.set('room', data.roomNumber);
+		
+		//Get Attribute
+		//Room에 있는 모두에게 참여메시지를 보냅니다.
 		socket.get('room', function (error, room){
 			io.sockets.in(room).emit('join', data.userid);
 		});
 	});
 	
-	//Message
+	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(message) {
+		
+		//Get Attribute
 		socket.get('room', function(error, room) {
+			//Room에 있는 모두에게 참여메시지를 보냅니다.
 			io.sockets.in(room).emit('message', message);
 		});
-//		io.sockets.emit('message', message);
 	});
-	socket.on('disconnect', function() {});
+	
+	//Connection을 끊거나, 끊겼을경우
+	socket.on('disconnect', function() {
+		socket.get('room', function(error, room) {
+			//Room에 있는 모두에게 참여메시지를 보냅니다.
+			io.sockets.in(room).emit('message', message);
+		});
+	});
 })
