@@ -24,6 +24,7 @@ public class LoginController extends HttpServlet {
 	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
 	
 	//TODO JSP등에서 계속적으로 중복되는 코드. 어떻게 처리해야할지 논의 후 통일하도록 하자.
+	final String SESSION_MEMBER_ID = "member.id";
 	final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
 	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 	final String COOKIE_LAST_LOGGED_EMAIL = "member.lastLoggedEmail";
@@ -61,6 +62,9 @@ public class LoginController extends HttpServlet {
 		cookie.setMaxAge(14 * 24 * 60 * 60);
 		
 		HttpSession session = request.getSession();
+		
+		//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다. 
+		session.setAttribute(SESSION_MEMBER_ID, member.getId());
 		session.setAttribute(SESSION_NICKNAME_ADJECTIVE, member.getNickname_adjective());
 		session.setAttribute(SESSION_NICKNAME_NOUN, member.getNickname_noun());
 

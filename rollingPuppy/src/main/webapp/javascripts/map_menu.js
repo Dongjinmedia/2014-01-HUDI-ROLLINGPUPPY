@@ -52,7 +52,7 @@ function menuClick(e) {
 	
 	//입장을 서버에 알린다
 	//TODO roomname 변경
-	socket.emit('join', {'userid': nickname, 'roomname': 1});
+	socket.emit('join', {'userid': nickname, 'roomNumber': 1});
 	
 	//메세지 전송버튼을 클릭할 시	
 	document.getElementById("btn").addEventListener('click', function(e) {
