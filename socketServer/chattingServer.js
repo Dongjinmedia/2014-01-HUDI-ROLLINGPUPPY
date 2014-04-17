@@ -13,27 +13,41 @@ var pool = mysql.createPool({
 	password	: 'dlrudals'
 });
 
-//getConnection
-var connection = pool.getConnection(function(err, connection) {
-	
-	if (err) {
-		console.log(err);
-		throw err;
-	}
-	return connection;
-});
 
-//sql QueryGenerator. 
-//Like Java PreparedStatement Class
-function queryGenerator(sql, ainsertValues) {
-	var query = connection.query(sql, ainsertValues, function(err, results) {
-		if (err) console.log("Generate Sql Query Failed!!");
-		
-		//test code
-		console.log("results : ", results);
-	});
+function requestQuery(sql, ainsertValues) {
 	
-	console.log(query.sql);
+	//sql QueryGenerator. 
+	//Like Java PreparedStatement Class
+	var sql = mysql.format(sql, ainsertValues);
+	
+	//===test code
+	console.log(sql);
+	
+	
+	var resultData = pool.getConnection(function(err, connection) {
+		
+		//when error occur
+		if (err) {
+			console.log("error occur");
+		}
+		
+		//connection request
+		connection.query(sql, function(err, queryResult) {
+			
+			//when error occur
+			if (err) {
+				console.log("Generate Sql Query Failed!!");
+			}
+			
+			//===test code
+			console.log("results : ", queryResult);
+			
+			return queryResult;
+		});
+	})
+	
+	console.log("query : ", resultData);
+//	console.log("query.sql : ", query.sql);
 }
 
 //3080포트에 대해 socket.io listening
@@ -66,7 +80,7 @@ io.sockets.on('connection', function (socket) {
 		
 		//마커에 저장된 정보가 전달된다.
 		//생성은 웹서버단에서 처리.
-		console.log("in join : ", queryGenerator("SELECT * FROM ??", ['tbl_member']));
+		console.log("in join : ", requestQuery("SELECT * FROM ??", ['tbl_member']));
 		
 		//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
 		socket.join(data.roomNumber);
