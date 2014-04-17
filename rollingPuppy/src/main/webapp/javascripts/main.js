@@ -31,7 +31,7 @@ var markerCount = 0;
 
 var oSize = new nhn.api.map.Size(28, 37);
 var oOffset = new nhn.api.map.Size(14, 37);
-var oIcon = new nhn.api.map.Icon('http://www.apkdad.com/wp-content/uploads/2013/02/LINE-Card-Icon.png', oSize, oOffset); //마커 설정 정보
+var oIcon = new nhn.api.map.Icon('/images/icons/marker_48.png', oSize, oOffset); //마커 설정 정보
 var oMapInfoTestWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드만 삽입 가능
 
 oMapInfoTestWindow.setVisible(false); // - infowindow 표시 여부 지정 
@@ -81,16 +81,9 @@ oMap.attach('click', function(oCustomEvent) {
                 "<ul id='menu'>" +
                 "<a class='menu-button navigation' href='#menu' ></a>" +
                 "<a class='menu-button hide-navigation' href='#' ></a>" +
-                "<li class='menu-item icon-picture'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-headphones'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-home'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-star'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-envelope-alt'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-cloud'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-heart'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-user'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-film'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-camera'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-info'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-pin'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-chatting'><a class='menu-item-back' href='#menu'></a></li>" +
                 "</ul>";
 
             // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 

@@ -11,6 +11,7 @@
 	src:
 		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font//fontawesome-webfont.ttf)
 }
+
 [class^=icon-]:before,[class*=" icon-"]:before {
 	font-family: FontAwesome;
 	font-weight: 400;
@@ -18,19 +19,20 @@
 	display: inline-block;
 	text-decoration: inherit;
 }
+
 li[class^=icon-]:before,li[class*=" icon-"]:before {
 	text-indent: -2em;
 	text-align: center;
 }
-.icon-plus:before {
-	content: "\f067";
-}
+
 .icon-chatting:before {
 	content: "\f086";
 }
+
 .icon-info:before {
 	content: "\f06a";
 }
+
 .icon-pin:before {
 	content: "\f08d";
 }
@@ -132,9 +134,9 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item:nth-child(3) .menu-item-back {
-	transform: rotate(-45deg);
-	-ms-transform: rotate(-45deg);
-	-webkit-transform: rotate(-45deg);
+	transform: rotate(-30deg) skew(30);
+	-ms-transform: rotate(-30deg) skew(30deg);
+	-webkit-transform: rotate(-30deg) skew(30deg);
 }
 
 .menu-item:nth-child(3):before {
@@ -146,13 +148,13 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item:nth-child(4) .menu-item-back {
-	transform: rotate(45deg);
-	-ms-transform: rotate(45deg);
-	-webkit-transform: rotate(45deg);
+	transform: rotate(90deg) skew(30deg);
+	-ms-transform: rotate(90deg) skew(30deg);
+	-webkit-transform: rotate(90deg) skew(30deg);
 }
 
 .menu-item:nth-child(4):before {
-	margin: 0px 0 0 55px;
+	margin: 22.5px 0 0 47.631395px;
 }
 
 .menu-item:nth-child(5) {
@@ -160,27 +162,13 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item:nth-child(5) .menu-item-back {
-	transform: rotate(135deg) skew(0deg);
-	-ms-transform: rotate(135deg);
-	-webkit-transform: rotate(135deg);
+	transform: rotate(210deg) skew(30deg);
+	-ms-transform: rotate(210deg) skew(30deg);
+	-webkit-transform: rotate(210deg) skew(30deg);
 }
 
 .menu-item:nth-child(5):before {
-	margin: 55px 0 0 0.0px;
-}
-
-.menu-item:nth-child(6) {
-	display: block;
-}
-
-.menu-item:nth-child(6) .menu-item-back {
-	transform: rotate(225deg);
-	-ms-transform: rotate(225deg);
-	-webkit-transform: rotate(225deg);
-}
-
-.menu-item:nth-child(6):before {
-	margin: 0.0px 0 0 -55px;
+	margin: 22.5px 0 0 -47.631395px;
 }
 
 /*
