@@ -43,29 +43,14 @@
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul class="nav_list">
-					<li>
-						<div class="search"></div>
-						<a href="#">검색</a>
-					</li>
-					<li>
-						<div class="recommendation"></div>
-						<a href="#">추천방</a>
-					</li>
-					<li>
-						<div class="chatting"></div>
-						<a href="#">채팅중</a>
-					</li>
-					<li>
-						<div class="bookmark"></div>
-						<a href="#">관심장소</a>
-					</li>
-					<li>
-						<div class="settings"></div>
-						<a href="#">설정</a>
-					</li>
+					<li><a href="#" class="search"></a></li>
+					<li><a href="#" class="recommendation"></a></li>
+					<li><a href="#" class="chatting"></a></li>
+					<li><a href="#" class="bookmark"></a></li>
+					<li><a href="#" class="settings"></a></li>
 				</ul>
 			</div>
-			
+				
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel"></div>
 		</div>

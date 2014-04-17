@@ -46,55 +46,31 @@ ul.nav_list {
 	list-style: none;
 }
 
-.nav_list li div {
-	position: absolute;
-	top: 20px;
-	left: 22px;
-	width: 16px;
-	height: 16px;
+.nav_list a {
+	display: block;
+	width: 60px;
+	height: 60px;
+	background: url(/images/icons.png) no-repeat;
 }
 
 .nav_list .search {
-	background: url(/images/icons/search.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: 0px -60px;
 }
 
 .nav_list .recommendation {
-	background: url(/images/icons/recommendation.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -60px 0px;
 } 
 
 .nav_list .chatting {
-	background: url(/images/icons/chatting.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -120px 0px;
 }
 
 .nav_list .bookmark {
-	background: url(/images/icons/bookmark.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -180px 0px;
 }
 
 .nav_list .settings {
-	background: url(/images/icons/settings.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
-}
-
-.nav_list li a {
-	position: relative;
-	top: 36px;
-	font-size: 12px;
-	font-weight: bold;
-	color: #CCC;
+	background-position: -240px 0px;
 }
 
 #panel {
