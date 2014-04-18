@@ -33,7 +33,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	content: "\f06a";
 }
 
-.icon-pin:before {
+.icon-bookmark:before {
 	content: "\f08d";
 }
 

@@ -82,7 +82,7 @@ oMap.attach('click', function(oCustomEvent) {
                 "<a class='menu-button navigation' href='#menu' ></a>" +
                 "<a class='menu-button hide-navigation' href='#' ></a>" +
                 "<li class='menu-item icon-info'><a class='menu-item-back' href='#menu'></a></li>" +
-                "<li class='menu-item icon-pin'><a class='menu-item-back' href='#menu'></a></li>" +
+                "<li class='menu-item icon-bookmark'><a class='menu-item-back' href='#menu'></a></li>" +
                 "<li class='menu-item icon-chatting'><a class='menu-item-back' href='#menu'></a></li>" +
                 "</ul>";
 
