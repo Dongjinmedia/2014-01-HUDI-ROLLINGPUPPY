@@ -18,11 +18,11 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class HomeController extends HttpServlet{
 	
-	private static final Logger log = LoggerFactory.getLogger(HomeController.class);
+	private static final Logger logger = LoggerFactory.getLogger(HomeController.class);
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("into doGet");
+		logger.info("into doGet");
 		
 		RequestDispatcher view = request.getRequestDispatcher("index.jsp");
 		view.forward(request, response); 

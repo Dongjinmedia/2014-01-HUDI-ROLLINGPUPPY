@@ -17,12 +17,12 @@ import org.slf4j.LoggerFactory;
 @SuppressWarnings("serial")
 public class MainController extends HttpServlet {
 	
-	private static final Logger log = LoggerFactory.getLogger(MainController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("into doPost");
+		logger.info("into doPost");
 		
 		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
 		view.forward(request, response); 

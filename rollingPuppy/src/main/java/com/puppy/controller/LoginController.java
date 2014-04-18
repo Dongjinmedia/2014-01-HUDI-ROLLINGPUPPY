@@ -22,11 +22,11 @@ import com.puppy.util.Constants;
 @SuppressWarnings("serial")
 public class LoginController extends HttpServlet {
 
-	private static final Logger log = LoggerFactory.getLogger(LoginController.class);
+	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("into doPost");
+		logger.info("into doPost");
 		
 		// POST 정보를 저장합니다.
 		String email = request.getParameter(Constants.POST_EMAIL);

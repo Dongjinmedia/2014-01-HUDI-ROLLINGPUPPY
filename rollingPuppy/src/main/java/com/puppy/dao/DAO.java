@@ -19,7 +19,9 @@ import org.slf4j.LoggerFactory;
  */
 public class DAO {
 
-	protected DAO() {}
+	protected DAO() {
+	}
+	
 	private static final Logger log = LoggerFactory.getLogger(DAO.class);
 	
 	/*
@@ -48,7 +50,7 @@ public class DAO {
 		log.info("DAO selectOne");
 		
 		List<?> lists = selectList(targetClass, preparedStatement);
-		return (Any) ( lists.isEmpty() || lists.size() == 0  ? null : lists.get(0) );
+		return (Any) ( lists == null || lists.isEmpty()  ? null : lists.get(0) );
 	}
 	
 	/*
@@ -120,6 +122,7 @@ public class DAO {
 	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
 	 * TODO PrepareStatement로 변경해야 한다.
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
+	 * Like resultSet = preparedStatement.executeQuery(query);
 	 */
 	protected boolean insertQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO insertQuery");
@@ -128,15 +131,16 @@ public class DAO {
 		Connection connection = null;
 		
 		try {
-			
-			//resultSet = preparedStatement.executeQuery(query);
 			isExecuteSuccess = preparedStatement.execute();
 			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			log.error("Query [Execute or Close] Exception" , e);
 		} finally {
-			if (connection != null) connection.close();
-			if ( preparedStatement != null) preparedStatement.close();
+			if (connection != null) 
+				connection.close();
+			
+			if ( preparedStatement != null) 
+				preparedStatement.close();
 		}
 		return isExecuteSuccess;
 	}
@@ -177,8 +181,11 @@ public class DAO {
 		} catch (Exception e) {
 			log.error("Query Select Error" , e);
 		} finally {
-			if (connection != null) connection.close();
-			if ( preparedStatement != null) preparedStatement.close();
+			if (connection != null) 
+				connection.close();
+			
+			if ( preparedStatement != null) 
+				preparedStatement.close();
 		}
 		return rows;
 	}
