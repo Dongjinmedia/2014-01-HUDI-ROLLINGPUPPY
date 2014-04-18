@@ -7,9 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
-
+import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,7 +35,7 @@ public class DAO {
 			//데이터베이스 질의를 통해서 얻은 select결과데이터를 DTO객체에 담는 메소드
 			lists = setReflectionDataToModel(targetClass , selectQuery(preparedStatement));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("setReflectionDataToModel Exception" , e);
 		}
 		return (Any) lists;
 	}
@@ -48,7 +48,7 @@ public class DAO {
 		log.info("DAO selectOne");
 		
 		List<?> lists = selectList(targetClass, preparedStatement);
-		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
+		return (Any) ( lists.isEmpty() || lists.size() == 0  ? null : lists.get(0) );
 	}
 	
 	/*
@@ -56,7 +56,7 @@ public class DAO {
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
-	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
+	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<Map<String, Object>> sqlResult)
 																									throws Exception {
 		log.info("DAO setReflectionDataToModel");
 		
@@ -77,7 +77,7 @@ public class DAO {
 			instances.add(newInstance);
 			
 			//Query를 통해 리턴받은 리스트중 (데이터베이스의 행), 앞에서부터 순차적으로 한행씩 꺼낸다. 
-			LinkedHashMap<String, Object> sqlTargetResult = sqlResult.get(i);
+			Map<String, Object> sqlTargetResult = sqlResult.get(i);
 
 			//targetClass(DTO)에 담긴 Field(변수)를 하나씩 돌면서 아래내용을 수행한다.
 			for (Field field : fields) {
@@ -121,23 +121,23 @@ public class DAO {
 	 * TODO PrepareStatement로 변경해야 한다.
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 */
-	protected boolean insertQuery(PreparedStatement preparedStatement) {
+	protected boolean insertQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO insertQuery");
 		
 		boolean isExecuteSuccess = false;
+		Connection connection = null;
 		
 		try {
 			
 			//resultSet = preparedStatement.executeQuery(query);
-
 			isExecuteSuccess = preparedStatement.execute();
-			Connection connection = preparedStatement.getConnection();
-			connection.close();
-			preparedStatement.close();
-			
-		} catch (SQLException e) {
-			log.error(e.toString());
-		} 
+			connection = preparedStatement.getConnection();
+		} catch (Exception e) {
+			log.error("Query [Execute or Close] Exception" , e);
+		} finally {
+			if (connection != null) connection.close();
+			if ( preparedStatement != null) preparedStatement.close();
+		}
 		return isExecuteSuccess;
 	}
 
@@ -147,14 +147,15 @@ public class DAO {
 	 *  
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	private List<LinkedHashMap<String, Object>> selectQuery(PreparedStatement preparedStatement) {
+	private List<Map<String, Object>> selectQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO selectQuery");
 		
 		ResultSet resultSet;
-
+		Connection connection = null;
+		
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
 		//Query결과로 리턴되는 데이터베이스의 정보들은 순서가 보장되어야 하기때문에 LinkedHashMap을 사용했다.
-		List<LinkedHashMap<String, Object>> rows = new ArrayList<LinkedHashMap<String, Object>>();
+		List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
 		try {
 
@@ -164,7 +165,7 @@ public class DAO {
 			int columnCount = metaData.getColumnCount();
 
 			while (resultSet.next()) {
-				LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
+				Map<String, Object> columns = new HashMap<String, Object>();
 
 				for (int i = 1; i <= columnCount; i++) {
 					columns.put(metaData.getColumnLabel(i), resultSet.getObject(i));
@@ -172,11 +173,12 @@ public class DAO {
 				rows.add(columns);
 			}
 			
-			Connection connection = preparedStatement.getConnection();
-			connection.close();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			log.error(e.toString());
+			connection = preparedStatement.getConnection();
+		} catch (Exception e) {
+			log.error("Query Select Error" , e);
+		} finally {
+			if (connection != null) connection.close();
+			if ( preparedStatement != null) preparedStatement.close();
 		}
 		return rows;
 	}

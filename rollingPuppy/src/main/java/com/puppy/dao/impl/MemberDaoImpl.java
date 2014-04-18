@@ -30,7 +30,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("in selectDuplicateMemberExists", e);
 		}
 		
 		return member;
@@ -50,7 +50,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			System.err.println(e);
+			log.error("in selectCheckLoginInfo", e);
 		}
 		
 		return member;
@@ -61,6 +61,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		log.info("MemberDaoImpl insertMemberInfo");
 		
 		PreparedStatement insertPreparedStatement = null;
+		boolean insertQueryResult = false;
 		
 		try {
 			String nicknameQuery = 
@@ -76,10 +77,12 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
 			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
 			
+			insertQueryResult = insertQuery(insertPreparedStatement); 
 		} catch (Exception e) {
-			System.err.println(e);
+			log.error("in insertMemberInfo", e);
 		}
-		return insertQuery(insertPreparedStatement);
+		
+		return insertQueryResult;
 	}
 
 }
