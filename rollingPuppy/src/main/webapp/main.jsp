@@ -7,7 +7,6 @@
 	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 %>
 
-
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Main Page</title>
@@ -52,7 +51,10 @@
 			</div>
 			
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
-			<div id="panel"></div>
+			<div id="panel">
+				<a class="panel_button_close" href="#"></a>
+				<a class="panel_button_open" href="#"></a>
+			</div>
 		</div>
 		
 		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->
