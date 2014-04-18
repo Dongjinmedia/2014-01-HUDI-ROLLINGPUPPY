@@ -29,7 +29,7 @@ public class JoinController  extends HttpServlet {
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
 		
-		MemberDaoImpl memberDao = new MemberDaoImpl();
+		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
 		Member member = new Member();
 
 		String email = request.getParameter("email");

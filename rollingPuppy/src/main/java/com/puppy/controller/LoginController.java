@@ -38,7 +38,7 @@ public class LoginController extends HttpServlet {
 		}
 		
 		// POST의 email, pw와 맞는 Member 정보를 가져와서 class에 담습니다.
-		MemberDaoImpl memberDao = new MemberDaoImpl();
+		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
 		Member member = memberDao.selectCheckLoginInfo(email, pw);
 		
 		if (member == null || member.getId() == 0 ) {

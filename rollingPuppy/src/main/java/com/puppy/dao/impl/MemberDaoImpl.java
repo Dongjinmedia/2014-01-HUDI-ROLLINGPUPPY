@@ -12,10 +12,19 @@ import com.puppy.dto.Member;
 /*
 * Member Database Table에 접근하기 위한 접근메소드 실제 구현부
 * 상속을 받았기 때문에, Method에 대한 일관된 제어가 가능하다.
+* Instance는
 */
 public class MemberDaoImpl extends DAO implements MemberDao{
 
 	private static final Logger log = LoggerFactory.getLogger(MemberDaoImpl.class);
+	private static MemberDaoImpl instance = null;
+	
+	private MemberDaoImpl() {
+	}
+	
+	public static MemberDaoImpl getInstance() {
+		return instance == null ? instance : new MemberDaoImpl();
+	}
 	
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
