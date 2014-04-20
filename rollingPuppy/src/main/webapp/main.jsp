@@ -15,6 +15,7 @@
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/map_menu.css">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
+	<script src="/javascripts/main_aside.js"></script>
 </head>
 
 <body>
@@ -36,9 +37,7 @@
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->
 	<div id="container">
 	
-		<!-- 네이게이션바와 네이게이션 바의 메뉴를 눌렀을 때 나오는 패널을 함께 묶은 영역-->
 		<div id="aside">
-
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul class="nav_list">
@@ -52,8 +51,8 @@
 			
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel">
-				<a class="panel_button_close" href="#"></a>
-				<a class="panel_button_open" href="#"></a>
+				<a class="panel_button_fold" href="#"></a>
+				<a class="panel_button_unfold" href="#"></a>
 			</div>
 		</div>
 		
