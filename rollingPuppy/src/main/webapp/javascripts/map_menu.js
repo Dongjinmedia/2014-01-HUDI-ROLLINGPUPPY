@@ -48,7 +48,6 @@ function menuClick(e) {
 	var inputSpace = document.getElementById("txt");
 	
 	var nickname = document.getElementById("nickname").value;
-	console.log(nickname);
 	
 	//입장을 서버에 알린다
 	//TODO roomname 변경
@@ -56,21 +55,16 @@ function menuClick(e) {
 	
 	//메세지 전송버튼을 클릭할 시	
 	document.getElementById("btn").addEventListener('click', function(e) {
-		console.log("메세지 전송버튼 클릭");
 		var message = inputSpace.value;
-		
-		console.log(message);
 		socket.emit('message', nickname+ " : " + message);
 	}, false);
 	
 	//새로 접속 한 사용자가 있을 경우 알림을 받는다.
 	socket.on('join', function(user) {
-		console.log(user);
 		chatSpace.innserHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>";
 	});
 	
 	socket.on('message', function (message) {
-		console.log("서버로부터 전송받은 메세지 : "+message)
 		chatSpace.innerHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+message+"</dd";
 		inputSpace.innerHTML = "";
 	});
