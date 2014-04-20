@@ -23,7 +23,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	}
 	
 	public static MemberDaoImpl getInstance() {
-		return instance == null ? instance : new MemberDaoImpl();
+		return instance == null ? new MemberDaoImpl() : instance;
 	}
 	
 	@Override
