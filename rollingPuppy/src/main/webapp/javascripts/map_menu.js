@@ -33,13 +33,13 @@ function menuClick(e) {
 	/*
 	 * TODO 하드코딩으로 추가하는 형태가 아닌, 미리 HTML에 채팅방소스를 구현해놓고, display값을 변경하면서 사용하는 식으로
 	 */
-	content.innerHTML = content.innerHTML + 
+	content.insertAdjacentHTML( 'beforeend',
 			"<div id='chat' style='display:block;'>" +
 				"<div id='textarea'>" +
 					"<dl id='txtappend'></dl>" +
 				"</div><br/>" +
 				"<input type='text' style='width: 255px;' id='txt' /><input type='button' value='Enter' id='btn'/>" +
-			"</div>";
+			"</div>");
 	
 	/*
 	 * 
@@ -61,12 +61,12 @@ function menuClick(e) {
 	
 	//새로 접속 한 사용자가 있을 경우 알림을 받는다.
 	socket.on('join', function(user) {
-		chatSpace.innserHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>";
+		chatSpace.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
 	});
 	
 	socket.on('message', function (message) {
-		chatSpace.innerHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+message+"</dd";
-		inputSpace.innerHTML = "";
+		chatSpace.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
+		inputSpace.value="";
 	});
 }
 

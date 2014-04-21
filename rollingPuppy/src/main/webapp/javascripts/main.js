@@ -31,7 +31,7 @@ var markerCount = 0;
 
 var oSize = new nhn.api.map.Size(28, 37);
 var oOffset = new nhn.api.map.Size(14, 37);
-var oIcon = new nhn.api.map.Icon('/images/icons/marker_48.png', oSize, oOffset); //마커 설정 정보
+var oIcon = new nhn.api.map.Icon('/images/marker_48.png', oSize, oOffset); //마커 설정 정보
 var oMapInfoTestWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드만 삽입 가능
 
 oMapInfoTestWindow.setVisible(false); // - infowindow 표시 여부 지정 

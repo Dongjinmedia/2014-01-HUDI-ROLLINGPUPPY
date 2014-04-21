@@ -80,7 +80,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .hide-navigation {
-	background: url('/images/icons/marker_clicked_48.png');
+	background: url('/images/marker_clicked_48.png');
 	background-position: 50% 50%;
 	background-size: 28px 37px;
 	-webkit-background-size: 28px 37px;;
