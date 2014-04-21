@@ -14,15 +14,15 @@ import org.slf4j.LoggerFactory;
 /*
  * 로그인 이후 사용자가 머무는 유일한 페이지
  */
+@SuppressWarnings("serial")
 public class MainController extends HttpServlet {
 	
-	private static final long serialVersionUID = -5410474513550125873L;
-	private static final Logger log = LoggerFactory.getLogger(MainController.class);
+	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		log.info("MainController doPost");
+		logger.info("into doPost");
 		
 		RequestDispatcher view = request.getRequestDispatcher("/main.jsp");
 		view.forward(request, response); 

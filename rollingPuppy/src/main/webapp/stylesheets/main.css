@@ -1,15 +1,15 @@
-#header > #search_box {
+#header>#search_box {
 	position: absolute;
 	top: 7px;
 	left: 170px;
 	width: 230px;
 }
 
-#search_box > input[type=text] {
+#search_box>input[type=text] {
 	width: 170px;
 }
 
-#search_box > button {
+#search_box>button {
 	position: absolute;
 	top: 1px;
 	right: 0px;
@@ -18,95 +18,221 @@
 div#container {
 	position: absolute;
 	top: 50px;
-    bottom:0;
-    left:0;
-    right:0;
+	bottom: 0;
+	left: 0;
+	right: 0;
 }
 
 div#aside {
-	position: absolute;
-	width : 400px;
+	position: relative;
+	width: 400px;
 	height: 100%;
-	border-right: 1px solid #A7A7A7;
+}
+
+.fold_panel div#aside {
+    animation: fold_aside;
+    animation-duration: 0.6s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: fold_aside;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes fold_aside {
+    from { width: 400px; }
+    to { width: 62px; }
+}
+@-webkit-keyframes fold_aside {
+    from { width: 400px; }
+    to { width: 62px; }
+}
+
+.unfold_panel div#aside {
+    animation: unfold_aside;
+    animation-duration: 0.6s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: unfold_aside;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes unfold_aside {
+    from { width: 62px; }
+    to { width: 400px; }
+}
+@-webkit-keyframes unfold_aside {
+    from { width: 62px; }
+    to { width: 400px; }
+}
+
+.no_panel div#aside {
+	width: 62px;
+}
+
+div#nav {
+	position: relative;
+	width: 60px;
+	height: 100%;
 }
 
 ul.nav_list {
 	position: absolute;
 	background-color: #252525;
-	width: 60px;
+	width: 100%;
 	height: 100%;
+	z-index: 12;
 }
 
 .nav_list li {
 	position: relative;
-	width: 60px;
-	height: 60px;
 	color: #ffffff;
 	text-align: center;
 	list-style: none;
 }
 
-.nav_list li div {
-	position: absolute;
-	top: 20px;
-	left: 22px;
-	width: 16px;
-	height: 16px;
+.nav_list a {
+	display: block;
+	width: 60px;
+	height: 60px;
+	background: url(/images/icons.png) no-repeat;
 }
 
 .nav_list .search {
-	background: url(/images/icons/search.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: 0px 0px;
+}
+
+.nav_list .on .search {
+	background-position: 0px -60px;
 }
 
 .nav_list .recommendation {
-	background: url(/images/icons/recommendation.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
-} 
+	background-position: -60px 0px;
+}
+
+.nav_list .on .recommendation {
+	background-position: -60px -60px;
+}
 
 .nav_list .chatting {
-	background: url(/images/icons/chatting.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -120px 0px;
+}
+
+.nav_list .on .chatting {
+	background-position: -120px -60px;
 }
 
 .nav_list .bookmark {
-	background: url(/images/icons/bookmark.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -180px 0px;
+}
+
+.nav_list .on .bookmark {
+	background-position: -180px -60px;
 }
 
 .nav_list .settings {
-	background: url(/images/icons/settings.png);
-	background-size: 100%;
-	background-repeat: no-repeat;
-	background-origin: content-box;
+	background-position: -240px 0px;
 }
 
-.nav_list li a {
-	position: relative;
-	top: 36px;
-	font-size: 12px;
-	font-weight: bold;
-	color: #CCC;
+.nav_list .on .settings {
+	background-position: -240px -60px;
 }
 
-#panel {
+div#panel {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	width: 340px;
 	height: 100%;
+	border-right: 1px solid #A7A7A7;
+	background-color: #FEFEFE;
+	z-index: 11;
+}
+
+#panel>a {
+	position: absolute;
+	height: 56px;
+	top: 50%;
+	margin-top: -28px;
+	background: url(/images/panel_button.png) no-repeat;
+}
+
+#panel>.panel_button_fold {
+	background-position: 0px 0px;
+	display: block;
+	right: -10px;
+	width: 10px;
+}
+
+#panel>.panel_button_unfold {
+	background-position: -16px 0px;
+	display: none;
+	right: -13px;
+	width: 13px;
+}
+
+.no_panel #panel>.panel_button_fold {
+	display: none;
+}
+
+.no_panel #panel>.panel_button_unfold {
+	display: block;
 }
 
 div#content {
 	position: absolute;
 	top: 0px;
-    bottom: 0px;
-    left: 401px;
-    right: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 400px;
+	height: 100%;
+}
+
+.fold_panel div#content {
+    animation: fold_content;
+    animation-duration: 0.6s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: fold_content;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes fold_content {
+    from { left: 400px; }
+    to { left: 62px; }
+}
+@-webkit-keyframes fold_content {
+    from { left: 400px; }
+    to { left: 62px; }
+}
+
+.unfold_panel div#content {
+    animation: unfold_content;
+    animation-duration: 0.6s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: unfold_content;
+    -webkit-animation-duration: 0.6s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes unfold_content {
+    from { left: 62px; }
+    to { left: 400px; }
+}
+@-webkit-keyframes unfold_content {
+    from { left: 62px; }
+    to { left: 400px; }
+}
+
+.no_panel #content {
+	left: 62px;
 }
 
 #map_area {

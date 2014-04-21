@@ -7,8 +7,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,39 +17,43 @@ import org.slf4j.LoggerFactory;
 /*
  * Data Access Object
  * 데이터베이스와의 연결을 관장한다.
+ * Any라는 키워드는 Generic에 대한 약속일뿐 예약어가 아니다.
+ * 예를들어 <T> 나 원하는 값을 넣어서 사용할 수 있다.
+ * 메소드에 등장하는 "protected <Any>"와 같은 형태는
+ * 메소드 내에서 등장하는 Any에 대한 제네릭을 선언한것이다.
  */
 public class DAO {
 
-	protected DAO() {}
+	protected DAO() {
+	}
+	
 	private static final Logger log = LoggerFactory.getLogger(DAO.class);
 	
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
-	@SuppressWarnings("unchecked")
-	protected <Any> Any selectList(Class<?> targetClass, PreparedStatement preparedStatement) {
+	protected <Any> List<Any> selectList(Class<Any> targetClass, PreparedStatement preparedStatement) {
 		log.info("DAO selectList");
 
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
-		List<?> lists = null;
+		List<Any> lists = null;
 		try {
 			//데이터베이스 질의를 통해서 얻은 select결과데이터를 DTO객체에 담는 메소드
 			lists = setReflectionDataToModel(targetClass , selectQuery(preparedStatement));
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("setReflectionDataToModel Exception" , e);
 		}
-		return (Any) lists;
+		return lists;
 	}
 
 	/*
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
-	@SuppressWarnings("unchecked")
-	protected <Any> Any selectOne(Class<?> targetClass, PreparedStatement preparedStatement) {
+	protected <Any> Any selectOne(Class<Any> targetClass, PreparedStatement preparedStatement) {
 		log.info("DAO selectOne");
 		
-		List<?> lists = selectList(targetClass, preparedStatement);
-		return (Any) ( lists == null || lists.size() == 0  ? null : lists.get(0) );
+		List<Any> lists = selectList(targetClass, preparedStatement);
+		return  ( lists == null || lists.isEmpty()  ? null : lists.get(0) );
 	}
 	
 	/*
@@ -56,7 +61,7 @@ public class DAO {
 	 * 변수명과 매칭되어야 한다) DTO Instance로 데이터를 담아주는 메소드 Reflection을 통해 구현되어있다.
 	 * 결과적으로 각 DTO에 맞는 List를 리턴한다.
 	 */
-	private static List<Object> setReflectionDataToModel(Class<?> targetClass, List<LinkedHashMap<String, Object>> sqlResult)
+	private static <Any> List<Any> setReflectionDataToModel(Class<Any> targetClass, List<Map<String, Object>> sqlResult)
 																									throws Exception {
 		log.info("DAO setReflectionDataToModel");
 		
@@ -65,19 +70,19 @@ public class DAO {
 		
 		//전달받은 targetClass (DTO)에 데이터를 담은후, 전달할 그릇을 선언한다.
 		//List<Object>에서 Object는 targetClass에 해당하는 Instance이다.
-		List<Object> instances = new ArrayList<Object>();
+		List<Any> instances = new ArrayList<Any>();
 
 		//Query를 통해 리턴받는 리스트 (데이터베이스의 행)만큼을 수행한다.
 		for (int i = 0; i < sqlResult.size(); ++i) {
 			
 			//targetClass의 객체를 생성한다.
-			Object newInstance = targetClass.newInstance();
+			Any newInstance = targetClass.newInstance();
 			
 			//return할 List 그릇에 객체를 담는다. 
 			instances.add(newInstance);
 			
 			//Query를 통해 리턴받은 리스트중 (데이터베이스의 행), 앞에서부터 순차적으로 한행씩 꺼낸다. 
-			LinkedHashMap<String, Object> sqlTargetResult = sqlResult.get(i);
+			Map<String, Object> sqlTargetResult = sqlResult.get(i);
 
 			//targetClass(DTO)에 담긴 Field(변수)를 하나씩 돌면서 아래내용을 수행한다.
 			for (Field field : fields) {
@@ -120,24 +125,26 @@ public class DAO {
 	 * TODO (?, ?, ?)와 같은 항목들을 이용할 수 있도록 리팩토링
 	 * TODO PrepareStatement로 변경해야 한다.
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
+	 * Like resultSet = preparedStatement.executeQuery(query);
 	 */
-	protected boolean insertQuery(PreparedStatement preparedStatement) {
+	protected boolean insertQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO insertQuery");
 		
 		boolean isExecuteSuccess = false;
+		Connection connection = null;
 		
 		try {
-			
-			//resultSet = preparedStatement.executeQuery(query);
-
 			isExecuteSuccess = preparedStatement.execute();
-			Connection connection = preparedStatement.getConnection();
-			connection.close();
-			preparedStatement.close();
+			connection = preparedStatement.getConnection();
+		} catch (Exception e) {
+			log.error("Query [Execute or Close] Exception" , e);
+		} finally {
+			if (connection != null) 
+				connection.close();
 			
-		} catch (SQLException e) {
-			log.error(e.toString());
-		} 
+			if ( preparedStatement != null) 
+				preparedStatement.close();
+		}
 		return isExecuteSuccess;
 	}
 
@@ -147,14 +154,15 @@ public class DAO {
 	 *  
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
-	private List<LinkedHashMap<String, Object>> selectQuery(PreparedStatement preparedStatement) {
+	private List<Map<String, Object>> selectQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO selectQuery");
 		
-		ResultSet resultSet;
-
+		ResultSet resultSet = null;
+		Connection connection = null;
+		
 		//LinkedHashMap은 순서가 보장되는 Map형태이다.
 		//Query결과로 리턴되는 데이터베이스의 정보들은 순서가 보장되어야 하기때문에 LinkedHashMap을 사용했다.
-		List<LinkedHashMap<String, Object>> rows = new ArrayList<LinkedHashMap<String, Object>>();
+		List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
 		try {
 
@@ -164,7 +172,7 @@ public class DAO {
 			int columnCount = metaData.getColumnCount();
 
 			while (resultSet.next()) {
-				LinkedHashMap<String, Object> columns = new LinkedHashMap<String, Object>();
+				Map<String, Object> columns = new HashMap<String, Object>();
 
 				for (int i = 1; i <= columnCount; i++) {
 					columns.put(metaData.getColumnLabel(i), resultSet.getObject(i));
@@ -172,11 +180,18 @@ public class DAO {
 				rows.add(columns);
 			}
 			
-			Connection connection = preparedStatement.getConnection();
-			connection.close();
-			preparedStatement.close();
-		} catch (SQLException e) {
-			log.error(e.toString());
+			connection = preparedStatement.getConnection();
+		} catch (Exception e) {
+			log.error("Query Select Error" , e);
+		} finally {
+			if (resultSet != null)
+				resultSet.close();
+				
+			if (connection != null) 
+				connection.close();
+			
+			if ( preparedStatement != null) 
+				preparedStatement.close();
 		}
 		return rows;
 	}

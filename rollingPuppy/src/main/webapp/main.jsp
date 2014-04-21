@@ -7,7 +7,6 @@
 	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 %>
 
-
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Main Page</title>
@@ -16,6 +15,7 @@
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/map_menu.css">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
+	<script src="/javascripts/main_aside.js"></script>
 </head>
 
 <body>
@@ -37,37 +37,23 @@
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->
 	<div id="container">
 	
-		<!-- 네이게이션바와 네이게이션 바의 메뉴를 눌렀을 때 나오는 패널을 함께 묶은 영역-->
 		<div id="aside">
-
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul class="nav_list">
-					<li>
-						<div class="search"></div>
-						<a href="#">검색</a>
-					</li>
-					<li>
-						<div class="recommendation"></div>
-						<a href="#">추천방</a>
-					</li>
-					<li>
-						<div class="chatting"></div>
-						<a href="#">채팅중</a>
-					</li>
-					<li>
-						<div class="bookmark"></div>
-						<a href="#">관심장소</a>
-					</li>
-					<li>
-						<div class="settings"></div>
-						<a href="#">설정</a>
-					</li>
+					<li><a href="#" class="search"></a></li>
+					<li><a href="#" class="recommendation"></a></li>
+					<li><a href="#" class="chatting"></a></li>
+					<li><a href="#" class="bookmark"></a></li>
+					<li><a href="#" class="settings"></a></li>
 				</ul>
 			</div>
 			
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
-			<div id="panel"></div>
+			<div id="panel">
+				<a class="panel_button_fold" href="#"></a>
+				<a class="panel_button_unfold" href="#"></a>
+			</div>
 		</div>
 		
 		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->

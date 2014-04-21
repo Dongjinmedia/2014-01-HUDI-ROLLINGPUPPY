@@ -33,13 +33,13 @@ function menuClick(e) {
 	/*
 	 * TODO 하드코딩으로 추가하는 형태가 아닌, 미리 HTML에 채팅방소스를 구현해놓고, display값을 변경하면서 사용하는 식으로
 	 */
-	content.innerHTML = content.innerHTML + 
+	content.insertAdjacentHTML( 'beforeend',
 			"<div id='chat' style='display:block;'>" +
 				"<div id='textarea'>" +
 					"<dl id='txtappend'></dl>" +
 				"</div><br/>" +
 				"<input type='text' style='width: 255px;' id='txt' /><input type='button' value='Enter' id='btn'/>" +
-			"</div>";
+			"</div>");
 	
 	/*
 	 * 
@@ -48,31 +48,25 @@ function menuClick(e) {
 	var inputSpace = document.getElementById("txt");
 	
 	var nickname = document.getElementById("nickname").value;
-	console.log(nickname);
 	
 	//입장을 서버에 알린다
 	//TODO roomname 변경
-	socket.emit('join', {'userid': nickname, 'roomname': 1});
+	socket.emit('join', {'userid': nickname, 'roomNumber': 1});
 	
 	//메세지 전송버튼을 클릭할 시	
 	document.getElementById("btn").addEventListener('click', function(e) {
-		console.log("메세지 전송버튼 클릭");
 		var message = inputSpace.value;
-		
-		console.log(message);
 		socket.emit('message', nickname+ " : " + message);
 	}, false);
 	
 	//새로 접속 한 사용자가 있을 경우 알림을 받는다.
 	socket.on('join', function(user) {
-		console.log(user);
-		chatSpace.innserHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>";
+		chatSpace.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
 	});
 	
 	socket.on('message', function (message) {
-		console.log("서버로부터 전송받은 메세지 : "+message)
-		chatSpace.innerHTML = chatSpace.innerHTML + "<dd style='margin:0px;'>"+message+"</dd";
-		inputSpace.innerHTML = "";
+		chatSpace.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
+		inputSpace.value="";
 	});
 }
 
