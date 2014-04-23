@@ -128,9 +128,13 @@ var naverMapSettings = {
 		                right: 0,
 		                top: -19
 		            });
-		            //this.oTempMapInfoWindow.autoPosition(50); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
+		            
+		            //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
+		            //oTempMapInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
 		        }
 		    } else {
+		    	
+		    	//현재 테스트로 마커를 생성하고 있다.
 		        var oMarker = new nhn.api.map.Marker(oTempIcon, {
 		            title: '마커 : ' + oPoint.toString()
 		        });
