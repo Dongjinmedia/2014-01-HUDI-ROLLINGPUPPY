@@ -108,14 +108,8 @@ var naverMapSettings = {
 		    if (oTarget instanceof nhn.api.map.Marker) {
 		        // 겹침 마커 클릭한거면
 		        if (!oCustomEvent.clickCoveredMarker) {
-		            var menuTemplate =
-		                "<ul id='menu'>" +
-		                "<a class='menu-button navigation' href='#menu' ></a>" +
-		                "<a class='menu-button hide-navigation' href='#' ></a>" +
-		                "<li class='menu-item icon-info'><a class='menu-item-back' href='#menu'></a></li>" +
-		                "<li class='menu-item icon-bookmark'><a class='menu-item-back' href='#menu'></a></li>" +
-		                "<li class='menu-item icon-chatting'><a class='menu-item-back' href='#menu'></a></li>" +
-		                "</ul>";
+		        	//최초에 생성해놓은 클릭 객체메뉴를 가져온다.
+		            var menuTemplate = document.getElementById('controlBox');
 
 		            // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 		            // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.

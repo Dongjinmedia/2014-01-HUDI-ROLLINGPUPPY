@@ -20,6 +20,31 @@
 
 <body>
 <input type="hidden" id="nickname" value="<%=session.getAttribute(SESSION_NICKNAME_ADJECTIVE) + " " + session.getAttribute(SESSION_NICKNAME_NOUN)%>"/>
+
+<!-- hidden Area (For Menu Control Box) -->
+<div style="display:none;">
+	<div id="controlBox">
+		<ul id='menu'> 
+			<a class='menu-button navigation'></a> 
+			<a class='menu-button hide-navigation'></a> 
+			<li class='menu-item icon-info' status='none'>
+				<a class='menu-item-back'></a>
+			</li> 
+			<li class='menu-item icon-bookmark' status='none'>
+				<a class='menu-item-back'></a>
+			</li> 
+			<li class='menu-item icon-chatting' status='none'>
+				<a class='menu-item-back'></a>
+			</li> 
+		</ul>
+		<div class="menu-chatting content">
+		</div>
+		<div class="menu-info content">
+		</div>
+		<div class="menu-bookmark content">
+		</div>
+	</div>
+</div>
 <!--페이지 전체를 감싸는 영역-->
 <div id="wrapper">
 

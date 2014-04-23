@@ -55,11 +55,40 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	overflow: hidden;
 }
 
-#menu:hover {
-	width: 150px;
-	height: 150px;
-	margin: -75px 0 0 -75px;
+.controlBox {
+  position: relative;
+  width: 75px;
+  height: 75px;
+  background: #000;
 }
+
+.content {
+	border-radius: 20px;
+}
+
+.menu-chatting {
+	position: absolute;
+	margin-left: -270px;
+	display: none;	
+	margin-top: -40px;
+	width: 200px;
+	height: 100px;
+	background: #fff;
+}
+
+.menu-info {
+	position: absolute;
+	margin: -260px 0 0 -105px;
+	display: none;
+	width: 200px;
+	height: 100px;
+	background: #fff;
+}
+
+.bookmark {
+  
+}
+/*  markerArea  */
 
 .menu-button {
 	text-align: center;
