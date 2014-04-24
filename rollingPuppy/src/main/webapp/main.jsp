@@ -80,7 +80,14 @@
 		</div>
 		
 		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->
-		<div id='mapClicker'><div class='marker'></div><div class='pulse'></div></div>
+		<div id='mapClicker'>
+			<div class='marker'></div>
+			<div class='pulse'></div>
+			<div class='clickerMenu'>
+				<i class="clicker icon-add"></i>
+				<i class="clicker icon-star"></i>
+			</div>
+		</div>
 		<div id="content">
 			<div id="map_area">
 				<!-- 지도 영역 -->

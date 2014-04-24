@@ -211,6 +211,49 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	top: 50%;
 }
 
+.clickerMenu {
+	position: absolute;
+	width: 50px;
+	margin-left: -25px;
+	top: 40px;
+	height: 20px;
+	background: #fff;
+	border-radius: 5px;
+	padding: 3px;
+	opacity: 0.8;
+	border: 1px solid #5ccccc;
+}
+
+.clicker {
+	font-size: 27px;
+  	font-family: FontAwesome;
+  	font-style: normal;
+  	text-decoration: inherit;
+  	color: #64abd1;
+  	opacity: 0.5;
+  	text-align: center;
+}
+
+.clicker:hover {
+	opacity: 1.0;
+}
+
+.icon-add {
+	right: 50%;
+}
+
+.icon-pin {
+	left: 50%;
+}
+
+.icon-add:before {
+	content: "\f055";
+}
+
+.icon-star:before {
+	content: "\f005";
+}
+
 .marker {
   width: 14px;
   height: 14px;
