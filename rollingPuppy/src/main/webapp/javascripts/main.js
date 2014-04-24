@@ -231,12 +231,30 @@ var naverMapSettings = {
 		        }
 		    } else {
 		    	
-		    	//현재 테스트로 마커를 생성하고 있다.
-		        var oMarker = new nhn.api.map.Marker(oTempIcon, {
-		            title: '마커 : ' + oPoint.toString()
-		        });
-		        oMarker.setPoint(oPoint);
-		        oTempMap.addOverlay(oMarker);
+//		    	//테스트로 마커를 생성
+//		        var oMarker = new nhn.api.map.Marker(oTempIcon, {
+//		            title: '마커 : ' + oPoint.toString()
+//		        });
+//		        oMarker.setPoint(oPoint);
+//		        oTempMap.addOverlay(oMarker);
+//		    	oTempMap.addOverlay("<div id='mapClicker'><div class='marker'></div><div class='pulse'></div></div>");
+//		    	var oMarker = new nhn.api.map.Marker(oTempIcon, {
+//		    	    title: 'test' + oPoint.toString()
+//		    	});
+//		    	oTempMap.addOverlay(test);
+		    	
+		    	console.log(oCustomEvent);
+		    	console.log(oCustomEvent.currentTarget);
+		    	
+		    	//클라이언트에 상대적인 수평, 수직좌표 가져오기
+		    	clientPosX = oCustomEvent.event._event.clientX;
+		    	clientPosY = oCustomEvent.event._event.clientY;
+		    	
+		    	var oMapClicker = document.getElementById("mapClicker");
+		    	oMapClicker.style.position = "absolute";
+		    	oMapClicker.style.left = clientPosX+'px';
+		    	oMapClicker.style.top = clientPosY +'px';
+		    	
 		    }
 		});
 	}

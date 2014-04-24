@@ -19,7 +19,6 @@
 
 <body>
 <input type="hidden" id="nickname" value="<%=session.getAttribute(SESSION_NICKNAME_ADJECTIVE) + " " + session.getAttribute(SESSION_NICKNAME_NOUN)%>"/>
-
 <!-- hidden Area (For Menu Control Box) -->
 <div style="display:none;">
 	<div id="controlBox">
@@ -81,9 +80,9 @@
 		</div>
 		
 		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->
+		<div id='mapClicker'><div class='marker'></div><div class='pulse'></div></div>
 		<div id="content">
 			<div id="map_area">
-			
 				<!-- 지도 영역 -->
 				<div id="naver_map" class="naver_map"></div>
 			</div>
