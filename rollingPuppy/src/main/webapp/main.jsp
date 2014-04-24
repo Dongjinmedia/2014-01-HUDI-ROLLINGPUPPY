@@ -15,7 +15,6 @@
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/map_menu.css">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
-	<script src="/javascripts/main_aside.js"></script>
 </head>
 
 <body>
@@ -93,7 +92,6 @@
 	
 </div>
 </body>
-<script type="text/javascript" src="/javascripts/main.js"></script>
 <script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/javascripts/map_menu.js"></script>
+<script type="text/javascript" src="/javascripts/main.js"></script>
 </html>
