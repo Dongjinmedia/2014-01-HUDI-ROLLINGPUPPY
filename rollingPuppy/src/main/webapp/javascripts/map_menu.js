@@ -118,7 +118,6 @@ function initialize() {
 	var menuInfo = controlBox.querySelector('.menu-info');
 	oEventRegister.addListener(iconInfo, menuInfo);
 	
-	console.log("testest");
 	var iconChatting = controlBox.querySelector('.icon-chatting');
 	var menuChatting = controlBox.querySelector('.menu-chatting');
 	oEventRegister.addListener(iconChatting, menuChatting);	
