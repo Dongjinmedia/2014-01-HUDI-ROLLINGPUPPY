@@ -117,12 +117,15 @@ var naverMapSettings = {
 	oIcon: null,
 	oMarkerInfoWindow: null,
 	oLabel: null,
+	//Marker가 없는 Map클릭시 나타나는 인터렉션 메뉴
+	oMapClicker: null,
 	
 	initialize: function(){
 		this.naverMap = getNode("naver_map");
 		this.mapDivWidth = getStyle(this.naverMap, "width");
 		this.mapDivHeight = getStyle(this.naverMap, "height");
 		this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
+		this.oMapClicker = document.getElementById("mapClicker");
 		
 		nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 		
@@ -200,6 +203,13 @@ var naverMapSettings = {
 		var oTempMapInfoWindow = this.oMarkerInfoWindow;
 		var oTempIcon = this.oIcon;
 		var oTempMap = this.oMap;
+		var oTempMapClicker = this.oMapClicker;
+		
+		//move event가 발생한 후 click이벤트가 발생한다.
+		//drag가 시작할때  mapClicker를 화면상에서 보이지 않게끔 처리한다.
+		this.oMap.attach('dragstart', function(oCustomEvent) {
+			oTempMapClicker.style.top = "-2000px";
+		});
 		
 		this.oMap.attach('click', function(oCustomEvent) {
 		    var oPoint = oCustomEvent.point; //이벤트가 걸린곳의 좌표 
@@ -243,17 +253,14 @@ var naverMapSettings = {
 //		    	});
 //		    	oTempMap.addOverlay(test);
 		    	
-		    	console.log(oCustomEvent);
-		    	console.log(oCustomEvent.currentTarget);
-		    	
 		    	//클라이언트에 상대적인 수평, 수직좌표 가져오기
 		    	clientPosX = oCustomEvent.event._event.clientX;
 		    	clientPosY = oCustomEvent.event._event.clientY;
 		    	
-		    	var oMapClicker = document.getElementById("mapClicker");
-		    	oMapClicker.style.position = "absolute";
-		    	oMapClicker.style.left = clientPosX+'px';
-		    	oMapClicker.style.top = clientPosY +'px';
+		    	//TODO Bind를 통해서 oMapClicker를 object 변수로 선언해야 한다.
+		    	oTempMapClicker.style.position = "absolute";
+		    	oTempMapClicker.style.left = clientPosX+'px';
+		    	oTempMapClicker.style.top = clientPosY +'px';
 		    	
 		    }
 		});
