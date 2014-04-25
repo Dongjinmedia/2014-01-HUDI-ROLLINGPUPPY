@@ -120,6 +120,14 @@ var naverMapSettings = {
 	//Marker가 없는 Map클릭시 나타나는 인터렉션 메뉴
 	oMapClicker: null,
 	
+	//Zoom 조절을 위한 함수
+	zoomChange: function(nZoomLevel) {
+		this.oCenterPoint = this.oMap.getCenter();
+
+		//change zoom method
+		this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel);
+	},
+	
 	initialize: function(){
 		this.naverMap = getNode("naver_map");
 		this.mapDivWidth = getStyle(this.naverMap, "width");
@@ -158,7 +166,7 @@ var naverMapSettings = {
 		//offset위치 지정
 		this.oOffset = new nhn.api.map.Size(14, 37);
 		this.oIcon = new nhn.api.map.Icon('/images/marker_48.png', this.oSize, this.oOffset); //마커 설정 정보
-		this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드만 삽입 가능
+		this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드뿐만 아니라 객체도 삽입 가능
 		
 		// - infowindow 표시 여부 지정
 		//여기서는 true로 바꿔도 아무 변화가 없음
@@ -445,6 +453,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//Marker Interaction 메뉴 및 채팅에 대한 초기화영역
+	
+	//채팅초기화
 	var socket = io.connect('http://127.0.0.1:3080');
 	document.addEventListener("click", function(e) {
 		e.preventDefault();
@@ -454,6 +464,7 @@ function initialize() {
 		}
 	}, false);
 	
+	//Marker Interaction 메뉴 초기화
 	//CUSTOM으로 만든 이벤트객체 생성
 	var oEventRegister = new MarkerEventRegister();
 	
@@ -472,6 +483,31 @@ function initialize() {
 	var iconChatting = controlBox.querySelector('.icon-chatting');
 	var menuChatting = controlBox.querySelector('.menu-chatting');
 	oEventRegister.addListener(iconChatting, menuChatting);
+	
+	
+	//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
+	var oMapClicker = document.getElementById('mapClicker');
+	var clickAdd = oMapClicker.querySelector('.icon-add');
+	var clickBookMark = oMapClicker.querySelector('.icon-star');
+	
+	clickAdd.addEventListener('click', function(e) {
+		alert('clickAdd');
+		naverMapSettings.reload();
+		
+	}, false);
+	
+	clickBookMark.addEventListener('click', function(e) {
+		alert('clickBookMark');
+		
+	}, false);
+	
+	
+	//네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
+	var eNmap = document.getElementsByClassName("nmap")[0];
+	eNmap.setAttribute('style', 'width:100%;height:100%;');
+	
+	//setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
+	//this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
 	//------------------------------------------------------------------------------------//
 }
 
