@@ -20,6 +20,7 @@ function getNode(node) {
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
+/* Comment added by Yoonsung
 var Panel = function(elPanel) {
 	var count = {
 			animationEnds: 0
@@ -103,7 +104,7 @@ var NavList = function(elNavList) {
 		);
 	}
 }
-
+*/
 
 /*********************************************************************************************************
  * 네비게이션관련 소스코드 끝
@@ -144,7 +145,7 @@ var naverMapSettings = {
 		this.mapDivWidth = getStyle(this.naverMap, "width");
 		this.mapDivHeight = getStyle(this.naverMap, "height");
 		this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
-		this.oMapClicker = document.getElementById("mapClicker");
+		this.oMapClickWithoutMarker = document.getElementById("mapClicker");
 		
 		nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 		
@@ -222,7 +223,7 @@ var naverMapSettings = {
 		var oTempMapInfoWindow = this.oMarkerInfoWindow;
 		var oTempIcon = this.oIcon;
 		var oTempMap = this.oMap;
-		var oTempMapClicker = this.oMapClicker;
+		var oTempMapClicker = this.oMapClickWithoutMarker;
 		
 		//move event가 발생한 후 click이벤트가 발생한다.
 		//drag가 시작할때  mapClicker를 화면상에서 보이지 않게끔 처리한다.
@@ -231,11 +232,9 @@ var naverMapSettings = {
 		});
 		
 		this.oMap.attach('click', function(oCustomEvent) {
-		    var oPoint = oCustomEvent.point; //이벤트가 걸린곳의 좌표 
 		    var oTarget = oCustomEvent.target;
-		    //this.oMarkerInfoWindow.setVisible(false);
 		    oTempMapInfoWindow.setVisible(false);
-		    
+
 		    // 마커 클릭하면
 		    if (oTarget instanceof nhn.api.map.Marker) {
 		        // 겹침 마커 클릭한거면
@@ -276,11 +275,14 @@ var naverMapSettings = {
 		    	clientPosX = oCustomEvent.event._event.clientX;
 		    	clientPosY = oCustomEvent.event._event.clientY;
 		    	
-		    	//TODO Bind를 통해서 oMapClicker를 object 변수로 선언해야 한다.
+		    	//TODO Bind를 통해서 oMapClickWithoutMarker를 object 변수로 선언해야 한다.
 		    	oTempMapClicker.style.position = "absolute";
 		    	oTempMapClicker.style.left = clientPosX+'px';
 		    	oTempMapClicker.style.top = clientPosY +'px';
 		    	
+		    	//oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+		    	oMapClicker.oClickPoint = oCustomEvent.point;
+		    	console.log(oMapClicker.oClickPoint);
 		    }
 		});
 		
@@ -449,7 +451,7 @@ var oMapClicker = {
 	oMapClicker: null,
 	clickAdd: null,
 	clickBookMark: null,
-
+	oClickPoint: null,
 	initialize: function() {
 		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
 		var oMapClicker = document.getElementById('mapClicker');
@@ -457,9 +459,20 @@ var oMapClicker = {
 		var clickBookMark = oMapClicker.querySelector('.icon-star');
 		
 		clickAdd.addEventListener('click', function(e) {
-			alert('clickAdd');
+
+			//채팅방을 생성하는 프로세스 진행
+			//.....
+			//
 			
-		}, false);
+			
+			//마커를 생성
+	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	    title: 'test' + this.oClickPoint.toString()
+	    	});
+	    	oMarker.setPoint(this.oClickPoint);
+	    	naverMapSettings.oMap.addOverlay(oMarker);
+			
+		}.bind(this), false);
 		
 		clickBookMark.addEventListener('click', function(e) {
 			alert('clickBookMark');
@@ -481,9 +494,9 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	
-	var panel = new Panel(document.querySelector('div#panel'));
-	panel.addEvents(panel.elPanel);
+	//comment by Yoonsung
+	//var panel = new Panel(document.querySelector('div#panel'));
+	//panel.addEvents(panel.elPanel);
 	//------------------------------------------------------------------------------------//
 	
 	/*
