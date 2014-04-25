@@ -283,6 +283,13 @@ var naverMapSettings = {
 		    	
 		    }
 		});
+		
+		//네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
+		var eNmap = document.getElementsByClassName("nmap")[0];
+		eNmap.setAttribute('style', 'width:100%;height:100%;');
+		
+		//setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
+		//this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
 	}
 };
 
@@ -436,6 +443,35 @@ function menuClick(e) {
 
 
 /*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
+ **********************************************************************************************************/
+var oMapClicker = {
+	oMapClicker: null,
+	clickAdd: null,
+	clickBookMark: null,
+
+	initialize: function() {
+		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
+		var oMapClicker = document.getElementById('mapClicker');
+		var clickAdd = oMapClicker.querySelector('.icon-add');
+		var clickBookMark = oMapClicker.querySelector('.icon-star');
+		
+		clickAdd.addEventListener('click', function(e) {
+			alert('clickAdd');
+			
+		}, false);
+		
+		clickBookMark.addEventListener('click', function(e) {
+			alert('clickBookMark');
+			
+		}, false);
+	},	
+};
+/*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
+ **********************************************************************************************************/
+
+/*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
@@ -477,11 +513,10 @@ function initialize() {
 	
 	//Marker Interaction 메뉴 초기화
 	//CUSTOM으로 만든 이벤트객체 생성
+	//TODO 한번만 호출되기 떄문에 object로 변경, 하위의 메소드들도 initialize 함수안에서 진행하도록 변경
 	var oEventRegister = new MarkerEventRegister();
 	
 	//마커를 감싸고 있는 최상위 DIV
-	//TODO 현재는 테스트 버전이라서 className으로 찾지만, 나중에는 위치별 아이디를 부여한뒤,
-	//getElementById로 가져오도록 수정해야 한다.
 	var controlBox = document.getElementById('controlBox');
 	
 	//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
@@ -494,31 +529,15 @@ function initialize() {
 	var iconChatting = controlBox.querySelector('.icon-chatting');
 	var menuChatting = controlBox.querySelector('.menu-chatting');
 	oEventRegister.addListener(iconChatting, menuChatting);
+	//------------------------------------------------------------------------------------//
 	
 	
-	//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
-	var oMapClicker = document.getElementById('mapClicker');
-	var clickAdd = oMapClicker.querySelector('.icon-add');
-	var clickBookMark = oMapClicker.querySelector('.icon-star');
-	
-	clickAdd.addEventListener('click', function(e) {
-		alert('clickAdd');
-		naverMapSettings.reload();
-		
-	}, false);
-	
-	clickBookMark.addEventListener('click', function(e) {
-		alert('clickBookMark');
-		
-	}, false);
-	
-	
-	//네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
-	var eNmap = document.getElementsByClassName("nmap")[0];
-	eNmap.setAttribute('style', 'width:100%;height:100%;');
-	
-	//setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
-	//this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
+	/*
+	 * 현재 윤성이 작업중
+	 */
+	//------------------------------------------------------------------------------------//
+	//MapClicker(마커가 없는 메뉴지역)을 클릭했을때 인터렉션을 위한 객체 초기화
+	oMapClicker.initialize();
 	//------------------------------------------------------------------------------------//
 }
 
