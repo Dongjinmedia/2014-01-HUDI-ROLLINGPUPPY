@@ -21,7 +21,6 @@ function getNode(node) {
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 var Panel = function(elPanel) {
-	this.elPanel = elPanel;
 	var count = {
 			animationEnds: 0
 	}
@@ -92,8 +91,20 @@ var Panel = function(elPanel) {
 			elContainer.className = '';
 		}
 	}
-	
 }
+
+var NavList = function(elNavList) {
+	this.addEvents = function(elNavList) {
+		elNavList.addEventListener(
+				'click',
+				function(event) {
+					console.log(event.target);
+				}
+		);
+	}
+}
+
+
 /*********************************************************************************************************
  * 네비게이션관련 소스코드 끝
  **********************************************************************************************************/
