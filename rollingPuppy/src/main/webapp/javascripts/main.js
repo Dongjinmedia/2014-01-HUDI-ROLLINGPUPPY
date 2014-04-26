@@ -458,10 +458,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	
-	var panel = new Panel(document.getElementById('panel'));
+	Panel(document.getElementById('panel'));
 	var navList = new NavList(document.getElementById('nav_list'));
-	
 	//------------------------------------------------------------------------------------//
 	
 	/*
