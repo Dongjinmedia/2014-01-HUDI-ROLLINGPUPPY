@@ -63,7 +63,7 @@
 		<div id="aside">
 			<!--네비게이션바 영역 -->
 			<div id="nav">
-				<ul class="nav_list">
+				<ul id="nav_list">
 					<li><a href="#" class="search"></a></li>
 					<li><a href="#" class="recommendation"></a></li>
 					<li><a href="#" class="chatting"></a></li>

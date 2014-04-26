@@ -79,7 +79,7 @@ div#nav {
 	height: 100%;
 }
 
-ul.nav_list {
+ul#nav_list {
 	position: absolute;
 	background-color: #252525;
 	width: 100%;
@@ -87,57 +87,57 @@ ul.nav_list {
 	z-index: 12;
 }
 
-.nav_list li {
+#nav_list li {
 	position: relative;
 	color: #ffffff;
 	text-align: center;
 	list-style: none;
 }
 
-.nav_list a {
+#nav_list a {
 	display: block;
 	width: 60px;
 	height: 60px;
 	background: url(/images/icons.png) no-repeat;
 }
 
-.nav_list .search {
+#nav_list .search {
 	background-position: 0px 0px;
 }
 
-.nav_list .on .search {
+#nav_list .on .search {
 	background-position: 0px -60px;
 }
 
-.nav_list .recommendation {
+#nav_list .recommendation {
 	background-position: -60px 0px;
 }
 
-.nav_list .on .recommendation {
+#nav_list .on .recommendation {
 	background-position: -60px -60px;
 }
 
-.nav_list .chatting {
+#nav_list .chatting {
 	background-position: -120px 0px;
 }
 
-.nav_list .on .chatting {
+#nav_list .on .chatting {
 	background-position: -120px -60px;
 }
 
-.nav_list .bookmark {
+#nav_list .bookmark {
 	background-position: -180px 0px;
 }
 
-.nav_list .on .bookmark {
+#nav_list .on .bookmark {
 	background-position: -180px -60px;
 }
 
-.nav_list .settings {
+#nav_list .settings {
 	background-position: -240px 0px;
 }
 
-.nav_list .on .settings {
+#nav_list .on .settings {
 	background-position: -240px -60px;
 }
 
