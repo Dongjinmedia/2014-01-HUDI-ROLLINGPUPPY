@@ -20,12 +20,13 @@ function getNode(node) {
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
-function Panel(elPanel) {
-	var objCount = {
+/* Comment added by Yoonsung
+var Panel = function(elPanel) {
+	var count = {
 			animationEnds: 0
-	};
+	}
 	
-	(function(elPanel) {
+	this.addEvents = function(elPanel) {
 		var elContainer = elPanel.parentNode.parentNode;
 		var elButtons = elPanel.querySelectorAll('a');
 		
@@ -33,27 +34,28 @@ function Panel(elPanel) {
 			elButtons[idx].addEventListener(
 					'click',
 					function(event) {
-						fnPanelButtonHandler(event, elContainer);
-					}
+						foldPanel(event, elContainer);
+					},
+					false
 			);
 		}
 		
 		elContainer.addEventListener(
 				'animationEnd',
 				function(event) {
-					fnNoPanel(event, elContainer, objCount);
+					noPanel(event, elContainer);
 				}
 		);
 		
 		elContainer.addEventListener(
 				'webkitAnimationEnd',
 				function(event) {
-					fnNoPanel(event, elContainer, objCount);
+					noPanel(event, elContainer, count);
 				}
 		);
-	})(elPanel);
+	}
 	
-	function fnPanelButtonHandler(event, elContainer) {
+	var foldPanel = function(event, elContainer) {
 		event.preventDefault();
 
 		var strButtonClassName = event.target.className;
@@ -70,9 +72,9 @@ function Panel(elPanel) {
 		}
 	}
 	
-	var fnNoPanel = function(event, elContainer, objCount) {
-		objCount.animationEnds ++;
-		if (objCount.animationEnds % 2 == 0) {
+	var noPanel = function(event, elContainer, count) {
+		count.animationEnds ++;
+		if (count.animationEnds % 2 == 0) {
 			return ;
 		}
 		
@@ -93,30 +95,16 @@ function Panel(elPanel) {
 }
 
 var NavList = function(elNavList) {
-	(function(elNavList) {
+	this.addEvents = function(elNavList) {
 		elNavList.addEventListener(
 				'click',
 				function(event) {
 					console.log(event.target);
-					// 라이브러리 만들거나 util함수로 만들어서 다중 className 문제 처리할 것 
-					if (event.target && event.target.className == "search") {
-						
-					} else if(event.target && event.target.className == "recommendation") {
-						
-					} else if(event.target && event.target.className == "chatting") {
-						
-					} else if(event.target && event.target.className == "bookmark") {
-						
-					} else if(event.target && event.target.className == "setting") {
-						
-					} else {
-						return ;
-					}
 				}
 		);
-	})(elNavList);
+	}
 }
-
+*/
 
 /*********************************************************************************************************
  * 네비게이션관련 소스코드 끝
@@ -128,21 +116,14 @@ var NavList = function(elNavList) {
 var naverMapSettings = {
 	//Main Page에서 Map영역에 해당하는  div객체
 	naverMap: null,
-	//로딩할 지도의 크기를 저장할 변수
-	mapDivWidth: null,
-	mapDivHeight: null,
 	//지도 중심으로 포커싱할 위치를 저장하는 객체 (LatLng 좌표사용)
 	oCenterPoint: null,
 	//맵옵션을 모두 저장하고 있는 지도의 기본이 되는 객체
 	oMap: null,
 	
-	oSize: null,
-	oOffset: null,
 	oIcon: null,
 	oMarkerInfoWindow: null,
 	oLabel: null,
-	//Marker가 없는 Map클릭시 나타나는 인터렉션 메뉴
-	oMapClicker: null,
 	
 	//Zoom 조절을 위한 함수
 	zoomChange: function(nZoomLevel) {
@@ -154,10 +135,10 @@ var naverMapSettings = {
 	
 	initialize: function(){
 		this.naverMap = getNode("naver_map");
-		this.mapDivWidth = getStyle(this.naverMap, "width");
-		this.mapDivHeight = getStyle(this.naverMap, "height");
+		var mapDivWidth = getStyle(this.naverMap, "width");
+		var mapDivHeight = getStyle(this.naverMap, "height");
 		this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
-		this.oMapClicker = document.getElementById("mapClicker");
+		this.oMapClickWithoutMarker = document.getElementById("mapClicker");
 		
 		nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 		
@@ -182,14 +163,14 @@ var naverMapSettings = {
 		    activateBicycleMap: false,
 		    //지도의 최소/최대 축척 레벨
 		    minMaxLevel: [1, 14],
-		    size: new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight) //지도의 크기
+		    size: new nhn.api.map.Size(mapDivWidth, mapDivHeight) //지도의 크기
 		});
 		
 		//px단위의 size객체.
-		this.oSize = new nhn.api.map.Size(28, 37);
+		var oSize = new nhn.api.map.Size(28, 37);
 		//offset위치 지정
-		this.oOffset = new nhn.api.map.Size(14, 37);
-		this.oIcon = new nhn.api.map.Icon('/images/marker_48.png', this.oSize, this.oOffset); //마커 설정 정보
+		var oOffset = new nhn.api.map.Size(14, 37);
+		this.oIcon = new nhn.api.map.Icon('/images/marker_48.png', oSize, oOffset); //마커 설정 정보
 		this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드뿐만 아니라 객체도 삽입 가능
 		
 		// - infowindow 표시 여부 지정
@@ -200,17 +181,14 @@ var naverMapSettings = {
 		this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
 		this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
 		
-		//TODO bind시켜야 한다.
-		var oTempLabel = this.oLabel;
-		
 		//changeVisible : event. 정보창의 표시여부 변경
 		//changeVisible {visible : Boolean} 요렇게 생김
 		//oMarkerInfoWindow에다가 changeVisible이라는 이벤트를 거는데, 이 이벤트가 걸리면 뭘 하냐면, 
 		this.oMarkerInfoWindow.attach('changeVisible', function(oCustomEvent) {
 		    if (oCustomEvent.visible) { //이벤트의 visible값이 true이면
-		    	oTempLabel.setVisible(false); //라벨(마우스를 마커위에 클릭하지 않은채 올렸을때 나오는 창)은 가림
+		    	this.oLabel.setVisible(false); //라벨(마우스를 마커위에 클릭하지 않은채 올렸을때 나오는 창)은 가림
 		    }
-		});
+		}.bind(this));
 		
 		// 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 		// void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
@@ -219,36 +197,28 @@ var naverMapSettings = {
 		    // 마커위에 마우스 올라간거면
 		    if (oTarget instanceof nhn.api.map.Marker) {
 		        var oMarker = oTarget;
-		        oTempLabel.setVisible(true, oMarker); // - 특정 마커를 지정하여 해당 마커의 title을 보여준다.
+		        this.oLabel.setVisible(true, oMarker); // - 특정 마커를 지정하여 해당 마커의 title을 보여준다.
 		    }
-		});
+		}.bind(this));
 		
 		this.oMap.attach('mouseleave', function(oCustomEvent) { //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
 		    var oTarget = oCustomEvent.target; //http://developer.naver.com/wiki/pages/JavaScript#section-JavaScript-Nhn.api.map.CustomControl의 public properties 부분 참조
 		    // 마커위에서 마우스 나간거면
 		    if (oTarget instanceof nhn.api.map.Marker) {
-		    	oTempLabel.setVisible(false);
+		    	this.oLabel.setVisible(false);
 		    }
-		});
-		
-		//TODO bind처리로 변경해야 한다.
-		var oTempMapInfoWindow = this.oMarkerInfoWindow;
-		var oTempIcon = this.oIcon;
-		var oTempMap = this.oMap;
-		var oTempMapClicker = this.oMapClicker;
+		}.bind(this));
 		
 		//move event가 발생한 후 click이벤트가 발생한다.
 		//drag가 시작할때  mapClicker를 화면상에서 보이지 않게끔 처리한다.
 		this.oMap.attach('dragstart', function(oCustomEvent) {
-			oTempMapClicker.style.top = "-2000px";
-		});
+			this.oMapClickWithoutMarker.style.top = "-2000px";
+		}.bind(this));
 		
 		this.oMap.attach('click', function(oCustomEvent) {
-		    var oPoint = oCustomEvent.point; //이벤트가 걸린곳의 좌표 
 		    var oTarget = oCustomEvent.target;
-		    //this.oMarkerInfoWindow.setVisible(false);
-		    oTempMapInfoWindow.setVisible(false);
-		    
+		    this.oMarkerInfoWindow.setVisible(false);
+
 		    // 마커 클릭하면
 		    if (oTarget instanceof nhn.api.map.Marker) {
 		        // 겹침 마커 클릭한거면
@@ -260,42 +230,39 @@ var naverMapSettings = {
 		            // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
 		            // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
 		            // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-		            oTempMapInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
-		            oTempMapInfoWindow.setPoint(oTarget.getPoint());
-		            oTempMapInfoWindow.setVisible(true);
-		            oTempMapInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+		            this.oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
+		            this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
+		            this.oMarkerInfoWindow.setVisible(true);
+		            this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
 		                right: 0,
 		                top: -19
 		            });
 		            
 		            //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
-		            //oTempMapInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
+		            //this.oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
 		        }
 		    } else {
-		    	
-//		    	//테스트로 마커를 생성
-//		        var oMarker = new nhn.api.map.Marker(oTempIcon, {
-//		            title: '마커 : ' + oPoint.toString()
-//		        });
-//		        oMarker.setPoint(oPoint);
-//		        oTempMap.addOverlay(oMarker);
-//		    	oTempMap.addOverlay("<div id='mapClicker'><div class='marker'></div><div class='pulse'></div></div>");
-//		    	var oMarker = new nhn.api.map.Marker(oTempIcon, {
-//		    	    title: 'test' + oPoint.toString()
-//		    	});
-//		    	oTempMap.addOverlay(test);
 		    	
 		    	//클라이언트에 상대적인 수평, 수직좌표 가져오기
 		    	clientPosX = oCustomEvent.event._event.clientX;
 		    	clientPosY = oCustomEvent.event._event.clientY;
 		    	
-		    	//TODO Bind를 통해서 oMapClicker를 object 변수로 선언해야 한다.
-		    	oTempMapClicker.style.position = "absolute";
-		    	oTempMapClicker.style.left = clientPosX+'px';
-		    	oTempMapClicker.style.top = clientPosY +'px';
+		    	//TODO Bind를 통해서 oMapClickWithoutMarker를 object 변수로 선언해야 한다.
+		    	this.oMapClickWithoutMarker.style.position = "absolute";
+		    	this.oMapClickWithoutMarker.style.left = clientPosX+'px';
+		    	this.oMapClickWithoutMarker.style.top = clientPosY +'px';
 		    	
+		    	//전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+		    	oMapClicker.oClickPoint = oCustomEvent.point;
 		    }
-		});
+		}.bind(this));
+		
+		//네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
+		var eNmap = document.getElementsByClassName("nmap")[0];
+		eNmap.setAttribute('style', 'width:100%;height:100%;');
+		
+		//setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
+		//this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
 	}
 };
 
@@ -449,6 +416,49 @@ function menuClick(e) {
 
 
 /*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
+ **********************************************************************************************************/
+//TODO naverMap Object에 이식하기
+var oMapClicker = {
+	oMapClicker: null,
+	clickAdd: null,
+	clickBookMark: null,
+	oClickPoint: null,
+	initialize: function() {
+		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
+		var oMapClicker = document.getElementById('mapClicker');
+		var clickAdd = oMapClicker.querySelector('.icon-add');
+		var clickBookMark = oMapClicker.querySelector('.icon-star');
+		
+		//mapClicker 메뉴중, plus 버튼을 클릭했을때
+		clickAdd.addEventListener('click', function(e) {
+
+			//채팅방을 생성하는 프로세스 진행
+			//.....
+			//
+			
+			
+			//마커를 생성
+	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	    title: 'test' + this.oClickPoint.toString()
+	    	});
+	    	oMarker.setPoint(this.oClickPoint);
+	    	naverMapSettings.oMap.addOverlay(oMarker);
+			
+		}.bind(this), false);
+		
+		//mapClicker 메뉴중, star 버튼을 클릭했을때
+		clickBookMark.addEventListener('click', function(e) {
+			alert('clickBookMark');
+			
+		}, false);
+	},	
+};
+/*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
+ **********************************************************************************************************/
+
+/*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
@@ -458,8 +468,9 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel(document.getElementById('panel'));
-	var navList = new NavList(document.getElementById('nav_list'));
+	//comment by Yoonsung
+	//var panel = new Panel(document.querySelector('div#panel'));
+	//panel.addEvents(panel.elPanel);
 	//------------------------------------------------------------------------------------//
 	
 	/*
@@ -489,11 +500,10 @@ function initialize() {
 	
 	//Marker Interaction 메뉴 초기화
 	//CUSTOM으로 만든 이벤트객체 생성
+	//TODO 한번만 호출되기 떄문에 object로 변경, 하위의 메소드들도 initialize 함수안에서 진행하도록 변경
 	var oEventRegister = new MarkerEventRegister();
 	
 	//마커를 감싸고 있는 최상위 DIV
-	//TODO 현재는 테스트 버전이라서 className으로 찾지만, 나중에는 위치별 아이디를 부여한뒤,
-	//getElementById로 가져오도록 수정해야 한다.
 	var controlBox = document.getElementById('controlBox');
 	
 	//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
@@ -506,31 +516,15 @@ function initialize() {
 	var iconChatting = controlBox.querySelector('.icon-chatting');
 	var menuChatting = controlBox.querySelector('.menu-chatting');
 	oEventRegister.addListener(iconChatting, menuChatting);
+	//------------------------------------------------------------------------------------//
 	
 	
-	//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
-	var oMapClicker = document.getElementById('mapClicker');
-	var clickAdd = oMapClicker.querySelector('.icon-add');
-	var clickBookMark = oMapClicker.querySelector('.icon-star');
-	
-	clickAdd.addEventListener('click', function(e) {
-		alert('clickAdd');
-		naverMapSettings.reload();
-		
-	}, false);
-	
-	clickBookMark.addEventListener('click', function(e) {
-		alert('clickBookMark');
-		
-	}, false);
-	
-	
-	//네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
-	var eNmap = document.getElementsByClassName("nmap")[0];
-	eNmap.setAttribute('style', 'width:100%;height:100%;');
-	
-	//setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
-	//this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
+	/*
+	 * 현재 윤성이 작업중
+	 */
+	//------------------------------------------------------------------------------------//
+	//MapClicker(마커가 없는 메뉴지역)을 클릭했을때 인터렉션을 위한 객체 초기화
+	oMapClicker.initialize();
 	//------------------------------------------------------------------------------------//
 }
 
