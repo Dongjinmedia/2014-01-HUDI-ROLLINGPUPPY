@@ -5,11 +5,11 @@
 	width: 230px;
 }
 
-#search_box>input[type=text] {
+#search>input[type=text] {
 	width: 170px;
 }
 
-#search_box>button {
+#search>button {
 	position: absolute;
 	top: 1px;
 	right: 0px;

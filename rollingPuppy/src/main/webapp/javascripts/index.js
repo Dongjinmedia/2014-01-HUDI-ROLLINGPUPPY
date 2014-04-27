@@ -26,6 +26,7 @@ function getCookieValue(name) {
 	}
 }
 
+//마지막으로 로그인 된 email 값을 login email box에 default로 삽입 
 function fillEmail(email) {
 	if (email == "") {
 		return ;
@@ -39,7 +40,6 @@ function fillEmail(email) {
 
 //input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함
 function validateEmail() {
-	
 	
 	var emails = document.getElementsByName("email");
 	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
