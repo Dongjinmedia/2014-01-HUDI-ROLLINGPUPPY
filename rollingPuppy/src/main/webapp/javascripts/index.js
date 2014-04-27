@@ -5,6 +5,7 @@ function initPage() {
 	fillEmail(lastLoggedEmail);
 	
 	document.getElementById('join_form').onsubmit = validateEmail;	
+	document.getElementById('login_form').onsubmit = validateEmail;
 }
 
 /**
@@ -36,15 +37,30 @@ function fillEmail(email) {
 	inputEmail.value = email;
 }
 
+//input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함
 function validateEmail() {
-	var newbieEmail = document.getElementById("joinEmail").value;
+	
+	var emails = document.getElementsByName("email");
 	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
-	if (emailFormat.test(newbieEmail)) {
-			return true;
-		} else {
-			alert( newbieEmail + " does not fit to email address form " )
-			return false;
+	for(i = 0 ; i< emails.length ; i++) {
+		if(emails[i].value != "") {
+			if(emailFormat.test(emails[i].value)) {
+				return true;
+			} else {
+				alert (emails[i].value + "\ndoes not fit to email address form"); 
+			}
 		}
+	}
 }
+
+//	var newbieEmail = document.getElementById("joinEmail").value;
+//	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+//	if (emailFormat.test(newbieEmail)) {
+//			return true;
+//		} else {
+//			alert( newbieEmail + " does not fit to email address form " );
+//			return false;
+//		}
+//}
 
 window.onload = initPage;

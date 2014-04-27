@@ -16,7 +16,7 @@
 	<div id="header">
 		<h1><a href="/">Rolling Puppy</a></h1>
 		<div id="loginBox">
-			<form action="/login" method="post">
+			<form action="/login" method="post" id = "login_form">
 				<input type="text" name="email" placeholder="Email">
 				<input type="password" name="pw" placeholder="Password">
 				<input type="submit" value="login" class="button">
@@ -30,7 +30,7 @@
 	<div id="contentsWrapper">
 		<div id="joinBox">
 			<form action="/join"  method="post" id = "join_form">
-				<input type="text" id="joinEmail" placeholder="Email">
+				<input type="text" name = "email" id="joinEmail" placeholder="Email">
 				<input type="password" name="password" placeholder="Password">
 				<input type="password" name="passwordConfirm" placeholder="Password Confirm">
 				<div>
