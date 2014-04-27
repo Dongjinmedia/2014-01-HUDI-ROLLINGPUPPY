@@ -204,7 +204,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 ** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 
 */
 #mapClicker {
-	z-index: 200;
+	z-index: 10;
 	position: absolute;
 	margin-top: -70px;
 	left: 50%;

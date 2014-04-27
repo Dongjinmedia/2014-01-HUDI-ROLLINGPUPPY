@@ -19,6 +19,23 @@
 
 <body>
 <input type="hidden" id="nickname" value="<%=session.getAttribute(SESSION_NICKNAME_ADJECTIVE) + " " + session.getAttribute(SESSION_NICKNAME_NOUN)%>"/>
+<div id="createChatRoom">
+	<div class="outer bg"></div>
+	<form action="/room" method="post">
+		<div class="bg">
+			<p>
+				<input type="text" name="id" placeholder="Room name" />
+			</p>
+			<p>
+				<input type="password" name="password" placeholder="Password" />
+			</p>
+			<p>
+				<input type="submit" value="Create Chatting Room" />
+			</p>
+		</div>
+		<div class="inner bg"></div>
+	</form>
+</div>
 <!-- hidden Area (For Menu Control Box) -->
 <div style="display:none;">
 	<div id="controlBox">

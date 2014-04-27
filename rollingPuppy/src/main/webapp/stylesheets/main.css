@@ -248,3 +248,68 @@ div#content {
 	height: 100%;
 	background-color: #fff;
 }
+
+/*
+** Create Chatting Room에 대한 CSS영역
+*/
+#createChatRoom {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 120;
+	overflow: hidden;
+}
+
+#createChatRoom .bg {
+	width: 100%;
+	height: 100%;
+	position: absolute;
+}
+
+#createChatRoom .outer {
+	background: #000;
+	opacity: 0.5;	
+}
+
+#createChatRoom > form {
+	position: absolute;
+	width: 500px;
+	height: 500px;
+	left: 50%;
+	top: 50%;
+	margin-top: -250px;
+	margin-left: -250px;
+	overflow: hidden;
+}
+
+#createChatRoom .inner {
+	background: #423142;
+	border-radius: 5px;
+	opacity: 0.5;
+}
+
+form input[type="text"],input[type="password"] {
+	background: #e5e5e5;
+	border: none;
+	border-radius: 3px;
+	color: #5a5656;
+	font-size: 20px;
+	height: 50px;
+	outline: none;
+	padding: 0px 10px;
+	width: 80%;
+}
+
+form input[type="submit"] {
+	background-color: #008dde;
+	border: none;
+	border-radius: 3px;
+	color: #f4f4f4;
+	cursor: pointer;
+	font-size: 20px;
+	height: 50px;
+	outline: none;
+	padding: 0px 10px;
+	text-transform: uppercase;
+	width: 80%;
+}
