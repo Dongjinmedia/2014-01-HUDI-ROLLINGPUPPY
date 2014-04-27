@@ -20,13 +20,12 @@ function getNode(node) {
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
-/* Comment added by Yoonsung
-var Panel = function(elPanel) {
-	var count = {
+function Panel(elPanel) {
+	var objCount = {
 			animationEnds: 0
-	}
+	};
 	
-	this.addEvents = function(elPanel) {
+	(function(elPanel) {
 		var elContainer = elPanel.parentNode.parentNode;
 		var elButtons = elPanel.querySelectorAll('a');
 		
@@ -34,28 +33,27 @@ var Panel = function(elPanel) {
 			elButtons[idx].addEventListener(
 					'click',
 					function(event) {
-						foldPanel(event, elContainer);
-					},
-					false
+						fnPanelButtonHandler(event, elContainer);
+					}
 			);
 		}
 		
 		elContainer.addEventListener(
 				'animationEnd',
 				function(event) {
-					noPanel(event, elContainer);
+					fnNoPanel(event, elContainer, objCount);
 				}
 		);
 		
 		elContainer.addEventListener(
 				'webkitAnimationEnd',
 				function(event) {
-					noPanel(event, elContainer, count);
+					fnNoPanel(event, elContainer, objCount);
 				}
 		);
-	}
+	})(elPanel);
 	
-	var foldPanel = function(event, elContainer) {
+	function fnPanelButtonHandler(event, elContainer) {
 		event.preventDefault();
 
 		var strButtonClassName = event.target.className;
@@ -72,9 +70,9 @@ var Panel = function(elPanel) {
 		}
 	}
 	
-	var noPanel = function(event, elContainer, count) {
-		count.animationEnds ++;
-		if (count.animationEnds % 2 == 0) {
+	var fnNoPanel = function(event, elContainer, objCount) {
+		objCount.animationEnds ++;
+		if (objCount.animationEnds % 2 == 0) {
 			return ;
 		}
 		
@@ -95,16 +93,29 @@ var Panel = function(elPanel) {
 }
 
 var NavList = function(elNavList) {
-	this.addEvents = function(elNavList) {
+	(function(elNavList) {
 		elNavList.addEventListener(
 				'click',
 				function(event) {
 					console.log(event.target);
+					// 라이브러리 만들거나 util함수로 만들어서 다중 className 문제 처리할 것 
+					if (event.target && event.target.className == "search") {
+						
+					} else if(event.target && event.target.className == "recommendation") {
+						
+					} else if(event.target && event.target.className == "chatting") {
+						
+					} else if(event.target && event.target.className == "bookmark") {
+						
+					} else if(event.target && event.target.className == "setting") {
+						
+					} else {
+						return ;
+					}
 				}
 		);
-	}
+	})(elNavList);
 }
-*/
 
 /*********************************************************************************************************
  * 네비게이션관련 소스코드 끝
