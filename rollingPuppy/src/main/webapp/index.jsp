@@ -29,8 +29,8 @@
 	
 	<div id="contentsWrapper">
 		<div id="joinBox">
-			<form action="/join"  method="post">
-				<input type="text" name="email" placeholder="Email">
+			<form action="/join"  method="post" id = "join_form">
+				<input type="text" id="joinEmail" placeholder="Email">
 				<input type="password" name="password" placeholder="Password">
 				<input type="password" name="passwordConfirm" placeholder="Password Confirm">
 				<div>

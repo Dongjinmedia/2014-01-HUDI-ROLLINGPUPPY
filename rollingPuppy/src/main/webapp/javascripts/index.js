@@ -3,6 +3,8 @@ function initPage() {
 	var lastLoggedEmail = getCookieValue(COOKIE_EMAIL);
 	
 	fillEmail(lastLoggedEmail);
+	
+	document.getElementById('join_form').onsubmit = validateEmail;	
 }
 
 /**
@@ -32,6 +34,17 @@ function fillEmail(email) {
 	var inputEmail = loginForm.querySelector("input[name=\"email\"]");
 	
 	inputEmail.value = email;
+}
+
+function validateEmail() {
+	var newbieEmail = document.getElementById("joinEmail").value;
+	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
+	if (emailFormat.test(newbieEmail)) {
+			return true;
+		} else {
+			alert( newbieEmail + " does not fit to email address form " )
+			return false;
+		}
 }
 
 window.onload = initPage;
