@@ -143,11 +143,11 @@ var naverMapSettings = {
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
-	        this.oMarkerInfoWindow.attach('changeVisible', this.changeVisibleEvent).bind(this); 
-	        this.oMap.attach('mouseenter', this.mouseEnterEvent).bind(this); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
-	        this.oMap.attach('mouseleave', this.mouseLeaveEvent).bind(this); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
-	        this.oMap.attach('dragstart',this.dragStartEvent).bind(this);
-	        this.oMap.attach('click',this.clickEvent).bind(this);    
+	        this.oMarkerInfoWindow.attach('changeVisible', this.changeVisibleEvent.bind(this)); 
+	        this.oMap.attach('mouseenter', this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
+	        this.oMap.attach('mouseleave', this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
+	        this.oMap.attach('dragstart',this.dragStartEvent.bind(this));
+	        this.oMap.attach('click',this.clickEvent.bind(this));    
 	    },
 
 	    //changeVisible : event. 정보창의 표시여부 변경
