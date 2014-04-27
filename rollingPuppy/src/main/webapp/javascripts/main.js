@@ -21,7 +21,7 @@ function getNode(node) {
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 function Panel(elPanel) {
-	var objCount = {
+	this.objCount = {
 			animationEnds: 0
 	};
 	
@@ -479,9 +479,9 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	//comment by Yoonsung
-	//var panel = new Panel(document.querySelector('div#panel'));
-	//panel.addEvents(panel.elPanel);
+	Panel(document.getElementById('panel'));
+	var navList = new NavList(documnet.getElementById())
+	
 	//------------------------------------------------------------------------------------//
 	
 	/*
