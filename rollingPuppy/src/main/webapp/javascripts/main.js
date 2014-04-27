@@ -497,17 +497,7 @@ function initialize() {
 	 * 현재 윤성이 작업중
 	 */
 	//------------------------------------------------------------------------------------//
-	//Marker Interaction 메뉴 및 채팅에 대한 초기화영역
-	
-	//채팅초기화
-	var socket = io.connect('http://127.0.0.1:3080');
-	document.addEventListener("click", function(e) {
-		e.preventDefault();
-		
-		if (e.target.className == "menu-item-back") {
-			menuClick(e);
-		}
-	}, false);
+	//Marker Interaction 메뉴 초기화영역
 	
 	//Marker Interaction 메뉴 초기화
 	//CUSTOM으로 만든 이벤트객체 생성
@@ -537,6 +527,21 @@ function initialize() {
 	//MapClicker(마커가 없는 메뉴지역)을 클릭했을때 인터렉션을 위한 객체 초기화
 	oMapClicker.initialize();
 	//------------------------------------------------------------------------------------//
+	
+	
+	/*
+	 * 현재 윤성이 작업중
+	 */
+	//------------------------------------------------------------------------------------//
+	//Chatting을 위한  socket.io 초기화 영역
+	var socket = io.connect('http://127.0.0.1:3080');
+	document.addEventListener("click", function(e) {
+		e.preventDefault();
+		
+		if (e.target.className == "menu-item-back") {
+			menuClick(e);
+		}
+	}, false);
 }
 
 window.onload = initialize();
