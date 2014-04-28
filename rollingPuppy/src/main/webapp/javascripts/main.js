@@ -195,10 +195,10 @@ var naverMapSettings = {
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
 	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
 	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-	                oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
-	                oMarkerInfoWindow.setPoint(oTarget.getPoint());
-	                oMarkerInfoWindow.setVisible(true);
-	                oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+	                this.oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
+	                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
+	                this.oMarkerInfoWindow.setVisible(true);
+	                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
 	                    right: 0,
 	                    top: -19
 	                });
