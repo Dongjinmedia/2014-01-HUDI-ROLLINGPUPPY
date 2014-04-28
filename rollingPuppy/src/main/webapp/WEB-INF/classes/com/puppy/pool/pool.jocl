@@ -1,7 +1,7 @@
 <object class="org.apache.commons.dbcp.PoolableConnectionFactory" xmlns="http://apache.org/xml/xmlns/jakarta/commons/jocl">
     <object class="org.apache.commons.dbcp.DriverManagerConnectionFactory">
-        <string value="jdbc:mysql://10.73.45.135:3306/rolling_puppy?useUnicode=true"/>
-        <string value="root"/>       
+        <string value="jdbc:mysql://125.209.195.202:3306/rolling_puppy?useUnicode=true"/>
+        <string value="next"/>       
         <string value="dlrudals"/>   
     </object>
      
