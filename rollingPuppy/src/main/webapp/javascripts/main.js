@@ -178,7 +178,7 @@ var naverMapSettings = {
 	    //move event가 발생한 후 click이벤트가 발생한다.
 	    //drag 시작할 때 mapClickWithoutMarker를 화면상에서 보이지 않게끔 처리한다.
 	    dragStartEvent : function(oCustomEvent){
-	        this.oMapClickWithoutMarker.style.top = "-2000px";
+	        oMapClicker.invisible();
 	    },
 
 	    clickEvent : function(oCustomEvent) {
@@ -212,13 +212,9 @@ var naverMapSettings = {
 	                clientPosX = oCustomEvent.event._event.clientX;
 	                clientPosY = oCustomEvent.event._event.clientY;
 	                
-	                //TODO Bind를 통해서 oMapClickWithoutMarker를 object 변수로 선언해야 한다.
-	                this.oMapClickWithoutMarker.style.position = "absolute";
-	                this.oMapClickWithoutMarker.style.left = clientPosX+'px';
-	                this.oMapClickWithoutMarker.style.top = clientPosY +'px';
-	                
-	                //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+	              //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
 	                oMapClicker.oClickPoint = oCustomEvent.point;
+	                oMapClicker.move(clientPosX, clientPosY);
 	        }
 	    },
 
@@ -227,7 +223,6 @@ var naverMapSettings = {
 	        var mapDivWidth = getStyle(this.naverMap, "width");
 	        var mapDivHeight = getStyle(this.naverMap, "height");
 	        this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
-	        this.oMapClickWithoutMarker = document.getElementById("mapClicker");
 
 	        nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 
@@ -473,19 +468,27 @@ var oMapClicker = {
 	clickAdd: null,
 	clickBookMark: null,
 	oClickPoint: null,
+	move: function(clientPosX, clientPosY) {
+		this.oMapClicker.style.position = "absolute";
+		this.oMapClicker.style.left = clientPosX+'px';
+		this.oMapClicker.style.top = clientPosY +'px';
+	},
+	invisible: function() {
+		this.oMapClicker.style.top = "-2000px";
+	},
 	initialize: function() {
 		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
-		var oMapClicker = document.getElementById('mapClicker');
-		var clickAdd = oMapClicker.querySelector('.icon-add');
-		var clickBookMark = oMapClicker.querySelector('.icon-star');
+		this.oMapClicker = document.getElementById('mapClicker');
+		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
+		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
 		
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		clickAdd.addEventListener('click', function(e) {
+		this.clickAdd.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible();
 		}, false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		clickBookMark.addEventListener('click', function(e) {
+		this.clickBookMark.addEventListener('click', function(e) {
 			alert('clickBookMark');
 			
 		}, false);
