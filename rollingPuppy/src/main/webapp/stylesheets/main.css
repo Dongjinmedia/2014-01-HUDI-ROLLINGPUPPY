@@ -258,7 +258,7 @@ div#content {
 	height: 100%;
 	z-index: 120;
 	overflow: hidden;
-	!display: none; 
+	display: none; 
 }
 
 #createChatRoom .centerArea {
@@ -327,7 +327,7 @@ div#content {
 }
 
 /* 삭제예정 */
-[class^=icon-]:before,[class*=" icon-"]:before {
+#createChatRoom [class^=icon-]:before,[class*=" icon-"]:before {
 	font-family: FontAwesome;
 	font-weight: 400;
 	font-style: normal;
@@ -335,7 +335,7 @@ div#content {
 	text-decoration: inherit;
 }
 
-label[class^=icon-]:before,label[class*=" icon-"]:before {
+#createChatRoom label[class^=icon-]:before,label[class*=" icon-"]:before {
 	position: absolute;
 	text-align: center;
 	font-size: 200%;
@@ -344,8 +344,9 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	margin-top: -25%;
 	margin-left: -25%;
 }
+/* 삭제예정 */
 
-form input[type="text"], input[type="number"] {
+#createChatRoom input[type="text"], #createChatRoom input[type="number"] {
 	background: #e5e5e5;
 	border: none;
 	border-radius: 0 3px 3px 0;
@@ -358,7 +359,7 @@ form input[type="text"], input[type="number"] {
 	width: 380px;
 }
 
-form input[type="submit"] {
+#createChatRoom input[type="submit"] {
 	background-color: #008dde;
 	border: none;
 	border-radius: 3px;

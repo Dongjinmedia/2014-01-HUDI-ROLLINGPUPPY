@@ -414,6 +414,55 @@ function menuClick(e) {
  * Marker Interaction 메뉴에 대한 소스코드 끝
  **********************************************************************************************************/
 
+/*********************************************************************************************************
+ * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
+ **********************************************************************************************************/
+var oCreateChattingRoom = {
+		oCreateChattingRoom: null,
+		visible: function() {
+			this.oCreateChatRoom.setAttribute('style', 'display:block;');
+		},
+		invisible: function() {
+			this.oCreateChatRoom.setAttribute('style', 'display:none;');
+		},
+		initialize: function() {
+			this.oCreateChatRoom = document.getElementById('createChatRoom');
+			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
+			
+			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
+			eOuterBg.addEventListener('click', function() {
+				this.invisible();
+			}.bind(this), false);
+			
+			//채팅방 생성요청에 대한 action 이벤트
+			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
+			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
+		},
+		requestCreate: function(e) {
+			e.preventDefault();
+			
+			//TODO validation 체크
+			//TODO 서버와 통신하는 코드
+			//TODO 마커에 고유 아이디값을 부여
+			
+			//마커를 생성
+			console.log(oMapClicker.oClickPoint);
+	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	    title: 'test' + oMapClicker.oClickPoint.toString()
+	    	});
+	    	oMarker.setPoint(oMapClicker.oClickPoint);
+	    	naverMapSettings.oMap.addOverlay(oMarker);
+	    	
+	    	//TODO 현재 포커스되어있는 클릭 아이콘없애기
+	    	
+	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 합니다.
+	    	this.invisible();
+		}
+}
+
+/*********************************************************************************************************
+ * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 종료
+ **********************************************************************************************************/
 
 /*********************************************************************************************************
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
@@ -432,20 +481,8 @@ var oMapClicker = {
 		
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		clickAdd.addEventListener('click', function(e) {
-
-			//채팅방을 생성하는 프로세스 진행
-			//.....
-			//
-			
-			
-			//마커를 생성
-	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
-	    	    title: 'test' + this.oClickPoint.toString()
-	    	});
-	    	oMarker.setPoint(this.oClickPoint);
-	    	naverMapSettings.oMap.addOverlay(oMarker);
-			
-		}.bind(this), false);
+			oCreateChattingRoom.visible();
+		}, false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
 		clickBookMark.addEventListener('click', function(e) {
@@ -518,6 +555,13 @@ function initialize() {
 	oMapClicker.initialize();
 	//------------------------------------------------------------------------------------//
 	
+	/*
+	 * 현재 윤성이 작업중
+	 */
+	//------------------------------------------------------------------------------------//
+	//Chatting Room Create Area를 위한 초기화 영역
+	oCreateChattingRoom.initialize();
+	//------------------------------------------------------------------------------------//
 	
 	/*
 	 * 현재 윤성이 작업중
@@ -532,6 +576,7 @@ function initialize() {
 			menuClick(e);
 		}
 	}, false);
+	//------------------------------------------------------------------------------------//
 }
 
 window.onload = initialize();
