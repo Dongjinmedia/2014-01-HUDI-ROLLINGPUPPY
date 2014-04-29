@@ -195,7 +195,7 @@ function join(event) {
 			var isSuccess = oResult['isSuccess'];
 			console.log(isSuccess);
 			if ( isSuccess === true ) {
-				alert("이웃가입을 축하합니다.")
+				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
 				window.location = "/";
 			} else {
 				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
