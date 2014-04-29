@@ -5,6 +5,7 @@
 /*********************************************************************************************************
  * 모두에게 공통되는 유틸함수 영역
  **********************************************************************************************************/
+//TODO Util함수 모듈화
 //특정 node의 style을 반환하는 함수
 function getStyle(node, style) {
     return window.getComputedStyle(node, null).getPropertyValue(style);
@@ -15,7 +16,69 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
+//Ajax GET 요청함수
+//내부적으로 _getObjectFromJsonRequest 호출
+//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+//formData 형태로 만들어 서버에 요청보낸다.
+function getObjectFromJsonGetRequest(url, oParameters) {
+	_getObjectFromJsonRequest(url, "GET", oParameters);
+}
 
+//Ajax POST 요청함수
+//내부적으로 _getObjectFromJsonRequest 호출
+//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+//formData 형태로 만들어 서버에 요청보낸다.
+function getObjectFromJsonPostRequest(url, oParameters) {
+	_getObjectFromJsonRequest(url, "POST", oParameters);	
+}
+
+//Ajax 요청함수
+//TODO CROSS BROWSER 시 하위링크 참조 
+//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+function _getObjectFromJsonRequest(url, method, oParameters) {
+	
+	//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
+	var request = new XMLHttpRequest();
+	
+	if (method !== "GET" && method !== "POST" )
+		return null;
+	
+	request.open(method, url, false	);
+	
+	request.onreadystatechange = function() {
+		console.log("readyState : ", request.readyState);
+		console.log("status : ", request.status);
+		
+		if (request.readyState == 4 && request.status == 200) {
+			var obj = JSON.parse(request.responseText);
+			
+			return obj;
+		}
+	}
+	
+	//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
+	if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+		
+		var formData = new FormData();
+		
+		//hasOwnProperty is used to check if your target really have that property, 
+		//rather than have it inherited from its prototype. A bit simplier would be
+		for (var key in oParameters){
+			
+		    if (oParameters.hasOwnProperty(key)) {
+		         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
+		    	console.log("key : ", key);
+		    	console.log("value : ", oParameters[key]);
+		    	formData.append(key, oParameters[key]);
+		    }
+		}
+		console.log("formData : ", formData);
+		request.send(formData);
+	} else {
+		request.send();
+	}
+	
+}
 
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
@@ -473,6 +536,14 @@ var oCreateChattingRoom = {
 			
 			
 			//TODO 서버와 통신하는 코드
+			var oRequestData = {
+					"test1": "test1",
+					"test2": "test2",
+					"test3": "test3"
+			};
+			getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			
+			
 			//TODO 마커에 고유 아이디값을 부여
 			
 			//마커를 생성
