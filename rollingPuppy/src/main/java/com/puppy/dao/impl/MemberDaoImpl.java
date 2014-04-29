@@ -16,7 +16,7 @@ import com.puppy.dto.Member;
 */
 public class MemberDaoImpl extends DAO implements MemberDao{
 
-	private static final Logger log = LoggerFactory.getLogger(MemberDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MemberDaoImpl.class);
 	private static MemberDaoImpl instance = null;
 	
 	private MemberDaoImpl() {
@@ -28,7 +28,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
-		log.info("MemberDaoImpl selectDuplicateMemberExists");
+		logger.info("MemberDaoImpl selectDuplicateMemberExists");
 		
 		Member member = null;
 		
@@ -39,7 +39,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			log.error("in selectDuplicateMemberExists", e);
+			logger.error("in selectDuplicateMemberExists", e);
 		}
 		
 		return member;
@@ -47,7 +47,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public Member selectCheckLoginInfo(String email, String pw) {
-		log.info("MemberDaoImpl selectCheckLoginInfo");
+		logger.info("MemberDaoImpl selectCheckLoginInfo");
 		
 		Member member = null;
 		
@@ -59,7 +59,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			log.error("in selectCheckLoginInfo", e);
+			logger.error("in selectCheckLoginInfo", e);
 		}
 		
 		return member;
@@ -67,7 +67,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public int insertMemberInfo(Member member) {
-		log.info("MemberDaoImpl insertMemberInfo");
+		logger.info("MemberDaoImpl insertMemberInfo");
 		
 		PreparedStatement insertPreparedStatement = null;
 		int successQueryNumber = 0;
@@ -88,7 +88,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			
 			successQueryNumber = insertQuery(insertPreparedStatement, member); 
 		} catch (Exception e) {
-			log.error("in insertMemberInfo", e);
+			logger.error("in insertMemberInfo", e);
 		}
 		
 		return successQueryNumber;

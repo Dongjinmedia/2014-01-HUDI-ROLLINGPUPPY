@@ -88,6 +88,8 @@ public class DAO {
 				//Field의 변수명을 가져온다.
 				String fieldName = field.getName();
 				
+				logger.info("fieldName : "+fieldName+" | fieldType : "+field.getType());
+				
 				//"행"에 해당하는 Map영역에서, 필드에 해당하는 항목의 데이터를 가져온다.
 				Object sqlTargetData = sqlTargetResult.get(fieldName);
 				
@@ -159,7 +161,7 @@ public class DAO {
 		        	//메소드를 실제로 실행시켜준다.
 					//setMethod(Paramter)를 실행시켜주는것!!
 		        	//데이터베이스 첫번째 컬럼의 데이터를 가져와 저장한다.
-					targetMethod.invoke(targetClass, generatedKeys.getLong(1)); // set메소드 호출.
+					targetMethod.invoke(targetClass, generatedKeys.getInt(1)); // set메소드 호출.
 		        }
 		        
 			}

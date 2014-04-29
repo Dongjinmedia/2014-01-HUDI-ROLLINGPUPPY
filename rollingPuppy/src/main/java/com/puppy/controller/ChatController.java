@@ -4,14 +4,20 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.HashMap;
 import java.util.Map;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
+import com.puppy.dao.impl.ChatDaoImpl;
+import com.puppy.dto.ChatRoom;
 import com.puppy.util.Constants;
 import com.puppy.util.Util;
 /*
@@ -71,18 +77,54 @@ public class ChatController extends HttpServlet {
 		float latitude = 0;
 		float longitude = 0;
 		
+		Part titlePart = null;
+		Part maxPart = null;
+		Part namePart = null;
+		Part latitudePart = null;
+		Part longitudePart = null;
+		
 		try {
 			out = response.getWriter();
 			
 			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
-			title =  Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_TITLE ));
-			max = Integer.parseInt( Util.getStringValueFromPart(request.getPart( Constants.REQUEST_CHATROOM_MAX )));
-			name = Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_NAME ));
-			latitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_LATITUDE )));
-			longitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_LONGITUDE )));
+			titlePart = request.getPart( Constants.REQUEST_CHATROOM_TITLE );
+			maxPart = request.getPart( Constants.REQUEST_CHATROOM_MAX );
+			namePart = request.getPart( Constants.REQUEST_CHATROOM_NAME );
+			latitudePart = request.getPart( Constants.REQUEST_CHATROOM_LATITUDE );
+			longitudePart = request.getPart( Constants.REQUEST_CHATROOM_LONGITUDE );
 			
-			//성공을 표시
-			isSuccess = true;
+			if ( titlePart != null )
+				title =  Util.getStringValueFromPart( titlePart );
+			
+			if ( maxPart != null )
+				max = Integer.parseInt( Util.getStringValueFromPart( maxPart ));
+			
+			if ( namePart != null )
+				name = Util.getStringValueFromPart( namePart );
+			
+			if ( latitudePart != null )
+				latitude = Float.parseFloat( Util.getStringValueFromPart( latitudePart ));
+			
+			if ( longitudePart != null )
+				longitude = Float.parseFloat( Util.getStringValueFromPart( longitudePart ));
+			
+			if ( title !=  null && max != 0 && name != null && latitude != 0 && longitude != 0 ) {
+				
+				
+				ChatRoom chatRoom = new ChatRoom();
+				
+				chatRoom.setTitle(title);
+				chatRoom.setMax(max);
+				chatRoom.setLocation_name(name);
+				chatRoom.setLocation_latitude(latitude);
+				chatRoom.setLocation_longitude(longitude);
+				
+				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
+				chatDaoImpl.insertChatRoomAndGetLastSavedID(chatRoom);
+				
+				//성공을 표시
+				isSuccess = true;
+			}
 		} catch (Exception e) {
 			logger.error("getParameterFrom Javascript FormData",e);
 			
