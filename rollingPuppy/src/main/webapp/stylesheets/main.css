@@ -111,12 +111,12 @@ div#panel {
 
 .fold_panel #panel {
     animation: fold;
-    animation-duration: 0.6s;
+    animation-duration: 0.4s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
 
     -webkit-animation: fold;
-    -webkit-animation-duration: 0.6s;
+    -webkit-animation-duration: 0.4s;
     -webkit-animation-timing-function: ease;
     -webkit-animation-fill-mode: forwards;
 }
@@ -135,12 +135,12 @@ div#panel {
 
 .unfold_panel #panel {
     animation: unfold;
-    animation-duration: 0.6s;
+    animation-duration: 0.4s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
 
     -webkit-animation: unfold;
-    -webkit-animation-duration: 0.6s;
+    -webkit-animation-duration: 0.4s;
     -webkit-animation-timing-function: ease;
     -webkit-animation-fill-mode: forwards;
 }
