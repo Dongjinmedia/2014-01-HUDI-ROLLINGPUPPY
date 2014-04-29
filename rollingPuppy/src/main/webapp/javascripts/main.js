@@ -469,6 +469,7 @@ function menuClick(e) {
  * 세훈이가 작성한 줌인/줌아웃 기능에 대한 소스코드
  **********************************************************************************************************/
 
+/* TODO 리팩토링, 줌인/줌아웃 수준 조정 필요 */
 document.getElementById("zoomInButton").addEventListener('click', function(e){
 	naverMapSettings.changeZoom(12);
 });
