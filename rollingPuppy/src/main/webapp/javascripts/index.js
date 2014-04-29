@@ -149,7 +149,7 @@ function login(event) {
 				alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
 				window.location = "/main";
 			} else if ( isSuccess === false ) {
-				alert("존재하지 않는 id입니다.\n아이디를 다시 확인해 주세요.");
+				alert("아이디와 비밀번호를 다시 확인해 주세요.");
 			} else {
 				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
 			}
