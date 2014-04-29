@@ -1,4 +1,3 @@
-
 function initPage() {
 	var COOKIE_EMAIL = "member.lastLoggedEmail";
 	var lastLoggedEmail = getCookieValue(COOKIE_EMAIL);
@@ -12,6 +11,11 @@ function initPage() {
 	//윤성소스 추가
 	document.querySelector(".c_login").addEventListener('click', loginChoiceONOFF, false);
 	document.querySelector(".c_join").addEventListener('click', joinChoiceONOFF, false);
+	//end
+	
+	//duplicate Email check
+	document.getElementById("joinEmail").addEventListener('keyup',duplicateEmail,false);
+	
 }
 
 /**
@@ -123,5 +127,31 @@ function joinChoiceONOFF() {
 
 
 //****************************************************윤성소스 추가 끝
+
+//id 중복 체크를 위한 함수 
+function duplicateEmail(){
+	console.log("check!!");
+	var newbieEmail = document.getElementById("joinEmail").value;
+	var url = "/join?email="+newbieEmail;
+	
+	var request = new XMLHttpRequest();
+	request.open("GET", url , true );
+	request.onreadystatechange = function(){
+		if ( request.readyState === 4 && request.status === 200 ) {
+			var isExisted = request.responseText;
+			console.log(	isExisted);
+			console.log(isExisted == 'true' );
+			console.log(isExisted == "true" );
+			console.log(isExisted === "true" );
+			
+			if( isExisted == true){
+				alert("already exist");
+			}
+		}
+	}
+	request.send(); //request를 보내는것 callback 함수당 
+}
+
+
 
 window.onload = initPage;
