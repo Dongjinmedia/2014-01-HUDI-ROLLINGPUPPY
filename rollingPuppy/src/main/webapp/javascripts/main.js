@@ -20,40 +20,41 @@ function getNode(node) {
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
-function Panel(elPanel) {
-	var objCount = {
+var Panel = {
+	elPanel: document.getElementById('panel'),
+	elContainer: document.getElementById('container'),
+
+	// 지울거
+	objCount: {
 			animationEnds: 0
-	};
-	
-	(function(elPanel) {
-		var elContainer = elPanel.parentNode.parentNode;
-		var elButtons = elPanel.querySelectorAll('a');
+	},
+		
+	addEvents: function() {
+		var elButtons = this.elPanel.querySelectorAll('a');
 		
 		for (var idx = 0; idx < elButtons.length; idx++) {
 			elButtons[idx].addEventListener(
 					'click',
-					function(event) {
-						fnPanelButtonHandler(event, elContainer);
-					}
+					this.fnPanelButtonHandler.bind(this)
 			);
 		}
 		
-		elContainer.addEventListener(
+		this.elContainer.addEventListener(
 				'animationEnd',
-				function(event) {
-					fnNoPanel(event, elContainer, objCount);
-				}
+				this.fnNoPanel.bind(this)
 		);
 		
-		elContainer.addEventListener(
+		this.elContainer.addEventListener(
 				'webkitAnimationEnd',
-				function(event) {
-					fnNoPanel(event, elContainer, objCount);
-				}
+				this.fnNoPanel.bind(this)
 		);
-	})(elPanel);
+	},
+
+//	callbackPanelButton: function(event) {
+//		this.fnPanelButtonHandler(event, elContainer);
+//	}
 	
-	function fnPanelButtonHandler(event, elContainer) {
+	fnPanelButtonHandler: function(event) {
 		event.preventDefault();
 
 		var strButtonClassName = event.target.className;
@@ -64,19 +65,19 @@ function Panel(elPanel) {
 		}
 		
 		if (boolFold) {
-			elContainer.className = 'fold_panel';
+			this.elContainer.className = 'fold_panel';
 		} else {
-			elContainer.className = 'unfold_panel';
+			this.elContainer.className = 'unfold_panel';
 		}
-	}
+	},
 	
-	var fnNoPanel = function(event, elContainer, objCount) {
-		objCount.animationEnds ++;
-		if (objCount.animationEnds % 2 == 0) {
+	fnNoPanel: function(event) {
+		this.objCount.animationEnds ++;
+		if (this.objCount.animationEnds % 2 == 0) {
 			return ;
 		}
 		
-		var strElContainerClassName = elContainer.className;
+		var strElContainerClassName = this.elContainer.className;
 		
 		var boolFold = false;
 		if (strElContainerClassName === 'fold_panel') {
@@ -84,17 +85,19 @@ function Panel(elPanel) {
 		}
 		
 		if (boolFold) {
-			elContainer.className = 'no_panel';
+			this.elContainer.className = 'no_panel';
 		}
 		else {
-			elContainer.className = '';
+			this.elContainer.className = '';
 		}
 	}
 }
 
-var NavList = function(elNavList) {
-	(function(elNavList) {
-		elNavList.addEventListener(
+var NavList = {
+	elNavList: document.getElementById('nav_list'),
+	
+	addEvents: function() {
+		this.elNavList.addEventListener(
 				'click',
 				function(event) {
 					console.log(event.target);
@@ -114,7 +117,7 @@ var NavList = function(elNavList) {
 					}
 				}
 		);
-	})(elNavList);
+	}
 }
 
 /*********************************************************************************************************
@@ -505,9 +508,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel(document.getElementById('panel'));
-	var navList = new NavList(document.getElementById('nav_list'));
-	
+	Panel.addEvents();
+	NavList.addEvents();	
 	//------------------------------------------------------------------------------------//
 	
 	/*
