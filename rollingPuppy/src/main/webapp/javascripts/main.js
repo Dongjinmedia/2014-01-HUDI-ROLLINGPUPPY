@@ -244,6 +244,9 @@ var naverMapSettings = {
 	        if (oTarget instanceof nhn.api.map.Marker) {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
+	            	//TODO 채팅방번호
+	            	alert(oTarget.chatRoomNumber);
+	            	
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
 	                var menuTemplate = document.getElementById("controlBox");
 
@@ -585,11 +588,14 @@ var oCreateChattingRoom = {
 					&& isNaN(chatRoomNumber) === false ) {
 				
 				//마커를 생성
+				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
 				console.log(oMapClicker.oClickPoint);
 		    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
 		    	    title: 'test' + oMapClicker.oClickPoint.toString()
 		    	});
 		    	oMarker.setPoint(oMapClicker.oClickPoint);
+		    	oMarker.chatRoomNumber = chatRoomNumber;
+		    	
 		    	naverMapSettings.oMap.addOverlay(oMarker);
 		    	
 		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
