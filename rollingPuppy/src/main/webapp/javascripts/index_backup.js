@@ -8,10 +8,7 @@ function initPage() {
 
 	document.getElementById("join_form").onsubmit = validateJoinEmail;	
 	document.getElementById("login_form").onsubmit = validateLoginEmail;
-
-	//윤성소스 추가
-	document.querySelector(".c_login").addEventListener('click', loginChoiceONOFF, false);
-	document.querySelector(".c_join").addEventListener('click', joinChoiceONOFF, false);
+	
 }
 
 /**
@@ -78,50 +75,5 @@ function validateLoginEmail() {
 			return false;
 		}
 }
-
-//****************************************************윤성소스 추가 시작
-function getStyleValue(node, style) {
-	var totalStyle= window.getComputedStyle(node , null);
-	return totalStyle.getPropertyValue(style);
-}
-
-function loginChoiceONOFF() {
-	event.preventDefault();
-	
-	var loginNode = document.querySelector(".loginArea");
-	var loginNodeStyle = getStyleValue(loginNode, "display");
-	var titleNode = document.querySelector(".title");
-	titleNode.innerHTML = "Welcome. Please login.";
-	titleNode.nextElementSibling.innerHTML = "Cozy Home is waiting for you.";
-	
-	
-	if ( loginNodeStyle == "none" )
-		loginNode.style.display="block";
-	else
-		loginNode.style.display="none";
-
-	loginNode.nextElementSibling.style.display="none";
-}
-
-function joinChoiceONOFF() {
-	event.preventDefault();
-	
-	var loginNode = document.querySelector(".joinArea");
-	var loginNodeStyle = getStyleValue(loginNode, "display");
-	var titleNode = document.querySelector(".title");
-	
-	titleNode.innerHTML = "Be My Neighbor";
-	titleNode.nextElementSibling.innerHTML = "And Chat On The Map";
-	
-	if ( loginNodeStyle == "none" )
-		loginNode.style.display="block";
-	else
-		loginNode.style.display="none";
-
-	loginNode.previousElementSibling.style.display="none";
-}
-
-
-//****************************************************윤성소스 추가 끝
 
 window.onload = initPage;
