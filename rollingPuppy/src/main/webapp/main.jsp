@@ -77,6 +77,8 @@
 			<input type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
+
+		<a class="button" id="logout_button" href="/logout">Logout</a>
 	</div>
 	
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->

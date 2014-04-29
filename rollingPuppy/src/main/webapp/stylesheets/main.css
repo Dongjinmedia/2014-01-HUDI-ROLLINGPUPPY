@@ -15,6 +15,13 @@
 	right: 0px;
 }
 
+#logout_button {
+	position: absolute;
+	top: 12px;
+	right: 20px;
+	color: white;
+}
+
 div#container {
 	position: absolute;
 	top: 50px;
