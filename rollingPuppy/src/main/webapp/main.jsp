@@ -1,5 +1,5 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+	pageEncoding="UTF-8" isELIgnored="false" %>
 <!DOCTYPE html>
 <html>
 <%! 
@@ -67,7 +67,7 @@
 <!--페이지 전체를 감싸는 영역-->
 <div id="wrapper">
 
-	<!--검색박스를 포함하는 헤더 영역-->
+	<!--검색 박스와 로그아웃 버튼을 포함하는 헤더 영역-->
 	<div id="header">
 		<a id="logo" href="/main"><img src="/images/logo.png"/></a>
 		
@@ -77,6 +77,10 @@
 			<button class="button" type="submit">검색</button>
 		</div>
 
+		<!-- 사용자 별명 -->
+		<p id="user_name">${sessionScope["member.nickname_adjective"]} ${sessionScope["member.nickname_noun"]}</p>
+
+		<!--  로그아웃 버튼 -->
 		<a id="logout_button" class="button" href="/logout">Logout</a>
 	</div>
 	

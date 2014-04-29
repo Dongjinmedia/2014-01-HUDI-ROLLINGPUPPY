@@ -80,6 +80,12 @@ div#header {
 	right: 0px;
 }
 
+#user_name {
+	position: absolute;
+	top: 17px;
+	right: 80px;
+}
+
 #logout_button {
 	position: absolute;
 	top: 12px;
