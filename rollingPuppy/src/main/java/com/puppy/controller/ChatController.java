@@ -12,13 +12,12 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.puppy.util.Constants;
+import com.puppy.util.Util;
 /*
  * 채팅방에 대한 요청들을 처리할 컨트롤러.
  * URL을 분석해서 해당하는 메소드를 실행하도록 만들어져있다.
@@ -80,11 +79,11 @@ public class ChatController extends HttpServlet {
 			out = response.getWriter();
 			
 			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
-			title =  getValue(request.getPart( Constants.POST_CHATROOM_TITLE ));
-			max = Integer.parseInt(getValue(request.getPart( Constants.POST_CHATROOM_MAX )));
-			name = getValue(request.getPart( Constants.POST_CHATROOM_NAME ));
-			latitude = Float.parseFloat(getValue(request.getPart( Constants.POST_CHATROOM_LATITUDE )));
-			longitude = Float.parseFloat(getValue(request.getPart( Constants.POST_CHATROOM_LONGITUDE )));
+			title =  Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_TITLE ));
+			max = Integer.parseInt( Util.getStringValueFromPart(request.getPart( Constants.POST_CHATROOM_MAX )));
+			name = Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_NAME ));
+			latitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_LATITUDE )));
+			longitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_LONGITUDE )));
 			
 			//성공을 표시
 			isSuccess = true;
@@ -100,16 +99,5 @@ public class ChatController extends HttpServlet {
 		
 		//gson을 통해서 HashMap을 JSON형태로 변경 후 response전달
 		out.println(gson.toJson(resultJsonData));
-	}
-	
-	//getParameterValue From Javascript FormData
-	private static String getValue(Part part) throws IOException {
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
-	    StringBuilder value = new StringBuilder();
-	    char[] buffer = new char[1024];
-	    for (int length = 0; (length = reader.read(buffer)) > 0;) {
-	        value.append(buffer, 0, length);
-	    }
-	    return value.toString();
 	}
 }
