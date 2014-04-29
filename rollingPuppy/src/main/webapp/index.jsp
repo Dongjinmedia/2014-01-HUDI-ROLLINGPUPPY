@@ -36,10 +36,10 @@
 					<input type="password" name="pw" placeholder="Password" />
 				</p>
 				<p>
-					<input type="submit" id="login_button" value="Enter House" />
+					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
 				</p>
 				<p>
-					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
+					<input type="submit" id="login_button" value="Enter House" />
 				</p>
 			</form>
 		</div>

@@ -18,5 +18,6 @@ public class Constants {
 	public static final String POST_CHATROOM_LATITUDE = "locationLatitude";
 	public static final String POST_CHATROOM_LONGITUDE = "locationLongitude";
 	
-	public static final String JSON_RESPONSE_ISSUCCESS = "isSuccess"; 
+	public static final String JSON_RESPONSE_ISSUCCESS = "isSuccess";
+	public static final String JSON_RESPONSE_NICKNAME = "nickname"; 
 }
