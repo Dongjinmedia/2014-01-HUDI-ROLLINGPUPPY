@@ -10,11 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.puppy.dto.Member;
 
 /*
  * Data Access Object
@@ -29,13 +26,13 @@ public class DAO {
 	protected DAO() {
 	}
 	
-	private static final Logger log = LoggerFactory.getLogger(DAO.class);
+	private static final Logger logger = LoggerFactory.getLogger(DAO.class);
 	
 	/*
 	 * 전달하는 SQL에 대한 여러행의 결과데이터를 요청한다.
 	 */
 	protected <Any> List<Any> selectList(Class<Any> targetClass, PreparedStatement preparedStatement) {
-		log.info("DAO selectList");
+		logger.info("DAO selectList");
 
 		//반환할 데이터의 타입을 모르기때문에 GENERIC이 ?이다.
 		List<Any> lists = null;
@@ -43,7 +40,7 @@ public class DAO {
 			//데이터베이스 질의를 통해서 얻은 select결과데이터를 DTO객체에 담는 메소드
 			lists = setReflectionDataToModel(targetClass , selectQuery(preparedStatement));
 		} catch (Exception e) {
-			log.error("setReflectionDataToModel Exception" , e);
+			logger.error("setReflectionDataToModel Exception" , e);
 		}
 		return lists;
 	}
@@ -52,7 +49,7 @@ public class DAO {
 	 * 전달하는 SQL에 대한 한행의 결과데이터를 요청한다.
 	 */
 	protected <Any> Any selectOne(Class<Any> targetClass, PreparedStatement preparedStatement) {
-		log.info("DAO selectOne");
+		logger.info("DAO selectOne");
 		
 		List<Any> lists = selectList(targetClass, preparedStatement);
 		return  ( lists == null || lists.isEmpty()  ? null : lists.get(0) );
@@ -65,7 +62,7 @@ public class DAO {
 	 */
 	private static <Any> List<Any> setReflectionDataToModel(Class<Any> targetClass, List<Map<String, Object>> sqlResult)
 																									throws Exception {
-		log.info("DAO setReflectionDataToModel");
+		logger.info("DAO setReflectionDataToModel");
 		
 		//전달받은 targetClass (DTO)에 선언된 모든 Field(변수)를 배열로 리턴한다.
 		Field[] fields = targetClass.getDeclaredFields();
@@ -130,7 +127,7 @@ public class DAO {
 	 * Like resultSet = preparedStatement.executeQuery(query);
 	 */
 	protected <Any> int insertQuery(PreparedStatement preparedStatement, Object targetClass) throws SQLException {
-		log.info("DAO insertQuery");
+		logger.info("DAO insertQuery");
 		
 		int successQueryNumber = 0;
 		Connection connection = null;
@@ -141,9 +138,8 @@ public class DAO {
 			//버그발견. 잘못이해해서 작성함. insert의 경우에는 execute()에서 항상 false를 리턴한다.
 			//executeUpdate의 경우에는 insert에 성공한 column수를 리턴하게 된다.
 			successQueryNumber = preparedStatement.executeUpdate();
-			
-			/*
 			generatedKeys = preparedStatement.getGeneratedKeys();
+			
 			if ( generatedKeys.next() ) {
 				//클래스에 선언된 모든 메소드를 배열로 가져온다.
 				Method[] methods = targetClass.getClass().getDeclaredMethods();
@@ -163,14 +159,14 @@ public class DAO {
 		        	//메소드를 실제로 실행시켜준다.
 					//setMethod(Paramter)를 실행시켜주는것!!
 		        	//데이터베이스 첫번째 컬럼의 데이터를 가져와 저장한다.
-					targetMethod.invoke(targetClass, generatedKeys.getLong(0)); // set메소드 호출.
+					targetMethod.invoke(targetClass, generatedKeys.getLong(1)); // set메소드 호출.
 		        }
 		        
 			}
-			*/
+			
 			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
-			log.error("Query [Execute or Close] Exception" , e);
+			logger.error("Query [Execute or Close] Exception" , e);
 		} finally {
 			if (connection != null) 
 				connection.close();
@@ -178,8 +174,8 @@ public class DAO {
 			if ( preparedStatement != null) 
 				preparedStatement.close();
 			
-//			if ( generatedKeys != null )
-//				generatedKeys.close();
+			if ( generatedKeys != null )
+				generatedKeys.close();
 		}
 		return successQueryNumber;
 	}
@@ -191,7 +187,7 @@ public class DAO {
 	 * TODO PrepareStatement로 변경해야 한다.
 	 */
 	private List<Map<String, Object>> selectQuery(PreparedStatement preparedStatement) throws SQLException {
-		log.info("DAO selectQuery");
+		logger.info("DAO selectQuery");
 		
 		ResultSet resultSet = null;
 		Connection connection = null;
@@ -218,7 +214,7 @@ public class DAO {
 			
 			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
-			log.error("Query Select Error" , e);
+			logger.error("Query Select Error" , e);
 		} finally {
 			if (resultSet != null)
 				resultSet.close();
