@@ -5,13 +5,15 @@ function initPage() {
 	
 	fillEmail(lastLoggedEmail);
 
-	document.getElementById("join_form").onsubmit = validateJoinEmail;	
-	document.getElementById("login_form").onsubmit = validateLoginEmail;
+	//document.getElementById("join_form").onsubmit = validateJoinEmail;	
+	//document.getElementById("login_form").onsubmit = validateLoginEmail;
+	
 
 	//윤성소스 추가
 	document.querySelector(".c_login").addEventListener('click', loginChoiceONOFF, false);
 	document.querySelector(".c_join").addEventListener('click', joinChoiceONOFF, false);
-	//end
+	document.querySelector(".loginArea input[type=submit]").addEventListener('click', login, false);
+	document.querySelector(".joinArea input[type=submit]").addEventListener('click', join, false);
 	
 	//duplicate Email check
 	document.getElementById("joinEmail").addEventListener('keyup',duplicateEmail,false);
@@ -61,26 +63,13 @@ function fillEmail(email) {
 //}
 
 //input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함수 
-function validateJoinEmail() {
-	var newbieEmail = document.getElementById("joinEmail").value;
+function isValidateEmailFormat(email) {
 	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
-	if (emailFormat.test(newbieEmail)) {
-			return true;
-		} else {
-			alert( newbieEmail + " does not fit to email address form " );
-			return false;
-		}
-}
-
-function validateLoginEmail() {
-	var oldbieEmail = document.getElementById("loginEmail").value;
-	var emailFormat = /^[a-zA-Z0-9\-_]+(\.[a-zA-Z0-9\-_]+)*@[a-z0-9]+(\-[a-z0-9]+)*(\.[a-z0-9]+(\-[a-z0-9]+)*)*\.[a-z]{2,4}$/;
-	if (emailFormat.test(oldbieEmail)) {
-			return true;
-		} else {
-			alert( oldbieEmail + " does not fit to email address form " );
-			return false;
-		}
+	if (emailFormat.test(email)) {
+		return true;
+	} else {
+		return false;
+	}
 }
 
 //****************************************************윤성소스 추가 시작
@@ -96,7 +85,7 @@ function loginChoiceONOFF() {
 	var loginNodeStyle = getStyleValue(loginNode, "display");
 	var titleNode = document.querySelector(".title");
 	titleNode.innerHTML = "Welcome. Please login.";
-	titleNode.nextElementSibling.innerHTML = "Cozy Home is waiting for you.";
+	titleNode.nextElementSibling.innerHTML = "Welcome My Neighbor";
 	
 	
 	if ( loginNodeStyle == "none" )
@@ -125,6 +114,89 @@ function joinChoiceONOFF() {
 	loginNode.previousElementSibling.style.display="none";
 }
 
+function login(event) {
+	event.preventDefault();
+	
+	var form = event.currentTarget.form;
+	
+	//check input value
+	var email = form[0].value;
+	var password = form[1].value;
+	
+	if ( email.length ===0 || password.length ===0 ) {
+		alert ("아이디와 패스워드를 모두 입력해 주세요");
+		return;
+	}
+	
+	if ( ! isValidateEmailFormat(email) ) {
+		alert("이메일 형식에 맞춰 정확하게 입력해 주세요.")
+		return;		
+	}
+	//check input value END
+	
+	var formData = new FormData(form);
+	var url = "/login";
+	var request = new XMLHttpRequest();
+	request.open("POST", url, true);
+	request.onreadystatechange = function() {
+		if (request.readyState == 4 && request.status == 200) {
+			var result = request.responseText;
+
+			if ( result === "true" ) {
+				//alert(result +"님 환영합니다.");
+				window.location = "/main";
+			} else if ( result === "false" ) {
+				alert("존재하지 않는 id입니다.\n아이디를 다시 확인해 주세요.");
+			} else {
+				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
+			}
+		}
+	}
+	request.send(formData);
+}
+
+function join(event) {
+	event.preventDefault();
+
+	var form = event.currentTarget.form;
+	
+	//check input value
+	var email = form[0].value;
+	var password = form[1].value;
+	var passwordR = form[2].value;
+	
+	if ( email.length===0 || password.length===0 || passwordR===0 ) {
+		alert ("공란은 허용되지 않습니다. 모두 입력해 주세요");
+		return;
+	}
+	
+	if ( ! isValidateEmailFormat(email) ) {
+		alert("이메일 형식에 맞춰 정확하게 입력해 주세요.")
+		return;		
+	}
+	
+	if ( password != passwordR ) {
+		alert ('입력된 비밀번호가 서로 다릅니다."');
+		return;
+	}
+	//check input value END
+	
+	
+	var formData = new FormData(form);
+	var url = "/join";
+	var request = new XMLHttpRequest();
+	request.open("POST", url, true);
+	request.onreadystatechange = function() {
+		if (request.readyState == 4 && request.status == 200) {
+			var result = request.responseText;
+			//TODO check Logic
+			//console.log("request.responseText : "+result);
+			 alert("이웃가입을 축하합니다.")
+			window.location = "/";
+		}
+	}
+	request.send(formData);
+}
 
 //****************************************************윤성소스 추가 끝
 
