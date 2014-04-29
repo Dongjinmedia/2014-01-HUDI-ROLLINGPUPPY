@@ -28,11 +28,11 @@
 			<form action="/room" method="post">
 					<p>
 						<label class="icon-chatting"></label>
-						<input type="text" name="title" placeholder="Room name" />
+						<input class="roomName" type="text" name="title" placeholder="Room name" />
 					</p>
 					<p>
 						<label class="icon-people"></label>
-						<input type="number" name="max" placeholder="Limit Number" />
+						<input class="limitNum" type="number" name="max" placeholder="Limit Number" />
 					</p>
 					<p>
 						<input type="submit" value="Create Chatting Room" />
@@ -73,8 +73,8 @@
 		<h1><a href="/main">Rolling Puppy</a></h1>
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
-		<div id="search">
-			<input type="text" id = "search_box" ></input>
+		<div id="search_box">
+			<input type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
 	</div>

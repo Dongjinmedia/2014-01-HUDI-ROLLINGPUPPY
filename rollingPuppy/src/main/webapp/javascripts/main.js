@@ -5,6 +5,7 @@
 /*********************************************************************************************************
  * 모두에게 공통되는 유틸함수 영역
  **********************************************************************************************************/
+//TODO Util함수 모듈화
 //특정 node의 style을 반환하는 함수
 function getStyle(node, style) {
     return window.getComputedStyle(node, null).getPropertyValue(style);
@@ -15,7 +16,69 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
+//Ajax GET 요청함수
+//내부적으로 _getObjectFromJsonRequest 호출
+//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+//formData 형태로 만들어 서버에 요청보낸다.
+function getObjectFromJsonGetRequest(url, oParameters) {
+	_getObjectFromJsonRequest(url, "GET", oParameters);
+}
 
+//Ajax POST 요청함수
+//내부적으로 _getObjectFromJsonRequest 호출
+//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+//formData 형태로 만들어 서버에 요청보낸다.
+function getObjectFromJsonPostRequest(url, oParameters) {
+	_getObjectFromJsonRequest(url, "POST", oParameters);	
+}
+
+//Ajax 요청함수
+//TODO CROSS BROWSER 시 하위링크 참조 
+//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+function _getObjectFromJsonRequest(url, method, oParameters) {
+	
+	//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
+	var request = new XMLHttpRequest();
+	
+	if (method !== "GET" && method !== "POST" )
+		return null;
+	
+	request.open(method, url, false	);
+	
+	request.onreadystatechange = function() {
+		console.log("readyState : ", request.readyState);
+		console.log("status : ", request.status);
+		
+		if (request.readyState == 4 && request.status == 200) {
+			var obj = JSON.parse(request.responseText);
+			
+			return obj;
+		}
+	}
+	
+	//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
+	if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+		
+		var formData = new FormData();
+		
+		//hasOwnProperty is used to check if your target really have that property, 
+		//rather than have it inherited from its prototype. A bit simplier would be
+		for (var key in oParameters){
+			
+		    if (oParameters.hasOwnProperty(key)) {
+		         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
+		    	console.log("key : ", key);
+		    	console.log("value : ", oParameters[key]);
+		    	formData.append(key, oParameters[key]);
+		    }
+		}
+		console.log("formData : ", formData);
+		request.send(formData);
+	} else {
+		request.send();
+	}
+	
+}
 
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
@@ -181,7 +244,7 @@ var naverMapSettings = {
 	    //move event가 발생한 후 click이벤트가 발생한다.
 	    //drag 시작할 때 mapClickWithoutMarker를 화면상에서 보이지 않게끔 처리한다.
 	    dragStartEvent : function(oCustomEvent){
-	        this.oMapClickWithoutMarker.style.top = "-2000px";
+	        oMapClicker.invisible();
 	    },
 
 	    clickEvent : function(oCustomEvent) {
@@ -198,10 +261,10 @@ var naverMapSettings = {
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
 	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
 	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-	                oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
-	                oMarkerInfoWindow.setPoint(oTarget.getPoint());
-	                oMarkerInfoWindow.setVisible(true);
-	                oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+	                this.oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
+	                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
+	                this.oMarkerInfoWindow.setVisible(true);
+	                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
 	                    right: 0,
 	                    top: -19
 	                });
@@ -215,13 +278,9 @@ var naverMapSettings = {
 	                clientPosX = oCustomEvent.event._event.clientX;
 	                clientPosY = oCustomEvent.event._event.clientY;
 	                
-	                //TODO Bind를 통해서 oMapClickWithoutMarker를 object 변수로 선언해야 한다.
-	                this.oMapClickWithoutMarker.style.position = "absolute";
-	                this.oMapClickWithoutMarker.style.left = clientPosX+'px';
-	                this.oMapClickWithoutMarker.style.top = clientPosY +'px';
-	                
-	                //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+	              //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
 	                oMapClicker.oClickPoint = oCustomEvent.point;
+	                oMapClicker.move(clientPosX, clientPosY);
 	        }
 	    },
 
@@ -230,7 +289,6 @@ var naverMapSettings = {
 	        var mapDivWidth = getStyle(this.naverMap, "width");
 	        var mapDivHeight = getStyle(this.naverMap, "height");
 	        this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
-	        this.oMapClickWithoutMarker = document.getElementById("mapClicker");
 
 	        nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 
@@ -422,6 +480,8 @@ function menuClick(e) {
  **********************************************************************************************************/
 var oCreateChattingRoom = {
 		oCreateChattingRoom: null,
+		eRoomNameInput: null,
+		eLimitNumberInput: null,
 		visible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:block;');
 		},
@@ -430,6 +490,9 @@ var oCreateChattingRoom = {
 		},
 		initialize: function() {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
+			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
+			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
@@ -441,11 +504,51 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		clearLimitNumValue: function() {
+			this.eLimitNumberInput.value = "";
+		},
+		clearRoomNameValue: function() {
+			this.eLimitNumberInput.value = "";
+		},
 		requestCreate: function(e) {
 			e.preventDefault();
 			
 			//TODO validation 체크
+			var roomNameValue = this.eRoomNameInput.value
+			var limitNumValue = parseInt(this.eLimitNumberInput.value);
+			
+			console.log(roomNameValue);
+			//숫자가 아닌값일 경우, value값이 넘어오지 않음
+			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
+			console.log(limitNumValue);
+			
+			if ( roomNameValue === null || roomNameValue === "") {
+				alert('채팅방 제목을 입력해 주세요.');
+				return;
+			} else if ( roomNameValue.length <= 4 ) {
+				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
+				return;
+			};
+			
+			if ( isNaN( limitNumValue ) ) {
+				alert("인원수 제한에는 숫자값을 입력해 주세요.");
+				this.clearLimitNumValue();
+				return;
+			};
+			
+			
 			//TODO 서버와 통신하는 코드
+			var oRequestData = {
+					"title": roomNameValue,
+					"max": ""+limitNumValue,
+					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
+					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
+					"locationName": document.querySelector(".createAddress").innerText,
+					"locationLatitude": oMapClicker.oClickPoint['y'],
+					"locationLongitude": oMapClicker.oClickPoint['x']
+			};
+			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			
 			//TODO 마커에 고유 아이디값을 부여
 			
 			//마커를 생성
@@ -476,19 +579,27 @@ var oMapClicker = {
 	clickAdd: null,
 	clickBookMark: null,
 	oClickPoint: null,
+	move: function(clientPosX, clientPosY) {
+		this.oMapClicker.style.position = "absolute";
+		this.oMapClicker.style.left = clientPosX+'px';
+		this.oMapClicker.style.top = clientPosY +'px';
+	},
+	invisible: function() {
+		this.oMapClicker.style.top = "-2000px";
+	},
 	initialize: function() {
 		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
-		var oMapClicker = document.getElementById('mapClicker');
-		var clickAdd = oMapClicker.querySelector('.icon-add');
-		var clickBookMark = oMapClicker.querySelector('.icon-star');
+		this.oMapClicker = document.getElementById('mapClicker');
+		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
+		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
 		
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		clickAdd.addEventListener('click', function(e) {
+		this.clickAdd.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible();
 		}, false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		clickBookMark.addEventListener('click', function(e) {
+		this.clickBookMark.addEventListener('click', function(e) {
 			alert('clickBookMark');
 			
 		}, false);
