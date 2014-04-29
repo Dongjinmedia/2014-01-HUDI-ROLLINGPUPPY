@@ -47,6 +47,11 @@
 		<servlet-name>Chat Request</servlet-name>
 		<servlet-class>com.puppy.controller.ChatController</servlet-class>
 	</servlet>
+	
+	<servlet>
+		<servlet-name>Search Request</servlet-name>
+		<servlet-class>com.puppy.controller.SearchController</servlet-class>
+	</servlet>
 
 	<!-- Servlet-mapping Area -->
 
@@ -81,6 +86,13 @@
 		<url-pattern>/chat/*</url-pattern>
 	</servlet-mapping>
 
+		
+	<servlet-mapping>
+		<servlet-name>Search Request</servlet-name>
+		<url-pattern>/search</url-pattern>
+	</servlet-mapping>
+	
+
 	<welcome-file-list>
 		<welcome-file>index</welcome-file>
 	</welcome-file-list>
@@ -94,4 +106,5 @@
 		<error-code>500</error-code>
 		<location>/error?type=500</location>
 	</error-page>
+
 </web-app>
