@@ -45,7 +45,7 @@
 		</div>
 		
 		<div class="joinArea">
-			<form id="join_form" action="#" method="post">
+			<form id="join_form" action="/join" method="post">
 				<p>
 					<input type="text" id="joinEmail" name="email" placeholder="Email" />
 				</p>
