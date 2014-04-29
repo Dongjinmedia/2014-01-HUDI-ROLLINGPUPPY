@@ -209,11 +209,11 @@ var naverMapSettings = {
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
-	        this.oMarkerInfoWindow.attach('changeVisible', this.changeVisibleEvent.bind(this)); 
-	        this.oMap.attach('mouseenter', this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
-	        this.oMap.attach('mouseleave', this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
-	        this.oMap.attach('dragstart',this.dragStartEvent.bind(this));
-	        this.oMap.attach('click',this.clickEvent.bind(this));    
+	        this.oMarkerInfoWindow.attach("changeVisible", this.changeVisibleEvent.bind(this)); 
+	        this.oMap.attach("mouseenter", this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
+	        this.oMap.attach("mouseleave", this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
+	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
+	        this.oMap.attach("click",this.clickEvent.bind(this));    
 	    },
 
 	    //changeVisible : event. 정보창의 표시여부 변경
@@ -255,7 +255,7 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
-	                var menuTemplate = document.getElementById('controlBox');
+	                var menuTemplate = document.getElementById("controlBox");
 
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
@@ -290,7 +290,7 @@ var naverMapSettings = {
 	        var mapDivHeight = getStyle(this.naverMap, "height");
 	        this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
 
-	        nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
+	        nhn.api.map.setDefaultPoint("LatLng"); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 
 	        this.oMap = new nhn.api.map.Map(this.naverMap, {
 	            point: this.oCenterPoint, //지도 중심점의 좌표 설정
@@ -309,7 +309,7 @@ var naverMapSettings = {
 	        var oSize = new nhn.api.map.Size(28, 37); //px단위의 size객체.
 	        
 	        var oOffset = new nhn.api.map.Size(14, 37); //offset위치 지정
-	        this.oIcon = new nhn.api.map.Icon('/images/marker_48.png', oSize, oOffset); //마커 설정 정보
+	        this.oIcon = new nhn.api.map.Icon("/images/marker_48.png", oSize, oOffset); //마커 설정 정보
 	        this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드뿐만 아니라 객체도 삽입 가능
 	        
 	        this.oMarkerInfoWindow.setVisible(false);   // - infowindow 표시 여부 지정
@@ -320,7 +320,7 @@ var naverMapSettings = {
 
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
-	        eNmap.setAttribute('style', 'width:100%;height:100%;');
+	        eNmap.setAttribute("style", "width:100%;height:100%;");
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
@@ -340,10 +340,10 @@ var MarkerEventRegister = function () {
 	
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	//TODO 추후 아이디값으로 찾을 예정
-	var controlBox = document.getElementById('controlBox');
+	var controlBox = document.getElementById("controlBox");
 	
 	//사용자와 인터렉션하는 원형 메뉴바
-  	var menu = controlBox.querySelector('#menu');
+  	var menu = controlBox.querySelector("#menu");
 	
 	//메뉴버튼 객체를 담을 Array
 	var aIcons = [];
@@ -351,9 +351,9 @@ var MarkerEventRegister = function () {
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	var isClickedComponentExists = function() {
 		for (var index = 0 ; index < aIcons.length ; ++index ) {
-			var iconStatus = aIcons[index].getAttribute('status');
+			var iconStatus = aIcons[index].getAttribute("status");
 		
-			if ( iconStatus === 'clicked') {
+			if ( iconStatus === "clicked") {
 				return true;
 			}
 		}
@@ -362,9 +362,9 @@ var MarkerEventRegister = function () {
 	};
 	
 	//메뉴버튼위에 마우스가 올라갔을때
-	menu.addEventListener('mouseover', function() {
+	menu.addEventListener("mouseover", function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
-		menu.setAttribute('style', 'width:150px;height:150px;margin:-75px 0 0 -75px');			
+		menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
 	},false);	
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때

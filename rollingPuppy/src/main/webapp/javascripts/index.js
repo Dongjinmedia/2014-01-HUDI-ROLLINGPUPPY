@@ -6,8 +6,8 @@ function initPage() {
 	
 	fillEmail(lastLoggedEmail);
 
-	document.getElementById('join_form').onsubmit = validateJoinEmail;	
-	document.getElementById('login_form').onsubmit = validateLoginEmail;
+	document.getElementById("join_form").onsubmit = validateJoinEmail;	
+	document.getElementById("login_form").onsubmit = validateLoginEmail;
 	
 }
 
@@ -17,7 +17,7 @@ function initPage() {
  * @returns value
  */
 function getCookieValue(name) {
-	var arrayCookieProperties = document.cookie.split(';');
+	var arrayCookieProperties = document.cookie.split(";");
 	for (var idx = 0; idx < arrayCookieProperties.length; idx++) {
 		var cookieProperty = arrayCookieProperties[idx].trim();
 		if (cookieProperty.indexOf(name + "=") === 0) {
