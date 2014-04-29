@@ -1,3 +1,6 @@
+var searchAPIkeyRealServer = "513cd098517cce82ec819f7862fb362f";
+
+
 function getResultXml(){
 	
 	var query = document.getElementById("search_box").value;

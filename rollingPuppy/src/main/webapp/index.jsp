@@ -5,43 +5,67 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Rolling Puppy</title>
-	<link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
-	<link rel="stylesheet" type="text/css" href="/stylesheets/default.css">
+	
 	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
 	<script src="/javascripts/index.js"></script>
 </head>
 
 <body>
-<div id="wrapper">
-	<div id="header">
-		<h1><a href="/">Rolling Puppy</a></h1>
-		<div id="loginBox">
-			<form action="/login" method="post" id = "login_form">
-				<input type="text" name="email" placeholder="Email">
-				<input type="password" name="pw" placeholder="Password">
-				<input type="submit" value="login" class="button">
-				<div id="checkbox">
+<body>
+	<div class="bgImg"></div>
+	<div class="interactBox">
+		<h1 class="title">
+			Welcome. Please login.
+		</h1>
+		<p>
+			<span>Welcome My Neighbor</span>
+		</p>
+
+		<div class="choiceBlock">
+			<a href="#" class="choice c_login">LOGIN</a>
+			<a href="#" class="choice c_join">JOIN</a>
+			<span class="devider">OR</span>
+		</div>
+
+		<div class="loginArea">
+			<form id="login_form" action="/login" method="post">
+				<p>
+					<input type="text" id="loginEmail" name="email" placeholder="Email" />
+				</p>
+				<p>
+					<input type="password" name="pw" placeholder="Password" />
+				</p>
+				<p>
+					<input type="submit" id="login_button" value="Enter House" />
+				</p>
+				<p>
 					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
-				</div>
+				</p>
 			</form>
 		</div>
-	</div>
-	
-	<div id="contentsWrapper">
-		<div id="joinBox">
-			<form action="/join"  method="post" id = "join_form">
-				<input type="text" name = "email" id="joinEmail" placeholder="Email">
-				<input type="password" name="password" placeholder="Password">
-				<input type="password" name="passwordConfirm" placeholder="Password Confirm">
-				<div>
+		
+		<div class="joinArea">
+			<form id="join_form" action="/join" method="post">
+				<p>
+					<input type="text" id="joinEmail" name="email" placeholder="Email" />
+				</p>
+				<p>
+					<input type="password" name="password" placeholder="Password" />
+				</p>
+				<p>
+					<input type="password" name="passwordConfirm" placeholder="Password Confirm" />
+				</p>
+				<p>
 					<input type="radio" value="M" name="radio-input" checked="checked">Male
 					<input type="radio" value="W" name="radio-input">Female
-				</div>
-				<input type="submit" value="Sign In" class="button">
-				</form>
+				</p>
+				<p>
+					<input type="submit" value="Sign In" />
+				</p>
+			</form>
 		</div>
+		
 	</div>
-</div>
+	<script src="/javascripts/index.js"></script>
 </body>
-
 </html>

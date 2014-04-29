@@ -4,7 +4,10 @@
 
 /*********************************************************************************************************
  * 모두에게 공통되는 유틸함수 영역
- **********************************************************************************************************/
+*********************************************************************************************************/
+
+var mapAPIkeyRealServe = "5c935084c09a23e331aee090a0f2270c";
+
 //TODO Util함수 모듈화
 //특정 node의 style을 반환하는 함수
 function getStyle(node, style) {
@@ -16,107 +19,116 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
-//Ajax GET 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonGetRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "GET", oParameters);
+//Ajax 통신을 담당하는 모듈 Object
+var oAjax = {
+		//Ajax 결과값을 담아두는 Object
+		oAjaxResult: null,
+		
+		//Ajax GET 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		getObjectFromJsonGetRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "GET", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
+		
+		//Ajax POST 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		getObjectFromJsonPostRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "POST", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
+		
+		//서버통신이후에 Ajax 객체를 this에 bind해서 전달한다.
+		//메서드의 this는 XHR객체를 의미한다.
+		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
+		callback: function() {
+			console.log(this.responseText);
+			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
+		},
+		
+		//Ajax 요청함수
+		//TODO CROSS BROWSER 시 하위링크 참조 
+		//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+		
+		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+		//formData 형태로 만들어 서버에 요청보낸다.
+		_getObjectFromJsonRequest: function(url, method, oParameters, callback) {
+			var request = new XMLHttpRequest();
+			
+			//요청 메서드가 get이나 post가 아닐경우, 잘못된 요청이다.
+			if (method !== "GET" && method !== "POST" )
+				return null;
+			
+			request.open(method, url, false	);
+			
+			request.onreadystatechange = function() {
+				console.log("readyState : ", request.readyState);
+				console.log("status : ", request.status);
+				
+				if (request.readyState == 4 && request.status == 200) {
+					var obj = JSON.parse(request.responseText);
+					
+					//인자로 전달된 callback함수를 bind, 실행
+					if ( typeof callback == "function" ) {
+						callback.apply(request);
+					}
+				}
+			}
+			
+			
+			//만약 parameter값이 존재할경우 parameter에 대한 데이터를  formData형식으로 캡슐화해서 전달한다.
+			//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
+			if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+				
+				var formData = new FormData();
+				
+				//hasOwnProperty is used to check if your target really have that property, 
+				//rather than have it inherited from its prototype. A bit simplier would be
+				for (var key in oParameters){
+					
+				    if (oParameters.hasOwnProperty(key)) {
+				         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
+				    	console.log("key : ", key);
+				    	console.log("value : ", oParameters[key]);
+				    	formData.append(key, oParameters[key]);
+				    }
+				}
+				console.log("formData : ", formData);
+				request.send(formData);
+				
+			//parameter값이 존재하지 않으면 그냥 request를 보낸다.
+			} else {
+				request.send();
+			}
+		}
 }
 
-//Ajax POST 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonPostRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "POST", oParameters);	
-}
-
-//Ajax 요청함수
-//TODO CROSS BROWSER 시 하위링크 참조 
-//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
-function _getObjectFromJsonRequest(url, method, oParameters) {
-	
-	//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
-	var request = new XMLHttpRequest();
-	
-	if (method !== "GET" && method !== "POST" )
-		return null;
-	
-	request.open(method, url, false	);
-	
-	request.onreadystatechange = function() {
-		console.log("readyState : ", request.readyState);
-		console.log("status : ", request.status);
-		
-		if (request.readyState == 4 && request.status == 200) {
-			var obj = JSON.parse(request.responseText);
-			
-			return obj;
-		}
-	}
-	
-	//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
-	if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
-		
-		var formData = new FormData();
-		
-		//hasOwnProperty is used to check if your target really have that property, 
-		//rather than have it inherited from its prototype. A bit simplier would be
-		for (var key in oParameters){
-			
-		    if (oParameters.hasOwnProperty(key)) {
-		         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
-		    	console.log("key : ", key);
-		    	console.log("value : ", oParameters[key]);
-		    	formData.append(key, oParameters[key]);
-		    }
-		}
-		console.log("formData : ", formData);
-		request.send(formData);
-	} else {
-		request.send();
-	}
-	
-}
 
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
-function Panel(elPanel) {
-	var objCount = {
-			animationEnds: 0
-	};
+//main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
+var Panel = {
+	// div#container와 div#panel를 찾아서 기억합니다.
+	elContainer: document.getElementById('container'),
+	elPanel: document.getElementById('panel'),
 	
-	(function(elPanel) {
-		var elContainer = elPanel.parentNode.parentNode;
-		var elButtons = elPanel.querySelectorAll('a');
+	// panel 관련 이벱트 등록 함수.
+	addEvents: function() {
+		var elButtons = this.elPanel.querySelectorAll('a');
 		
+		// panel 밑에 button 이벤트 등록.
+		// 향후 event delegation 방식으로 변경할 것.
 		for (var idx = 0; idx < elButtons.length; idx++) {
 			elButtons[idx].addEventListener(
 					'click',
-					function(event) {
-						fnPanelButtonHandler(event, elContainer);
-					}
+					this.fnPanelButtonHandler.bind(this)
 			);
 		}
-		
-		elContainer.addEventListener(
-				'animationEnd',
-				function(event) {
-					fnNoPanel(event, elContainer, objCount);
-				}
-		);
-		
-		elContainer.addEventListener(
-				'webkitAnimationEnd',
-				function(event) {
-					fnNoPanel(event, elContainer, objCount);
-				}
-		);
-	})(elPanel);
+	},
 	
-	function fnPanelButtonHandler(event, elContainer) {
+	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
+	fnPanelButtonHandler: function(event) {
 		event.preventDefault();
 
 		var strButtonClassName = event.target.className;
@@ -127,37 +139,18 @@ function Panel(elPanel) {
 		}
 		
 		if (boolFold) {
-			elContainer.className = 'fold_panel';
+			this.elContainer.className = 'fold_panel';
 		} else {
-			elContainer.className = 'unfold_panel';
-		}
-	}
-	
-	var fnNoPanel = function(event, elContainer, objCount) {
-		objCount.animationEnds ++;
-		if (objCount.animationEnds % 2 == 0) {
-			return ;
-		}
-		
-		var strElContainerClassName = elContainer.className;
-		
-		var boolFold = false;
-		if (strElContainerClassName === 'fold_panel') {
-			boolFold = true;
-		}
-		
-		if (boolFold) {
-			elContainer.className = 'no_panel';
-		}
-		else {
-			elContainer.className = '';
+			this.elContainer.className = 'unfold_panel';
 		}
 	}
 }
 
-var NavList = function(elNavList) {
-	(function(elNavList) {
-		elNavList.addEventListener(
+var NavList = {
+	elNavList: document.getElementById('nav_list'),
+	
+	addEvents: function() {
+		this.elNavList.addEventListener(
 				'click',
 				function(event) {
 					console.log(event.target);
@@ -177,7 +170,7 @@ var NavList = function(elNavList) {
 					}
 				}
 		);
-	})(elNavList);
+	}
 }
 
 /*********************************************************************************************************
@@ -206,11 +199,11 @@ var naverMapSettings = {
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
-	        this.oMarkerInfoWindow.attach('changeVisible', this.changeVisibleEvent.bind(this)); 
-	        this.oMap.attach('mouseenter', this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
-	        this.oMap.attach('mouseleave', this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
-	        this.oMap.attach('dragstart',this.dragStartEvent.bind(this));
-	        this.oMap.attach('click',this.clickEvent.bind(this));    
+	        this.oMarkerInfoWindow.attach("changeVisible", this.changeVisibleEvent.bind(this)); 
+	        this.oMap.attach("mouseenter", this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
+	        this.oMap.attach("mouseleave", this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
+	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
+	        this.oMap.attach("click",this.clickEvent.bind(this));    
 	    },
 
 	    //changeVisible : event. 정보창의 표시여부 변경
@@ -252,7 +245,7 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
-	                var menuTemplate = document.getElementById('controlBox');
+	                var menuTemplate = document.getElementById("controlBox");
 
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
@@ -287,7 +280,7 @@ var naverMapSettings = {
 	        var mapDivHeight = getStyle(this.naverMap, "height");
 	        this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
 
-	        nhn.api.map.setDefaultPoint('LatLng'); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
+	        nhn.api.map.setDefaultPoint("LatLng"); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
 
 	        this.oMap = new nhn.api.map.Map(this.naverMap, {
 	            point: this.oCenterPoint, //지도 중심점의 좌표 설정
@@ -306,7 +299,7 @@ var naverMapSettings = {
 	        var oSize = new nhn.api.map.Size(28, 37); //px단위의 size객체.
 	        
 	        var oOffset = new nhn.api.map.Size(14, 37); //offset위치 지정
-	        this.oIcon = new nhn.api.map.Icon('/images/marker_48.png', oSize, oOffset); //마커 설정 정보
+	        this.oIcon = new nhn.api.map.Icon("/images/marker_48.png", oSize, oOffset); //마커 설정 정보
 	        this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드뿐만 아니라 객체도 삽입 가능
 	        
 	        this.oMarkerInfoWindow.setVisible(false);   // - infowindow 표시 여부 지정
@@ -317,7 +310,7 @@ var naverMapSettings = {
 
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
-	        eNmap.setAttribute('style', 'width:100%;height:100%;');
+	        eNmap.setAttribute("style", "width:100%;height:100%;");
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
@@ -337,10 +330,10 @@ var MarkerEventRegister = function () {
 	
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	//TODO 추후 아이디값으로 찾을 예정
-	var controlBox = document.getElementById('controlBox');
+	var controlBox = document.getElementById("controlBox");
 	
 	//사용자와 인터렉션하는 원형 메뉴바
-  	var menu = controlBox.querySelector('#menu');
+  	var menu = controlBox.querySelector("#menu");
 	
 	//메뉴버튼 객체를 담을 Array
 	var aIcons = [];
@@ -348,9 +341,9 @@ var MarkerEventRegister = function () {
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	var isClickedComponentExists = function() {
 		for (var index = 0 ; index < aIcons.length ; ++index ) {
-			var iconStatus = aIcons[index].getAttribute('status');
+			var iconStatus = aIcons[index].getAttribute("status");
 		
-			if ( iconStatus === 'clicked') {
+			if ( iconStatus === "clicked") {
 				return true;
 			}
 		}
@@ -359,9 +352,9 @@ var MarkerEventRegister = function () {
 	};
 	
 	//메뉴버튼위에 마우스가 올라갔을때
-	menu.addEventListener('mouseover', function() {
+	menu.addEventListener("mouseover", function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
-		menu.setAttribute('style', 'width:150px;height:150px;margin:-75px 0 0 -75px');			
+		menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
 	},false);	
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
@@ -493,20 +486,26 @@ document.getElementById("zoomOutButton").addEventListener('click', function(e){
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
  **********************************************************************************************************/
 var oCreateChattingRoom = {
+		//채팅방 생성에 해당하는 중앙창에 대한 element
 		oCreateChattingRoom: null,
+		//채팅방명을 입력하는 input box element
 		eRoomNameInput: null,
+		//채팅방 참여인원 제한 수를 입력하는 input box element
 		eLimitNumberInput: null,
+		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:block;');
 		},
+		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:none;');
 		},
 		initialize: function() {
+			
+			//element초기화
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
-			
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
@@ -518,24 +517,26 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		//제한숫자 인풋값 초기화
 		clearLimitNumValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
 			e.preventDefault();
 			
-			//TODO validation 체크
+			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value);
 			
-			console.log(roomNameValue);
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
-			console.log(limitNumValue);
-			
+
+			//입력값이 없을경우
 			if ( roomNameValue === null || roomNameValue === "") {
 				alert('채팅방 제목을 입력해 주세요.');
 				return;
@@ -544,14 +545,21 @@ var oCreateChattingRoom = {
 				return;
 			};
 			
+			//참여인원 제한에 입력값이 숫자 형식이 아닐경우
 			if ( isNaN( limitNumValue ) ) {
 				alert("인원수 제한에는 숫자값을 입력해 주세요.");
 				this.clearLimitNumValue();
 				return;
 			};
 			
+			//참여인원 제한숫자가 1일경우
+			if ( limitNumValue === 1 ) {
+				alert("인원수는 1 이상으로 설정해야 합니다.");
+				this.clearLimitNumValue();
+				return;
+			}
 			
-			//TODO 서버와 통신하는 코드
+			//서버와 통신하는 코드
 			var oRequestData = {
 					"title": roomNameValue,
 					"max": ""+limitNumValue,
@@ -561,7 +569,11 @@ var oCreateChattingRoom = {
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
-			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			
+			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
+			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			console.log("Create Room Response From Server : ",oResponseData);
+			
 			
 			//TODO 마커에 고유 아이디값을 부여
 			
@@ -573,9 +585,14 @@ var oCreateChattingRoom = {
 	    	oMarker.setPoint(oMapClicker.oClickPoint);
 	    	naverMapSettings.oMap.addOverlay(oMarker);
 	    	
-	    	//TODO 현재 포커스되어있는 클릭 아이콘없애기
+	    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+	    	oMapClicker.invisible();
 	    	
-	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 합니다.
+	    	//createChatRoom의 input value값들을 초기화한다.
+	    	this.clearRoomNameValue();
+	    	this.clearLimitNumValue();
+	    	
+	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
 	    	this.invisible();
 		}
 }
@@ -589,18 +606,27 @@ var oCreateChattingRoom = {
  **********************************************************************************************************/
 //TODO naverMap Object에 이식하기
 var oMapClicker = {
+	//MapClickerk 전체 Element. 
+	//TODO 변수명 변경
 	oMapClicker: null,
+	//Add버튼에 해당하는 Element.
+	//TODO 변수명 변경
 	clickAdd: null,
+	//즐겨찾기 버튼에 해당하는 Element.
+	//TODO 변수명 변경
 	clickBookMark: null,
+	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
+	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
-		this.oMapClicker.style.position = "absolute";
 		this.oMapClicker.style.left = clientPosX+'px';
 		this.oMapClicker.style.top = clientPosY +'px';
 	},
+	//click element가 보이지 않도록 하는 함수
 	invisible: function() {
 		this.oMapClicker.style.top = "-2000px";
 	},
+	//click element 초기화 함수
 	initialize: function() {
 		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
 		this.oMapClicker = document.getElementById('mapClicker');
@@ -633,9 +659,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel(document.getElementById('panel'));
-	var navList = new NavList(document.getElementById('nav_list'));
-	
+	Panel.addEvents();
+	NavList.addEvents();	
 	//------------------------------------------------------------------------------------//
 	
 	/*

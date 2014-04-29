@@ -1,15 +1,15 @@
-#header>#search {
+#header>#search_box {
 	position: absolute;
 	top: 7px;
 	left: 170px;
 	width: 230px;
 }
 
-#search>input[type=text] {
+#search_box>input[type=text] {
 	width: 170px;
 }
 
-#search>button {
+#search_box>button {
 	position: absolute;
 	top: 1px;
 	right: 0px;
@@ -25,52 +25,8 @@ div#container {
 
 div#aside {
 	position: relative;
-	width: 400px;
-	height: 100%;
-}
-
-.fold_panel div#aside {
-    animation: fold_aside;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: fold_aside;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes fold_aside {
-    from { width: 400px; }
-    to { width: 62px; }
-}
-@-webkit-keyframes fold_aside {
-    from { width: 400px; }
-    to { width: 62px; }
-}
-
-.unfold_panel div#aside {
-    animation: unfold_aside;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: unfold_aside;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes unfold_aside {
-    from { width: 62px; }
-    to { width: 400px; }
-}
-@-webkit-keyframes unfold_aside {
-    from { width: 62px; }
-    to { width: 400px; }
-}
-
-.no_panel div#aside {
 	width: 62px;
+	height: 100%;
 }
 
 div#nav {
@@ -144,12 +100,57 @@ ul#nav_list {
 div#panel {
 	position: absolute;
 	top: 0px;
-	right: 0px;
+	left: 62px;
 	width: 340px;
 	height: 100%;
 	border-right: 1px solid #A7A7A7;
 	background-color: #FEFEFE;
 	z-index: 11;
+}
+
+
+.fold_panel #panel {
+    animation: fold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: fold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes fold {
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(-340px); }
+}
+@-webkit-keyframes fold {
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(-340px); }
+}
+
+.no_panel #panel {
+	left: -278px;
+}
+
+.unfold_panel #panel {
+    animation: unfold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: unfold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes unfold {
+	from { -webkit-transform: translateX(-340px); }
+	to { -webkit-transform: translateX(0px); }
+}
+@-webkit-keyframes unfold {
+	from { -webkit-transform: translateX(-340px); }
+	to { -webkit-transform: translateX(0px); }
 }
 
 #panel>a {
@@ -174,6 +175,14 @@ div#panel {
 	width: 13px;
 }
 
+.fold_panel #panel>.panel_button_fold {
+	display: none;
+}
+
+.fold_panel #panel>.panel_button_unfold {
+	display: block;
+}
+
 .no_panel #panel>.panel_button_fold {
 	display: none;
 }
@@ -187,52 +196,8 @@ div#content {
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
-	left: 400px;
-	height: 100%;
-}
-
-.fold_panel div#content {
-    animation: fold_content;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: fold_content;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes fold_content {
-    from { left: 400px; }
-    to { left: 62px; }
-}
-@-webkit-keyframes fold_content {
-    from { left: 400px; }
-    to { left: 62px; }
-}
-
-.unfold_panel div#content {
-    animation: unfold_content;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: unfold_content;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes unfold_content {
-    from { left: 62px; }
-    to { left: 400px; }
-}
-@-webkit-keyframes unfold_content {
-    from { left: 62px; }
-    to { left: 400px; }
-}
-
-.no_panel #content {
 	left: 62px;
+	height: 100%;
 }
 
 #map_area {

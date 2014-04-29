@@ -3,6 +3,9 @@ package com.puppy.controller;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
@@ -14,6 +17,7 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.puppy.util.Constants;
 /*
  * 채팅방에 대한 요청들을 처리할 컨트롤러.
@@ -53,29 +57,49 @@ public class ChatController extends HttpServlet {
 	//logger.info(request.getParameter("test1")); null 값을 반환한다.
 	//전달하는 FormData를 Servlet에서는 multipart로 인식한다. 아래의 링크를 확인해보자.
 	//http://stackoverflow.com/questions/10292382/html-5-formdata-and-java-servlets
-	//TODO max, lati, longi 같이 String형이 아닌것들에 대한 캐스팅 전략
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) {
+		//response 형식을 json으로 선언
+		response.setContentType("application/json");
+		//response데이터에 JSON출력을 위한 선언
+		PrintWriter out = null;
+		//JSON 데이터를 편하게 사용하기 위한 구글에서 만든 라이브러리 선언
+		Gson gson = new Gson();
+		//result 데이터 (성공여부, 데이터베이스에 추가된 ROOM의 고유식별값 (id))
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		//성공여부 제어를 위한 변수선언
+		boolean isSuccess = false;
+		
+		//request Parameter를 위한 변수선언
 		String title =  null;
-		String max = null;
+		int max = 0;
 		String name = null;
-		String latitude = null;
-		String longitude = null;
+		float latitude = 0;
+		float longitude = 0;
 		
 		try {
+			out = response.getWriter();
+			
+			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
 			title =  getValue(request.getPart( Constants.POST_CHATROOM_TITLE ));
-			max = getValue(request.getPart( Constants.POST_CHATROOM_MAX ));
+			max = Integer.parseInt(getValue(request.getPart( Constants.POST_CHATROOM_MAX )));
 			name = getValue(request.getPart( Constants.POST_CHATROOM_NAME ));
-			latitude = getValue(request.getPart( Constants.POST_CHATROOM_LATITUDE ));
-			longitude = getValue(request.getPart( Constants.POST_CHATROOM_LONGITUDE ));
+			latitude = Float.parseFloat(getValue(request.getPart( Constants.POST_CHATROOM_LATITUDE )));
+			longitude = Float.parseFloat(getValue(request.getPart( Constants.POST_CHATROOM_LONGITUDE )));
+			
+			//성공을 표시
+			isSuccess = true;
 		} catch (Exception e) {
 			logger.error("getParameterFrom Javascript FormData",e);
+			
+			//실패를 표시
+			isSuccess = false;
 		}
 		
-		logger.info(title);
-		logger.info(max);
-		logger.info(name);
-		logger.info(latitude);
-		logger.info(longitude);
+		//response 데이터를 전달
+		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
+		
+		//gson을 통해서 HashMap을 JSON형태로 변경 후 response전달
+		out.println(gson.toJson(resultJsonData));
 	}
 	
 	//getParameterValue From Javascript FormData

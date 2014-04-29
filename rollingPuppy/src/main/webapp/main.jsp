@@ -80,7 +80,7 @@
 	</div>
 	
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->
-	<div id="container">
+	<div id="container" class="no_panel">
 	
 		<div id="aside">
 			<!--네비게이션바 영역 -->

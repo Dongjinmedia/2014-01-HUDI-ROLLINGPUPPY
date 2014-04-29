@@ -1,35 +1,146 @@
-#loginBox {
-	position: absolute;
-	top: 7px;
-	right: 20px;
-	font-size: 13px;
-	width: 560px;
+@CHARSET "UTF-8";
+
+/* Common */ 
+body,p,h1,h2,h3,h4,h5,h6,ul,ol,li,dl,dt,dd,table,th,td,form,fieldset,legend,input,textare a,button,select{margin:0;padding:0}
+body,input,textarea,select,button,table{font-family:'돋움',Dotum,AppleGothic,sans- serif;font-size:1em}
+img,fieldset{border:0}
+ul,ol{list-style:none}
+em,address{font-style:normal} a{text-decoration:none} a:hover,a:active,a:focus{text-decoration:underline}
+
+* {
+	font-family: 'NanumGothic';
+	position: relative;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
+	z-index: 2;
 }
 
-#loginBox input[type=submit] {
-	position: absolute;
-	top: 1px;
-	right: 105px;
+body {
+	padding: 0 auto;
 }
 
-#loginBox div#checkbox {
-	position: absolute;
-	top: 10px;
-	right: 10px;
+.bgImg {
+	position: fixed;
+	top: 5%;
+	left: 40%;
+	width: 100%;
+	background:
+		url(http://sustainablebusinessforum.com/sites/sustainablebusinessforum.com/files/imagepicker/246411/sustainable%20economic%20neighbors.jpg)
+		no-repeat;
+	!background-size: cover;
+	height: 100%;
+	z-index: 1;
+	opacity: 0.6;
 }
 
-#joinBox {
+.interactBox {
 	position: absolute;
-	top: 50%;
-	left: 50%;
-	margin-left: -143px;
-	margin-top: -113px;
-	font-size: 13px;
-	padding: 30px 40px;
-	border: 4px solid #EEE;
-	border-radius: 6px;
+	top: 110px;
+	left: 7%;
 }
 
-#joinBox>form>input {
-	display: block;
+h1,p {
+	margin-bottom: 10px;
+}
+
+.loginArea {
+	display:none;
+}
+
+.joinArea {
+	display:none;
+}
+
+form input[type="text"],input[type="password"] {
+	background: #e5e5e5;
+	border: none;
+	border-radius: 3px;
+	color: #5a5656;
+	font-size: 14px;
+	height: 50px;
+	outline: none;
+	padding: 0px 10px;
+	width: 280px;
+}
+
+form input[type="submit"] {
+	background-color: #008dde;
+	border: none;
+	border-radius: 3px;
+	color: #f4f4f4;
+	cursor: pointer;
+	height: 50px;
+	text-transform: uppercase;
+	width: 280px;
+}
+
+.choiceBlock {
+	font-size: 150%;
+	font-weight: 700;
+	margin-top: 60px;
+	width: 300px;
+	margin-bottom: 30px;
+}
+
+.choice {
+	display:inline-block;
+	width:130px;
+	text-align:center;
+	padding:20px;
+	border-radius: 0.3em;
+	box-shadow: 0 2px 1px rgba(black, .4);
+	letter-spacing: 0;
+}
+
+.c_login {
+	padding-right:30px;
+	background: #f33634;
+	color: #750807;
+	border-bottom: .2em solid #750807;
+	/* &: hover { 
+		background : #750807;
+		color: #f33634;
+		border-bottom: .2em solid #f33634;
+	} */
+}
+
+.c_login:hover {
+	background: #750807;
+	color: #f33634;
+	border-bottom: .2em solid #f33634;
+	
+	/* &:active {
+	 padding:.8em 1.5em 1.2em 1.5em;
+    margin-top:.5em;
+    border-bottom:none;
+	} */
+}
+
+.c_join {
+	padding-left:20px;
+	background: #38edfb;
+	color: #026f78;
+	border-bottom: .2em solid #026f78;
+	margin-left:.4em;
+	/* &:hover {
+    	background: #026f78;
+      	 color: #38edfb;
+      	 border-bottom: .2em solid #38edfb;
+    } */
+}
+
+.c_join:hover {
+	background: #026f78;
+	color: #38edfb;
+	border-bottom: .2em solid #38edfb;
+}
+
+.choiceBlock>.devider {
+	display: inline-block;
+	border-radius: 100%;
+	padding: .5em;
+	margin: -7.2em;
+	letter-spacing: 0;
+	background: #fff;
 }
