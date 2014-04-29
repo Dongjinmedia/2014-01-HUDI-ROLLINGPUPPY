@@ -4,7 +4,7 @@ import java.sql.Date;
 import java.sql.Timestamp;
 
 public class Member {
-	private int id;
+	private Long id;
 	private String email;
 	private String pw;
 	private String sex;
@@ -73,10 +73,10 @@ public class Member {
 	public void setPw(String pw) {
 		this.pw = pw;
 	}
-	public int getId() {
+	public Long getId() {
 		return id;
 	}
-	public void setId(int id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 	public String getEmail() {

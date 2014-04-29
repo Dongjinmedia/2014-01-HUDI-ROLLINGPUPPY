@@ -14,6 +14,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.puppy.dto.Member;
+
 /*
  * Data Access Object
  * 데이터베이스와의 연결을 관장한다.
@@ -127,17 +129,45 @@ public class DAO {
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 * Like resultSet = preparedStatement.executeQuery(query);
 	 */
-	protected int insertQuery(PreparedStatement preparedStatement) throws SQLException {
+	protected <Any> int insertQuery(PreparedStatement preparedStatement, Object targetClass) throws SQLException {
 		log.info("DAO insertQuery");
 		
 		int successQueryNumber = 0;
 		Connection connection = null;
+		ResultSet generatedKeys = null;
 		
 		try {
 			//http://stackoverflow.com/questions/14016677/inserting-preparedstatement-to-database-psql
 			//버그발견. 잘못이해해서 작성함. insert의 경우에는 execute()에서 항상 false를 리턴한다.
 			//executeUpdate의 경우에는 insert에 성공한 column수를 리턴하게 된다.
 			successQueryNumber = preparedStatement.executeUpdate();
+			
+			/*
+			generatedKeys = preparedStatement.getGeneratedKeys();
+			if ( generatedKeys.next() ) {
+				//클래스에 선언된 모든 메소드를 배열로 가져온다.
+				Method[] methods = targetClass.getClass().getDeclaredMethods();
+		        
+				//setId의 존재유무를 확인한 flag
+				boolean isMethodExist = false;
+				Method targetMethod = null;
+		        //루프를 돌면서 method이름에 setId라는 항목이 있는지 체크
+		        for (Method method : methods) {
+		            if ( method.getName().equalsIgnoreCase("setId") ) {
+		            	isMethodExist = true;
+		            	targetMethod = method;
+		            }
+		        }
+		        
+		        if ( isMethodExist ) {
+		        	//메소드를 실제로 실행시켜준다.
+					//setMethod(Paramter)를 실행시켜주는것!!
+		        	//데이터베이스 첫번째 컬럼의 데이터를 가져와 저장한다.
+					targetMethod.invoke(targetClass, generatedKeys.getLong(0)); // set메소드 호출.
+		        }
+		        
+			}
+			*/
 			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			log.error("Query [Execute or Close] Exception" , e);
@@ -147,6 +177,9 @@ public class DAO {
 			
 			if ( preparedStatement != null) 
 				preparedStatement.close();
+			
+//			if ( generatedKeys != null )
+//				generatedKeys.close();
 		}
 		return successQueryNumber;
 	}

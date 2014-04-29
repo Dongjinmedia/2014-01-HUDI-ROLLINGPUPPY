@@ -63,8 +63,13 @@ public class JoinController  extends HttpServlet {
 			
 			int successQueryNumber = memberDao.insertMemberInfo(member);
 			
-			if ( successQueryNumber == 1 )
+//			if ( successQueryNumber == 1 )
+//				isSuccess = true;
+			//test
+			if ( successQueryNumber == 1 ) {
 				isSuccess = true;
+				logger.info("getId Test : "+member.getId());
+			}
 		}
 		logger.info("email : " + email);
 		logger.info("password : "+ password);

@@ -76,7 +76,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			String nicknameQuery = 
 					"SELECT tbl_adjective.adjective AS nickname_adjective, tbl_noun.noun AS nickname_noun "
 					+ "FROM tbl_adjective, tbl_noun WHERE tbl_adjective.grade = 3 ORDER BY rand() LIMIT 1;";
-			PreparedStatement selectPreparedStatement = ConnectionPool.getPreparedStatement(nicknameQuery);
+			PreparedStatement selectPreparedStatement = ConnectionPool.getInsertPreparedStatement(nicknameQuery);
 			Member tempMember = selectOne(Member.class, selectPreparedStatement);
 			
 			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES (?, ?, ?, ?)";
@@ -86,7 +86,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
 			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
 			
-			successQueryNumber = insertQuery(insertPreparedStatement); 
+			successQueryNumber = insertQuery(insertPreparedStatement, member); 
 		} catch (Exception e) {
 			log.error("in insertMemberInfo", e);
 		}
