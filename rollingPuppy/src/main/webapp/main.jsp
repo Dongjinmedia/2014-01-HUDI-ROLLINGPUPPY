@@ -70,7 +70,7 @@
 
 	<!--검색박스를 포함하는 헤더 영역-->
 	<div id="header">
-		<h1><a href="/main">Rolling Puppy</a></h1>
+		<a id="logo" href="/main"><img src="/images/logo.png"/></a>
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
 		<div id="search_box">
@@ -78,7 +78,7 @@
 			<button class="button" type="submit">검색</button>
 		</div>
 
-		<a class="button" id="logout_button" href="/logout">Logout</a>
+		<a id="logout_button" class="button" href="/logout">Logout</a>
 	</div>
 	
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->

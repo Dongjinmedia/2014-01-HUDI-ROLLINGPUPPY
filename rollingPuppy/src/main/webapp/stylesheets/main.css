@@ -1,3 +1,9 @@
+#logo {
+	position: absolute;
+	left: 15px;
+	top: 4px;
+}
+
 #header>#search_box {
 	position: absolute;
 	top: 7px;
