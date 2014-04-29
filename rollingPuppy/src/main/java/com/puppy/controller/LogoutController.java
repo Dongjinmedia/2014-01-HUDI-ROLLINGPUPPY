@@ -3,18 +3,12 @@ package com.puppy.controller;
 import java.io.IOException;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.puppy.dao.impl.MemberDaoImpl;
-import com.puppy.dto.Member;
-import com.puppy.util.Constants;
 
 /*
  * 로그아웃 요청에 대한 컨트롤러
