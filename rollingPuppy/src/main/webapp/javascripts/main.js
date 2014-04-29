@@ -24,7 +24,7 @@ function getNode(node) {
 //Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
 //formData 형태로 만들어 서버에 요청보낸다.
 function getObjectFromJsonGetRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "GET", oParameters);
+	return _getObjectFromJsonRequest(url, "GET", oParameters);
 }
 
 //Ajax POST 요청함수
@@ -32,7 +32,9 @@ function getObjectFromJsonGetRequest(url, oParameters) {
 //Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
 //formData 형태로 만들어 서버에 요청보낸다.
 function getObjectFromJsonPostRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "POST", oParameters);	
+	var test =  _getObjectFromJsonRequest(url, "POST", oParameters);
+	console.log("33 test : ", test);
+	return test;
 }
 
 //Ajax 요청함수
@@ -53,8 +55,9 @@ function _getObjectFromJsonRequest(url, method, oParameters) {
 		console.log("status : ", request.status);
 		
 		if (request.readyState == 4 && request.status == 200) {
+			console.log("53 responseText : ",request.responseText);
 			var obj = JSON.parse(request.responseText);
-			
+			console.log("55 object : ",obj);
 			return obj;
 		}
 	}
@@ -551,6 +554,7 @@ var oCreateChattingRoom = {
 					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
 			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			console.log("Create Room Response From Server : ",oResponseData);
 			
 			//TODO 마커에 고유 아이디값을 부여
 			
