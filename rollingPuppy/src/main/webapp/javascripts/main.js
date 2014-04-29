@@ -86,40 +86,27 @@ function _getObjectFromJsonRequest(url, method, oParameters) {
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
+//main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
 var Panel = {
-	elPanel: document.getElementById('panel'),
+	// div#container와 div#panel를 찾아서 기억합니다.
 	elContainer: document.getElementById('container'),
-
-	// 지울거
-	objCount: {
-			animationEnds: 0
-	},
-		
+	elPanel: document.getElementById('panel'),
+	
+	// panel 관련 이벱트 등록 함수.
 	addEvents: function() {
 		var elButtons = this.elPanel.querySelectorAll('a');
 		
+		// panel 밑에 button 이벤트 등록.
+		// 향후 event delegation 방식으로 변경할 것.
 		for (var idx = 0; idx < elButtons.length; idx++) {
 			elButtons[idx].addEventListener(
 					'click',
 					this.fnPanelButtonHandler.bind(this)
 			);
 		}
-		
-		this.elContainer.addEventListener(
-				'animationEnd',
-				this.fnNoPanel.bind(this)
-		);
-		
-		this.elContainer.addEventListener(
-				'webkitAnimationEnd',
-				this.fnNoPanel.bind(this)
-		);
 	},
-
-//	callbackPanelButton: function(event) {
-//		this.fnPanelButtonHandler(event, elContainer);
-//	}
 	
+	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
 	fnPanelButtonHandler: function(event) {
 		event.preventDefault();
 
@@ -134,27 +121,6 @@ var Panel = {
 			this.elContainer.className = 'fold_panel';
 		} else {
 			this.elContainer.className = 'unfold_panel';
-		}
-	},
-	
-	fnNoPanel: function(event) {
-		this.objCount.animationEnds ++;
-		if (this.objCount.animationEnds % 2 == 0) {
-			return ;
-		}
-		
-		var strElContainerClassName = this.elContainer.className;
-		
-		var boolFold = false;
-		if (strElContainerClassName === 'fold_panel') {
-			boolFold = true;
-		}
-		
-		if (boolFold) {
-			this.elContainer.className = 'no_panel';
-		}
-		else {
-			this.elContainer.className = '';
 		}
 	}
 }
