@@ -532,17 +532,19 @@ var oCreateChattingRoom = {
 				this.clearLimitNumValue();
 				return;
 			};
-				
 			
 			
 			//TODO 서버와 통신하는 코드
 			var oRequestData = {
-					"test1": "test1",
-					"test2": "test2",
-					"test3": "test3"
+					"title": roomNameValue,
+					"max": ""+limitNumValue,
+					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
+					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
+					"locationName": document.querySelector(".createAddress").innerText,
+					"locationLatitude": oMapClicker.oClickPoint['y'],
+					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
-			getObjectFromJsonPostRequest("/chat/create", oRequestData);
-			
+			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
 			
 			//TODO 마커에 고유 아이디값을 부여
 			
