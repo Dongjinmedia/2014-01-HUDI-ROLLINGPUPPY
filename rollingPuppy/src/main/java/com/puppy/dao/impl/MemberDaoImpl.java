@@ -66,11 +66,11 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	}
 
 	@Override
-	public boolean insertMemberInfo(Member member) {
+	public int insertMemberInfo(Member member) {
 		log.info("MemberDaoImpl insertMemberInfo");
 		
 		PreparedStatement insertPreparedStatement = null;
-		boolean insertQueryResult = false;
+		int successQueryNumber = 0;
 		
 		try {
 			String nicknameQuery = 
@@ -86,12 +86,12 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
 			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
 			
-			insertQueryResult = insertQuery(insertPreparedStatement); 
+			successQueryNumber = insertQuery(insertPreparedStatement); 
 		} catch (Exception e) {
 			log.error("in insertMemberInfo", e);
 		}
 		
-		return insertQueryResult;
+		return successQueryNumber;
 	}
 
 }

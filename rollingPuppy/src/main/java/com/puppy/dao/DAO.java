@@ -127,14 +127,17 @@ public class DAO {
 	 * TODO 데이터입력의 성공여부를 정확하게 반환할 수 있어야 한다.
 	 * Like resultSet = preparedStatement.executeQuery(query);
 	 */
-	protected boolean insertQuery(PreparedStatement preparedStatement) throws SQLException {
+	protected int insertQuery(PreparedStatement preparedStatement) throws SQLException {
 		log.info("DAO insertQuery");
 		
-		boolean isExecuteSuccess = false;
+		int successQueryNumber = 0;
 		Connection connection = null;
 		
 		try {
-			isExecuteSuccess = preparedStatement.execute();
+			//http://stackoverflow.com/questions/14016677/inserting-preparedstatement-to-database-psql
+			//버그발견. 잘못이해해서 작성함. insert의 경우에는 execute()에서 항상 false를 리턴한다.
+			//executeUpdate의 경우에는 insert에 성공한 column수를 리턴하게 된다.
+			successQueryNumber = preparedStatement.executeUpdate();
 			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			log.error("Query [Execute or Close] Exception" , e);
@@ -145,7 +148,7 @@ public class DAO {
 			if ( preparedStatement != null) 
 				preparedStatement.close();
 		}
-		return isExecuteSuccess;
+		return successQueryNumber;
 	}
 
 	/*
