@@ -122,8 +122,13 @@ public class ChatController extends HttpServlet {
 				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
 				chatDaoImpl.insertChatRoomAndGetLastSavedID(chatRoom);
 				
-				//성공을 표시
-				isSuccess = true;
+				
+				if (chatRoom.getId() !=0 ) {
+					//성공을 표시
+					isSuccess = true;
+					resultJsonData.put(Constants.JSON_RESPONSE_CHATROOMNUM, chatRoom.getId());
+				}
+				
 			}
 		} catch (Exception e) {
 			logger.error("getParameterFrom Javascript FormData",e);

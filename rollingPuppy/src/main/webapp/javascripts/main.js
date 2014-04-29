@@ -575,26 +575,33 @@ var oCreateChattingRoom = {
 			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
 			console.log("Create Room Response From Server : ",oResponseData);
 			
+			var isSuccess = oResponseData['isSuccess'];
+			var chatRoomNumber = oResponseData['chatRoomNumber'];
 			
 			//TODO 마커에 고유 아이디값을 부여
-			
-			//마커를 생성
-			console.log(oMapClicker.oClickPoint);
-	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
-	    	    title: 'test' + oMapClicker.oClickPoint.toString()
-	    	});
-	    	oMarker.setPoint(oMapClicker.oClickPoint);
-	    	naverMapSettings.oMap.addOverlay(oMarker);
-	    	
-	    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
-	    	oMapClicker.invisible();
-	    	
-	    	//createChatRoom의 input value값들을 초기화한다.
-	    	this.clearRoomNameValue();
-	    	this.clearLimitNumValue();
-	    	
-	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
-	    	this.invisible();
+			if ( isSuccess === true 
+					&& chatRoomNumber !== null 
+					&& chatRoomNumber !== undefined 
+					&& isNaN(chatRoomNumber) === false ) {
+				
+				//마커를 생성
+				console.log(oMapClicker.oClickPoint);
+		    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+		    	    title: 'test' + oMapClicker.oClickPoint.toString()
+		    	});
+		    	oMarker.setPoint(oMapClicker.oClickPoint);
+		    	naverMapSettings.oMap.addOverlay(oMarker);
+		    	
+		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+		    	oMapClicker.invisible();
+		    	
+		    	//createChatRoom의 input value값들을 초기화한다.
+		    	this.clearRoomNameValue();
+		    	this.clearLimitNumValue();
+		    	
+		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
+		    	this.invisible();
+			} 
 		}
 }
 

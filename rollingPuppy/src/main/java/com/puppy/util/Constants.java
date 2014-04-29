@@ -19,5 +19,6 @@ public class Constants {
 	public static final String REQUEST_CHATROOM_LONGITUDE = "locationLongitude";
 	
 	public static final String JSON_RESPONSE_ISSUCCESS = "isSuccess";
-	public static final String JSON_RESPONSE_NICKNAME = "nickname"; 
+	public static final String JSON_RESPONSE_NICKNAME = "nickname";
+	public static final String JSON_RESPONSE_CHATROOMNUM = "chatRoomNumber"; 
 }
