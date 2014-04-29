@@ -24,7 +24,7 @@ function getCookieValue(name) {
 	for (var idx = 0; idx < arrayCookieProperties.length; idx++) {
 		var cookieProperty = arrayCookieProperties[idx].trim();
 		if (cookieProperty.indexOf(name + "=") === 0) {
-			var value = cookieProperty.substring(name.length + 1, cookieProperty.length);
+			var value = cookieProperty.substring(name.length + 2, cookieProperty.length -1);
 			return value;
 		}
 		
@@ -39,7 +39,7 @@ function fillEmail(email) {
 	}
 	
 	var loginForm = document.forms[0];
-	var inputEmail = loginForm.querySelector("input[name=\"email\"]");
+	var inputEmail = loginForm.querySelector("input[name=email]");
 	
 	inputEmail.value = email;
 }
