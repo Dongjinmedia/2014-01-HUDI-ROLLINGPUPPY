@@ -19,69 +19,90 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
-//Ajax GET 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonGetRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "GET", oParameters);
+//Ajax 통신을 담당하는 모듈 Object
+var oAjax = {
+		//Ajax 결과값을 담아두는 Object
+		oAjaxResult: null,
+		
+		//Ajax GET 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		getObjectFromJsonGetRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "GET", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
+		
+		//Ajax POST 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		getObjectFromJsonPostRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "POST", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
+		
+		//서버통신이후에 Ajax 객체를 this에 bind해서 전달한다.
+		//메서드의 this는 XHR객체를 의미한다.
+		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
+		callback: function() {
+			console.log(this.responseText);
+			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
+		},
+		
+		//Ajax 요청함수
+		//TODO CROSS BROWSER 시 하위링크 참조 
+		//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+		
+		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+		//formData 형태로 만들어 서버에 요청보낸다.
+		_getObjectFromJsonRequest: function(url, method, oParameters, callback) {
+			var request = new XMLHttpRequest();
+			
+			//요청 메서드가 get이나 post가 아닐경우, 잘못된 요청이다.
+			if (method !== "GET" && method !== "POST" )
+				return null;
+			
+			request.open(method, url, false	);
+			
+			request.onreadystatechange = function() {
+				console.log("readyState : ", request.readyState);
+				console.log("status : ", request.status);
+				
+				if (request.readyState == 4 && request.status == 200) {
+					var obj = JSON.parse(request.responseText);
+					
+					//인자로 전달된 callback함수를 bind, 실행
+					if ( typeof callback == "function" ) {
+						callback.apply(request);
+					}
+				}
+			}
+			
+			
+			//만약 parameter값이 존재할경우 parameter에 대한 데이터를  formData형식으로 캡슐화해서 전달한다.
+			//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
+			if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+				
+				var formData = new FormData();
+				
+				//hasOwnProperty is used to check if your target really have that property, 
+				//rather than have it inherited from its prototype. A bit simplier would be
+				for (var key in oParameters){
+					
+				    if (oParameters.hasOwnProperty(key)) {
+				         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
+				    	console.log("key : ", key);
+				    	console.log("value : ", oParameters[key]);
+				    	formData.append(key, oParameters[key]);
+				    }
+				}
+				console.log("formData : ", formData);
+				request.send(formData);
+				
+			//parameter값이 존재하지 않으면 그냥 request를 보낸다.
+			} else {
+				request.send();
+			}
+		}
 }
 
-//Ajax POST 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonPostRequest(url, oParameters) {
-	_getObjectFromJsonRequest(url, "POST", oParameters);	
-}
-
-//Ajax 요청함수
-//TODO CROSS BROWSER 시 하위링크 참조 
-//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
-function _getObjectFromJsonRequest(url, method, oParameters) {
-	
-	//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
-	var request = new XMLHttpRequest();
-	
-	if (method !== "GET" && method !== "POST" )
-		return null;
-	
-	request.open(method, url, false	);
-	
-	request.onreadystatechange = function() {
-		console.log("readyState : ", request.readyState);
-		console.log("status : ", request.status);
-		
-		if (request.readyState == 4 && request.status == 200) {
-			var obj = JSON.parse(request.responseText);
-			
-			return obj;
-		}
-	}
-	
-	//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
-	if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
-		
-		var formData = new FormData();
-		
-		//hasOwnProperty is used to check if your target really have that property, 
-		//rather than have it inherited from its prototype. A bit simplier would be
-		for (var key in oParameters){
-			
-		    if (oParameters.hasOwnProperty(key)) {
-		         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
-		    	console.log("key : ", key);
-		    	console.log("value : ", oParameters[key]);
-		    	formData.append(key, oParameters[key]);
-		    }
-		}
-		console.log("formData : ", formData);
-		request.send(formData);
-	} else {
-		request.send();
-	}
-	
-}
 
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
@@ -448,20 +469,26 @@ function menuClick(e) {
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
  **********************************************************************************************************/
 var oCreateChattingRoom = {
+		//채팅방 생성에 해당하는 중앙창에 대한 element
 		oCreateChattingRoom: null,
+		//채팅방명을 입력하는 input box element
 		eRoomNameInput: null,
+		//채팅방 참여인원 제한 수를 입력하는 input box element
 		eLimitNumberInput: null,
+		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:block;');
 		},
+		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:none;');
 		},
 		initialize: function() {
+			
+			//element초기화
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
-			
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
@@ -473,24 +500,26 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		//제한숫자 인풋값 초기화
 		clearLimitNumValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
 			e.preventDefault();
 			
-			//TODO validation 체크
+			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value);
 			
-			console.log(roomNameValue);
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
-			console.log(limitNumValue);
-			
+
+			//입력값이 없을경우
 			if ( roomNameValue === null || roomNameValue === "") {
 				alert('채팅방 제목을 입력해 주세요.');
 				return;
@@ -499,14 +528,21 @@ var oCreateChattingRoom = {
 				return;
 			};
 			
+			//참여인원 제한에 입력값이 숫자 형식이 아닐경우
 			if ( isNaN( limitNumValue ) ) {
 				alert("인원수 제한에는 숫자값을 입력해 주세요.");
 				this.clearLimitNumValue();
 				return;
 			};
 			
+			//참여인원 제한숫자가 1일경우
+			if ( limitNumValue === 1 ) {
+				alert("인원수는 1 이상으로 설정해야 합니다.");
+				this.clearLimitNumValue();
+				return;
+			}
 			
-			//TODO 서버와 통신하는 코드
+			//서버와 통신하는 코드
 			var oRequestData = {
 					"title": roomNameValue,
 					"max": ""+limitNumValue,
@@ -516,7 +552,11 @@ var oCreateChattingRoom = {
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
-			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			
+			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
+			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			console.log("Create Room Response From Server : ",oResponseData);
+			
 			
 			//TODO 마커에 고유 아이디값을 부여
 			
@@ -528,9 +568,14 @@ var oCreateChattingRoom = {
 	    	oMarker.setPoint(oMapClicker.oClickPoint);
 	    	naverMapSettings.oMap.addOverlay(oMarker);
 	    	
-	    	//TODO 현재 포커스되어있는 클릭 아이콘없애기
+	    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+	    	oMapClicker.invisible();
 	    	
-	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 합니다.
+	    	//createChatRoom의 input value값들을 초기화한다.
+	    	this.clearRoomNameValue();
+	    	this.clearLimitNumValue();
+	    	
+	    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
 	    	this.invisible();
 		}
 }
@@ -544,18 +589,27 @@ var oCreateChattingRoom = {
  **********************************************************************************************************/
 //TODO naverMap Object에 이식하기
 var oMapClicker = {
+	//MapClickerk 전체 Element. 
+	//TODO 변수명 변경
 	oMapClicker: null,
+	//Add버튼에 해당하는 Element.
+	//TODO 변수명 변경
 	clickAdd: null,
+	//즐겨찾기 버튼에 해당하는 Element.
+	//TODO 변수명 변경
 	clickBookMark: null,
+	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
+	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
-		this.oMapClicker.style.position = "absolute";
 		this.oMapClicker.style.left = clientPosX+'px';
 		this.oMapClicker.style.top = clientPosY +'px';
 	},
+	//click element가 보이지 않도록 하는 함수
 	invisible: function() {
 		this.oMapClicker.style.top = "-2000px";
 	},
+	//click element 초기화 함수
 	initialize: function() {
 		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
 		this.oMapClicker = document.getElementById('mapClicker');
