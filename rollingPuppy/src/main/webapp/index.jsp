@@ -33,7 +33,7 @@
 					<input type="text" id="loginEmail" name="email" placeholder="Email" />
 				</p>
 				<p>
-					<input type="password" name="pw" placeholder="Password" />
+					<input type="password" name="password" placeholder="Password" />
 				</p>
 				<p>
 					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지

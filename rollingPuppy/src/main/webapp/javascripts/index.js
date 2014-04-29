@@ -191,11 +191,15 @@ function join(event) {
 	request.open("POST", url, true);
 	request.onreadystatechange = function() {
 		if (request.readyState == 4 && request.status == 200) {
-			var result = request.responseText;
-			//TODO check Logic
-			//console.log("request.responseText : "+result);
-			 alert("이웃가입을 축하합니다.")
-			window.location = "/";
+			var oResult = JSON.parse(request.responseText);
+			var isSuccess = oResult['isSuccess'];
+			console.log(isSuccess);
+			if ( isSuccess === true ) {
+				alert("이웃가입을 축하합니다.")
+				window.location = "/";
+			} else {
+				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
+			}
 		}
 	}
 	request.send(formData);

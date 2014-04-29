@@ -2,18 +2,23 @@
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
+import com.puppy.util.Constants;
 import com.puppy.util.Util;
 
 /*
@@ -33,18 +38,40 @@ public class JoinController  extends HttpServlet {
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		
-		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
-		Member member = new Member();
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		Gson gson = new Gson();
+		boolean isSuccess = false;
 
-		String email = Util.getStringValueFromPart( request.getPart("email"));
-		String password = Util.getStringValueFromPart( request.getPart("password"));
+		String email = null;
+		String password = null;
 		
-		member.setEmail(email);
-		member.setPw(password);
+		Part emailPart = request.getPart(Constants.REQUEST_EMAIL);
+		Part passwordPart = request.getPart(Constants.REQUEST_PASSWORD);
 		
-		//return true, false
-		out.println(memberDao.insertMemberInfo(member));
+		if ( emailPart != null )
+			email = Util.getStringValueFromPart( emailPart );
+		
+		if ( passwordPart != null )
+			password = Util.getStringValueFromPart( passwordPart );
+		
+		if ( email != null && password != null ) {
+			MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
+			
+			Member member = new Member();
+			member.setEmail(email);
+			member.setPw(password);
+			
+			int successQueryNumber = memberDao.insertMemberInfo(member);
+			
+			if ( successQueryNumber == 1 )
+				isSuccess = true;
+		}
+		logger.info("email : " + email);
+		logger.info("password : "+ password);
+		logger.info("isSuccess : "+isSuccess);
+		
+		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
+		out.println(gson.toJson(resultJsonData));
 	}
 	
 	@Override

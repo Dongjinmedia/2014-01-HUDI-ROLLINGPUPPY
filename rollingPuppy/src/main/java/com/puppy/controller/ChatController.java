@@ -79,11 +79,11 @@ public class ChatController extends HttpServlet {
 			out = response.getWriter();
 			
 			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
-			title =  Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_TITLE ));
-			max = Integer.parseInt( Util.getStringValueFromPart(request.getPart( Constants.POST_CHATROOM_MAX )));
-			name = Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_NAME ));
-			latitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_LATITUDE )));
-			longitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.POST_CHATROOM_LONGITUDE )));
+			title =  Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_TITLE ));
+			max = Integer.parseInt( Util.getStringValueFromPart(request.getPart( Constants.REQUEST_CHATROOM_MAX )));
+			name = Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_NAME ));
+			latitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_LATITUDE )));
+			longitude = Float.parseFloat( Util.getStringValueFromPart( request.getPart( Constants.REQUEST_CHATROOM_LONGITUDE )));
 			
 			//성공을 표시
 			isSuccess = true;

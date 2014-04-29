@@ -50,9 +50,9 @@ public class LoginController extends HttpServlet {
 		String keepLogin = null;
 		
 		
-		Part emailPart = request.getPart(Constants.POST_EMAIL);
-		Part passwordPart = request.getPart(Constants.POST_PW);
-		Part keepLoginPart = request.getPart(Constants.POST_KEEP_LOGIN);
+		Part emailPart = request.getPart(Constants.REQUEST_EMAIL);
+		Part passwordPart = request.getPart(Constants.REQUEST_PASSWORD);
+		Part keepLoginPart = request.getPart(Constants.REQUEST_KEEP_LOGIN);
 		
 		if ( emailPart != null ) {
 			email = Util.getStringValueFromPart(emailPart);
