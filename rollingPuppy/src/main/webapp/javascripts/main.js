@@ -414,6 +414,8 @@ function menuClick(e) {
  **********************************************************************************************************/
 var oCreateChattingRoom = {
 		oCreateChattingRoom: null,
+		eRoomNameInput: null,
+		eLimitNumberInput: null,
 		visible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:block;');
 		},
@@ -422,6 +424,9 @@ var oCreateChattingRoom = {
 		},
 		initialize: function() {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
+			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
+			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
@@ -433,10 +438,40 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		clearLimitNumValue: function() {
+			this.eLimitNumberInput.value = "";
+		},
+		clearRoomNameValue: function() {
+			this.eLimitNumberInput.value = "";
+		},
 		requestCreate: function(e) {
 			e.preventDefault();
 			
 			//TODO validation 체크
+			var roomNameValue = this.eRoomNameInput.value
+			var limitNumValue = parseInt(this.eLimitNumberInput.value);
+			
+			console.log(roomNameValue);
+			//숫자가 아닌값일 경우, value값이 넘어오지 않음
+			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
+			console.log(limitNumValue);
+			
+			if ( roomNameValue === null || roomNameValue === "") {
+				alert('채팅방 제목을 입력해 주세요.');
+				return;
+			} else if ( roomNameValue.length <= 4 ) {
+				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
+				return;
+			};
+			
+			if ( isNaN( limitNumValue ) ) {
+				alert("인원수 제한에는 숫자값을 입력해 주세요.");
+				this.clearLimitNumValue();
+				return;
+			};
+				
+			
+			
 			//TODO 서버와 통신하는 코드
 			//TODO 마커에 고유 아이디값을 부여
 			

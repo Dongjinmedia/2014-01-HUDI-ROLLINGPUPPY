@@ -28,11 +28,11 @@
 			<form action="/room" method="post">
 					<p>
 						<label class="icon-chatting"></label>
-						<input type="text" name="title" placeholder="Room name" />
+						<input class="roomName" type="text" name="title" placeholder="Room name" />
 					</p>
 					<p>
 						<label class="icon-people"></label>
-						<input type="number" name="max" placeholder="Limit Number" />
+						<input class="limitNum" type="number" name="max" placeholder="Limit Number" />
 					</p>
 					<p>
 						<input type="submit" value="Create Chatting Room" />
