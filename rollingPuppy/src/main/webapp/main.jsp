@@ -11,7 +11,6 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Main Page</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css">
-	<link type="text/css" rel="stylesheet" href="/stylesheets/default.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/map_menu.css">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
