@@ -41,4 +41,26 @@ public class JoinController  extends HttpServlet {
 		out.println(memberDao.insertMemberInfo(member));
 		response.sendRedirect("/");
 	}
+	
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		logger.info("into doGet");
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		
+		String newbieEmail = request.getParameter("email");
+		
+		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
+		Member member = memberDao.selectDuplicateMemberExists(newbieEmail);
+		boolean isExisted = false;
+		
+		if( member != null ) {
+			if ( member.getId() != 0 )
+				isExisted = true;
+		}
+		
+		out.println(isExisted);
+	}
 }
