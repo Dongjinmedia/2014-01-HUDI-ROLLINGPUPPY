@@ -19,72 +19,85 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
-//Ajax GET 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonGetRequest(url, oParameters) {
-	return _getObjectFromJsonRequest(url, "GET", oParameters);
-}
-
-//Ajax POST 요청함수
-//내부적으로 _getObjectFromJsonRequest 호출
-//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-//formData 형태로 만들어 서버에 요청보낸다.
-function getObjectFromJsonPostRequest(url, oParameters) {
-	var test =  _getObjectFromJsonRequest(url, "POST", oParameters);
-	console.log("33 test : ", test);
-	return test;
-}
-
-//Ajax 요청함수
-//TODO CROSS BROWSER 시 하위링크 참조 
-//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
-function _getObjectFromJsonRequest(url, method, oParameters) {
-	
-	//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
-	var request = new XMLHttpRequest();
-	
-	if (method !== "GET" && method !== "POST" )
-		return null;
-	
-	request.open(method, url, false	);
-	
-	request.onreadystatechange = function() {
-		console.log("readyState : ", request.readyState);
-		console.log("status : ", request.status);
+var oAjax = {
 		
-		if (request.readyState == 4 && request.status == 200) {
-			console.log("53 responseText : ",request.responseText);
-			var obj = JSON.parse(request.responseText);
-			console.log("55 object : ",obj);
-			return obj;
-		}
-	}
-	
-	//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
-	if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+		oAjaxResult: null,
 		
-		var formData = new FormData();
+		//Ajax GET 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+		//formData 형태로 만들어 서버에 요청보낸다.
+		getObjectFromJsonGetRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "GET", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
 		
-		//hasOwnProperty is used to check if your target really have that property, 
-		//rather than have it inherited from its prototype. A bit simplier would be
-		for (var key in oParameters){
+		//Ajax POST 요청함수
+		//내부적으로 _getObjectFromJsonRequest 호출
+		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
+		//formData 형태로 만들어 서버에 요청보낸다.
+		getObjectFromJsonPostRequest: function (url, oParameters) {
+			this._getObjectFromJsonRequest(url, "POST", oParameters, this.callback);
+			return this.oAjaxResult;
+		},
+		
+		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
+		callback: function() {
+			console.log(this.responseText);
+			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
+		},
+		
+		//Ajax 요청함수
+		//TODO CROSS BROWSER 시 하위링크 참조 
+		//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+		_getObjectFromJsonRequest: function(url, method, oParameters, callback) {
+			//TODO 모듈화해서 초기 request를 계속 유지하는것으로 변경되어야 함
+			var request = new XMLHttpRequest();
 			
-		    if (oParameters.hasOwnProperty(key)) {
-		         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
-		    	console.log("key : ", key);
-		    	console.log("value : ", oParameters[key]);
-		    	formData.append(key, oParameters[key]);
-		    }
+			if (method !== "GET" && method !== "POST" )
+				return null;
+			
+			request.open(method, url, false	);
+			
+			request.onreadystatechange = function() {
+				console.log("readyState : ", request.readyState);
+				console.log("status : ", request.status);
+				
+				if (request.readyState == 4 && request.status == 200) {
+					console.log("53 responseText : ",request.responseText);
+					var obj = JSON.parse(request.responseText);
+					console.log("55 object : ",obj);
+					
+					if ( typeof callback == "function" ) {
+						callback.apply(request);
+					}
+				}
+			}
+			
+			//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
+			if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
+				
+				var formData = new FormData();
+				
+				//hasOwnProperty is used to check if your target really have that property, 
+				//rather than have it inherited from its prototype. A bit simplier would be
+				for (var key in oParameters){
+					
+				    if (oParameters.hasOwnProperty(key)) {
+				         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
+				    	console.log("key : ", key);
+				    	console.log("value : ", oParameters[key]);
+				    	formData.append(key, oParameters[key]);
+				    }
+				}
+				console.log("formData : ", formData);
+				request.send(formData);
+			} else {
+				request.send();
+			}
 		}
-		console.log("formData : ", formData);
-		request.send(formData);
-	} else {
-		request.send();
-	}
-	
 }
+
 
 /*********************************************************************************************************
  * 경민이가 작성한 네비게이션관련 소스코드 시작
@@ -553,8 +566,9 @@ var oCreateChattingRoom = {
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
-			var oResponseData = getObjectFromJsonPostRequest("/chat/create", oRequestData);
-			console.log("Create Room Response From Server : ",oResponseData);
+			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			//console.log("Create Room Response From Server : ",oResponseData);
+			
 			
 			//TODO 마커에 고유 아이디값을 부여
 			
