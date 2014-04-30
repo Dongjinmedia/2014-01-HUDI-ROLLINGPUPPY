@@ -147,16 +147,8 @@ var Panel = {
 }
 
 var NavList = {
-	arrayLiClassNames: [
-		"search",
-		"recommendation",
-		"chatting",
-		"bookmark",
-		"setting"
-	],
-	
 	elNavList: document.getElementById('nav_list'),
-	elLatestClickedLi: null,
+	elLatestClickedMenu: null,
 	
 	addEvents: function() {
 		this.elNavList.addEventListener(
@@ -171,11 +163,11 @@ var NavList = {
 		}
 		
 		event.preventDefault();
-		if (this.elLatestClickedLi) {
-			this.elLatestClickedLi.className = "";
+		if (this.elLatestClickedMenu) {
+			this.elLatestClickedMenu.className = "";
 		}
-		this.elLatestClickedLi = event.target.parentNode;
-		this.elLatestClickedLi.className = "on";
+		this.elLatestClickedMenu = event.target.parentNode;
+		this.elLatestClickedMenu.className = "on";
 	}
 }
 
