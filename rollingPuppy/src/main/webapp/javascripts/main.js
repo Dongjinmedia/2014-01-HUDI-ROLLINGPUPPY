@@ -195,6 +195,11 @@ var naverMapSettings = {
 	        //change zoom method
 	        this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel);
 	    },
+	    
+	    // 축척 레벨(Zoom)을 가져오기 위한 함수
+	    getZoom: function() {
+	    	return this.oMap.getLevel();
+	    },
 
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
@@ -298,7 +303,7 @@ var naverMapSettings = {
 	            minMaxLevel: [1, 14], //지도의 최소/최대 축척 레벨
 	            size: new nhn.api.map.Size(mapDivWidth, mapDivHeight) //지도의 크기
 	        });
-
+	        
 	        var oSize = new nhn.api.map.Size(28, 37); //px단위의 size객체.
 	        
 	        var oOffset = new nhn.api.map.Size(14, 37); //offset위치 지정
@@ -472,13 +477,14 @@ function menuClick(e) {
  * 세훈이가 작성한 줌인/줌아웃 기능에 대한 소스코드
  **********************************************************************************************************/
 
-/* TODO 리팩토링, 줌인/줌아웃 수준 조정 필요 */
 document.getElementById("zoomInButton").addEventListener('click', function(e){
-	naverMapSettings.changeZoom(12);
+	var currentZoomLevel = naverMapSettings.getZoom()
+	naverMapSettings.changeZoom(++currentZoomLevel);
 });
 
 document.getElementById("zoomOutButton").addEventListener('click', function(e){
-	naverMapSettings.changeZoom(8);
+	var currentZoomLevel = naverMapSettings.getZoom()
+	naverMapSettings.changeZoom(--currentZoomLevel);
 });
 
 /*********************************************************************************************************
