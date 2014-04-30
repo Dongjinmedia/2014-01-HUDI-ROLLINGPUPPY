@@ -147,29 +147,35 @@ var Panel = {
 }
 
 var NavList = {
+	arrayLiClassNames: [
+		"search",
+		"recommendation",
+		"chatting",
+		"bookmark",
+		"setting"
+	],
+	
 	elNavList: document.getElementById('nav_list'),
+	elLatestClickedLi: null,
 	
 	addEvents: function() {
 		this.elNavList.addEventListener(
 				'click',
-				function(event) {
-					console.log(event.target);
-					// 라이브러리 만들거나 util함수로 만들어서 다중 className 문제 처리할 것 
-					if (event.target && event.target.className == "search") {
-						
-					} else if(event.target && event.target.className == "recommendation") {
-						
-					} else if(event.target && event.target.className == "chatting") {
-						
-					} else if(event.target && event.target.className == "bookmark") {
-						
-					} else if(event.target && event.target.className == "setting") {
-						
-					} else {
-						return ;
-					}
-				}
+				this.fnNavButtonHandler.bind(this)
 		);
+	},
+	
+	fnNavButtonHandler: function(event) {
+		if (!event || !event.target) {
+			return ;
+		}
+		
+		event.preventDefault();
+		if (this.elLatestClickedLi) {
+			this.elLatestClickedLi.className = "";
+		}
+		this.elLatestClickedLi = event.target.parentNode;
+		this.elLatestClickedLi.className = "on";
 	}
 }
 
