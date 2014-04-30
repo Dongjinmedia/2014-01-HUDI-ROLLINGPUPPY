@@ -74,7 +74,8 @@ public class ChatController extends HttpServlet {
 	//http://stackoverflow.com/questions/10292382/html-5-formdata-and-java-servlets
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//response 형식을 json으로 선언
-		response.setContentType("application/json");
+		response.setContentType("application/json; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		//response데이터에 JSON출력을 위한 선언
 		PrintWriter out = response.getWriter();
 		//JSON 데이터를 편하게 사용하기 위한 구글에서 만든 라이브러리 선언
@@ -157,7 +158,8 @@ public class ChatController extends HttpServlet {
 	}
 	
 	public void getChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("application/json");
+		response.setContentType("application/json; charset=UTF-8");
+		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();

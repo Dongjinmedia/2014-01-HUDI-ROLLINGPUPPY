@@ -187,10 +187,25 @@ var naverMapSettings = {
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
 	    
-	    updateMapStatus: function() {
-	    	//working
-	    	var aCurrentMapPoints = this.oMap.getBound();
+	    //working
+	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
 	    	
+	    	console.log("latitude : ", latitude);
+	    	console.log("longitude : ", longitude)
+	    	
+	    	 var oPoint = new nhn.api.map.LatLng(latitude, longitude);
+	    	
+	    	console.log(oPoint);
+	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	    title: '제목 : '+title
+	    	});
+	    	oMarker.setPoint(oPoint);
+	    	oMarker.chatRoomNumber = chatRoomNumber;
+	    	
+	    	this.oMap.addOverlay(oMarker);
+	    },
+	    updateMapStatus: function() {
+	    	var aCurrentMapPoints = this.oMap.getBound();
 	    	
 	    	if ( aCurrentMapPoints !== null || aCurrentMapPoints.length !==0 || aCurrentMapPoints !== undefined )  {
 	    		
@@ -208,6 +223,15 @@ var naverMapSettings = {
 	    		//var oResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
 	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
 	    		console.log("oResponse : ", oResponse);
+	    		
+	    		console.log("oResponse!!!!!!!!");
+	    		console.log("oResponse['chatRoomList'] : ",oResponse['chatRoomList']);
+	    		
+	    		var aDatas = oResponse['chatRoomList'];
+	    		for (var index in aDatas) {
+	    			console.log("data : ",aDatas[index]);
+	    			this.addMarker(aDatas[index]['location_latitude'], aDatas[index]['location_longitude'], aDatas[index]['id'], aDatas[index]['title']);
+	    		}
 	    	}
 	    },
 	    
@@ -281,7 +305,7 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	//TODO 채팅방번호
-	            	alert(oTarget.chatRoomNumber);
+	            	//alert(oTarget.chatRoomNumber);
 	            	
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
 	                var menuTemplate = document.getElementById("controlBox");
@@ -627,15 +651,20 @@ var oCreateChattingRoom = {
 					&& isNaN(chatRoomNumber) === false ) {
 				
 				//마커를 생성
-				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
-				console.log(oMapClicker.oClickPoint);
-		    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
-		    	    title: 'test' + oMapClicker.oClickPoint.toString()
-		    	});
-		    	oMarker.setPoint(oMapClicker.oClickPoint);
-		    	oMarker.chatRoomNumber = chatRoomNumber;
+//				console.log(oMapClicker.oClickPoint);
+//		    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+//		    	    title: 'test' + oMapClicker.oClickPoint.toString()
+//		    	});
+//		    	oMarker.setPoint(oMapClicker.oClickPoint);
+//		    	oMarker.chatRoomNumber = chatRoomNumber;
 		    	
-		    	naverMapSettings.oMap.addOverlay(oMarker);
+				console.log("oMapClicker : ", oMapClicker);
+				console.log("oMapClicker.oClickPoint['y'] : ",oMapClicker.oClickPoint['y']);
+				console.log("oMapClicker.oClickPoint['x'] : ",oMapClicker.oClickPoint['x']);
+		    	naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], chatRoomNumber);
+				//working
+				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
+				
 		    	
 		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
 		    	oMapClicker.invisible();

@@ -71,6 +71,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			logger.error("Request Create ChattingRoom Error", e);
 		}
 		
+		for (ChatRoom chatRoom : lists) {
+			logger.info(chatRoom.getTitle());
+		}
+		
 		return lists;
 	}
 }
