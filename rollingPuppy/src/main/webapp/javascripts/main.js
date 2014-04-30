@@ -186,7 +186,7 @@ var naverMapSettings = {
 	    oIcon: null,
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
-	    
+	    aMarkerList: null,
 	    //working
 	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
 	    	
@@ -228,9 +228,16 @@ var naverMapSettings = {
 	    		console.log("oResponse['chatRoomList'] : ",oResponse['chatRoomList']);
 	    		
 	    		var aDatas = oResponse['chatRoomList'];
+	    		
 	    		for (var index in aDatas) {
 	    			console.log("data : ",aDatas[index]);
-	    			this.addMarker(aDatas[index]['location_latitude'], aDatas[index]['location_longitude'], aDatas[index]['id'], aDatas[index]['title']);
+	    			
+	    			if ( this.aMarkerList.indexOf(aDatas[index]['id']) > -1 ) {
+	    				continue;
+	    			} else {
+	    				this.aMarkerList.push(aDatas[index]['id']);
+	    				this.addMarker(aDatas[index]['location_latitude'], aDatas[index]['location_longitude'], aDatas[index]['id'], aDatas[index]['title']);
+	    			}
 	    		}
 	    	}
 	    },
@@ -377,6 +384,10 @@ var naverMapSettings = {
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
+	        
+	        
+	        this.aMarkerList = new Array();
+	        console.log("initial aMarkerList : ", this.aMarkerList);
 	    }
 };
 
@@ -788,6 +799,10 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//MapClicker(마커가 없는 메뉴지역)을 클릭했을때 인터렉션을 위한 객체 초기화
 	oMapClicker.initialize();
+	
+	//for 중간평가
+	//일단 초기지역설정을 하지 않으므로 보이지 않도록 처리
+	oMapClicker.invisible();
 	//------------------------------------------------------------------------------------//
 	
 	/*
@@ -797,6 +812,15 @@ function initialize() {
 	//Chatting Room Create Area를 위한 초기화 영역
 	oCreateChattingRoom.initialize();
 	//------------------------------------------------------------------------------------//
+	
+	/*
+	 * 
+	 */
+	//------------------------------------------------------------------------------------//
+	//Map 에 위치한 Marker 초기화
+	naverMapSettings.updateMapStatus();
+	//------------------------------------------------------------------------------------//
+	
 	
 	/*
 	 * 현재 윤성이 작업중
