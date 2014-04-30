@@ -18,7 +18,13 @@ public class Constants {
 	public static final String REQUEST_CHATROOM_LATITUDE = "locationLatitude";
 	public static final String REQUEST_CHATROOM_LONGITUDE = "locationLongitude";
 	
+	public static final String REQUEST_ROOMLIST_LEFTTOPX = "leftTopX";
+	public static final String REQUEST_ROOMLIST_LEFTTOPY = "leftTopY";
+	public static final String REQUEST_ROOMLIST_RIGHTBOTTOMX = "rightBottomX";
+	public static final String REQUEST_ROOMLIST_RIGHTBOTTOMY = "rightBottomY";
+	
 	public static final String JSON_RESPONSE_ISSUCCESS = "isSuccess";
 	public static final String JSON_RESPONSE_NICKNAME = "nickname";
-	public static final String JSON_RESPONSE_CHATROOMNUM = "chatRoomNumber"; 
+	public static final String JSON_RESPONSE_CHATROOMNUM = "chatRoomNumber";
+	public static final String JSON_RESPONSE_CHATROOMLIST= "chatRoomList";
 }

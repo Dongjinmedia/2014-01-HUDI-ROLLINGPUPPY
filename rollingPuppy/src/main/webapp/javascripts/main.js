@@ -66,6 +66,7 @@ var oAjax = {
 				console.log("status : ", request.status);
 				
 				if (request.readyState == 4 && request.status == 200) {
+					console.log("responseText : ",request.responseText);
 					var obj = JSON.parse(request.responseText);
 					
 					//인자로 전달된 callback함수를 bind, 실행
@@ -185,7 +186,31 @@ var naverMapSettings = {
 	    oIcon: null,
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
-
+	    
+	    updateMapStatus: function() {
+	    	//working
+	    	var aCurrentMapPoints = this.oMap.getBound();
+	    	
+	    	
+	    	if ( aCurrentMapPoints !== null || aCurrentMapPoints.length !==0 || aCurrentMapPoints !== undefined )  {
+	    		
+	    		var oParameters = {
+	    			"leftTopX": aCurrentMapPoints[0]['x'],
+	    			"leftTopY": aCurrentMapPoints[0]['y'],
+	    			"rightBottomX": aCurrentMapPoints[1]['x'],
+	    			"rightBottomY": aCurrentMapPoints[1]['y']
+	    		};
+	    		
+	    		console.log("aCurrentMapPoints : ", aCurrentMapPoints);
+	    		console.log("oParameters : ", oParameters);
+	    		
+	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
+	    		//var oResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
+	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
+	    		console.log("oResponse : ", oResponse);
+	    	}
+	    },
+	    
 	    //Zoom 조절을 위한 함수
 	    changeZoom: function(nZoomLevel) {
 	        this.oCenterPoint = this.oMap.getCenter();
@@ -206,6 +231,7 @@ var naverMapSettings = {
 	        this.oMap.attach("mouseenter", this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
 	        this.oMap.attach("mouseleave", this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
 	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
+	        this.oMap.attach("dragend",this.dragEndEvent.bind(this));
 	        this.oMap.attach("click",this.clickEvent.bind(this));    
 	    },
 
@@ -237,7 +263,14 @@ var naverMapSettings = {
 	    //move event가 발생한 후 click이벤트가 발생한다.
 	    //drag 시작할 때 mapClickWithoutMarker를 화면상에서 보이지 않게끔 처리한다.
 	    dragStartEvent : function(oCustomEvent){
+	    	console.log("dragStartEvent");
 	        oMapClicker.invisible();
+	    },
+
+	    //TODO 네트워크 비용을 낮추기위해 내부적으로 현재 좌표이동을 체크하는 로직이 필요하다. (현재는 클릭만해도 동작)
+	    dragEndEvent: function(oCustomEvent) {
+	    	console.log("dragEndEvent");
+	    	this.updateMapStatus();
 	    },
 
 	    clickEvent : function(oCustomEvent) {
@@ -577,6 +610,8 @@ var oCreateChattingRoom = {
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x']
 			};
+			
+			console.log("oRequestData : ", oRequestData);
 			
 			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
 			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);

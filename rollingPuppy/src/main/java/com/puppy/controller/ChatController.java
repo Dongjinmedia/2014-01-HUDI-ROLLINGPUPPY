@@ -2,7 +2,9 @@ package com.puppy.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.math.BigDecimal;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -38,6 +40,14 @@ public class ChatController extends HttpServlet {
 			throws ServletException, IOException {
 		//TODO Delete Log into doGet
 		logger.info("into doGet");
+		
+		String requestURL = request.getRequestURI().toLowerCase();
+		
+		logger.info("requestURL : "+ requestURL);
+		
+		if ( requestURL.contains("getlist") ) {
+			getChattingRoomList(request, response);
+		}
 	}
 	
 	@Override
@@ -50,19 +60,23 @@ public class ChatController extends HttpServlet {
 		
 		logger.info("requestURL : "+ requestURL);
 		
-		if ( requestURL.contains("create") )
+		if ( requestURL.contains("create") ) {
 			createChattingRoom(request, response);
-		//} else if ( requestURL.contains("") )
+			//TODO getChattingRoomList영역을 GET방식으로 변경해야 한다.
+			//현재 GET요청에서는 에러가 발생중이다.
+		} else if ( requestURL.contains("getlist") ) {
+			getChattingRoomList(request, response);
+		}
 	}
 	
 	//logger.info(request.getParameter("test1")); null 값을 반환한다.
 	//전달하는 FormData를 Servlet에서는 multipart로 인식한다. 아래의 링크를 확인해보자.
 	//http://stackoverflow.com/questions/10292382/html-5-formdata-and-java-servlets
-	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) {
+	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//response 형식을 json으로 선언
 		response.setContentType("application/json");
 		//response데이터에 JSON출력을 위한 선언
-		PrintWriter out = null;
+		PrintWriter out = response.getWriter();
 		//JSON 데이터를 편하게 사용하기 위한 구글에서 만든 라이브러리 선언
 		Gson gson = new Gson();
 		//result 데이터 (성공여부, 데이터베이스에 추가된 ROOM의 고유식별값 (id))
@@ -74,8 +88,8 @@ public class ChatController extends HttpServlet {
 		String title =  null;
 		int max = 0;
 		String name = null;
-		float latitude = 0;
-		float longitude = 0;
+		BigDecimal latitude = null;
+		BigDecimal longitude = null;
 		
 		Part titlePart = null;
 		Part maxPart = null;
@@ -84,8 +98,6 @@ public class ChatController extends HttpServlet {
 		Part longitudePart = null;
 		
 		try {
-			out = response.getWriter();
-			
 			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
 			titlePart = request.getPart( Constants.REQUEST_CHATROOM_TITLE );
 			maxPart = request.getPart( Constants.REQUEST_CHATROOM_MAX );
@@ -103,12 +115,12 @@ public class ChatController extends HttpServlet {
 				name = Util.getStringValueFromPart( namePart );
 			
 			if ( latitudePart != null )
-				latitude = Float.parseFloat( Util.getStringValueFromPart( latitudePart ));
+				latitude = new BigDecimal( Util.getStringValueFromPart( latitudePart ));
 			
 			if ( longitudePart != null )
-				longitude = Float.parseFloat( Util.getStringValueFromPart( longitudePart ));
+				longitude = new BigDecimal( Util.getStringValueFromPart( longitudePart ));
 			
-			if ( title !=  null && max != 0 && name != null && latitude != 0 && longitude != 0 ) {
+			if ( title !=  null && max != 0 && name != null && latitude != null && longitude != null ) {
 				
 				
 				ChatRoom chatRoom = new ChatRoom();
@@ -141,6 +153,69 @@ public class ChatController extends HttpServlet {
 		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
 		
 		//gson을 통해서 HashMap을 JSON형태로 변경 후 response전달
+		out.println(gson.toJson(resultJsonData));
+	}
+	
+	public void getChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		boolean isSuccess = false;
+		
+		//request Parameter를 위한 변수선언
+		Part leftTopXPart = null;
+		Part leftTopYPart = null;
+		Part rightBottomXPart = null;
+		Part rightBottomYPart = null;
+		
+		float leftTopX = 0;
+		float leftTopY = 0;
+		float rightBottomX = 0;
+		float rightBottomY = 0;
+		
+		try {
+			
+			leftTopXPart = request.getPart( Constants.REQUEST_ROOMLIST_LEFTTOPX);
+			leftTopYPart = request.getPart( Constants.REQUEST_ROOMLIST_LEFTTOPY);
+			rightBottomXPart = request.getPart( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX);
+			rightBottomYPart = request.getPart( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY);
+			
+			
+			if ( leftTopXPart != null )
+				leftTopX = Float.parseFloat( Util.getStringValueFromPart( leftTopXPart ) );
+			
+			if ( leftTopYPart != null )
+				leftTopY = Float.parseFloat( Util.getStringValueFromPart( leftTopYPart ) );
+			
+			if ( rightBottomXPart != null )
+				rightBottomX = Float.parseFloat( Util.getStringValueFromPart( rightBottomXPart ) );
+			
+			if ( rightBottomYPart != null )
+				rightBottomY = Float.parseFloat( Util.getStringValueFromPart( rightBottomYPart ) );
+			
+			if ( leftTopX !=0  && leftTopY !=0
+				&& rightBottomX != 0
+				&& rightBottomY != 0 ) {
+				logger.info("leftTopX : "+leftTopX);
+				logger.info("leftTopY : "+leftTopY);
+				logger.info("rightBottomX : "+rightBottomX);
+				logger.info("rightBottomY : "+rightBottomY);
+				
+				isSuccess = true;
+				
+				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
+				List<ChatRoom> lists = chatDaoImpl.selectChatRoomListFromPoints(leftTopX, leftTopY, rightBottomX, rightBottomY);
+				
+				resultJsonData.put(Constants.JSON_RESPONSE_CHATROOMLIST, lists);
+			}
+			
+		} catch (Exception e ) {
+			logger.error("Request Get Chatting Room List With LeftTop, RightBottom Latitude, Longitude", e);
+		}
+		
+		logger.info("isSuccess : ", isSuccess);
+		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
 		out.println(gson.toJson(resultJsonData));
 	}
 }
