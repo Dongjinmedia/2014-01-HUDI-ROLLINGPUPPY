@@ -189,6 +189,11 @@ var naverMapSettings = {
 	    aMarkerList: null,
 	    //working
 	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
+	    	//임시
+	    	
+	    	console.log("title : ", title);
+	    	if ( title === undefined )
+	    		return;
 	    	
 	    	console.log("latitude : ", latitude);
 	    	console.log("longitude : ", longitude)
@@ -605,6 +610,7 @@ var oCreateChattingRoom = {
 		requestCreate: function(e) {
 			e.preventDefault();
 			
+			console.log("requestCreate : request");
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value);
@@ -672,7 +678,9 @@ var oCreateChattingRoom = {
 				console.log("oMapClicker : ", oMapClicker);
 				console.log("oMapClicker.oClickPoint['y'] : ",oMapClicker.oClickPoint['y']);
 				console.log("oMapClicker.oClickPoint['x'] : ",oMapClicker.oClickPoint['x']);
-		    	naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], chatRoomNumber);
+				
+				naverMapSettings.aMarkerList.push(chatRoomNumber);
+				naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], chatRoomNumber, roomNameValue);
 				//working
 				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
 				
