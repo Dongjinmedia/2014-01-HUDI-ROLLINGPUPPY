@@ -176,7 +176,7 @@ var NavList = {
  **********************************************************************************************************/
 
 /*********************************************************************************************************
- * 소은이가 작성한 네이버맵 API관련 소스코드 시작
+ * 소은, 세훈이가 작성한 네이버맵 API관련 소스코드 시작
  **********************************************************************************************************/
 var naverMapSettings = {
 		naverMap: null, //Main Page에서 Map영역에 해당하는  div객체
@@ -291,7 +291,7 @@ var naverMapSettings = {
 	        this.oMap = new nhn.api.map.Map(this.naverMap, {
 	            point: this.oCenterPoint, //지도 중심점의 좌표 설정
 	            zoom: 10, //초기 줌 레벨은 10으로 둔다.
-	            enableWheelZoom: true, //마우스 휠 동작으로 지도를 확대/축소할지 여부
+	            enableWheelZoom: false, //마우스 휠 동작으로 지도를 확대/축소할지 여부
 	            detectCoveredMarker: true, //겹쳐 있는 마커를 클릭했을 때 겹친 마커 목록 표시 여부
 	            enableDragPan: true,             //마우스로 끌어서 지도를 이동할지 여부
 	            enableDblClickZoom: false,             //더블클릭으로 지도를 확대할지 여부
@@ -313,7 +313,7 @@ var naverMapSettings = {
 	        this.oMap.addOverlay(this.oMarkerInfoWindow); // - 지도에 추가
 	        this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
 	        this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
-
+	        
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
 	        eNmap.setAttribute("style", "width:100%;height:100%;");
