@@ -595,7 +595,7 @@ function menuClick(e) {
  **********************************************************************************************************/
 var oCreateChattingRoom = {
 		//채팅방 생성에 해당하는 중앙창에 대한 element
-		oCreateChattingRoom: null,
+		oCreateChatRoom: null,
 		//채팅방명을 입력하는 input box element
 		eRoomNameInput: null,
 		//채팅방 참여인원 제한 수를 입력하는 input box element
@@ -765,6 +765,23 @@ var oMapClicker = {
 		}, false);
 	},	
 };
+
+var oKeyboardAction = {
+	escPress: function() {
+		//채팅방 생성페이지가 열려있을경우, 보이지 않게 처리
+		if ( getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
+			oCreateChattingRoom.invisible();
+	},
+	initialize: function() {
+		document.onkeydown = function(event) {
+			//alert("in : " + event.keyCode);
+			if ( event.keyCode == 27 ) {
+				this.escPress();
+			}
+		}.bind(this);
+	}	
+};
+
 /*********************************************************************************************************
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
  **********************************************************************************************************/
@@ -837,13 +854,20 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	
 	/*
-	 * 
+	 * 현재 윤성이 작업중
 	 */
 	//------------------------------------------------------------------------------------//
 	//Map 에 위치한 Marker 초기화
 	naverMapSettings.updateMapStatus();
 	//------------------------------------------------------------------------------------//
 	
+	/*
+	 * 현재 윤성이 작업중
+	 */
+	//------------------------------------------------------------------------------------//
+	//키보드 입력에 대한 Object
+	oKeyboardAction.initialize();
+	//------------------------------------------------------------------------------------//
 	
 	/*
 	 * 현재 윤성이 작업중
