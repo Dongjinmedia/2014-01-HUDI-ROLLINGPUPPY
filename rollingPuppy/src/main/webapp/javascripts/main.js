@@ -176,6 +176,7 @@ var naverMapSettings = {
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
 	    aMarkerList: null,
+	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
 	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
@@ -382,6 +383,30 @@ var naverMapSettings = {
 	        
 	        
 	        this.aMarkerList = new Array();
+	        
+	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
+	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
+	        this.oZoomController = {
+	        		zoomInButton: document.getElementById("zoomInButton"),
+	        		zoomOutButton: document.getElementById("zoomOutButton"),
+	        		
+	        		addEventForZoom: function() {
+	        			this.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
+	        			this.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
+	        		},
+	        		
+	        		changeZoomLevel: function(e){
+	        			var currentZoomLevel = naverMapSettings.getZoom();
+	        			
+	        			if(e.target.id === "zoomInButton") {
+	        				naverMapSettings.changeZoom(++currentZoomLevel);
+	        			}
+	        			else if(e.target.id === "zoomOutButton") {
+	        				naverMapSettings.changeZoom(--currentZoomLevel);
+	        			}
+	        		}
+	        }
+	        this.oZoomController.addEventForZoom();
 	    }
 };
 
@@ -534,25 +559,6 @@ function menuClick(e) {
 
 /*********************************************************************************************************
  * Marker Interaction 메뉴에 대한 소스코드 끝
- **********************************************************************************************************/
-
-//TODO naverMapSettings의 Initialize 함수 내부에 위치하도록 변경한다.
-/*********************************************************************************************************
- * 세훈이가 작성한 줌인/줌아웃 기능에 대한 소스코드
- **********************************************************************************************************/
-
-document.getElementById("zoomInButton").addEventListener('click', function(e){
-	var currentZoomLevel = naverMapSettings.getZoom()
-	naverMapSettings.changeZoom(++currentZoomLevel);
-});
-
-document.getElementById("zoomOutButton").addEventListener('click', function(e){
-	var currentZoomLevel = naverMapSettings.getZoom()
-	naverMapSettings.changeZoom(--currentZoomLevel);
-});
-
-/*********************************************************************************************************
- * 줌인/줌아웃 기능에 대한 소스코드 끝
  **********************************************************************************************************/
 
 
