@@ -672,6 +672,8 @@ var oCreateChattingRoom = {
 		    	
 		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
 		    	this.invisible();
+			} else {
+				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
 			} 
 		}
 }
@@ -711,7 +713,11 @@ var oMapClicker = {
 		this.oMapClicker = document.getElementById('mapClicker');
 		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
 		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
-		
+
+		//working
+		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
+		this.invisible();
+
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		this.clickAdd.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible();
@@ -720,7 +726,8 @@ var oMapClicker = {
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
 		this.clickBookMark.addEventListener('click', function(e) {
 			alert('clickBookMark');
-			
+
+		
 		}, false);
 	},	
 };
@@ -785,10 +792,6 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//MapClicker(마커가 없는 메뉴지역)을 클릭했을때 인터렉션을 위한 객체 초기화
 	oMapClicker.initialize();
-	
-	//for 중간평가
-	//일단 초기지역설정을 하지 않으므로 보이지 않도록 처리
-	oMapClicker.invisible();
 	//------------------------------------------------------------------------------------//
 	
 	/*
