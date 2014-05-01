@@ -107,7 +107,7 @@ var Panel = {
 	addEvents: function() {
 		var elButtons = this.elPanel.querySelectorAll('a');
 		
-		// panel 밑에 button 이벤트 등록.
+		// panel 아래 folding button 중 클릭 이벤트를 받는다.
 		// 향후 event delegation 방식으로 변경할 것.
 		for (var idx = 0; idx < elButtons.length; idx++) {
 			elButtons[idx].addEventListener(
@@ -116,11 +116,12 @@ var Panel = {
 			);
 		}
 		
-		this.elContainer.addEventListener(
+		// elPanel에서 animationEnd 이벤트를 받는다.
+		this.elPanel.addEventListener(
 				'animationEnd',
 				this.fnAnimationEndHandler.bind(this)
 		);
-		this.elContainer.addEventListener(
+		this.elPanel.addEventListener(
 				'webkitAnimationEnd',
 				this.fnAnimationEndHandler.bind(this)
 		);
