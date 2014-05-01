@@ -16,7 +16,7 @@ import com.puppy.dto.Member;
 */
 public class MemberDaoImpl extends DAO implements MemberDao{
 
-	private static final Logger log = LoggerFactory.getLogger(MemberDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MemberDaoImpl.class);
 	private static MemberDaoImpl instance = null;
 	
 	private MemberDaoImpl() {
@@ -28,7 +28,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
-		log.info("MemberDaoImpl selectDuplicateMemberExists");
+		logger.info("MemberDaoImpl selectDuplicateMemberExists");
 		
 		Member member = null;
 		
@@ -39,7 +39,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			log.error("in selectDuplicateMemberExists", e);
+			logger.error("in selectDuplicateMemberExists", e);
 		}
 		
 		return member;
@@ -47,7 +47,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 	@Override
 	public Member selectCheckLoginInfo(String email, String pw) {
-		log.info("MemberDaoImpl selectCheckLoginInfo");
+		logger.info("MemberDaoImpl selectCheckLoginInfo");
 		
 		Member member = null;
 		
@@ -59,39 +59,39 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 
 			member = selectOne(Member.class, preparedStatement);
 		} catch (Exception e) {
-			log.error("in selectCheckLoginInfo", e);
+			logger.error("in selectCheckLoginInfo", e);
 		}
 		
 		return member;
 	}
 
 	@Override
-	public boolean insertMemberInfo(Member member) {
-		log.info("MemberDaoImpl insertMemberInfo");
+	public int insertMemberInfo(Member member) {
+		logger.info("MemberDaoImpl insertMemberInfo");
 		
 		PreparedStatement insertPreparedStatement = null;
-		boolean insertQueryResult = false;
+		int successQueryNumber = 0;
 		
 		try {
 			String nicknameQuery = 
 					"SELECT tbl_adjective.adjective AS nickname_adjective, tbl_noun.noun AS nickname_noun "
 					+ "FROM tbl_adjective, tbl_noun WHERE tbl_adjective.grade = 3 ORDER BY rand() LIMIT 1;";
-			PreparedStatement selectPreparedStatement = ConnectionPool.getPreparedStatement(nicknameQuery);
+			PreparedStatement selectPreparedStatement = ConnectionPool.getInsertPreparedStatement(nicknameQuery);
 			Member tempMember = selectOne(Member.class, selectPreparedStatement);
 			
 			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES (?, ?, ?, ?)";
-			insertPreparedStatement = ConnectionPool.getPreparedStatement(query);
+			insertPreparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			insertPreparedStatement.setString(1, member.getEmail());
 			insertPreparedStatement.setString(2, member.getPw());
 			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
 			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
 			
-			insertQueryResult = insertQuery(insertPreparedStatement); 
+			successQueryNumber = insertQuery(insertPreparedStatement, member); 
 		} catch (Exception e) {
-			log.error("in insertMemberInfo", e);
+			logger.error("in insertMemberInfo", e);
 		}
 		
-		return insertQueryResult;
+		return successQueryNumber;
 	}
 
 }

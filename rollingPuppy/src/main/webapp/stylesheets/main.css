@@ -1,6 +1,62 @@
+body {
+	positon: relative;
+	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "돋움", Times;
+	margin: 0;
+}
+
+a {
+	text-decoration: none;
+}
+
+.button {
+	display: inline-block;
+	color: #FFFFFF;
+	border: 1px solid #0077FF;
+	background-color: #0077FF;
+	padding: 6px 6px;
+	text-decoration: none;
+	font-size: 12px;
+	font-weight: 600;
+	border-radius: 3px;
+	-webkit-border-radius: 3px;
+}
+
+input[type=text], input[type=password] {
+	border-radius: 3px;
+	-moz-border-radius: 3px;
+	-webkit-border-radius: 3px;
+	border: 1px solid #ccc;
+	display: inline-block;
+	font-size: 14px;
+	padding: 6px 8px;
+	width: 180px;
+}
+
+div#wrapper {
+	position: absolute;
+	min-width: 800px;
+	min-height: 400px;
+	width: 100%;
+	height: 100%;
+}
+
+div#header {
+	position: relative;
+	height: 51px;
+	background-color: #FAFAFA;
+	border-bottom: 1px solid #555;
+	z-index: 100;
+}
+
+#logo {
+	position: absolute;
+	top: 5px;
+	left: 15px;
+}
+
 #header>#search_box {
 	position: absolute;
-	top: 7px;
+	top: 8px;
 	left: 170px;
 	width: 230px;
 }
@@ -15,9 +71,22 @@
 	right: 0px;
 }
 
+#user_name {
+	position: absolute;
+	top: 17px;
+	right: 80px;
+}
+
+#logout_button {
+	position: absolute;
+	top: 13px;
+	right: 20px;
+	color: white;
+}
+
 div#container {
 	position: absolute;
-	top: 50px;
+	top: 52px;
 	bottom: 0;
 	left: 0;
 	right: 0;
@@ -25,52 +94,8 @@ div#container {
 
 div#aside {
 	position: relative;
-	width: 400px;
-	height: 100%;
-}
-
-.fold_panel div#aside {
-    animation: fold_aside;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: fold_aside;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes fold_aside {
-    from { width: 400px; }
-    to { width: 62px; }
-}
-@-webkit-keyframes fold_aside {
-    from { width: 400px; }
-    to { width: 62px; }
-}
-
-.unfold_panel div#aside {
-    animation: unfold_aside;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: unfold_aside;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes unfold_aside {
-    from { width: 62px; }
-    to { width: 400px; }
-}
-@-webkit-keyframes unfold_aside {
-    from { width: 62px; }
-    to { width: 400px; }
-}
-
-.no_panel div#aside {
 	width: 62px;
+	height: 100%;
 }
 
 div#nav {
@@ -79,7 +104,7 @@ div#nav {
 	height: 100%;
 }
 
-ul.nav_list {
+ul#nav_list {
 	position: absolute;
 	background-color: #252525;
 	width: 100%;
@@ -87,69 +112,139 @@ ul.nav_list {
 	z-index: 12;
 }
 
-.nav_list li {
+#nav_list li {
 	position: relative;
 	color: #ffffff;
 	text-align: center;
 	list-style: none;
 }
 
-.nav_list a {
+#nav_list a {
 	display: block;
 	width: 60px;
 	height: 60px;
 	background: url(/images/icons.png) no-repeat;
 }
 
-.nav_list .search {
+#nav_list div {
+	display: none;
+}
+.unfolded_panel #nav_list .on div {
+	position: absolute;
+	display: block;
+	top: 0px;
+	left: 62px;
+	width: 340px;
+	height: 100%;
+	color: black;
+	z-index: 100;
+}
+
+#nav_list .search {
 	background-position: 0px 0px;
 }
 
-.nav_list .on .search {
+#nav_list .on .search {
 	background-position: 0px -60px;
 }
 
-.nav_list .recommendation {
+#nav_list .recommendation {
 	background-position: -60px 0px;
 }
 
-.nav_list .on .recommendation {
+#nav_list .on .recommendation {
 	background-position: -60px -60px;
 }
 
-.nav_list .chatting {
+#nav_list .chatting {
 	background-position: -120px 0px;
 }
 
-.nav_list .on .chatting {
+#nav_list .on .chatting {
 	background-position: -120px -60px;
 }
 
-.nav_list .bookmark {
+#nav_list .bookmark {
 	background-position: -180px 0px;
 }
 
-.nav_list .on .bookmark {
+#nav_list .on .bookmark {
 	background-position: -180px -60px;
 }
 
-.nav_list .settings {
+#nav_list .settings {
 	background-position: -240px 0px;
 }
 
-.nav_list .on .settings {
+#nav_list .on .settings {
 	background-position: -240px -60px;
 }
 
 div#panel {
 	position: absolute;
 	top: 0px;
-	right: 0px;
+	left: -278px;
 	width: 340px;
 	height: 100%;
 	border-right: 1px solid #A7A7A7;
 	background-color: #FEFEFE;
 	z-index: 11;
+}
+
+.fold_panel #panel {
+    animation: fold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: fold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes fold {
+	from { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(0px); }
+}
+@-webkit-keyframes fold {
+	from { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(0px); }
+}
+
+.unfolded_panel #panel {
+	left: 62px;
+}
+
+.unfold_panel #panel {
+    animation: unfold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: unfold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes unfold {
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(340px); }
+}
+@-webkit-keyframes unfold {
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(340px); }
+}
+
+#panel>#panel_contents {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+#panel_contents>div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
 }
 
 #panel>a {
@@ -162,24 +257,32 @@ div#panel {
 
 #panel>.panel_button_fold {
 	background-position: 0px 0px;
-	display: block;
+	display: none;
 	right: -10px;
 	width: 10px;
 }
 
 #panel>.panel_button_unfold {
 	background-position: -16px 0px;
-	display: none;
+	display: block;
 	right: -13px;
 	width: 13px;
 }
 
-.no_panel #panel>.panel_button_fold {
+.unfold_panel #panel>.panel_button_fold {
+	display: block;
+}
+
+.unfold_panel #panel>.panel_button_unfold {
 	display: none;
 }
 
-.no_panel #panel>.panel_button_unfold {
+.unfolded_panel #panel>.panel_button_fold {
 	display: block;
+}
+
+.unfolded_panel #panel>.panel_button_unfold {
+	display: none;
 }
 
 div#content {
@@ -187,52 +290,8 @@ div#content {
 	top: 0px;
 	right: 0px;
 	bottom: 0px;
-	left: 400px;
-	height: 100%;
-}
-
-.fold_panel div#content {
-    animation: fold_content;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: fold_content;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes fold_content {
-    from { left: 400px; }
-    to { left: 62px; }
-}
-@-webkit-keyframes fold_content {
-    from { left: 400px; }
-    to { left: 62px; }
-}
-
-.unfold_panel div#content {
-    animation: unfold_content;
-    animation-duration: 0.6s;
-    animation-timing-function: ease;
-    animation-fill-mode: forwards;
-
-    -webkit-animation: unfold_content;
-    -webkit-animation-duration: 0.6s;
-    -webkit-animation-timing-function: ease;
-    -webkit-animation-fill-mode: forwards;
-}
-@keyframes unfold_content {
-    from { left: 62px; }
-    to { left: 400px; }
-}
-@-webkit-keyframes unfold_content {
-    from { left: 62px; }
-    to { left: 400px; }
-}
-
-.no_panel #content {
 	left: 62px;
+	height: 100%;
 }
 
 #map_area {
@@ -246,5 +305,157 @@ div#content {
 	position: absolute;
 	width: 100%;
 	height: 100%;
-	background-color: #7070FF;
+	background-color: #fff;
 }
+
+/*
+** Create Chatting Room에 대한 CSS영역
+*/
+#createChatRoom {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	z-index: 120;
+	overflow: hidden;
+	display: none; 
+}
+
+#createChatRoom .centerArea {
+	position: absolute;
+	width: 500px;
+	height: 340px;
+	margin-top: -250px;
+	margin-left: -250px;
+	left: 50%;
+	top: 50%;
+}
+
+#createChatRoom .inputArea {
+	position: absolute;
+	padding: 5%;
+	width: 90%;
+	height: 90%;
+}
+
+.inputArea p {
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.inputArea label {
+	position: absolute;
+	left: 0px;
+	height: 100%;
+	width: 50px;
+	color: #847384;
+	background: #dedede;
+	border-radius: 3px 0 0 3px
+}
+
+#createChatRoom .bg {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	border-radius: 5px;
+}
+
+/*outer bg*/
+#createChatRoom .outer {
+	background: #000;
+	opacity: 0.5;	
+}
+
+/*inner bg*/
+#createChatRoom .inner {
+	background: #423142;
+	opacity: 0.8;	
+}
+
+.createAddress {
+	font-size: 200%;
+	font-weight: 700;
+}
+
+.icon-title:before {
+	content: "\f173";
+}
+
+.icon-people:before {
+	content: "\f0c0";
+}
+
+/* 삭제예정 */
+#createChatRoom [class^=icon-]:before,[class*=" icon-"]:before {
+	font-family: FontAwesome;
+	font-weight: 400;
+	font-style: normal;
+	display: inline-block;
+	text-decoration: inherit;
+}
+
+#createChatRoom label[class^=icon-]:before,label[class*=" icon-"]:before {
+	position: absolute;
+	text-align: center;
+	font-size: 200%;
+	left: 50%;
+	top: 50%;
+	margin-top: -25%;
+	margin-left: -25%;
+}
+/* 삭제예정 */
+
+#createChatRoom input[type="text"], #createChatRoom input[type="number"] {
+	background: #e5e5e5;
+	border: none;
+	border-radius: 0 3px 3px 0;
+	color: #5a5656;
+	font-size: 20px;
+	height: 50px;
+	outline: none;
+	padding: 0px 10px;
+	margin-left: 50px;
+	width: 380px;
+}
+
+#createChatRoom input[type="submit"] {
+	background-color: #008dde;
+	border: none;
+	border-radius: 3px;
+	margin-top: 20px;
+	color: #f4f4f4;
+	cursor: pointer;
+	font-size: 20px;
+	height: 40px;
+	outline: none;
+	padding: 0px 10px;
+	text-transform: uppercase;
+	width: 450px;
+}
+
+/* 줌인/줌아웃 버튼 시작(작성자 : 박세훈) */
+#zoomButton {
+	position: relative;
+	width: 30px;
+	height: 48px;
+	float: right;
+	margin-top: 40px;
+	margin-right: 40px;
+}
+
+#zoomInButton {
+	position: relative;
+	width: 100%;
+	height: 50%;
+	background: url(/images/zoom_button.png) no-repeat;
+	background-position: 0px 0px;
+}
+
+#zoomOutButton {
+	position: relative;
+	width: 100%;
+	height: 50%;
+	background: url(/images/zoom_button.png) no-repeat;
+	background-position: -30px 0px;
+}
+/* 줌인/줌아웃 버튼 스타일 끝 */

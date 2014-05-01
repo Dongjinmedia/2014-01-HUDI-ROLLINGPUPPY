@@ -1,3 +1,6 @@
+console.log('\u001b[1m');
+console.log('\u001b[32m', '=============Server Start=============');
+
 //socket.io Module load
 var socketio = require('socket.io');
 //mysql-connect Module load
@@ -5,8 +8,8 @@ var mysql = require('mysql');
 
 //Use Connection Pool
 var pool = mysql.createPool({
-	host		: '10.73.45.135',
-	user		: 'root',
+	host		: '125.209.195.202/',
+	user		: 'next',
 	database	: 'rolling_puppy',
 	charset		: 'UTF8_GENERAL_CI',
 	timezone	: 'local',
@@ -101,7 +104,7 @@ io.sockets.on('connection', function (socket) {
 		//Get Attribute
 		socket.get('room', function(error, room) {
 			//Room에 있는 모두에게 참여메시지를 보냅니다.
-			io.sockets.in(room).emit('message', message);
+			io.sockets.in(room).emit('message', room );
 		});
 	});
 	
@@ -109,7 +112,7 @@ io.sockets.on('connection', function (socket) {
 	socket.on('disconnect', function() {
 		socket.get('room', function(error, room) {
 			//Room에 있는 모두에게 참여메시지를 보냅니다.
-			io.sockets.in(room).emit('message', message);
+			io.sockets.in(room).emit('message', room );
 		});
 	});
-})
+});
