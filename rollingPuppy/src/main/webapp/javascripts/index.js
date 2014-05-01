@@ -194,12 +194,17 @@ function join(event) {
 	request.onreadystatechange = function() {
 		if (request.readyState == 4 && request.status == 200) {
 			var oResult = JSON.parse(request.responseText);
-			var isSuccess = oResult['isSuccess'];
-			if ( result === true ) {
+			var result = oResult['ThreeWayResult'];
+			if ( result === "SUCCESS" ) {
 				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
 				window.location = "/";
-			} else {
+			} else if ( result === "ALREADY_EXISTS"){
+				alert("이미 존재하는 아이디입니다.\n다른 아이디로 시도해주세요.");
+			} else if ( result === "UNEXPECTED_ERROR"){ 
+
 				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
+			} else {
+				alert("비정상적 접근입니다.");
 			}
 		}
 	}

@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
+import com.puppy.util.ThreeWayResult;
 import com.puppy.util.Util;
 
 /*
@@ -40,7 +41,7 @@ public class JoinController  extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		Gson gson = new Gson();
-		boolean isSuccess = false;
+		ThreeWayResult result = ThreeWayResult.UNEXPECTED_ERROR;
 
 		String email = null;
 		String password = null;
@@ -64,13 +65,15 @@ public class JoinController  extends HttpServlet {
 			int successQueryNumber = memberDao.insertMemberInfo(member);
 			
 			if ( successQueryNumber == 1 )
-				isSuccess = true;
+				result = ThreeWayResult.SUCCESS;
+			else
+				result = ThreeWayResult.ALREADY_EXISTS;
 		}
 		logger.info("email : " + email);
 		logger.info("password : "+ password);
-		logger.info("isSuccess : "+isSuccess);
+		logger.info("result : "+result);
 		
-		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
+		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, result);
 		out.println(gson.toJson(resultJsonData));
 	}
 	
