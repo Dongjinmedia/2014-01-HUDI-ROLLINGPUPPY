@@ -85,17 +85,32 @@
 	</div>
 	
 	<!--헤더를 제외하고 네비게이션바와 지도를 포함하는 핵심 컨텐츠 영역-->
-	<div id="container" class="no_panel">
+	<div id="container">
 	
 		<div id="aside">
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul id="nav_list">
-					<li><a href="#" class="search"></a></li>
-					<li><a href="#" class="recommendation"></a></li>
-					<li><a href="#" class="chatting"></a></li>
-					<li><a href="#" class="bookmark"></a></li>
-					<li><a href="#" class="settings"></a></li>
+					<li>
+						<a href="#" class="search"></a>
+						<div>검색 결과가 나오는 창입니다.</div>
+					</li>
+					<li>
+						<a href="#" class="recommendation"></a>
+						<div>추천 채팅방 리스크가 보여지는 창입니다.</div>
+					</li>
+					<li>
+						<a href="#" class="chatting"></a>
+						<div>내가 속한 채팅방 목록이 보여지는 창입니다.</div>
+					</li>
+					<li>
+						<a href="#" class="bookmark"></a>
+						<div>관심장소로 지정한 지역을 보여주는 창입니다.</div>
+					</li>
+					<li>
+						<a href="#" class="settings"></a>
+						<div>설정창 입니다.</div>
+					</li>
 				</ul>
 			</div>
 			

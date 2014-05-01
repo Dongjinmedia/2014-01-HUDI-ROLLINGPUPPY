@@ -125,6 +125,15 @@ var Panel = {
 					this.fnPanelButtonHandler.bind(this)
 			);
 		}
+		
+		this.elContainer.addEventListener(
+				'animationEnd',
+				this.fnAnimationEndHandler.bind(this)
+		);
+		this.elContainer.addEventListener(
+				'webkitAnimationEnd',
+				this.fnAnimationEndHandler.bind(this)
+		);
 	},
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
@@ -142,6 +151,20 @@ var Panel = {
 			this.elContainer.className = 'fold_panel';
 		} else {
 			this.elContainer.className = 'unfold_panel';
+		}
+	},
+	
+	fnAnimationEndHandler: function(event) {
+		event.preventDefault();
+		
+		var strContainerClassName = this.elContainer.className;
+		
+		if (strContainerClassName == 'fold_panel') {
+			this.elContainer.className = '';
+		} else if(strContainerClassName == 'unfold_panel') {
+			this.elContainer.className = 'unfolded_panel';
+		} else {
+			return ;
 		}
 	}
 }
@@ -164,10 +187,11 @@ var NavList = {
 		
 		event.preventDefault();
 		if (this.elLatestClickedMenu) {
-			this.elLatestClickedMenu.className = "";
+			this.elLatestClickedMenu.className = '';
 		}
 		this.elLatestClickedMenu = event.target.parentNode;
-		this.elLatestClickedMenu.className = "on";
+		console.log(this.elLatestClickedMenu);
+		this.elLatestClickedMenu.className = 'on';
 	}
 }
 

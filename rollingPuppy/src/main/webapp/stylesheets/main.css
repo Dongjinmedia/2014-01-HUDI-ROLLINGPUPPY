@@ -126,6 +126,20 @@ ul#nav_list {
 	background: url(/images/icons.png) no-repeat;
 }
 
+#nav_list div {
+	display: none;
+}
+.unfolded_panel #nav_list .on div {
+	position: absolute;
+	display: block;
+	top: 0px;
+	left: 62px;
+	width: 340px;
+	height: 100%;
+	color: black;
+	z-index: 100;
+}
+
 #nav_list .search {
 	background-position: 0px 0px;
 }
@@ -169,14 +183,13 @@ ul#nav_list {
 div#panel {
 	position: absolute;
 	top: 0px;
-	left: 62px;
+	left: -278px;
 	width: 340px;
 	height: 100%;
 	border-right: 1px solid #A7A7A7;
 	background-color: #FEFEFE;
 	z-index: 11;
 }
-
 
 .fold_panel #panel {
     animation: fold;
@@ -190,16 +203,16 @@ div#panel {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes fold {
-	from { -webkit-transform: translateX(0px); }
-	to { -webkit-transform: translateX(-340px); }
+	from { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(0px); }
 }
 @-webkit-keyframes fold {
-	from { -webkit-transform: translateX(0px); }
-	to { -webkit-transform: translateX(-340px); }
+	from { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(0px); }
 }
 
-.no_panel #panel {
-	left: -278px;
+.unfolded_panel #panel {
+	left: 62px;
 }
 
 .unfold_panel #panel {
@@ -214,12 +227,24 @@ div#panel {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes unfold {
-	from { -webkit-transform: translateX(-340px); }
-	to { -webkit-transform: translateX(0px); }
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(340px); }
 }
 @-webkit-keyframes unfold {
-	from { -webkit-transform: translateX(-340px); }
-	to { -webkit-transform: translateX(0px); }
+	from { -webkit-transform: translateX(0px); }
+	to { -webkit-transform: translateX(340px); }
+}
+
+#panel>#panel_contents {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+#panel_contents>div {
+	position: absolute;
+	width: 100%;
+	height: 100%;
 }
 
 #panel>a {
@@ -232,32 +257,32 @@ div#panel {
 
 #panel>.panel_button_fold {
 	background-position: 0px 0px;
-	display: block;
+	display: none;
 	right: -10px;
 	width: 10px;
 }
 
 #panel>.panel_button_unfold {
 	background-position: -16px 0px;
-	display: none;
+	display: block;
 	right: -13px;
 	width: 13px;
 }
 
-.fold_panel #panel>.panel_button_fold {
-	display: none;
-}
-
-.fold_panel #panel>.panel_button_unfold {
+.unfold_panel #panel>.panel_button_fold {
 	display: block;
 }
 
-.no_panel #panel>.panel_button_fold {
+.unfold_panel #panel>.panel_button_unfold {
 	display: none;
 }
 
-.no_panel #panel>.panel_button_unfold {
+.unfolded_panel #panel>.panel_button_fold {
 	display: block;
+}
+
+.unfolded_panel #panel>.panel_button_unfold {
+	display: none;
 }
 
 div#content {
