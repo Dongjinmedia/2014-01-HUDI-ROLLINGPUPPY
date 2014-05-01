@@ -21,6 +21,7 @@ import com.google.gson.Gson;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
+import com.puppy.util.ThreeWayResult;
 import com.puppy.util.Util;
 
 /*
@@ -42,7 +43,8 @@ public class LoginController extends HttpServlet {
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		Gson gson = new Gson();
 		
-		boolean isSuccess = false;
+		//초기설정은 예기치못한 에러
+		ThreeWayResult loginResult = ThreeWayResult.UNEXPECTED_ERROR;
 		
 		// POST 정보를 저장합니다.
 		String email = null;
@@ -82,9 +84,13 @@ public class LoginController extends HttpServlet {
 		
 		if (member != null && member.getId() != 0 ) {
 			//2주동안 유효한 쿠키생성.
-			//TODO 이거는 그냥 만든는건가?? <윤성>
-			Cookie cookie = new Cookie(Constants.COOKIE_LAST_LOGGED_EMAIL, email);
-			cookie.setMaxAge(14 * 24 * 60 * 60);
+			//TODO 이거는 그냥 만드는건가?? 이렇게 하는게 맞는건가 확인해주세요. (by 윤성)
+			
+			if ( keepLogin.equalsIgnoreCase("true")) {
+				Cookie cookie = new Cookie(Constants.COOKIE_LAST_LOGGED_EMAIL, email);
+				cookie.setMaxAge(14 * 24 * 60 * 60);
+				response.addCookie(cookie);
+			}
 			
 			HttpSession session = request.getSession();
 			
@@ -92,14 +98,17 @@ public class LoginController extends HttpServlet {
 			session.setAttribute(Constants.SESSION_MEMBER_ID, member.getId());
 			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNickname_adjective());
 			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNickname_noun());
-
-			response.addCookie(cookie);
-			isSuccess = true;
+			
+			//로그인 성공
+			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(
 					Constants.JSON_RESPONSE_NICKNAME, //key 
 					member.getNickname_adjective() + " "+member.getNickname_noun()); //value
+		} else {
+			//일치하는 비밀번호가 데이터베이스에 존재하지 않음
+			loginResult = ThreeWayResult.FAIL;
 		}
-		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
+		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, loginResult);
 		out.println(gson.toJson(resultJsonData));
 	}
 }

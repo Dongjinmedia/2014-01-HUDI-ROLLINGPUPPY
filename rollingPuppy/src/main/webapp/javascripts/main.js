@@ -5,7 +5,7 @@
 /*********************************************************************************************************
  * 모두에게 공통되는 유틸함수 영역
 *********************************************************************************************************/
-
+//temp key variable.
 var mapAPIkeyRealServe = "5c935084c09a23e331aee090a0f2270c";
 
 //TODO Util함수 모듈화
@@ -42,7 +42,6 @@ var oAjax = {
 		//메서드의 this는 XHR객체를 의미한다.
 		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
 		callback: function() {
-			console.log(this.responseText);
 			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
 		},
 		
@@ -60,14 +59,10 @@ var oAjax = {
 				return null;
 			
 			request.open(method, url, false	);
-			
 			request.onreadystatechange = function() {
-				console.log("readyState : ", request.readyState);
-				console.log("status : ", request.status);
 				
 				if (request.readyState == 4 && request.status == 200) {
 					var obj = JSON.parse(request.responseText);
-					
 					//인자로 전달된 callback함수를 bind, 실행
 					if ( typeof callback == "function" ) {
 						callback.apply(request);
@@ -82,18 +77,13 @@ var oAjax = {
 				
 				var formData = new FormData();
 				
-				//hasOwnProperty is used to check if your target really have that property, 
-				//rather than have it inherited from its prototype. A bit simplier would be
 				for (var key in oParameters){
-					
+					//hasOwnProperty is used to check if your target really have that property, 
+					//rather than have it inherited from its prototype. A bit simplier would be
 				    if (oParameters.hasOwnProperty(key)) {
-				         //alert("Key is " + key + ", va	lue is" + oParameters[key]);
-				    	console.log("key : ", key);
-				    	console.log("value : ", oParameters[key]);
 				    	formData.append(key, oParameters[key]);
 				    }
 				}
-				console.log("formData : ", formData);
 				request.send(formData);
 				
 			//parameter값이 존재하지 않으면 그냥 request를 보낸다.
@@ -209,13 +199,79 @@ var naverMapSettings = {
 	    oIcon: null,
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
+	    aMarkerList: null,
+	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
+	    
+	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
+	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
+	    	//Point 객체를 생성한다.
+	    	 var oPoint = new nhn.api.map.LatLng(latitude, longitude);
+	    	
+	    	 //마커객체를 생성한다.
+	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	    title: '제목 : '+title
+	    	});
+	    	//마커객체에 Point를 설정한다.
+	    	oMarker.setPoint(oPoint);
+	    	//마커객체에 Attirubte를 추가한다. (chatRoomNumber)
+	    	oMarker.chatRoomNumber = chatRoomNumber;
+	    	
+	    	//맵에 마커를 더한다.
+	    	this.oMap.addOverlay(oMarker);
+	    },
+	    
+	    //지도위의 Map 마커상태값을 업데이트하는 메서드.
+	    //TODO 현재 네트워크 부하를 줄일 수 있는 알고리즘이나 방법을 생각한다.
+	    updateMapStatus: function() {
+	    	
+	    	//지도의 왼쪽상단, 오른쪽하단의 좌표값을 가진 Point Array를 가져온다.
+	    	var aCurrentMapPoints = this.oMap.getBound();
+	    	
+	    	//Point Array의 값이 정상적일 경우 현재 화면의 마커정보를 네트워크 요청을 통해 가져온다.
+	    	if ( aCurrentMapPoints !== null || aCurrentMapPoints.length !==0 || aCurrentMapPoints !== undefined )  {
+	    		
+	    		//oAjax모듈을 사용하기 위하여, 요청시 전달할 왼쪽상단, 오른쪽하단의 위도 경도값을 다음과같이 초기화한다.
+	    		var oParameters = {
+	    			"leftTopX": aCurrentMapPoints[0]['x'],
+	    			"leftTopY": aCurrentMapPoints[0]['y'],
+	    			"rightBottomX": aCurrentMapPoints[1]['x'],
+	    			"rightBottomY": aCurrentMapPoints[1]['y']
+	    		};
+	    		
+	    		
+	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
+	    		//var oResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
+	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
+	    		
+	    		//response데이터에서 현재 화면에 해당하는 마커정보를 담은 Object Array를 변수에 초기화한다.
+	    		var aDatas = oResponse['chatRoomList'];
 
+	    		//Object Array를 돌면서
+	    		for (var index in aDatas) {
+	    			
+	    			//TODO  계속 더하기만 되다보니, 성능상의 이슈가 발생한다. 위치이동별 버퍼비우기 등을 강구해보자.
+	    			//naverMapSettings에 저장된 현재까지 Load한 Marker가 
+	    			//저장된 Array에 새로 저장하고자 하는 마커가 존재하는지 체크,
+	    			if ( this.aMarkerList.indexOf(aDatas[index]['id']) > -1 ) {
+	    				continue;
+	    			//존재하지 않을경우, Load Marker Array에 추가하고, 맵에 마커를 더한다.
+	    			} else {
+	    				this.aMarkerList.push(aDatas[index]['id']);
+	    				this.addMarker(aDatas[index]['location_latitude'], aDatas[index]['location_longitude'], aDatas[index]['id'], aDatas[index]['title']);
+	    			}
+	    		}
+	    	}
+	    },
+	    
 	    //Zoom 조절을 위한 함수
 	    changeZoom: function(nZoomLevel) {
 	        this.oCenterPoint = this.oMap.getCenter();
 
 	        //change zoom method
-	        this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel);
+	        this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel, {
+	        	useEffect: true,
+	        	centerMark: false
+	        });
 	    },
 	    
 	    // 축척 레벨(Zoom)을 가져오기 위한 함수
@@ -230,6 +286,7 @@ var naverMapSettings = {
 	        this.oMap.attach("mouseenter", this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
 	        this.oMap.attach("mouseleave", this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
 	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
+	        this.oMap.attach("dragend",this.dragEndEvent.bind(this));
 	        this.oMap.attach("click",this.clickEvent.bind(this));    
 	    },
 
@@ -264,6 +321,12 @@ var naverMapSettings = {
 	        oMapClicker.invisible();
 	    },
 
+	    //TODO 네트워크 비용을 낮추기위해 내부적으로 현재 좌표이동을 체크하는 로직이 필요하다. (현재는 클릭만해도 동작)
+	    //TODO Drag를 위한 최소단위 설정을 고려해보자.
+	    dragEndEvent: function(oCustomEvent) {
+	    	this.updateMapStatus();
+	    },
+
 	    clickEvent : function(oCustomEvent) {
 	        var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
@@ -272,7 +335,7 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	//TODO 채팅방번호
-	            	alert(oTarget.chatRoomNumber);
+	            	//alert(oTarget.chatRoomNumber);
 	            	
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
 	                var menuTemplate = document.getElementById("controlBox");
@@ -344,6 +407,33 @@ var naverMapSettings = {
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
+	        
+	        
+	        this.aMarkerList = new Array();
+	        
+	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
+	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
+	        this.oZoomController = {
+	        		zoomInButton: document.getElementById("zoomInButton"),
+	        		zoomOutButton: document.getElementById("zoomOutButton"),
+	        		
+	        		addEventForZoom: function() {
+	        			this.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
+	        			this.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
+	        		},
+	        		
+	        		changeZoomLevel: function(e){
+	        			var currentZoomLevel = naverMapSettings.getZoom();
+	        			
+	        			if(e.target.id === "zoomInButton") {
+	        				naverMapSettings.changeZoom(++currentZoomLevel);
+	        			}
+	        			else if(e.target.id === "zoomOutButton") {
+	        				naverMapSettings.changeZoom(--currentZoomLevel);
+	        			}
+	        		}
+	        }
+	        this.oZoomController.addEventForZoom();
 	    }
 };
 
@@ -398,9 +488,11 @@ var MarkerEventRegister = function () {
 	
 	//외부에서 addListener 함수를 통해서 새로적용되는 메뉴버튼과, 메뉴 컨텐츠영역을 전달받는다.
   	this.addListener = function (oIcon, oMenu) {
-		
+		//아이콘정보를 Array에 담는다. 현재는 채팅방, 안내에 대한 icon Object를 담는다.
+  		//클린된 메뉴가 있는지 없는지를 체크하고, 초기화하는 등의 액션을 위해 필요하다.
 		aIcons.push(oIcon);
 		
+		//마우스가 메뉴아이콘 위에 위치할경우, Content영역이 보여지도록 한다.
 		oIcon.addEventListener('mouseover', function() {
 			oMenu.style.display = 'block';
 		},false);
@@ -412,6 +504,7 @@ var MarkerEventRegister = function () {
 				oMenu.style.display = 'none';
 		},false);
 	
+		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
 		oIcon.addEventListener('click', function(e) {
 		
 			e.preventDefault();
@@ -493,24 +586,6 @@ function menuClick(e) {
 
 /*********************************************************************************************************
  * Marker Interaction 메뉴에 대한 소스코드 끝
- **********************************************************************************************************/
-
-/*********************************************************************************************************
- * 세훈이가 작성한 줌인/줌아웃 기능에 대한 소스코드
- **********************************************************************************************************/
-
-document.getElementById("zoomInButton").addEventListener('click', function(e){
-	var currentZoomLevel = naverMapSettings.getZoom()
-	naverMapSettings.changeZoom(++currentZoomLevel);
-});
-
-document.getElementById("zoomOutButton").addEventListener('click', function(e){
-	var currentZoomLevel = naverMapSettings.getZoom()
-	naverMapSettings.changeZoom(--currentZoomLevel);
-});
-
-/*********************************************************************************************************
- * 줌인/줌아웃 기능에 대한 소스코드 끝
  **********************************************************************************************************/
 
 
@@ -604,7 +679,6 @@ var oCreateChattingRoom = {
 			
 			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
 			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
-			console.log("Create Room Response From Server : ",oResponseData);
 			
 			var isSuccess = oResponseData['isSuccess'];
 			var chatRoomNumber = oResponseData['chatRoomNumber'];
@@ -616,15 +690,11 @@ var oCreateChattingRoom = {
 					&& isNaN(chatRoomNumber) === false ) {
 				
 				//마커를 생성
+				naverMapSettings.aMarkerList.push(chatRoomNumber);
+				naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], chatRoomNumber, roomNameValue);
+				//working
 				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
-				console.log(oMapClicker.oClickPoint);
-		    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
-		    	    title: 'test' + oMapClicker.oClickPoint.toString()
-		    	});
-		    	oMarker.setPoint(oMapClicker.oClickPoint);
-		    	oMarker.chatRoomNumber = chatRoomNumber;
-		    	
-		    	naverMapSettings.oMap.addOverlay(oMarker);
+				
 		    	
 		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
 		    	oMapClicker.invisible();
@@ -635,6 +705,8 @@ var oCreateChattingRoom = {
 		    	
 		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
 		    	this.invisible();
+			} else {
+				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
 			} 
 		}
 }
@@ -674,7 +746,11 @@ var oMapClicker = {
 		this.oMapClicker = document.getElementById('mapClicker');
 		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
 		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
-		
+
+		//working
+		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
+		this.invisible();
+
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		this.clickAdd.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible();
@@ -683,7 +759,8 @@ var oMapClicker = {
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
 		this.clickBookMark.addEventListener('click', function(e) {
 			alert('clickBookMark');
-			
+
+		
 		}, false);
 	},	
 };
@@ -757,6 +834,15 @@ function initialize() {
 	//Chatting Room Create Area를 위한 초기화 영역
 	oCreateChattingRoom.initialize();
 	//------------------------------------------------------------------------------------//
+	
+	/*
+	 * 
+	 */
+	//------------------------------------------------------------------------------------//
+	//Map 에 위치한 Marker 초기화
+	naverMapSettings.updateMapStatus();
+	//------------------------------------------------------------------------------------//
+	
 	
 	/*
 	 * 현재 윤성이 작업중

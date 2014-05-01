@@ -6,8 +6,8 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Rolling Puppy</title>
 	
-	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css">
-	<script src="/javascripts/index.js"></script>
+	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css?20140501">
+	<script src="/javascripts/index.js?20140501"></script>
 </head>
 
 <body>
