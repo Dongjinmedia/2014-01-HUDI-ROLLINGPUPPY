@@ -244,7 +244,10 @@ var naverMapSettings = {
 	        this.oCenterPoint = this.oMap.getCenter();
 
 	        //change zoom method
-	        this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel);
+	        this.oMap.setPointLevel(this.oCenterPoint, nZoomLevel, {
+	        	useEffect: true,
+	        	centerMark: false
+	        });
 	    },
 	    
 	    // 축척 레벨(Zoom)을 가져오기 위한 함수
