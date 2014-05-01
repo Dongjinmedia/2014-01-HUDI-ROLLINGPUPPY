@@ -142,16 +142,18 @@ function login(event) {
 		if (request.readyState == 4 && request.status == 200) {
 			var oResult = JSON.parse(request.responseText);
 			
-			var isSuccess = oResult['isSuccess'];
-			console.log(isSuccess);
+			var result = oResult['ThreeWayResult'];
+			console.log(result);
 			
-			if ( isSuccess === true ) {
+			if ( result === "SUCCESS" ) {
 				alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
 				window.location = "/main";
-			} else if ( isSuccess === false ) {
+			} else if ( result === "FAIL" ) {
 				alert("아이디와 비밀번호를 다시 확인해 주세요.");
-			} else {
+			} else if ( result === "UNEXPECTED_ERROR"){ 
 				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
+			} else {
+				alert("비정상적 접근입니다.");
 			}
 		}
 	}
@@ -193,8 +195,7 @@ function join(event) {
 		if (request.readyState == 4 && request.status == 200) {
 			var oResult = JSON.parse(request.responseText);
 			var isSuccess = oResult['isSuccess'];
-			console.log(isSuccess);
-			if ( isSuccess === true ) {
+			if ( result === true ) {
 				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
 				window.location = "/";
 			} else {
