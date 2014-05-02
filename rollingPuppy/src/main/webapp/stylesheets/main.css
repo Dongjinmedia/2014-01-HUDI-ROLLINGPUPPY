@@ -126,20 +126,6 @@ ul#nav_list {
 	background: url(/images/icons.png) no-repeat;
 }
 
-#nav_list div {
-	display: none;
-}
-.unfolded_panel #nav_list .on div {
-	position: absolute;
-	display: block;
-	top: 0px;
-	left: 62px;
-	width: 340px;
-	height: 100%;
-	color: black;
-	z-index: 100;
-}
-
 #nav_list .search {
 	background-position: 0px 0px;
 }
@@ -183,7 +169,7 @@ ul#nav_list {
 div#panel {
 	position: absolute;
 	top: 0px;
-	left: -278px;
+	left: -277px;
 	width: 340px;
 	height: 100%;
 	border-right: 1px solid #A7A7A7;
@@ -203,16 +189,16 @@ div#panel {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes fold {
-	from { -webkit-transform: translateX(340px); }
+	from { -webkit-transform: translateX(337px); }
 	to { -webkit-transform: translateX(0px); }
 }
 @-webkit-keyframes fold {
-	from { -webkit-transform: translateX(340px); }
+	from { -webkit-transform: translateX(337px); }
 	to { -webkit-transform: translateX(0px); }
 }
 
 .unfolded_panel #panel {
-	left: 62px;
+	left: 60px;
 }
 
 .unfold_panel #panel {
@@ -228,13 +214,12 @@ div#panel {
 }
 @keyframes unfold {
 	from { -webkit-transform: translateX(0px); }
-	to { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(337px); }
 }
 @-webkit-keyframes unfold {
 	from { -webkit-transform: translateX(0px); }
-	to { -webkit-transform: translateX(340px); }
+	to { -webkit-transform: translateX(337px); }
 }
-
 #panel>#panel_contents {
 	position: relative;
 	width: 100%;
@@ -243,8 +228,18 @@ div#panel {
 
 #panel_contents>div {
 	position: absolute;
-	width: 100%;
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	width: 340px;
 	height: 100%;
+	color: black;
+	z-index: 100;
+	display: none;
+}
+
+#panel_contents .on {
+	display: block;
 }
 
 #panel>a {

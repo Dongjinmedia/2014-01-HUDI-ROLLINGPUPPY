@@ -129,6 +129,9 @@ var Panel = {
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
 	fnPanelButtonHandler: function(event) {
+		if (!event || !event.target) {
+			return ;
+		}
 		event.preventDefault();
 
 		var strButtonClassName = event.target.className;
@@ -146,6 +149,9 @@ var Panel = {
 	},
 	
 	fnAnimationEndHandler: function(event) {
+		if (!event || !event.target) {
+			return ;
+		}
 		event.preventDefault();
 		
 		var strContainerClassName = this.elContainer.className;
@@ -163,6 +169,7 @@ var Panel = {
 var NavList = {
 	elNavList: document.getElementById('nav_list'),
 	elLatestClickedMenu: null,
+	elLatestPanelContents: null,
 	
 	addEvents: function() {
 		this.elNavList.addEventListener(
@@ -175,14 +182,20 @@ var NavList = {
 		if (!event || !event.target) {
 			return ;
 		}
-		
+		if (event.target.tagName.toLowerCase() != 'a') {
+			return ;
+		}
 		event.preventDefault();
+		
 		if (this.elLatestClickedMenu) {
 			this.elLatestClickedMenu.className = '';
+			this.elLatestPanelContents.className = '';
 		}
 		this.elLatestClickedMenu = event.target.parentNode;
-		console.log(this.elLatestClickedMenu);
+		this.elLatestPanelContents = document.getElementById(event.target.className);
+		
 		this.elLatestClickedMenu.className = 'on';
+		this.elLatestPanelContents.className = 'on';
 	}
 }
 
