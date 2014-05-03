@@ -79,7 +79,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			PreparedStatement selectPreparedStatement = ConnectionPool.getInsertPreparedStatement(nicknameQuery);
 			Member tempMember = selectOne(Member.class, selectPreparedStatement);
 			
-			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun) VALUES (?, ?, ?, ?)";
+			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun, created_time) VALUES (?, ?, ?, ?, NOW())";
 			insertPreparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			insertPreparedStatement.setString(1, member.getEmail());
 			insertPreparedStatement.setString(2, member.getPw());
