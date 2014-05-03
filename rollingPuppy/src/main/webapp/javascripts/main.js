@@ -337,11 +337,15 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	//TODO 채팅방번호
-	            	//alert(oTarget.chatRoomNumber);
 	            	
 	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
-	                var menuTemplate = document.getElementById("controlBox");
+	            	//working
 
+	            	var menuTemplate = document.getElementById("controlBox");
+	                menuTemplate.chatRoomNumber = oTarget.chatRoomNumber; 
+	                //alert(menuTemplate.chatRoomNumber);
+	                //alert(document.getElementById("controlBox").chatRoomNumber);
+	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
 	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
@@ -448,22 +452,38 @@ var naverMapSettings = {
  * 윤성이가 작성한 Marker Interaction 메뉴 소스코드 시작
  **********************************************************************************************************/
 //Custom Listener객체
-var MarkerEventRegister = function () { 
+var oMarker = { 
 	
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	//TODO 추후 아이디값으로 찾을 예정
-	var controlBox = document.getElementById("controlBox");
-	
+	initialize: function() {
+		this.controlBox = document.getElementById("controlBox");
+		this.menu = controlBox.querySelector("#menu");
+		//this.alcons = new Array();
+		
+		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
+		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
+		
+		//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
+		//둘째줄, iconInfo버튼 상위에 미리 만들어 놓은 div, 내용을 보여주기 위한 영역
+		//셋째줄, Custom Listener객체에 등록한다. (메뉴아이콘, 미리만들어 놓은 content div영역)
+		var iconInfo = controlBox.querySelector('.icon-info');
+		var menuInfo = controlBox.querySelector('.menu-info');
+		this.addListener(iconInfo, menuInfo);
+		
+		var iconChatting = controlBox.querySelector('.icon-chatting');
+		var menuChatting = controlBox.querySelector('.menu-chatting');
+		this.addListener(iconChatting, menuChatting);
+	},
+	controlBox: null,
 	//사용자와 인터렉션하는 원형 메뉴바
-  	var menu = controlBox.querySelector("#menu");
-	
+	menu: null,
 	//메뉴버튼 객체를 담을 Array
-	var aIcons = [];
-	
+	aIcons: [],
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
-	var isClickedComponentExists = function() {
-		for (var index = 0 ; index < aIcons.length ; ++index ) {
-			var iconStatus = aIcons[index].getAttribute("status");
+	isClickedComponentExists: function() {
+		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
+			var iconStatus = this.aIcons[index].getAttribute("status");
 		
 			if ( iconStatus === "clicked") {
 				return true;
@@ -471,40 +491,40 @@ var MarkerEventRegister = function () {
 		}
 		
 		return false;
-	};
+	},
 	
 	//메뉴버튼위에 마우스가 올라갔을때
-	menu.addEventListener("mouseover", function() {
+	mouseOver: function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
-		menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
-	},false);	
+		this.menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
+	},	
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
-	menu.addEventListener('mouseout', function() {
+	mouseOut: function() {
 		//클릭된 메뉴가 없을경우
-		if (!isClickedComponentExists()) {
+		if (!this.isClickedComponentExists()) {
 			//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
-			menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');					
+			this.menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');					
 		}
-	},false);
+	},
 	
 	//외부에서 addListener 함수를 통해서 새로적용되는 메뉴버튼과, 메뉴 컨텐츠영역을 전달받는다.
-  	this.addListener = function (oIcon, oMenu) {
+  	addListener: function (oIcon, oMenu) {
 		//아이콘정보를 Array에 담는다. 현재는 채팅방, 안내에 대한 icon Object를 담는다.
   		//클린된 메뉴가 있는지 없는지를 체크하고, 초기화하는 등의 액션을 위해 필요하다.
-		aIcons.push(oIcon);
+		this.aIcons.push(oIcon);
 		
 		//마우스가 메뉴아이콘 위에 위치할경우, Content영역이 보여지도록 한다.
 		oIcon.addEventListener('mouseover', function() {
 			oMenu.style.display = 'block';
-		},false);
+		}.bind(this),false);
   
 		oIcon.addEventListener('mouseout', function() {
 			var status = oIcon.getAttribute('status');
 		
 			if ( status != 'clicked')
 				oMenu.style.display = 'none';
-		},false);
+		}.bind(this),false);
 	
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
 		oIcon.addEventListener('click', function(e) {
@@ -521,16 +541,16 @@ var MarkerEventRegister = function () {
 				oIcon.style.status = 'none';
 				oIcon.children[0].setAttribute('style', 'background: #8cc;');
 				
-				if (!isClickedComponentExists()) {
-					menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');		
+				if (!this.isClickedComponentExists()) {
+					this.menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');		
 				}
 			} else if (status === 'none') {
 				oIcon.setAttribute('status','clicked');
 				oIcon.style.status = 'clicked';
 				oIcon.children[0].setAttribute('style', 'background: #9dd;');
-				menu.setAttribute('style', 'width:150px;height:150px;margin:-75px 0 0 -75px;');		
+				this.menu.setAttribute('style', 'width:150px;height:150px;margin:-75px 0 0 -75px;');		
 			}
-		},false);	
+		}.bind(this),false);	
   	}
 }
 /*********************************************************************************************************
@@ -549,7 +569,7 @@ var oChat = {
 		messageBox: null,
 		inputBox: null,
 		nickname: null,
-		enterChatRoom: function() {
+		enterChatRoom: function(chatRoomNum) {
 			alert("채팅방으로 이동합니다.");
 			var content = document.getElementById("content");
 			/*
@@ -565,7 +585,7 @@ var oChat = {
 			
 			//입장을 서버에 알린다
 			//TODO roomname 변경
-			socket.emit('join', {'userid': nickname, 'roomNumber': 1});
+			socket.emit('join', {'userid': nickname, 'roomNumber': chatRoomNum});
 		},
 		enterChatRoomOthers: function(user) {
 			this.messageBox.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
@@ -831,25 +851,7 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//Marker Interaction 메뉴 초기화영역
-	
-	//Marker Interaction 메뉴 초기화
-	//CUSTOM으로 만든 이벤트객체 생성
-	//TODO 한번만 호출되기 떄문에 object로 변경, 하위의 메소드들도 initialize 함수안에서 진행하도록 변경
-	var oEventRegister = new MarkerEventRegister();
-	
-	//마커를 감싸고 있는 최상위 DIV
-	var controlBox = document.getElementById('controlBox');
-	
-	//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
-	//둘째줄, iconInfo버튼 상위에 미리 만들어 놓은 div, 내용을 보여주기 위한 영역
-	//셋째줄, Custom Listener객체에 등록한다. (메뉴아이콘, 미리만들어 놓은 content div영역)
-	var iconInfo = controlBox.querySelector('.icon-info');
-	var menuInfo = controlBox.querySelector('.menu-info');
-	oEventRegister.addListener(iconInfo, menuInfo);
-	
-	var iconChatting = controlBox.querySelector('.icon-chatting');
-	var menuChatting = controlBox.querySelector('.menu-chatting');
-	oEventRegister.addListener(iconChatting, menuChatting);
+	oMarker.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	
