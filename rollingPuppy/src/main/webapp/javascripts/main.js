@@ -112,16 +112,6 @@ var Panel = {
 				'click',
 				this.fnPanelButtonsHandler.bind(this)
 		);
-		
-		// elPanel에서 animationEnd 이벤트를 받는다.
-		this.elPanel.addEventListener(
-				'animationEnd',
-				this.fnAnimationEndHandler.bind(this)
-		);
-		this.elPanel.addEventListener(
-				'webkitAnimationEnd',
-				this.fnAnimationEndHandler.bind(this)
-		);
 	},
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
@@ -150,31 +140,18 @@ var Panel = {
 		} else {
 			this.elContainer.className = 'unfold_panel';
 		}
-	},
-	
-	fnAnimationEndHandler: function(event) {
-		if (!event || !event.target) {
-			return ;
-		}
-		event.preventDefault();
-		
-		var strContainerClassName = this.elContainer.className;
-		
-		if (strContainerClassName == 'fold_panel') {
-			this.elContainer.className = '';
-		} else if(strContainerClassName == 'unfold_panel') {
-			this.elContainer.className = 'unfolded_panel';
-		} else {
-			return ;
-		}
 	}
 }
 
+// main.jsp의 nav_list 관련 기능들을 모아둔 객체
 var NavList = {
 	elNavList: document.getElementById('nav_list'),
-	elLatestClickedMenu: null,
-	elLatestPanelContents: null,
+	// 마지막 클릭된 nav_list 메뉴와 해당하는 panel_contents를 기억해둡니다.
+	// 기본값은 search로 되어 있습니다.
+	elLatestClickedMenu: document.querySelector('#nav_list>.on'),
+	elLatestPanelContents: document.querySelector('#panel_contents>.on'),
 	
+	// 이벤트 등록 함수. ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
 	addEvents: function() {
 		this.elNavList.addEventListener(
 				'click',
@@ -183,21 +160,28 @@ var NavList = {
 	},
 	
 	fnNavButtonHandler: function(event) {
+		// 예외 처리.
+		// 이벤트나 클릭된 객체가 없을 시 탈출문.
 		if (!event || !event.target) {
 			return ;
 		}
+		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
 		if (event.target.tagName.toLowerCase() != 'a') {
 			return ;
 		}
 		event.preventDefault();
 		
+		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
+		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.elLatestClickedMenu) {
 			this.elLatestClickedMenu.className = '';
 			this.elLatestPanelContents.className = '';
 		}
+		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.elLatestClickedMenu = event.target.parentNode;
 		this.elLatestPanelContents = document.getElementById(event.target.className);
 		
+		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
 		this.elLatestClickedMenu.className = 'on';
 		this.elLatestPanelContents.className = 'on';
 	}

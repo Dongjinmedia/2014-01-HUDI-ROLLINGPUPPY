@@ -91,7 +91,7 @@
 			<!--네비게이션바 영역 -->
 			<div id="nav">
 				<ul id="nav_list">
-					<li><a href="#" class="search"></a></li>
+					<li class="on"><a href="#" class="search"></a></li>
 					<li><a href="#" class="recommendation"></a></li>
 					<li><a href="#" class="chatting"></a></li>
 					<li><a href="#" class="bookmark"></a></li>
@@ -102,7 +102,7 @@
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel">
 				<div id="panel_contents">
-					<div id="search">검색 결과가 나오는 창입니다.</div>
+					<div id="search" class="on">검색 결과가 나오는 창입니다.</div>
 					<div id="recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
 					<div id="chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
 					<div id="bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>

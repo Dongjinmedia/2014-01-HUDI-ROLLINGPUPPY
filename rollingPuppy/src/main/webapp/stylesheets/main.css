@@ -197,10 +197,6 @@ div#panel {
 	to { -webkit-transform: translateX(0px); }
 }
 
-.unfolded_panel #panel {
-	left: 60px;
-}
-
 .unfold_panel #panel {
     animation: unfold;
     animation-duration: 0.4s;
@@ -269,14 +265,6 @@ div#panel {
 }
 
 .unfold_panel #panel .panel_button_unfold {
-	display: none;
-}
-
-.unfolded_panel #panel .panel_button_fold {
-	display: block;
-}
-
-.unfolded_panel #panel .panel_button_unfold {
 	display: none;
 }
 
