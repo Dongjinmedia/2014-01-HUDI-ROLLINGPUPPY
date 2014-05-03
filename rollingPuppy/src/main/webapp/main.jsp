@@ -108,8 +108,10 @@
 					<div id="bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>
 					<div id="settings">설정창 입니다.</div>
 				</div>
-				<a class="panel_button_fold" href="#"></a>
-				<a class="panel_button_unfold" href="#"></a>
+				<div id="panel_buttons">
+					<a class="panel_button_fold" href="#"></a>
+					<a class="panel_button_unfold" href="#"></a>
+				</div>
 			</div>
 		</div>
 		

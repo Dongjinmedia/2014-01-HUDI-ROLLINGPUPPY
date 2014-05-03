@@ -105,16 +105,13 @@ var Panel = {
 	
 	// panel 관련 이벱트 등록 함수.
 	addEvents: function() {
-		var elButtons = this.elPanel.querySelectorAll('a');
+		var elPanelButtons = this.elPanel.querySelector('#panel_buttons');
 		
-		// panel 아래 folding button 중 클릭 이벤트를 받는다.
-		// 향후 event delegation 방식으로 변경할 것.
-		for (var idx = 0; idx < elButtons.length; idx++) {
-			elButtons[idx].addEventListener(
-					'click',
-					this.fnPanelButtonHandler.bind(this)
-			);
-		}
+		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
+		elPanelButtons.addEventListener(
+				'click',
+				this.fnPanelButtonsHandler.bind(this)
+		);
 		
 		// elPanel에서 animationEnd 이벤트를 받는다.
 		this.elPanel.addEventListener(
@@ -128,19 +125,26 @@ var Panel = {
 	},
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
-	fnPanelButtonHandler: function(event) {
+	// CSS3 animation은 CSS 속성으로 동작합니다.
+	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
+	fnPanelButtonsHandler: function(event) {
+		// Exception 처리
 		if (!event || !event.target) {
 			return ;
 		}
 		event.preventDefault();
 
+		// panel_button에서 발생한 click 이벤트를 받고, 해당
 		var strButtonClassName = event.target.className;
 
+		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
 		if (strButtonClassName === 'panel_button_fold') {
 			boolFold = true;
 		}
 		
+		// boolFold == true 면 fold_panel 실행
+		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
 			this.elContainer.className = 'fold_panel';
 		} else {

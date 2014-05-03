@@ -242,7 +242,7 @@ div#panel {
 	display: block;
 }
 
-#panel>a {
+#panel a {
 	position: absolute;
 	height: 56px;
 	top: 50%;
@@ -250,33 +250,33 @@ div#panel {
 	background: url(/images/panel_button.png) no-repeat;
 }
 
-#panel>.panel_button_fold {
+#panel .panel_button_fold {
 	background-position: 0px 0px;
 	display: none;
 	right: -10px;
 	width: 10px;
 }
 
-#panel>.panel_button_unfold {
+#panel .panel_button_unfold {
 	background-position: -16px 0px;
 	display: block;
 	right: -13px;
 	width: 13px;
 }
 
-.unfold_panel #panel>.panel_button_fold {
+.unfold_panel #panel .panel_button_fold {
 	display: block;
 }
 
-.unfold_panel #panel>.panel_button_unfold {
+.unfold_panel #panel .panel_button_unfold {
 	display: none;
 }
 
-.unfolded_panel #panel>.panel_button_fold {
+.unfolded_panel #panel .panel_button_fold {
 	display: block;
 }
 
-.unfolded_panel #panel>.panel_button_unfold {
+.unfolded_panel #panel .panel_button_unfold {
 	display: none;
 }
 
