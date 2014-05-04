@@ -58,7 +58,10 @@
 		<div class="menu-chatting content">
 			<ol>
 				<li>
-					:<span class="title">채팅방 테스트 블라블라블라블라블라블라블라블라</span>
+					<span class="icon-title">채팅방 테스트 블라블라블라블라블라블라블라블라</span>
+					<span class="icon-participant"></span>
+					<span class="seperator">/</span>
+					<span class="limit"></span>
 				</li>
 			</ol>
 		</div>

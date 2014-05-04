@@ -292,7 +292,7 @@ div#content {
 }
 
 /*
-** Create Chatting Room에 대한 CSS영역
+** Create Chatting Room에 대한 CSS영역 시작
 */
 #createChatRoom {
 	position: absolute;
@@ -415,6 +415,9 @@ div#content {
 	text-transform: uppercase;
 	width: 450px;
 }
+/*
+** Create Chatting Room에 대한 CSS영역 종료
+*/
 
 /* 줌인/줌아웃 버튼 시작(작성자 : 박세훈) */
 #zoomButton {
@@ -481,59 +484,9 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	content: "\f08d";
 }
 
-/*
-** TODO 주석달기
-** 클릭시 나타나는 메뉴바에 대한 설정
+/*  
+** 마커 클릭시 나타나는 영역에 대한 CSS 시작
 */
-#menu {
-	width: 75px;
-	height: 75px;
-	margin: -37.5px 0 0 -37.5px;
-	border-radius: 500px;
-	border-radius: 50%;
-	position: relative;
-	list-style: none;
-	font-size: 140%;
-	transition: width 500ms, height 500ms, margin 500ms;
-	Box-sizing: Border-box;
-	overflow: hidden;
-}
-
-.controlBox {
-  position: relative;
-  width: 75px;
-  height: 75px;
-  background: #000;
-}
-
-.content {
-	border-radius: 20px;
-}
-
-.menu-chatting {
-	position: absolute;
-	margin-left: -270px;
-	display: none;	
-	margin-top: -40px;
-	width: 200px;
-	height: 100px;
-	background: #fff;
-}
-
-.menu-info {
-	position: absolute;
-	margin: -260px 0 0 -105px;
-	display: none;
-	width: 200px;
-	height: 100px;
-	background: #fff;
-}
-
-.bookmark {
-  
-}
-/*  markerArea  */
-
 .menu-button {
 	text-align: center;
 	width: 75px;
@@ -643,9 +596,135 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 .menu-item:nth-child(5):before {
 	margin: 22.5px 0 0 -47.631395px;
 }
+/*  
+** 마커 클릭시 나타나는 영역에 대한 CSS 종료
+*/
 
 /*
-** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 
+** TODO 주석달기
+** 마커 클릭시 나타나는 메뉴바에서, 각각의 메뉴를 별 컨텐츠 영역에 대한 설정 시작
+*/
+#menu {
+	width: 75px;
+	height: 75px;
+	margin: -37.5px 0 0 -37.5px;
+	border-radius: 500px;
+	border-radius: 50%;
+	position: relative;
+	list-style: none;
+	font-size: 140%;
+	transition: width 500ms, height 500ms, margin 500ms;
+	Box-sizing: Border-box;
+	overflow: hidden;
+}
+
+.controlBox {
+  position: relative;
+  width: 75px;
+  height: 75px;
+  background: #000;
+}
+
+.content {
+	overflow: hidden;
+	border-radius: 5px;
+}
+
+	/*
+	** 마커에서 채팅방 아이콘을 클릭, hover시 나타나는 Contents영역
+	*/
+.menu-chatting {
+	position: absolute;
+	margin-left: -270px;
+	display: none;	
+	margin-top: -40px;
+	width: 200px;
+	height: 100px;
+	background: #fff;
+}
+
+.menu-chatting ol {
+  list-style: none;
+  background: #fff;
+  line-height: 25px;
+  width: 100%;
+  counter-reset: li;
+  list-style: none;
+  overflow: hidden
+}
+
+.menu-chatting ol > li {
+  position: relative;
+  border-bottom-style: inset;        
+  font-size: 1.5em;
+  width: 100%;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.menu-chatting ol span {
+  display: inline-block;
+  vertical-align: middle;
+  font-family: Courier;
+  font-size: 1em;
+  font-weight: bold;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
+
+.menu-chatting ol > li:after {
+    position: absolute;
+    right: -20px;
+    content: counter(li);
+    counter-increment: li;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    width: 2em;
+    color:#fff;
+    font-weight:bold;
+    margin-right: 5px;
+}
+
+.menu-chatting ol > li:hover:after {
+    color: #fff;
+}
+
+.menu-chatting .icon-title:before {
+	content: "\f075";
+}
+
+.menu-chatting .icon-title {
+  width: 50%;
+}
+
+.menu-chatting li:hover {
+  background: #008AE1;
+  color: #fff;
+}
+
+	/*
+	** 마커에서 info 아이콘을 클릭, hover시 나타나는 Contents영역
+	*/
+.menu-info {
+	position: absolute;
+	margin: -260px 0 0 -105px;
+	display: none;
+	width: 200px;
+	height: 100px;
+	background: #fff;
+}
+.bookmark {
+  
+}
+/*
+** 마커 클릭시 나타나는 메뉴바에서, 각각의 메뉴를 별 컨텐츠 영역에 대한 설정 종료
+*/
+
+
+/*
+** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 시작
 */
 #mapClicker {
 	z-index: 10;
@@ -782,9 +861,13 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
     opacity: 0;
   }
 }
+/*
+** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 종료
+*/
+
 
 /*
-** 채팅방영역
+** 채팅을 하는 영역에 대한 CSS 시작
 */
 #chat {
 	position: absolute;
@@ -797,3 +880,6 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	height: 300px;
 	border: solid 1px;
 }
+/*
+** 채팅을 하는 영역에 대한 CSS 종료
+*/
