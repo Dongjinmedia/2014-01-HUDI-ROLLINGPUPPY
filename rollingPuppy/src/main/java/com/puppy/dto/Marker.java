@@ -11,6 +11,15 @@ public class Marker {
 	private int zoom_level;
 	private Timestamp created_time;
 	
+	//tempValue
+	private int same_name_id;
+	
+	public int getSame_name_id() {
+		return same_name_id;
+	}
+	public void setSame_name_id(int same_name_id) {
+		this.same_name_id = same_name_id;
+	}
 	public int getId() {
 		return id;
 	}
