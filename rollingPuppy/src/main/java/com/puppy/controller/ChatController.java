@@ -91,12 +91,14 @@ public class ChatController extends HttpServlet {
 		String name = null;
 		BigDecimal latitude = null;
 		BigDecimal longitude = null;
+		int zoom = 0;
 		
 		Part titlePart = null;
 		Part maxPart = null;
 		Part namePart = null;
 		Part latitudePart = null;
 		Part longitudePart = null;
+		Part zoomPart = null;
 		
 		try {
 			//이런 형식으로 가져오는 이유는, 메서드 선언부의 내용을 살펴보자.
@@ -105,6 +107,7 @@ public class ChatController extends HttpServlet {
 			namePart = request.getPart( Constants.REQUEST_CHATROOM_NAME );
 			latitudePart = request.getPart( Constants.REQUEST_CHATROOM_LATITUDE );
 			longitudePart = request.getPart( Constants.REQUEST_CHATROOM_LONGITUDE );
+			zoomPart = request.getPart( Constants.REQUEST_CHATROOM_ZOOM );
 			
 			if ( titlePart != null )
 				title =  Util.getStringValueFromPart( titlePart );
@@ -121,7 +124,10 @@ public class ChatController extends HttpServlet {
 			if ( longitudePart != null )
 				longitude = new BigDecimal( Util.getStringValueFromPart( longitudePart ));
 			
-			if ( title !=  null && max != 0 && name != null && latitude != null && longitude != null ) {
+			if ( zoomPart != null )
+				zoom = Integer.parseInt( Util.getStringValueFromPart(zoomPart ));
+			
+			if ( title !=  null && max != 0 && name != null && latitude != null && longitude != null && zoom != 0 ) {
 				
 				
 				ChatRoom chatRoom = new ChatRoom();
@@ -133,7 +139,7 @@ public class ChatController extends HttpServlet {
 				chatRoom.setLocation_longitude(longitude);
 				
 				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
-				chatDaoImpl.insertChatRoomAndGetLastSavedID(chatRoom);
+				chatDaoImpl.insertChatRoomAndGetLastSavedID(chatRoom, zoom);
 				
 				
 				if (chatRoom.getId() !=0 ) {

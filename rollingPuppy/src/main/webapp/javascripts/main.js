@@ -732,9 +732,11 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": document.querySelector(".createAddress").innerText,
+					"locationName": "NHN NEXT",
 					"locationLatitude": oMapClicker.oClickPoint['y'],
-					"locationLongitude": oMapClicker.oClickPoint['x']
+					"locationLongitude": oMapClicker.oClickPoint['x'],
+					//TODO 현재의 줌레벨을 넣어야 한다.
+					"zoom": naverMapSettings.getZoom()
 			};
 			
 			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
