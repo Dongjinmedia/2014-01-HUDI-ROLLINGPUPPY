@@ -336,15 +336,16 @@ var naverMapSettings = {
 	        if (oTarget instanceof nhn.api.map.Marker) {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
-	            	//TODO 채팅방번호
 	            	
-	                //최초에 생성해놓은 클릭 객체메뉴를 가져온다.
+	            	oMarker.reset();
+	            	
 	            	//working
-
 	            	var menuTemplate = document.getElementById("controlBox");
 	                menuTemplate.chatRoomNumber = oTarget.chatRoomNumber; 
 	                //alert(menuTemplate.chatRoomNumber);
 	                //alert(document.getElementById("controlBox").chatRoomNumber);
+	                
+	                
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
@@ -480,7 +481,15 @@ var oMarker = {
 	menu: null,
 	//메뉴버튼 객체를 담을 Array
 	aIcons: [],
+	//메뉴 내용을 담는 Content 객체를 담을 Array
+	aMenues: [],
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
+	reset: function() {
+		//working
+		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
+			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
+		}
+	},	
 	isClickedComponentExists: function() {
 		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
 			var iconStatus = this.aIcons[index].getAttribute("status");
@@ -508,12 +517,37 @@ var oMarker = {
 		}
 	},
 	
+	//아이콘이 클릭되지 않았던 상태에서 클릭을 했을경우
+	changeClickStatus: function(oIcon, oMenu) {
+		oIcon.setAttribute('status','clicked');
+		oIcon.style.status = 'clicked';
+		oIcon.children[0].setAttribute('style', 'background: #9dd;');
+		this.mouseOver();		
+	},
+	
+	//클릭되었던 상태의 아이콘을 다시 클릭 했을경우
+	changeNoneClickStatus: function(oIcon, oMenu) {
+		oMenu.setAttribute('style','display: none');
+		oMenu.style.display = 'none';
+	
+		oIcon.setAttribute('status','none');
+		oIcon.style.status = 'none';
+		oIcon.children[0].setAttribute('style', 'background: #8cc;');
+		
+		if (!this.isClickedComponentExists()) {
+			this.mouseOut();		
+		}
+	},
+	
 	//외부에서 addListener 함수를 통해서 새로적용되는 메뉴버튼과, 메뉴 컨텐츠영역을 전달받는다.
   	addListener: function (oIcon, oMenu) {
 		//아이콘정보를 Array에 담는다. 현재는 채팅방, 안내에 대한 icon Object를 담는다.
   		//클린된 메뉴가 있는지 없는지를 체크하고, 초기화하는 등의 액션을 위해 필요하다.
 		this.aIcons.push(oIcon);
 		
+		//각 아이콘에 해당하는 Contents영역의 정보를 Array에 담는다.
+		//마커를 이동할 때마다 reset해줘야 하는 정보를 위해서 Array에 담아둔다.
+		this.aMenues.push(oMenu);
 		//마우스가 메뉴아이콘 위에 위치할경우, Content영역이 보여지도록 한다.
 		oIcon.addEventListener('mouseover', function() {
 			oMenu.style.display = 'block';
@@ -528,27 +562,14 @@ var oMarker = {
 	
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
 		oIcon.addEventListener('click', function(e) {
-		
 			e.preventDefault();
 		
 			var status = oIcon.getAttribute('status');
 			
 			if (status === 'clicked') {
-				oMenu.setAttribute('style','display: none');
-				oMenu.style.display = 'none';
-			
-				oIcon.setAttribute('status','none');
-				oIcon.style.status = 'none';
-				oIcon.children[0].setAttribute('style', 'background: #8cc;');
-				
-				if (!this.isClickedComponentExists()) {
-					this.menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');		
-				}
+				this.changeNoneClickStatus(oIcon, oMenu);
 			} else if (status === 'none') {
-				oIcon.setAttribute('status','clicked');
-				oIcon.style.status = 'clicked';
-				oIcon.children[0].setAttribute('style', 'background: #9dd;');
-				this.menu.setAttribute('style', 'width:150px;height:150px;margin:-75px 0 0 -75px;');		
+				this.changeClickStatus(oIcon, oMenu);
 			}
 		}.bind(this),false);	
   	}
