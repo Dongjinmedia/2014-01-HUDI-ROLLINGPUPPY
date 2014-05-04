@@ -340,12 +340,13 @@ var naverMapSettings = {
 	            	oMarker.reset();
 	            	
 	            	//working
+	            	//TODO List 목록 가져와서 리스트만들기
+	            	//리스트 항목별 클릭시 이동할 고유아이디값 저장하기
+	            	//현재는 마커전체레벨로 저장하고 있다.
 	            	var menuTemplate = document.getElementById("controlBox");
 	                menuTemplate.chatRoomNumber = oTarget.chatRoomNumber; 
 	                //alert(menuTemplate.chatRoomNumber);
 	                //alert(document.getElementById("controlBox").chatRoomNumber);
-	                
-	                
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
