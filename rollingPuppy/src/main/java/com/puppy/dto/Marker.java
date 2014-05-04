@@ -12,12 +12,19 @@ public class Marker {
 	private Timestamp created_time;
 	
 	//tempValue
-	private int same_name_id;
+	private long same_name_id;
+	private long near_distance_id;
 	
-	public int getSame_name_id() {
+	public long getNear_distance_id() {
+		return near_distance_id;
+	}
+	public void setNear_distance_id(long near_distance_id) {
+		this.near_distance_id = near_distance_id;
+	}
+	public long getSame_name_id() {
 		return same_name_id;
 	}
-	public void setSame_name_id(int same_name_id) {
+	public void setSame_name_id(long same_name_id) {
 		this.same_name_id = same_name_id;
 	}
 	public int getId() {

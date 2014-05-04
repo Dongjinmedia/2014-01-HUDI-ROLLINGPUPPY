@@ -732,7 +732,7 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": "NHN NEXT",
+					"locationName": "NHN NEXT2",
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.

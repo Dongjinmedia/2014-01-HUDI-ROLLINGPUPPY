@@ -2,11 +2,8 @@ package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
 import java.util.List;
-import java.util.Map;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
@@ -30,6 +27,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	public int insertChatRoomAndGetLastSavedID(ChatRoom chatRoom, int zoom) {
 		logger.info("ChatDaoImpl ChatRoomAndGetLastSavedID");
 		
+		PreparedStatement preparedStatement = null;
+		int successQueryNumber = 0;
+		
+		
 		//Marker정보를 가져오기 위한 query실행
 		Marker marker = new Marker();
 		marker.setLocation_name(chatRoom.getLocation_name());
@@ -37,14 +38,14 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		marker.setLocation_longitude(chatRoom.getLocation_longitude());
 		marker.setZoom_level(zoom);
 		
-		selectMarkerIDFromLocationInfo(marker);
+		int markerId = selectMarkerIDFromLocationInfo(marker);
 		
-		//TODO select를 통해서 가져오는 marker  id가 존재할 경우 수행한다.
-		PreparedStatement preparedStatement = null;
-		int successQueryNumber = 0;
+		if ( markerId == 0 )
+			return successQueryNumber; 
+		
 		
 		try {
-			String query = "INSERT INTO tbl_chat_room(title, max, location_name, location_latitude, location_longitude) values (?, ?, ?, ?, ?)";
+			String query = "INSERT INTO tbl_chat_room(title, max, location_name, location_latitude, location_longitude, tbl_marker_id) values (?, ?, ?, ?, ?, ?)";
 			
 			preparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			preparedStatement.setString(1, chatRoom.getTitle());
@@ -52,6 +53,7 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			preparedStatement.setString(3, chatRoom.getLocation_name());
 			preparedStatement.setBigDecimal(4, chatRoom.getLocation_latitude());
 			preparedStatement.setBigDecimal(5, chatRoom.getLocation_longitude());
+			preparedStatement.setInt(6, markerId);
 			
 			successQueryNumber = insertQuery(preparedStatement, chatRoom);
 		} catch (Exception e) {
@@ -120,10 +122,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 													+ "IFNULL ( "
 													+ "		(SELECT id FROM tbl_marker WHERE location_name = ?),  0) "
 													+ "		AS same_name_id, "
-													+ "id "
-													+ "FROM tbl_marker "
-													+ "WHERE ( ? <location_latitude <= ? ) "
-													+ "AND ( ? <location_longitude<= ? )";
+													+ "IFNULL ( "
+													+ "		(SELECT id FROM tbl_marker WHERE (location_latitude BETWEEN ? AND ?) AND (location_longitude BETWEEN ? AND ?) ),  0) "
+													+ "		AS near_distance_id"
+													+ " FROM tbl_marker";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setString(1, marker.getLocation_name());
@@ -134,24 +136,48 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			
 			Marker idInstance = selectOne(Marker.class, preparedStatement);
 			
-			int sameNameId = idInstance.getSame_name_id();
-			int nearDistanceId = idInstance.getId();
+			logger.info("idInstance : "+idInstance);
 			
 			//지역명이 일치하는 마커데이터가 있을경우
-			if ( sameNameId != 0 ) {
-				markerId = sameNameId;
-				
+			if ( idInstance.getSame_name_id() != 0 ) {
+				markerId = (int) idInstance.getSame_name_id();
 			//위도, 경도상에 인접마커에 해당하는 데이터가 있을경우
-			} else if ( nearDistanceId != 0 ) {
-				markerId = nearDistanceId;
-				
+			} else if ( idInstance.getNear_distance_id() != 0 ) {
+				markerId = (int) idInstance.getNear_distance_id();
 			//위의 두가지 경우를 모두 만족하지 않을경우, 새로운 marker데이터를 생성한다.
 			} else {
-				//TODO
+				markerId = insertMarkerAndGetLastSavedID(marker);
+				logger.info("newbiewId : "+markerId);
 			}
 			
 		} catch (Exception e) {
 			logger.error("Request Get Marker Id Error", e);
+		}
+		
+		return markerId;
+	}
+
+	@Override
+	public int insertMarkerAndGetLastSavedID(Marker marker) {
+		logger.info("ChatDaoImpl insertMarkerAndGetLastSavedID");
+		
+		PreparedStatement preparedStatement = null;
+		int markerId = 0;
+		
+		try {
+			String query = "INSERT INTO tbl_marker(location_name, location_latitude, location_longitude, zoom_level) values (?, ?, ?, ?)";
+			
+			preparedStatement = ConnectionPool.getInsertPreparedStatement(query);
+			preparedStatement.setString(1, marker.getLocation_name());
+			preparedStatement.setBigDecimal(2, marker.getLocation_latitude());
+			preparedStatement.setBigDecimal(3, marker.getLocation_longitude());
+			preparedStatement.setInt(4, marker.getZoom_level());
+			
+			if ( insertQuery(preparedStatement, marker) > 0 ) {
+				markerId = marker.getId();
+			}
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
 		}
 		
 		return markerId;
