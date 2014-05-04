@@ -107,11 +107,12 @@
 			<!--네비게이션바를 눌렀을때 나오는 패널 영역-->
 			<div id="panel">
 				<div id="panel_contents">
-					<div id="search" class="on">검색 결과가 나오는 창입니다.</div>
-					<div id="recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
-					<div id="chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
-					<div id="bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>
-					<div id="settings">설정창 입니다.</div>
+					<!-- pc == panel_content -->
+					<div id="pc_search" class="on">검색 결과가 나오는 창입니다.</div>
+					<div id="pc_recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
+					<div id="pc_chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
+					<div id="pc_bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>
+					<div id="pc_settings">설정창 입니다.</div>
 				</div>
 				<div id="panel_buttons">
 					<a class="panel_button_fold" href="#"></a>

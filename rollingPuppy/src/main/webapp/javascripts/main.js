@@ -179,7 +179,7 @@ var NavList = {
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.elLatestClickedMenu = event.target.parentNode;
-		this.elLatestPanelContents = document.getElementById(event.target.className);
+		this.elLatestPanelContents = document.getElementById('pc_' + event.target.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
 		this.elLatestClickedMenu.className = 'on';
