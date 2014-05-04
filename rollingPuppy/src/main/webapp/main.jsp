@@ -59,9 +59,7 @@
 			<ol>
 				<li>
 					<span class="icon-title">채팅방 테스트 블라블라블라블라블라블라블라블라</span>
-					<span class="icon-participant"></span>
-					<span class="seperator">/</span>
-					<span class="limit"></span>
+					<span class="icon-participant">3/10</span>
 				</li>
 			</ol>
 		</div>
