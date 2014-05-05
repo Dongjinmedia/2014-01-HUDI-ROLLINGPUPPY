@@ -31,16 +31,15 @@ public class SearchController extends HttpServlet{
 	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=";
 	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
 	
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		logger.info("into doGet");
-		
-		
-		RequestDispatcher view = request.getRequestDispatcher("search.jsp");
-		view.forward(request, response);
-		
-	}
+//	@Override
+//	public void doGet(HttpServletRequest request, HttpServletResponse response)
+//			throws ServletException, IOException {
+//		logger.info("into doGet");
+//		
+//		RequestDispatcher view = request.getRequestDispatcher("search.jsp");
+//		view.forward(request, response);
+//		
+//	}
 	
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
@@ -51,8 +50,7 @@ public class SearchController extends HttpServlet{
 		System.out.println("search_word: " + requestKeyword);
 		String requestURLString = REQUEST_URL_FRONT + REAL_SERVER_KEY + "&query=" + requestKeyword +REQUEST_URL_TAIL;
 		logger.info("requestURL :" + requestURLString);
-		URL requestURL = new URL(requestURLString);
-		
+		URL requestURL = new URL(requestURLString);	
 		getDataFromXML(request, response, requestURL);
 	}
 	
@@ -75,7 +73,6 @@ public class SearchController extends HttpServlet{
 			//DocumentBuilder클래스를 이용하여 xml 문서로부터 dom document 객체를 가져오기 위한 클래스 선언
 			//결과적으로 프로그래머가 xml해석을 위한 document 객체를 얻을 수 있음.
 			DocumentBuilder builder = builderFactory.newDocumentBuilder();
-			
 			
 			//url로부터 xml을 읽어들이기 위한 inputStream 클래스 선언
 			InputStream inputStream = requestURL.openStream();
