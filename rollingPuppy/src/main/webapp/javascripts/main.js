@@ -205,7 +205,7 @@ var naverMapSettings = {
 	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
-	    addMarker: function(latitude, longitude, chatRoomNumber, title) {
+	    addMarker: function(latitude, longitude, markerNumber, title) {
 	    	//Point 객체를 생성한다.
 	    	 var oPoint = new nhn.api.map.LatLng(latitude, longitude);
 	    	
@@ -215,8 +215,8 @@ var naverMapSettings = {
 	    	});
 	    	//마커객체에 Point를 설정한다.
 	    	oMarker.setPoint(oPoint);
-	    	//마커객체에 Attirubte를 추가한다. (chatRoomNumber)
-	    	oMarker.chatRoomNumber = chatRoomNumber;
+	    	//마커객체에 Attirubte를 추가한다. (markerNumber)
+	    	oMarker.markerNumber = markerNumber;
 	    	
 	    	//맵에 마커를 더한다.
 	    	this.oMap.addOverlay(oMarker);
@@ -337,16 +337,16 @@ var naverMapSettings = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	
-	            	oMarker.reset();
+	            	oMarkerClicker.reset();
 	            	
 	            	//working
 	            	//TODO List 목록 가져와서 리스트만들기
 	            	//리스트 항목별 클릭시 이동할 고유아이디값 저장하기
 	            	//현재는 마커전체레벨로 저장하고 있다.
 	            	var menuTemplate = document.getElementById("controlBox");
-	                menuTemplate.chatRoomNumber = oTarget.chatRoomNumber; 
-	                //alert(menuTemplate.chatRoomNumber);
-	                //alert(document.getElementById("controlBox").chatRoomNumber);
+	                menuTemplate.markerNumber = oTarget.markerNumber; 
+	                //alert(menuTemplate.markerNumber);
+	                //alert(document.getElementById("controlBox").markerNumber);
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
@@ -453,11 +453,9 @@ var naverMapSettings = {
 /*********************************************************************************************************
  * 윤성이가 작성한 Marker Interaction 메뉴 소스코드 시작
  **********************************************************************************************************/
-//Custom Listener객체
-var oMarker = { 
+var oMarkerClicker = { 
 	
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
-	//TODO 추후 아이디값으로 찾을 예정
 	initialize: function() {
 		this.controlBox = document.getElementById("controlBox");
 		this.menu = controlBox.querySelector("#menu");
@@ -652,6 +650,7 @@ var oChat = {
 /*********************************************************************************************************
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
  **********************************************************************************************************/
+//TODO oChat안으로 들어가야 한다.
 var oCreateChattingRoom = {
 		//채팅방 생성에 해당하는 중앙창에 대한 element
 		oCreateChatRoom: null,
@@ -743,17 +742,17 @@ var oCreateChattingRoom = {
 			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
 			
 			var isSuccess = oResponseData['isSuccess'];
-			var chatRoomNumber = oResponseData['chatRoomNumber'];
+			var markerNumber = oResponseData['markerNumber'];
 			
 			//TODO 마커에 고유 아이디값을 부여
 			if ( isSuccess === true 
-					&& chatRoomNumber !== null 
-					&& chatRoomNumber !== undefined 
-					&& isNaN(chatRoomNumber) === false ) {
+					&& markerNumber !== null 
+					&& markerNumber !== undefined 
+					&& isNaN(markerNumber) === false ) {
 				
 				//마커를 생성
-				naverMapSettings.aMarkerList.push(chatRoomNumber);
-				naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], chatRoomNumber, roomNameValue);
+				naverMapSettings.aMarkerList.push(markerNumber);
+				naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
 				
 				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
 				
@@ -875,7 +874,7 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//Marker Interaction 메뉴 초기화영역
-	oMarker.initialize();
+	oMarkerClicker.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	
