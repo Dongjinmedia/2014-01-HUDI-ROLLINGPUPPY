@@ -20,7 +20,7 @@
 									class="particle particle--b"></span>
 							</h1>
 							<h2 class="font-xl">
-								<strong>Page <u>Not </u>Found</strong>
+								<strong>Page Not Found</strong>
 							</h2>
 							<br>
 							<p class="lead">주소가 잘못되었습니다. URL을 다시 확인해주세요</p>
