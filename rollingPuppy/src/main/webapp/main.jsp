@@ -78,7 +78,7 @@
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
 		<div id="search_box">
-			<input type="text"></input>
+			<input id=search_word type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
 

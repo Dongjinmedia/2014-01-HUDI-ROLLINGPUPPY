@@ -26,27 +26,30 @@ import org.w3c.dom.NodeList;
 public class SearchController extends HttpServlet{
 	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
-	//private static final String REAL_SERVER_KEY = "513cd098517cce82ec819f7862fb362f"; 
-	private static final String DUMMY_KEY = "c1b406b32dbbbbeee5f2a36ddc14067f";
-	private static final String REQUEST_URL = "http://openapi.naver.com/search?key="
-			+ DUMMY_KEY
-			+"&query=%EA%B0%88%EB%B9%84%EC%A7%91&target=local&start=1&display=100";
-	
+	private static final String REAL_SERVER_KEY = "513cd098517cce82ec819f7862fb362f"; 
+	//private static final String DUMMY_KEY = "c1b406b32dbbbbeee5f2a36ddc14067f";
+	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=";
+	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		logger.info("into doGet");
 		
-		RequestDispatcher view = request.getRequestDispatcher("search.jsp");
-		view.forward(request, response); 
+		String requestKeyword = request.getParameter("search_word"); 
+		String requestURLString = REQUEST_URL_FRONT + REAL_SERVER_KEY + "&query=" + requestKeyword +REQUEST_URL_TAIL;
+		logger.info("requestURL :" + requestURLString);
+		URL requestURL = new URL(requestURLString);
+		
+		getDataFromXML(request, response, requestURL);
+		
 	}
 	
 	
 	//꼭 읽어야 할 레퍼런스 
 	//http://ko.wikipedia.org/wiki/XPath
 	//http://viralpatel.net/blogs/java-xml-xpath-tutorial-parse-xml/
-	public void getDataFromXML(){
+	public void getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
 		
 		//dom object 해석을 위해 documentBuilder 객체 필요
 		//documentBuilder 객체를 만들기 위한 팩토리 클래스 선언
@@ -61,10 +64,10 @@ public class SearchController extends HttpServlet{
 			//DocumentBuilder클래스를 이용하여 xml 문서로부터 dom document 객체를 가져오기 위한 클래스 선언
 			//결과적으로 프로그래머가 xml해석을 위한 document 객체를 얻을 수 있음.
 			DocumentBuilder builder = builderFactory.newDocumentBuilder();
-			URL url = new URL( REQUEST_URL);
+			
 			
 			//url로부터 xml을 읽어들이기 위한 inputStream 클래스 선언
-			InputStream inputStream = url.openStream();
+			InputStream inputStream = requestURL.openStream();
 			document = builder.parse(inputStream);
 		} catch(Exception e){
 			System.err.println(e);
@@ -131,7 +134,6 @@ public class SearchController extends HttpServlet{
 			System.out.println("\n=============================================\n\n\n");
 				
 		}
-		
 		
 	}
 	
