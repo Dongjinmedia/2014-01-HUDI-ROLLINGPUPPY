@@ -26,9 +26,7 @@ import org.w3c.dom.NodeList;
 public class SearchController extends HttpServlet{
 	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
-	private static final String REAL_SERVER_KEY = "513cd098517cce82ec819f7862fb362f"; 
-	//private static final String DUMMY_KEY = "c1b406b32dbbbbeee5f2a36ddc14067f";
-	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=";
+	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=513cd098517cce82ec819f7862fb362f";
 	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
 	
 //	@Override
@@ -48,7 +46,7 @@ public class SearchController extends HttpServlet{
 		request.setCharacterEncoding("utf-8");
 		String requestKeyword = request.getParameter("search_word");
 		System.out.println("search_word: " + requestKeyword);
-		String requestURLString = REQUEST_URL_FRONT + REAL_SERVER_KEY + "&query=" + requestKeyword +REQUEST_URL_TAIL;
+		String requestURLString = REQUEST_URL_FRONT + "&query=" + requestKeyword +REQUEST_URL_TAIL;
 		logger.info("requestURL :" + requestURLString);
 		URL requestURL = new URL(requestURLString);	
 		getDataFromXML(request, response, requestURL);
@@ -132,6 +130,11 @@ public class SearchController extends HttpServlet{
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
+					System.out.println("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
+		
+			nextNode = nextNode.getNextSibling();
+			if (nextNode != null)
+				if ( nextNode.getFirstChild() != null)
 					System.out.println("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
@@ -142,6 +145,8 @@ public class SearchController extends HttpServlet{
 			System.out.println("\n=============================================\n\n\n");
 				
 		}
+		
+		
 		
 	}
 	

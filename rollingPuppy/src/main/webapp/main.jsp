@@ -79,7 +79,7 @@
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
 		<form action = "/search" method="post">
 		<div id="search_box">
-			<input id=search_word type="text"></input>
+			<input name=search_word type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
 		</form>
