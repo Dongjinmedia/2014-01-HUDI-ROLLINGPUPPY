@@ -143,7 +143,7 @@ public class ChatController extends HttpServlet {
 				if (chatRoom.getId() !=0 ) {
 					//성공을 표시
 					isSuccess = true;
-					resultJsonData.put(Constants.JSON_RESPONSE_CHATROOMNUM, chatRoom.getId());
+					resultJsonData.put(Constants.JSON_RESPONSE_MARKERNUMBER, chatRoom.getId());
 				}
 				
 			}

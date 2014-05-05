@@ -810,6 +810,8 @@ var oCreateChattingRoom = {
 			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
 			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
 			
+			console.log("Ajax Result : ",oResponseData);
+			
 			var isSuccess = oResponseData['isSuccess'];
 			var markerNumber = oResponseData['markerNumber'];
 			
@@ -822,8 +824,7 @@ var oCreateChattingRoom = {
 				//마커를 생성
 				oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
 				
-				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
-				
+				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
 		    	
 		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
 		    	oMapClicker.invisible();
