@@ -6,17 +6,14 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
@@ -206,12 +203,6 @@ public class ChatController extends HttpServlet {
 			if ( leftTopX !=0  && leftTopY !=0
 				&& rightBottomX != 0
 				&& rightBottomY != 0 ) {
-				logger.info("leftTopX : "+leftTopX);
-				logger.info("leftTopY : "+leftTopY);
-				logger.info("rightBottomX : "+rightBottomX);
-				logger.info("rightBottomY : "+rightBottomY);
-				
-				isSuccess = true;
 				
 				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
 				List<ChatRoom> lists = chatDaoImpl.selectChatRoomListFromPoints(leftTopX, leftTopY, rightBottomX, rightBottomY);
@@ -219,13 +210,8 @@ public class ChatController extends HttpServlet {
 				//마커를 중심으로 정렬,
 				List<Marker> returnJsonList = Util.getMarkerCentralListFromChatRoomList(lists);
 				
-				for (Marker marker : returnJsonList) {
-					logger.info("\n\n====================");
-					logger.info(marker.toString());
-				}
-				
-				
 				resultJsonData.put(Constants.JSON_RESPONSE_MARKERLIST, returnJsonList);
+				isSuccess = true;
 			}
 			
 		} catch (Exception e ) {

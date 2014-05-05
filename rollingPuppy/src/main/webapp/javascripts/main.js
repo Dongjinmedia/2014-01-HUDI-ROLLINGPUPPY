@@ -261,7 +261,27 @@ var oNaverMap = {
 	    	if ( oMarker === undefined ||oMarker === null )
 	    		return null;
 	    	
-	    	console.log(oMarker);
+	    	//현재 보고있는 맵 안의 마커정보들은 메모리상에서 유지하고 있다.
+	    	//메모리상의 데이터에 새로이 업데이트를 요구받은 Marker데이터가 있는지 없는지 판별한다.
+	    	var isAlreadyExists = this.oCurrentViewPointMarkers.hasOwnProperty(oMarker["id"]);
+
+	    	//만약 메모리에 해당 마커에 대한 정보가 없으면
+	    	if ( isAlreadyExists === false ) {
+	    		//메모리에 해당 마커에 대한 정보를 추가한다.
+	    		this.oCurrentViewPointMarkers[oMarker["id"]] = oMarker;
+	    		
+	    		//그리고 마커를 생성한다.
+	    		this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title']);
+	    		
+	    	//만약 메모리에 해당 마커에 대한 정보가 존재하면,
+	    	//새로 서버에서 받은 마커정보안의 채팅방 리스트를 찾아 메모리 객체에 저장한다.
+	    	} else {
+	    		var aChatRoomsInMemory = this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"];
+	    		var aChatRoomsToUpdate = oMarker["chatRooms"];
+
+	    		//메모리상에 새로운 데이터를 저장합니다.
+	    		aChatRoomsInMemory = aChatRoomsToUpdate;
+	    	}
 	    	
 //	    	//TODO  계속 더하기만 되다보니, 성능상의 이슈가 발생한다. 위치이동별 버퍼비우기 등을 강구해보자.
 //			//naverMapSettings에 저장된 현재까지 Load한 Marker가 
@@ -297,14 +317,18 @@ var oNaverMap = {
 	    		//var aResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
 	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
 	    		
-	    		console.log("oResponse : ",oResponse);
-	    		var aMarkerList = oResponse["markerList"];
+	    		var isSuccess = oResponse['isSuccess'];
 	    		
-	    		
-	    		//Object Array를 돌면서
-	    		for (var index in aMarkerList) {
-	    			this.updateViewPointMarker(aMarkerList[index]);
+	    		if ( isSuccess ) {
+	    			var aMarkerList = oResponse["markerList"];
+	    			//Marker정보가 담긴 Array를 돌면서 현재 맵뷰상의 마커정보를 업데이트한다.
+	    			for (var index in aMarkerList) {
+	    				this.updateViewPointMarker(aMarkerList[index]);
+	    			}
+	    		} else {
+	    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
 	    		}
+	    		
 	    	}
 	    },
 	    
