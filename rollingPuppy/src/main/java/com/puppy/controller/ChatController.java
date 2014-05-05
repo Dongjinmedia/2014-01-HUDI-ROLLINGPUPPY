@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.Marker;
 import com.puppy.util.Constants;
 import com.puppy.util.Util;
 /*
@@ -215,15 +216,23 @@ public class ChatController extends HttpServlet {
 				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
 				List<ChatRoom> lists = chatDaoImpl.selectChatRoomListFromPoints(leftTopX, leftTopY, rightBottomX, rightBottomY);
 				
-				resultJsonData.put(Constants.JSON_RESPONSE_CHATROOMLIST, lists);
+				//마커를 중심으로 정렬,
+				List<Marker> returnJsonList = Util.getMarkerCentralListFromChatRoomList(lists);
+				
+				for (Marker marker : returnJsonList) {
+					logger.info("\n\n====================");
+					logger.info(marker.toString());
+				}
+				
+				
+				resultJsonData.put(Constants.JSON_RESPONSE_MARKERLIST, returnJsonList);
 			}
 			
 		} catch (Exception e ) {
 			logger.error("Request Get Chatting Room List With LeftTop, RightBottom Latitude, Longitude", e);
 		}
-		
-		logger.info("isSuccess : ", isSuccess);
 		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
+		logger.info("return data : "+ resultJsonData);
 		out.println(gson.toJson(resultJsonData));
 	}
 }

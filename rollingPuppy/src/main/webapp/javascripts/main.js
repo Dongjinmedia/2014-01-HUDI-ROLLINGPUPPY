@@ -201,7 +201,25 @@ var oNaverMap = {
 	    oIcon: null,
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
-	    aMarkerList: null,
+	    
+	    /*
+	    //oCurrentViewPointMarkers는 다음과 같은 형태이다.
+	    {
+			"마커고유아이디": {
+				location_latitude: "", 
+				location_longitude: "", 
+				location_name: "", 
+				chatRoom: [
+					{
+						id: "",
+						title: "",
+						limit: ""
+					}
+				]			
+			}
+		} 
+	    */
+	    oCurrentViewPointMarkers: null,
 	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
@@ -222,9 +240,43 @@ var oNaverMap = {
 	    	this.oMap.addOverlay(oMarker);
 	    },
 	    
+	    //working
+	    /*
+	    //oMarker는 다음과 같은 형태이다.
+		{
+			id : "마커고유아이디", 
+			location_latitude: "", 
+			location_longitude: "", 
+			location_name: "", 
+			chatRoom: [
+				{
+					id: "",
+					title: "",
+					limit: ""
+				}
+			]
+		} 
+	    */
+	    updateViewPointMarker: function(oMarker) {
+	    	if ( oMarker === undefined ||oMarker === null )
+	    		return null;
+	    	
+	    	console.log(oMarker);
+	    	
+//	    	//TODO  계속 더하기만 되다보니, 성능상의 이슈가 발생한다. 위치이동별 버퍼비우기 등을 강구해보자.
+//			//naverMapSettings에 저장된 현재까지 Load한 Marker가 
+//			//저장된 Array에 새로 저장하고자 하는 마커가 존재하는지 체크,
+//			if ( this.oCurrentViewPointMarkers.indexOf(oMarker['id']) > -1 ) {
+//				
+//				
+//			//존재하지 않을경우, Load Marker Array에 추가하고, 맵에 마커를 더한다.
+//			} else {
+//				this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title']);
+//			}
+	    },
 	    //지도위의 Map 마커상태값을 업데이트하는 메서드.
 	    //TODO 현재 네트워크 부하를 줄일 수 있는 알고리즘이나 방법을 생각한다.
-	    updateMapStatus: function() {
+	    updateViewPointMarkers: function() {
 	    	
 	    	//지도의 왼쪽상단, 오른쪽하단의 좌표값을 가진 Point Array를 가져온다.
 	    	var aCurrentMapPoints = this.oMap.getBound();
@@ -242,25 +294,16 @@ var oNaverMap = {
 	    		
 	    		
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
-	    		//var oResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
+	    		//var aResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
 	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
 	    		
-	    		//response데이터에서 현재 화면에 해당하는 마커정보를 담은 Object Array를 변수에 초기화한다.
-	    		var aDatas = oResponse['chatRoomList'];
-
+	    		console.log("oResponse : ",oResponse);
+	    		var aMarkerList = oResponse["markerList"];
+	    		
+	    		
 	    		//Object Array를 돌면서
-	    		for (var index in aDatas) {
-	    			
-	    			//TODO  계속 더하기만 되다보니, 성능상의 이슈가 발생한다. 위치이동별 버퍼비우기 등을 강구해보자.
-	    			//naverMapSettings에 저장된 현재까지 Load한 Marker가 
-	    			//저장된 Array에 새로 저장하고자 하는 마커가 존재하는지 체크,
-	    			if ( this.aMarkerList.indexOf(aDatas[index]['id']) > -1 ) {
-	    				continue;
-	    			//존재하지 않을경우, Load Marker Array에 추가하고, 맵에 마커를 더한다.
-	    			} else {
-	    				this.aMarkerList.push(aDatas[index]['id']);
-	    				this.addMarker(aDatas[index]['location_latitude'], aDatas[index]['location_longitude'], aDatas[index]['id'], aDatas[index]['title']);
-	    			}
+	    		for (var index in aMarkerList) {
+	    			this.updateViewPointMarker(aMarkerList[index]);
 	    		}
 	    	}
 	    },
@@ -326,7 +369,7 @@ var oNaverMap = {
 	    //TODO 네트워크 비용을 낮추기위해 내부적으로 현재 좌표이동을 체크하는 로직이 필요하다. (현재는 클릭만해도 동작)
 	    //TODO Drag를 위한 최소단위 설정을 고려해보자.
 	    dragEndEvent: function(oCustomEvent) {
-	    	this.updateMapStatus();
+	    	this.updateViewPointMarkers();
 	    },
 
 	    clickEvent : function(oCustomEvent) {
@@ -416,8 +459,10 @@ var oNaverMap = {
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
 	        
-	        
-	        this.aMarkerList = new Array();
+	        //메모리상에 현재 화면에 존재하는 마커정보를 담기위한 Object 선언
+	        //맵 드래그, 데이터 업데이트 등을 수행할때
+	        //이미 맵에 추가된 마커는 정보만 업데이트 하는 등을 판별하기 위해서 필요하다.
+	        this.oCurrentViewPointMarkers = new Object();
 	        
 	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
 	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
@@ -751,7 +796,6 @@ var oCreateChattingRoom = {
 					&& isNaN(markerNumber) === false ) {
 				
 				//마커를 생성
-				oNaverMap.aMarkerList.push(markerNumber);
 				oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
 				
 				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
@@ -900,7 +944,7 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//Map 에 위치한 Marker 초기화
-	oNaverMap.updateMapStatus();
+	oNaverMap.updateViewPointMarkers();
 	//------------------------------------------------------------------------------------//
 	
 	/*

@@ -29,4 +29,5 @@ public class Constants {
 	public static final String JSON_RESPONSE_CHATROOMNUM = "chatRoomNumber";
 	public static final String JSON_RESPONSE_CHATROOMLIST= "chatRoomList";
 	public static final String JSON_RESPONSE_3WAY_RESULT = "ThreeWayResult";
+	public static final String JSON_RESPONSE_MARKERLIST = "markerList";
 }

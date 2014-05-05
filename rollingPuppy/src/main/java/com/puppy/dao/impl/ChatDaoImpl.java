@@ -75,7 +75,7 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		try {
 			String query = "SELECT * FROM tbl_chat_room "
 					+ "WHERE (location_latitude BETWEEN ? AND ?) "
-					+ "AND (location_longitude BETWEEN ? AND  ?)";
+					+ "AND (location_longitude BETWEEN ? AND  ?) ORDER BY tbl_marker_id ASC";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setFloat(1, rightBottomY);
@@ -89,7 +89,11 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		}
 		
 		for (ChatRoom chatRoom : lists) {
-			logger.info(chatRoom.getTitle());
+			logger.info("================================");
+			logger.info("title : "+chatRoom.getTitle());
+			logger.info("location_name : "+chatRoom.getLocation_name());
+			logger.info("marker_id : "+chatRoom.getTbl_marker_id());
+			logger.info("================================");
 		}
 		
 		return lists;
