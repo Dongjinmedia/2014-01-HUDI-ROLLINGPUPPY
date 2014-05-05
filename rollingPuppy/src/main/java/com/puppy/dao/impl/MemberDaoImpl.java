@@ -94,4 +94,21 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		return successQueryNumber;
 	}
 
+	@Override
+	public int updateLastLoggedTime(int dbTupleNumber) {
+		logger.info("MemberDaoImpl updateLastLoggedTime");
+		int successQueryNumber = 0;
+		try {
+			String sql = "UPDATE tbl_member SET last_logged_time = NOW() WHERE id = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
+			preparedStatement.setInt(1, dbTupleNumber);
+
+			successQueryNumber = updateQuery(preparedStatement);
+		} catch (Exception e) {
+			logger.error("in selectCheckLoginInfo", e);
+		}
+		
+		return successQueryNumber;
+	}
+
 }

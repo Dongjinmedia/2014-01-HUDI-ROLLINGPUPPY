@@ -99,6 +99,11 @@ public class LoginController extends HttpServlet {
 			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNickname_adjective());
 			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNickname_noun());
 			
+			//최종 로그인시간을 업데이트한다.
+			int successUpdateQueryNumber = memberDao.updateLastLoggedTime(member.getId());
+			if ( successUpdateQueryNumber == 0 )
+				logger.warn(email+" Update Last Logged Time Fail.");
+			
 			//로그인 성공
 			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(

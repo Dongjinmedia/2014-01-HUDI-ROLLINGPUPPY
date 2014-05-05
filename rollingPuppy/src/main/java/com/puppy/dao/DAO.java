@@ -148,6 +148,7 @@ public class DAO {
 			successQueryNumber = preparedStatement.executeUpdate();
 			generatedKeys = preparedStatement.getGeneratedKeys();
 			
+			//TODO 리팩토링 필요. (현재 getInt(1)로 하드코딩 되어있음)
 			if ( generatedKeys.next() ) {
 				//클래스에 선언된 모든 메소드를 배열로 가져온다.
 				Method[] methods = targetClass.getClass().getDeclaredMethods();
@@ -234,5 +235,27 @@ public class DAO {
 				preparedStatement.close();
 		}
 		return rows;
+	}
+	
+	public int updateQuery(PreparedStatement preparedStatement) throws SQLException {
+		logger.info("DAO updateQuery");
+		
+		int successQueryNumber = 0;
+		Connection connection = null;
+		
+		try {
+			successQueryNumber = preparedStatement.executeUpdate();
+			connection = preparedStatement.getConnection();
+		} catch (Exception e) {
+			logger.error("Query [Execute or Close] Exception" , e);
+		} finally {
+			if (connection != null) 
+				connection.close();
+			
+			if ( preparedStatement != null) 
+				preparedStatement.close();
+		}
+		
+		return successQueryNumber;
 	}
 }

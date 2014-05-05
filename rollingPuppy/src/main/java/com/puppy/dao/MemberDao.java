@@ -11,5 +11,6 @@ public interface MemberDao {
 	public Member selectDuplicateMemberExists(String email);
 	public Member selectCheckLoginInfo(String email, String pw);
 	public int insertMemberInfo(Member member);
+	public int updateLastLoggedTime(int dbTupleNumber);
 }
 
