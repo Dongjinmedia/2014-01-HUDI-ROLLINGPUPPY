@@ -194,7 +194,7 @@ var NavList = {
 /*********************************************************************************************************
  * 소은, 세훈이가 작성한 네이버맵 API관련 소스코드 시작
  **********************************************************************************************************/
-var naverMapSettings = {
+var oNaverMap = {
 		naverMap: null, //Main Page에서 Map영역에 해당하는  div객체
 	    oCenterPoint: null, //지도 중심으로 포커싱할 위치를 저장하는 객체 (LatLng 좌표사용)
 	    oMap: null, //맵옵션을 모두 저장하고 있는 지도의 기본이 되는 객체
@@ -210,7 +210,7 @@ var naverMapSettings = {
 	    	 var oPoint = new nhn.api.map.LatLng(latitude, longitude);
 	    	
 	    	 //마커객체를 생성한다.
-	    	var oMarker = new nhn.api.map.Marker(naverMapSettings.oIcon, {
+	    	var oMarker = new nhn.api.map.Marker(this.oIcon, {
 	    	    title: '제목 : '+title
 	    	});
 	    	//마커객체에 Point를 설정한다.
@@ -431,13 +431,13 @@ var naverMapSettings = {
 	        		},
 	        		
 	        		changeZoomLevel: function(e){
-	        			var currentZoomLevel = naverMapSettings.getZoom();
+	        			var currentZoomLevel = oNaverMap.getZoom();
 	        			
 	        			if(e.target.id === "zoomInButton") {
-	        				naverMapSettings.changeZoom(++currentZoomLevel);
+	        				oNaverMap.changeZoom(++currentZoomLevel);
 	        			}
 	        			else if(e.target.id === "zoomOutButton") {
-	        				naverMapSettings.changeZoom(--currentZoomLevel);
+	        				oNaverMap.changeZoom(--currentZoomLevel);
 	        			}
 	        		}
 	        }
@@ -735,7 +735,7 @@ var oCreateChattingRoom = {
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.
-					"zoom": naverMapSettings.getZoom()
+					"zoom": oNaverMap.getZoom()
 			};
 			
 			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
@@ -751,8 +751,8 @@ var oCreateChattingRoom = {
 					&& isNaN(markerNumber) === false ) {
 				
 				//마커를 생성
-				naverMapSettings.aMarkerList.push(markerNumber);
-				naverMapSettings.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
+				oNaverMap.aMarkerList.push(markerNumber);
+				oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
 				
 				//TODO oMarker의 타이틀을 지역이름으로 저장한다.
 				
@@ -864,8 +864,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	//네이버맵 초기화영역
-	naverMapSettings.initialize();
-	naverMapSettings.attachEvents();
+	oNaverMap.initialize();
+	oNaverMap.attachEvents();
 	//------------------------------------------------------------------------------------//
 	
 	
@@ -896,10 +896,11 @@ function initialize() {
 	
 	/*
 	 * 현재 윤성이 작업중
+	 * TODO oNaverMap Initialize에서 수행되어야 한다.
 	 */
 	//------------------------------------------------------------------------------------//
 	//Map 에 위치한 Marker 초기화
-	naverMapSettings.updateMapStatus();
+	oNaverMap.updateMapStatus();
 	//------------------------------------------------------------------------------------//
 	
 	/*
