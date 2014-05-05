@@ -8,6 +8,7 @@ import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
+import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
 public class ChatDaoImpl extends DAO implements ChatDao {
@@ -24,24 +25,34 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	}
 
 	@Override
-	public int insertChatRoomAndGetLastSavedID(ChatRoom chatRoom, int zoom) {
+	public int insertChatRoom(ChatRoom chatRoom, int zoom) {
 		logger.info("ChatDaoImpl ChatRoomAndGetLastSavedID");
 		
 		PreparedStatement preparedStatement = null;
-		int successQueryNumber = 0;
 		
-		
-		//Marker정보를 가져오기 위한 query실행
+		//Database 질의를 위한 DTO설정
 		Marker marker = new Marker();
 		marker.setLocation_name(chatRoom.getLocation_name());
 		marker.setLocation_latitude(chatRoom.getLocation_latitude());
 		marker.setLocation_longitude(chatRoom.getLocation_longitude());
 		marker.setZoom_level(zoom);
 		
+		//채팅방 생성을 요청했던 좌표값에 
+		//해당하는 Marker를 검색.
+		//만약 해당 좌표값에 해당하는 Marker가 존재하지 않으면 새로 생성한후,
+		//새로 생성된 Marker아이디값을 return한다.
 		int markerId = selectMarkerIDFromLocationInfo(marker);
 		
-		if ( markerId == 0 )
-			return successQueryNumber; 
+		//Insert요청에서 삽입에 성공한 행을 저장할 변수
+		int successQueryNumber = 0;
+		
+		//만약 marker아이디값을 가져오는데 실패하면 아래 구문을 실행하지 않고 탈출.
+		if ( markerId == 0 ) {
+			return 0;
+		} else {
+			//marker아이디값을 정상적으로 가져온다면 메서드 Parameter인 ChatRoom 객체에 marker_id를 저장한다. (Call by Reference) 
+			chatRoom.setTbl_marker_id(markerId);
+		}
 		
 		
 		try {
@@ -53,16 +64,26 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			preparedStatement.setString(3, chatRoom.getLocation_name());
 			preparedStatement.setBigDecimal(4, chatRoom.getLocation_latitude());
 			preparedStatement.setBigDecimal(5, chatRoom.getLocation_longitude());
-			preparedStatement.setInt(6, markerId);
+			preparedStatement.setInt(6, chatRoom.getTbl_marker_id());
 			
+			//query실행후, 데이터베이스에 성공적으로 삽입된 행의 갯수를 리턴한다.
 			successQueryNumber = insertQuery(preparedStatement, chatRoom);
+			
+			//0이면 insert에 실패한 것이다.
+			if ( successQueryNumber == 0 )
+				return 0;
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);
 		}
 		
+		//
 		return successQueryNumber;
 	}
 
+	/*
+	 * Client에서 요청한 화면에 있는 맵에서
+	 * 좌상, 우하 좌표사이에 존재하는 마커들을 가져온다.
+	 */
 	@Override
 	public List<ChatRoom> selectChatRoomListFromPoints(float leftTopX,
 			float leftTopY, float rightBottomX, float rightBottomY) {
@@ -72,6 +93,7 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		PreparedStatement preparedStatement = null;
 		List<ChatRoom> lists = null;
 		
+		//marker_id를 기준으로 정렬한 이유는, return데이터를 입맛에 맞게끔 조작할때 필요하기 때문이다. (밑에 계속)
 		try {
 			String query = "SELECT * FROM tbl_chat_room "
 					+ "WHERE (location_latitude BETWEEN ? AND ?) "
@@ -86,14 +108,6 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			lists = selectList(ChatRoom.class, preparedStatement);
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);
-		}
-		
-		for (ChatRoom chatRoom : lists) {
-			logger.info("================================");
-			logger.info("title : "+chatRoom.getTitle());
-			logger.info("location_name : "+chatRoom.getLocation_name());
-			logger.info("marker_id : "+chatRoom.getTbl_marker_id());
-			logger.info("================================");
 		}
 		
 		return lists;
@@ -112,16 +126,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		
 		
 		try {
-			
-//			String sampleQuery = "SELECT "
-//														+ "IFNULL ( "
-//														+ "		(SELECT id FROM tbl_marker WHERE location_name = 'NHN NEXT'),  0) "
-//														+ "		AS same_name_id, "
-//														+ "id, location_name "
-//												+ "FROM tbl_marker "
-//												+ "WHERE ( 클릭한 범위-latitudeRange <location_latitude <= 클릭한 범위+latitudeRange ) "
-//												+ "AND ( 클릭한 범위-longitudeRange <location_longitude<= 클릭한 범위+longitudeRange )";
-			
+			/*
+			 * IFNULL(a, b)는
+			 * a의 결과값이 존재하지 않을경우 b를 리턴하는 쿼리문이다.
+			 */
 			String query = "SELECT "
 													+ "IFNULL ( "
 													+ "		(SELECT id FROM tbl_marker WHERE location_name = ?),  0) "
@@ -138,20 +146,20 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			preparedStatement.setFloat(4, marker.getLocation_longitude().floatValue()-longitudeRange);
 			preparedStatement.setFloat(5, marker.getLocation_longitude().floatValue()+longitudeRange);
 			
-			Marker idInstance = selectOne(Marker.class, preparedStatement);
-			
-			logger.info("idInstance : "+idInstance);
+			//TempMarker클래스는 Query문 결과 리턴되는 "이름이 일치하는" 마커아이디와 "인근거리로 포함되는" 마커아이디를 리턴받기 위한 temp class이다.
+			TempMarkerIdClass idInstance = selectOne(TempMarkerIdClass.class, preparedStatement);
 			
 			//지역명이 일치하는 마커데이터가 있을경우
 			if ( idInstance.getSame_name_id() != 0 ) {
 				markerId = (int) idInstance.getSame_name_id();
+				
 			//위도, 경도상에 인접마커에 해당하는 데이터가 있을경우
 			} else if ( idInstance.getNear_distance_id() != 0 ) {
 				markerId = (int) idInstance.getNear_distance_id();
-			//위의 두가지 경우를 모두 만족하지 않을경우, 새로운 marker데이터를 생성한다.
+				
+			//위의 두가지 경우를 모두 만족하지 않을경우, 새로운 marker데이터를 데이터베이스에 생성하고, 새로추가된 Marker아이디값을 리턴한다.
 			} else {
 				markerId = insertMarkerAndGetLastSavedID(marker);
-				logger.info("newbiewId : "+markerId);
 			}
 			
 		} catch (Exception e) {
@@ -161,6 +169,9 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		return markerId;
 	}
 
+	/*
+	 * 새로운 마커를 데이터베이스에 생성
+	 */
 	@Override
 	public int insertMarkerAndGetLastSavedID(Marker marker) {
 		logger.info("ChatDaoImpl insertMarkerAndGetLastSavedID");
@@ -177,7 +188,9 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			preparedStatement.setBigDecimal(3, marker.getLocation_longitude());
 			preparedStatement.setInt(4, marker.getZoom_level());
 			
+			//쿼리결과로 insert된 데이터베이스 행 갯수가 0 이상일때 (1일때)
 			if ( insertQuery(preparedStatement, marker) > 0 ) {
+				//새로 생성한 마커아이디를 리턴하기위해 저장
 				markerId = marker.getId();
 			}
 		} catch (Exception e) {

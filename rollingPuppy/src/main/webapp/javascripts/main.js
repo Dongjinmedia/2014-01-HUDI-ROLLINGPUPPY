@@ -240,9 +240,8 @@ var oNaverMap = {
 	    	this.oMap.addOverlay(oMarker);
 	    },
 	    
-	    //working
 	    /*
-	    //oMarker는 다음과 같은 형태이다.
+	    //oMarker는 다음과 같은 형태이여야 한다.
 		{
 			id : "마커고유아이디", 
 			location_latitude: "", 
@@ -271,6 +270,8 @@ var oNaverMap = {
 	    		this.oCurrentViewPointMarkers[oMarker["id"]] = oMarker;
 	    		
 	    		//그리고 마커를 생성한다.
+	    		//TODO title이 존재하지 않는다.
+	    		//이 부분은 hover액션을 마커에 주어서 사용하지 않을것인지를 먼저 결정한 후 진행하도록 한다.
 	    		this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title']);
 	    		
 	    	//만약 메모리에 해당 마커에 대한 정보가 존재하면,
@@ -279,20 +280,31 @@ var oNaverMap = {
 	    		var aChatRoomsInMemory = this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"];
 	    		var aChatRoomsToUpdate = oMarker["chatRooms"];
 
+	    		//검색 API적용 후 재테스트
+	    		//console.log("before aChatRoomsInMemory : ",aChatRoomsInMemory);
+	    		//console.log("before aChatRoomsToUpdate : ",aChatRoomsToUpdate);
+	    		
+	    		//TODO 성능개선을 위해 추가작업 필요,
+	    		//database query 시 charRoom id값을 기준으로 정렬해온다면, sorting에 cost를 줄일 수 있다.
 	    		//메모리상에 새로운 데이터를 저장합니다.
-	    		aChatRoomsInMemory = aChatRoomsToUpdate;
+	    		var chatId = null;
+	    		var isExists = false;
+	    		for ( oNewChatRoom in aChatRoomsToUpdate) {
+	    			charId = oNewChatRoom["id"];
+	    			for ( oMemoryChatRoom in aChatRoomsInMemory ) {
+	    				if ( oNewChatRoom["id"] === oMemoryChatRoom["id"] )
+	    					isExists = true;
+	    			}
+	    			
+	    			if ( isExists === false ) {
+	    				aChatRoomsInMemory.push(oNewChatRoom);
+	    			} else {
+	    				isExists = false;
+	    			}
+	    		}
+	    		//console.log("after aChatRoomsInMemory : ",aChatRoomsInMemory);
+	    		//console.log("after aChatRoomsToUpdate : ",aChatRoomsToUpdate);
 	    	}
-	    	
-//	    	//TODO  계속 더하기만 되다보니, 성능상의 이슈가 발생한다. 위치이동별 버퍼비우기 등을 강구해보자.
-//			//naverMapSettings에 저장된 현재까지 Load한 Marker가 
-//			//저장된 Array에 새로 저장하고자 하는 마커가 존재하는지 체크,
-//			if ( this.oCurrentViewPointMarkers.indexOf(oMarker['id']) > -1 ) {
-//				
-//				
-//			//존재하지 않을경우, Load Marker Array에 추가하고, 맵에 마커를 더한다.
-//			} else {
-//				this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title']);
-//			}
 	    },
 	    //지도위의 Map 마커상태값을 업데이트하는 메서드.
 	    //TODO 현재 네트워크 부하를 줄일 수 있는 알고리즘이나 방법을 생각한다.
@@ -553,7 +565,6 @@ var oMarkerClicker = {
 	aMenues: [],
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	reset: function() {
-		//working
 		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
@@ -800,7 +811,7 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": "NHN NEXT2",
+					"locationName": ""+Math.random(),
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.
@@ -813,16 +824,23 @@ var oCreateChattingRoom = {
 			console.log("Ajax Result : ",oResponseData);
 			
 			var isSuccess = oResponseData['isSuccess'];
-			var markerNumber = oResponseData['markerNumber'];
+			var newMarker = oResponseData["newMarker"];
+			var markerNumber = newMarker["id"];
 			
+			console.log("markerNumber : ",markerNumber);
+			
+			//working
 			//TODO 마커에 고유 아이디값을 부여
 			if ( isSuccess === true 
 					&& markerNumber !== null 
 					&& markerNumber !== undefined 
 					&& isNaN(markerNumber) === false ) {
 				
+				oNaverMap.updateViewPointMarker(newMarker);
+				
+				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
 				//마커를 생성
-				oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
+				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
 				
 				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
 		    	

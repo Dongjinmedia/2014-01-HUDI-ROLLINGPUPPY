@@ -2,6 +2,7 @@ package com.puppy.dto;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+
 public class ChatRoom {
 	
 	private int id;

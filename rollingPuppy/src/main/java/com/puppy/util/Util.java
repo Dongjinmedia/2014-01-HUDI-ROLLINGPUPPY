@@ -9,10 +9,12 @@ import java.util.List;
 import javax.servlet.http.Part;
 
 import com.puppy.dto.ChatRoom;
-import com.puppy.dto.Marker;
 
 public class Util {
-	//getParameterValue From Javascript FormData
+	/*
+	 * getParameterValue From Javascript FormData
+	 * 바이너리데이터를 String데이터로 가져오기 위한 함수
+	 */
 	public static String getStringValueFromPart(Part part) throws IOException {
 	    BufferedReader reader = new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
 	    StringBuilder value = new StringBuilder();
@@ -23,6 +25,10 @@ public class Util {
 	    return value.toString();
 	}
 
+	/*
+	 * zoomLevel별 어느거리까지의 마커로 합칠것인지를 위해 존재하는 함수
+	 * TODO 알맞은 거리 리서치 (위,경도)
+	 */
 	public static Float getLatitudeRangeFromZoomLevel(int zoom_level) {
 		
 		float returnValue = 0;
@@ -38,6 +44,10 @@ public class Util {
 		return returnValue;
 	}
 
+	/*
+	 * zoomLevel별 어느거리까지의 마커로 합칠것인지를 위해 존재하는 함수
+	 * TODO 알맞은 거리 리서치 (위,경도)
+	 */
 	public static float getLongitudeRangeFromZoomLevel(int zoom_level) {
 
 		float returnValue = 0;
@@ -79,16 +89,16 @@ public class Util {
 	 *  	chatRooms: [.....] 																						//채팅방에 해당하는 chatRoom객체 리스트
 	 * } 
 	 */
-	public static List<Marker> getMarkerCentralListFromChatRoomList(List<ChatRoom> lists) {
+	public static List<JsonMarker> getMarkerCentralListFromChatRoomList(List<ChatRoom> lists) {
 		
 		if ( lists == null || lists.size() == 0 )
 			return null;
 		
 		//반환할 리스트를 담을 그릇
-		List<Marker> returnList = new ArrayList<Marker>();
+		List<JsonMarker> returnList = new ArrayList<JsonMarker>();
 		
 		//현재의 타겟마커를 가리키는 변수선언
-		Marker currentMarker = null;
+		JsonMarker currentMarker = null;
 		
 		for ( int index = 0 ; index < lists.size() ; ++index ) {
 			
@@ -98,14 +108,15 @@ public class Util {
 			//만약 currentMarker가 null일경우 (맨 처음 실행될때를 의미)
 			//currentMarker의 아이디값과 room이 할당되어 있는 marker_id가 다를경우, 새로운 Marker객체를 생성한다.
 			if ( currentMarker == null || currentMarker.getId() != room.getTbl_marker_id() ) {
-				currentMarker = new Marker(room.getTbl_marker_id());
+				currentMarker = new JsonMarker(room.getTbl_marker_id());
 				currentMarker.setLocation_latitude(room.getLocation_latitude());
 				currentMarker.setLocation_longitude(room.getLocation_longitude());
 				currentMarker.setLocation_name(room.getLocation_name());
 				returnList.add(currentMarker);
 			} else {
 				//currentMarker가 room채팅방이 속해야 하는  Marker객체가 맞으므로, chatRoom객체의 데이터를 그대로 더해준다.
-				currentMarker.addChatRooms(room);
+				currentMarker.addChatRooms(
+						new JsonChatRoom( room.getId(), room.getTitle(), room.getMax() ));
 			}
 		}
 
