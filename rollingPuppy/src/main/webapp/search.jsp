@@ -10,7 +10,8 @@
 </head>
 <body>
 	
-	<form action="/search" method="get">
+	<form action="/search" method="post">
+		<input name ="search_word" type = "text">
 		<input id="submit" type = "submit" value = "showxml">
 	</form>
 	

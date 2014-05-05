@@ -36,13 +36,24 @@ public class SearchController extends HttpServlet{
 			throws ServletException, IOException {
 		logger.info("into doGet");
 		
-		String requestKeyword = request.getParameter("search_word"); 
+		
+		RequestDispatcher view = request.getRequestDispatcher("search.jsp");
+		view.forward(request, response);
+		
+	}
+	
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		
+		request.setCharacterEncoding("utf-8");
+		String requestKeyword = request.getParameter("search_word");
+		System.out.println("search_word: " + requestKeyword);
 		String requestURLString = REQUEST_URL_FRONT + REAL_SERVER_KEY + "&query=" + requestKeyword +REQUEST_URL_TAIL;
 		logger.info("requestURL :" + requestURLString);
 		URL requestURL = new URL(requestURLString);
 		
 		getDataFromXML(request, response, requestURL);
-		
 	}
 	
 	
