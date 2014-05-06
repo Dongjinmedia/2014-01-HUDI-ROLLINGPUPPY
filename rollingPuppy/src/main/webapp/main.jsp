@@ -12,7 +12,8 @@
 	<title>Main Page</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css?20140501">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css?20140504">
-	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
+	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
+	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
 
 <body>

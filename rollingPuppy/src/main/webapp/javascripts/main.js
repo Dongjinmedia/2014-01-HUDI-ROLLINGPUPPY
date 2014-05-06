@@ -446,9 +446,28 @@ var oNaverMap = {
 	                clientPosX = oCustomEvent.event._event.clientX;
 	                clientPosY = oCustomEvent.event._event.clientY;
 	                
+	              //oCustomEvent.point의 x가 경도, y가 위도. 
+	              //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
 	              //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
 	                oMapClicker.oClickPoint = oCustomEvent.point;
+	                var geocoder = new google.maps.Geocoder();
+	                var latlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
+	                
+	                //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
+	                //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
+	                //status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
+	                geocoder.geocode({'latLng': latlng}, function(results, status){
+	                	console.log(google.maps.GeocoderStatus);
+	                	if(status == google.maps.GeocoderStatus.OK) {
+	                		if (results[0]) {
+	                			console.log(results[0].formatted_address);
+	                		}
+	                	} else {
+	                		alert("Geocoder failed due to: " + status);
+	                	}
+	                });
 	                oMapClicker.move(clientPosX, clientPosY);
+	                
 	        }
 	    },
 
@@ -1023,6 +1042,29 @@ var oKeyboardAction = {
 /*********************************************************************************************************
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
  **********************************************************************************************************/
+
+/*********************************************************************************************************
+* Reverse Geo code 시작 
+ **********************************************************************************************************/
+/*
+var geocoder = new google.maps.Geocoder();
+var latlng = new google.maps.LatLng(oCustomEvent.point.x, oCustomEvent.point.y);
+
+geocoder.geocode({'latLng': latlng}, function(results, status){
+	if(status == google.maps.GeocoderStatus.OK) {
+		if (results[1]) {
+			console.log(results[1].formatted_address);
+		}
+	} else {
+		alert("Geocoder failed due to: " + status);
+	}
+});
+*/
+/*********************************************************************************************************
+* Reverse Geo code 끝 
+ **********************************************************************************************************/
+
+
 
 /*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
