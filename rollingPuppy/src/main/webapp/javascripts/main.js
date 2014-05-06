@@ -747,6 +747,7 @@ var oMarkerClicker = {
  */
 //working
 var oChat = {
+		socket: null,
 		messageBox: null,
 		inputBox: null,
 		nickname: null,
@@ -757,51 +758,61 @@ var oChat = {
 			 * TODO 하드코딩으로 추가하는 형태가 아닌, 미리 HTML에 채팅방소스를 구현해놓고, display값을 변경하면서 사용하는 식으로
 			 */
 			content.insertAdjacentHTML( 'beforeend',
-					"<div id='chat' style='display:block;'>" +
+					"<div id='chat' style='position:absolute;left:50%;top:50%;display:block;'>" +
 						"<div id='textarea'>" +
 							"<dl id='txtappend'></dl>" +
 						"</div><br/>" +
 						"<input type='text' style='width: 255px;' id='txt' /><input type='button' value='Enter' id='btn'/>" +
 					"</div>");
 			
+			
+			//TODO 위의 insertAdjacentHTML 형식을 없애면 삭제합니다.
+			//메세지 전송버튼을 클릭할 시
+			this.messageBox = document.getElementById("txtappend"); 
+			this.inputBox = document.getElementById("txt");
+			document.getElementById("btn").addEventListener('click', function(e) {
+				this.sendMessage( this.inputBox.value );
+			}.bind(this), false);
+
 			//입장을 서버에 알린다
 			//TODO roomname 변경
-			socket.emit('join', {'userid': nickname, 'roomNumber': chatRoomNum});
+			this.socket.emit('join', {'userid': this.nickname, 'roomNumber': chatRoomNum});
 		},
 		enterChatRoomOthers: function(user) {
 			this.messageBox.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
 		},
 		sendMessage: function(message) {
-			socket.emit('message', this.nickname+ " : " + message);
+			this.socket.emit('message', this.nickname+ " : " + message);
 		},
 		getMessage: function(message) {
 			this.messageBox.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
 			this.inputBox.value="";
 		},
 		initialize: function() {
-			var socket = io.connect('http://127.0.0.1:3080');
+			this.socket = io.connect('http://127.0.0.1:3080');
 			//TODO 채팅전체 DIV를 가져오기. 하위 엘리먼트들은 그 ele을 중심으로 찾기
-			this.messageBox = document.getElementById("txtappend"); 
-			this.inputBox = document.getElementById("txt");
+//			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
+//			this.messageBox = document.getElementById("txtappend"); 
+//			this.inputBox = document.getElementById("txt");
 			
 			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
 			//Nodejs에서 웹서버에 요청하는 형태, 혹은 그 반대가 되어야 한다.
 			this.nickname = document.getElementById("nickname").value;
 
-			
-			//메세지 전송버튼을 클릭할 시	
-			document.getElementById("btn").addEventListener('click', function(e) {
-				this.sendMessage( this.inputBox.value );
-			}, false);
+//			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
+//			//메세지 전송버튼을 클릭할 시	
+//			document.getElementById("btn").addEventListener('click', function(e) {
+//				this.sendMessage( this.inputBox.value );
+//			}, false);
 			
 			//새로 접속 한 사용자가 있을 경우 알림을 받는다.
-			socket.on('join', function(user) {
+			this.socket.on('join', function(user) {
 				this.enterChatRoomOthers(user);
-			});
+			}.bind(this));
 			
-			socket.on('message', function (message) {
+			this.socket.on('message', function (message) {
 				this.getMessage(message);
-			});
+			}.bind(this));
 		}
 };
 /*********************************************************************************************************

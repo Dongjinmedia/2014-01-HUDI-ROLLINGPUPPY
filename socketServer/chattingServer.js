@@ -83,7 +83,7 @@ io.sockets.on('connection', function (socket) {
 		
 		//마커에 저장된 정보가 전달된다.
 		//생성은 웹서버단에서 처리.
-		console.log("in join : ", requestQuery("SELECT * FROM ??", ['tbl_member']));
+		//console.log("in join : ", requestQuery("SELECT * FROM ??", ['tbl_member']));
 		
 		//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
 		socket.join(data.roomNumber);
@@ -104,7 +104,7 @@ io.sockets.on('connection', function (socket) {
 		//Get Attribute
 		socket.get('room', function(error, room) {
 			//Room에 있는 모두에게 참여메시지를 보냅니다.
-			io.sockets.in(room).emit('message', room );
+			io.sockets.in(room).emit('message', message );
 		});
 	});
 	
