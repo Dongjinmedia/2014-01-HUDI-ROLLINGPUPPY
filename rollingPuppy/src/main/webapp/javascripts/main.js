@@ -202,6 +202,7 @@ var oNaverMap = {
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
 	    
+	    
 	    /*
 	    //oCurrentViewPointMarkers는 다음과 같은 형태이다.
 	    {
@@ -221,6 +222,7 @@ var oNaverMap = {
 	    */
 	    oCurrentViewPointMarkers: null,
 	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
+	    oGeocoder: null, //역지오 코딩을 위한 객체 
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
 	    addMarker: function(latitude, longitude, markerNumber, title) {
@@ -446,18 +448,23 @@ var oNaverMap = {
 	                clientPosX = oCustomEvent.event._event.clientX;
 	                clientPosY = oCustomEvent.event._event.clientY;
 	                
-	              //oCustomEvent.point의 x가 경도, y가 위도. 
-	              //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
-	              //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+
 	                oMapClicker.oClickPoint = oCustomEvent.point;
-	                var geocoder = new google.maps.Geocoder();
-	                var latlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
+	                oMapClicker.move(clientPosX, clientPosY);
 	                
-	                //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
-	                //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
-	                //status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
-	                geocoder.geocode({'latLng': latlng}, function(results, status){
-	                	console.log(google.maps.GeocoderStatus);
+		            //oCustomEvent.point의 x가 경도, y가 위도. 
+		            //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
+		            //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
+	                var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
+	                this.reverseGeo(clickedLatlng);          
+	        }
+	    },
+	    
+	    //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
+        //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
+        //status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
+    	reverseGeo : function(clickedLatlng){
+	    	this.oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
 	                	if(status == google.maps.GeocoderStatus.OK) {
 	                		if (results[0]) {
 	                			console.log(results[0].formatted_address);
@@ -466,9 +473,6 @@ var oNaverMap = {
 	                		alert("Geocoder failed due to: " + status);
 	                	}
 	                });
-	                oMapClicker.move(clientPosX, clientPosY);
-	                
-	        }
 	    },
 
 	    initialize: function() {
@@ -505,6 +509,8 @@ var oNaverMap = {
 	        this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
 	        this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
 	        
+	        this.oGeocoder = new google.maps.Geocoder();  //reversegeo coding을 위한 객체 선언 
+
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
 	        eNmap.setAttribute("style", "width:100%;height:100%;");
