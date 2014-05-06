@@ -1,4 +1,3 @@
-console.log('\u001b[1m');
 console.log('\u001b[32m', '=============Server Start=============');
 
 //socket.io Module load
@@ -8,7 +7,7 @@ var mysql = require('mysql');
 
 //Use Connection Pool
 var pool = mysql.createPool({
-	host		: '125.209.195.202/',
+	host		: '125.209.195.202',
 	user		: 'next',
 	database	: 'rolling_puppy',
 	charset		: 'UTF8_GENERAL_CI',
@@ -24,8 +23,7 @@ function requestQuery(sql, ainsertValues) {
 	var sql = mysql.format(sql, ainsertValues);
 	
 	//===test code
-	console.log(sql);
-	
+	console.log("sql : ",sql);
 	
 	var resultData = pool.getConnection(function(err, connection) {
 		
@@ -47,7 +45,7 @@ function requestQuery(sql, ainsertValues) {
 			
 			return queryResult;
 		});
-	})
+	});
 	
 	console.log("query : ", resultData);
 //	console.log("query.sql : ", query.sql);
@@ -81,10 +79,10 @@ io.sockets.on('connection', function (socket) {
 	//'join'에 대한 요청을 받고 있는 function입니다.
 	socket.on('join', function(data) {
 		
+
+		console.log("in join : ", requestQuery("SELECT * FROM tbl_member WHERE id = ?", [7432]));
 		//마커에 저장된 정보가 전달된다.
-		//생성은 웹서버단에서 처리.
-		//console.log("in join : ", requestQuery("SELECT * FROM ??", ['tbl_member']));
-		
+		//채팅방 생성은 웹서버단에서 처리.		
 		//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
 		socket.join(data.roomNumber);
 		
