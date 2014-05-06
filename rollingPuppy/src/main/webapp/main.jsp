@@ -57,7 +57,7 @@
 		</ul>
 		<div class="menu-chatting content">
 			<ol>
-				<li>
+				<li class="chatRoom">
 					<span class="icon-title">채팅방 테스트 블라블라블라블라블라블라블라블라</span>
 					<span class="icon-participant">3/10</span>
 				</li>

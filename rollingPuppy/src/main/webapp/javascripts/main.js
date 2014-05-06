@@ -416,22 +416,20 @@ var oNaverMap = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	
-	            	oMarkerClicker.reset();
-	            	
-	            	//working
-	            	//TODO List 목록 가져와서 리스트만들기
-	            	//리스트 항목별 클릭시 이동할 고유아이디값 저장하기
+	            	//TODO markerClicker 객체에서 완성된 marker목록을 가져오도록 소스코드를 만들어야 한다.
+	            	//TODO List 목록 가져와서 리스트만들기 // working
 	            	//현재는 마커전체레벨로 저장하고 있다.
-	            	var menuTemplate = document.getElementById("controlBox");
-	                menuTemplate.markerNumber = oTarget.markerNumber; 
-	                //alert(menuTemplate.markerNumber);
-	                //alert(document.getElementById("controlBox").markerNumber);
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
 	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
 	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
 	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-	                this.oMarkerInfoWindow.setContent(menuTemplate); //여기가 info window의 html코드를 넣는 부분
+	                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
+	                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
+	            	
+	            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
+	            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
+	                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
 	                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
 	                this.oMarkerInfoWindow.setVisible(true);
 	                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
@@ -536,11 +534,10 @@ var oNaverMap = {
  **********************************************************************************************************/
 var oMarkerClicker = { 
 	
-	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	initialize: function() {
 		this.controlBox = document.getElementById("controlBox");
-		this.menu = controlBox.querySelector("#menu");
-		//this.alcons = new Array();
+		this.menu = this.controlBox.querySelector("#menu");
+		this.eChatList = this.controlBox.querySelector(".menu-chatting ol");
 		
 		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
 		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
@@ -556,19 +553,88 @@ var oMarkerClicker = {
 		var menuChatting = controlBox.querySelector('.menu-chatting');
 		this.addListener(iconChatting, menuChatting);
 	},
+	//사용자가 새로 클릭한 마커에 대한 정보를, 마커 인터렉션 창에 업데이트 시켜주는 함수이다.
+	//예를들어 채팅방목록, 장소 정보 등등
+	//TODO 정보창에도 데이터를 이식해야 한다.
+	getNewMarkerInfoWindowElement: function(markerNumber) {
+		//이전에 클릭데이터를 초기화한다.
+		this.reset();
+
+		/*
+		 * TODO
+		 * 기존에 존재하는 li element를 최대한 재활용 하기 위해, 
+		 * 기존 template Element에 존재하는 li갯수와 
+		 * 마커에서 새로 추가해야하는 채팅방 갯수를 판별해서 분기문을 수행한다.
+		 */
+		
+
+		//메모리에 존재하는 마커정보를 가져온다.
+		//현재 마커 아이디를 토대로, 
+		//맵뷰상에 존재하는 메모리를 저장하고 있는 oCurrentViewPointMarkers 에서 가져온다.
+		var oMarkerInfo = oNaverMap.oCurrentViewPointMarkers[markerNumber];
+		//마커정보를 담고있는 Object에서 마커에 해당하는 chatRoom정보들을 담고있는 Array를 가져온다.
+		var aChatRoomInMarker = oMarkerInfo["chatRooms"]; 
+		/*
+		 * 기존 element에 존재하는 template정보
+		 */
+		//기존에 존재하는 li엘리먼트를 복사해서 template변수로 저장한다.
+		var chatRoomTemplate = this.controlBox.querySelector(".chatRoom").cloneNode(true);
+		
+		//위에서 template변수로 저장했기 때문에, ol태그 하위의 기존 li엘리먼트를 모두 삭제한다.
+		while (this.eChatList.firstChild) {
+		    this.eChatList.removeChild(this.eChatList.firstChild);
+		}
+		
+		//for문안에서 사용할 변수를 선언 (매 for문마다 생성하면 낭비잖아)
+		var eNode = null;
+		var eTitle = null;
+		var eParticipant = null;
+		var newChatRoom = null;
+		//메모리상에 있는 데이터를 가져온다.
+		//마커에 해당하는 채팅방목록을 하나씩 돌면서
+		for ( var index = 0 ; index < aChatRoomInMarker.length ; ++index ) {
+			newChatRoom = aChatRoomInMarker[index];
+			
+			//템플릿 element를 복사해온다.
+			eNode = chatRoomTemplate.cloneNode(true);
+			//target Element에서 title를 나타내주는 element를 가져온다.
+			eTitle = eNode.children[0];
+			//target Element에서 인원수를 나타내주는 element를 가져온다.
+			eParticipant = eNode.children[1];
+			
+			//element Object에 id값을 Attribute로 저장, 나머지 엘리먼트에는 적절한 데이터값을 입력한다.
+			eNode.chatRoomNumber = newChatRoom["id"];
+			eTitle.innerText = newChatRoom["title"];
+			eParticipant.innerText = "1/"+newChatRoom["max"];
+			
+			//새로운 li 엘리먼트를 추가
+			this.eChatList.appendChild(eNode);
+		}
+		
+		//템플릿 element 삭제
+		chatRoomTemplate.remove();
+		
+		return this.controlBox;
+	},
+	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	controlBox: null,
+	//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
+	eChatList: null,
+	
 	//사용자와 인터렉션하는 원형 메뉴바
 	menu: null,
 	//메뉴버튼 객체를 담을 Array
 	aIcons: [],
 	//메뉴 내용을 담는 Content 객체를 담을 Array
 	aMenues: [],
-	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
+	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
+	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
 	reset: function() {
 		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
 	},	
+	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	isClickedComponentExists: function() {
 		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
 			var iconStatus = this.aIcons[index].getAttribute("status");
