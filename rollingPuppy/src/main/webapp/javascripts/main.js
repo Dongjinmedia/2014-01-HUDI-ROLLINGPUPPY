@@ -222,7 +222,7 @@ var oNaverMap = {
 	    */
 	    oCurrentViewPointMarkers: null,
 	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
-	    oGeocoder: null, //역지오 코딩을 위한 객체 
+	    eClickedAddress : null, //역지오 코딩을 위한 클릭된 곳의 주소 element
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
 	    addMarker: function(latitude, longitude, markerNumber, title) {
@@ -456,23 +456,9 @@ var oNaverMap = {
 		            //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
 		            //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
 	                var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
-	                this.reverseGeo(clickedLatlng);          
+	                reverseGeo(clickedLatlng);
+	                
 	        }
-	    },
-	    
-	    //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
-        //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
-        //status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
-    	reverseGeo : function(clickedLatlng){
-	    	this.oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
-	                	if(status == google.maps.GeocoderStatus.OK) {
-	                		if (results[0]) {
-	                			console.log(results[0].formatted_address);
-	                		}
-	                	} else {
-	                		alert("Geocoder failed due to: " + status);
-	                	}
-	                });
 	    },
 
 	    initialize: function() {
@@ -509,7 +495,7 @@ var oNaverMap = {
 	        this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
 	        this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
 	        
-	        this.oGeocoder = new google.maps.Geocoder();  //reversegeo coding을 위한 객체 선언 
+	        //this.oGeocoder = new google.maps.Geocoder();  //reversegeo coding을 위한 객체 선언 
 
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
@@ -855,6 +841,8 @@ var oCreateChattingRoom = {
 		eRoomNameInput: null,
 		//채팅방 참여인원 제한 수를 입력하는 input box element
 		eLimitNumberInput: null,
+		//채팅방을 생성하려고 하는 곳의 주소 
+		eRoomAddress: null,
 		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function() {
 			this.oCreateChatRoom.setAttribute('style', 'display:block;');
@@ -869,7 +857,9 @@ var oCreateChattingRoom = {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
+			this.eRoomAddress.innerHTML = "zzz"; //역지오 코딩을 통한 주소값 삽입 코드 
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
 			eOuterBg.addEventListener('click', function() {
@@ -1052,20 +1042,33 @@ var oKeyboardAction = {
 /*********************************************************************************************************
 * Reverse Geo code 시작 
  **********************************************************************************************************/
-/*
-var geocoder = new google.maps.Geocoder();
-var latlng = new google.maps.LatLng(oCustomEvent.point.x, oCustomEvent.point.y);
-
-geocoder.geocode({'latLng': latlng}, function(results, status){
-	if(status == google.maps.GeocoderStatus.OK) {
-		if (results[1]) {
-			console.log(results[1].formatted_address);
-		}
-	} else {
-		alert("Geocoder failed due to: " + status);
-	}
-});
-*/
+//results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
+//가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
+//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
+function reverseGeo(clickedLatlng){
+	var oGeocoder = new google.maps.Geocoder();
+	var clickedAddress = "";
+	oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
+    	if(status == google.maps.GeocoderStatus.OK) {
+    		if (results[0]) {
+    			//results[0]의 types에 있는 값에 따라 ex)강남역 등만 뽑아올 수도 있음
+    			//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
+    			//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
+    			//console.log(results);
+    			console.log(results[0].formatted_address);
+     			//console.log(results[1].formatted_address);
+     			this.clickedAddress = results[0].formatted_address;
+     			console.log("aaa",this.clickedAddress);
+    		}
+    	} else {
+    		alert("Geocoder failed due to: " + status);
+    	}
+    });
+	//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
+	//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
+	//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
+	console.log("bbb",this.clickedAddress);
+}
 /*********************************************************************************************************
 * Reverse Geo code 끝 
  **********************************************************************************************************/
