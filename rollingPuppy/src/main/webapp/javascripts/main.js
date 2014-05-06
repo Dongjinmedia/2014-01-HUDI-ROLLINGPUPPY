@@ -537,7 +537,8 @@ var oMarkerClicker = {
 	initialize: function() {
 		this.controlBox = document.getElementById("controlBox");
 		this.menu = this.controlBox.querySelector("#menu");
-		this.eChatList = this.controlBox.querySelector(".menu-chatting ol");
+		this.eChattingDivBox = this.controlBox.querySelector(".menu-chatting.content");
+		this.eChatList = this.eChattingDivBox.querySelector("ol");
 		
 		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
 		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
@@ -614,13 +615,18 @@ var oMarkerClicker = {
 		//템플릿 element 삭제
 		chatRoomTemplate.remove();
 		
+		//높이값을 채팅방 영역에 맞게 조절
+		//TODO 하드코딩되어 있는 px 수정 (26)
+		this.eChattingDivBox.setAttribute("style", "height:" + 26*aChatRoomInMarker.length + "px;");
+		
 		return this.controlBox;
 	},
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	controlBox: null,
 	//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
 	eChatList: null,
-	
+	//채팅방 내용을 담고있는 division <div> element
+	eChattingDivBox : null,
 	//사용자와 인터렉션하는 원형 메뉴바
 	menu: null,
 	//메뉴버튼 객체를 담을 Array
