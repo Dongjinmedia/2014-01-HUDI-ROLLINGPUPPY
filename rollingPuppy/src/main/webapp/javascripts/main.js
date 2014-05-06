@@ -543,6 +543,9 @@ var oMarkerClicker = {
 		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
 		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
 		
+		//채팅리스트가 속해있는 영역을 클릭할 경우, 이벤트가 발생하도록 등록
+		this.eChattingDivBox.addEventListener('click', this.clickChatRoomList, false);
+		
 		//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
 		//둘째줄, iconInfo버튼 상위에 미리 만들어 놓은 div, 내용을 보여주기 위한 영역
 		//셋째줄, Custom Listener객체에 등록한다. (메뉴아이콘, 미리만들어 놓은 content div영역)
@@ -554,6 +557,12 @@ var oMarkerClicker = {
 		var menuChatting = controlBox.querySelector('.menu-chatting');
 		this.addListener(iconChatting, menuChatting);
 	},
+	clickChatRoomList: function(e) {
+		//클릭되는 대상의 부모인 li태그 element를 가져와서, 
+		//추가될때 저장되어 있던 chatRoomNumber Attribute를 가져온후, 채팅방 입장을 요청한다.
+		oChat.enterChatRoom(e.target.parentNode.chatRoomNumber);
+	},
+	
 	//사용자가 새로 클릭한 마커에 대한 정보를, 마커 인터렉션 창에 업데이트 시켜주는 함수이다.
 	//예를들어 채팅방목록, 장소 정보 등등
 	//TODO 정보창에도 데이터를 이식해야 한다.
