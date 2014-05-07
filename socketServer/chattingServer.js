@@ -1,3 +1,4 @@
+console.log('\u001b[1m');
 console.log('\u001b[32m', '=============Server Start=============');
 
 //socket.io Module load
@@ -122,6 +123,7 @@ io.sockets.on('connection', function (socket) {
 						var affectedRows = oResult["affectedRows"];
 						
 						//TODO 결과가 없을때를 대비한 error event를 만들자						
+						//if (oResult !== undefined, oResult !== null)
 						//if ( affectedRows !== 1 ) {
 						//	socket.emit('error', message);
 						// 	return;
@@ -145,7 +147,7 @@ io.sockets.on('connection', function (socket) {
 		
 		//Get Attribute
 		//Room에 있는 모두에게 참여메시지를 보냅니다.
-		socket.get('room', function (error, room){
+		socket.get('chatRoomNumber', function (error, room){
 			io.sockets.in(room).emit('join', data.email);
 		});
 	});
@@ -153,9 +155,28 @@ io.sockets.on('connection', function (socket) {
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(message) {
 		//Get Attribute
-		socket.get('room', function(error, room) {
-			//Room에 있는 모두에게 참여메시지를 보냅니다.
-			io.sockets.in(room).emit('message', message );
+		socket.get('chatRoomNumber', function(error, chatRoomNumber) {
+			socket.get('userId', function (error, userId){
+				requestQuery(
+					//Param1
+					"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
+					//Param2
+					[chatRoomNumber, userId, message],
+					//Param3
+					function(oResult) {
+						var affectedRows = oResult["affectedRows"];
+					
+						//TODO 결과가 없을때를 대비한 error event를 만들자						
+						//if ( affectedRows !== 1 ) {
+						//	socket.emit('error', message);
+						// 	return;
+						//} else {
+						
+						//Room에 있는 모두에게 참여메시지를 보냅니다.
+						io.sockets.in(chatRoomNumber).emit('message', message );
+					}
+				);					
+			});
 		});
 	});
 	
@@ -195,3 +216,5 @@ oHttpRequest= {
 		req.end();
 	}
 };
+
+console.log('\u001b[1m');

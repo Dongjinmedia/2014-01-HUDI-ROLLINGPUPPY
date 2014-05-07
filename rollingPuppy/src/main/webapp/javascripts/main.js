@@ -813,8 +813,9 @@ var oChat = {
 			
 			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
 			//Nodejs에서 웹서버에 요청하는 형태, 혹은 그 반대가 되어야 한다.
-			this.nickname = document.getElementById("user_name").value;
-
+			//P Tag에서는 .value가 적용되지 않아서 .innerText를 사용하였다.
+			this.nickname = document.getElementById("user_name").innerText;
+			
 //			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
 //			//메세지 전송버튼을 클릭할 시	
 //			document.getElementById("btn").addEventListener('click', function(e) {
