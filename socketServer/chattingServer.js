@@ -4,8 +4,6 @@ console.log('\u001b[32m', '=============Server Start=============');
 var socketio = require('socket.io');
 //mysql-connect Module load
 var mysql = require('mysql');
-//For http Request To WebServer
-var http = require('http');
 
 //DB Connection에 대한 정보.
 //정보를 기반으로 Connection Pool을 생성한다.
@@ -39,14 +37,14 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 		}
 		
 		//connection request
-		connection.query(sql, function(err, oResult) {
+		connection.query(sql, function(err, queryResult) {
 			
 			//when error occur
 			if (err) {
 				console.log("Generate Sql Query Failed!!");
 			}
 			
-			callbackFunction(oResult);
+			callbackFunction(queryResult);
 		});
 	});
 };
@@ -74,6 +72,8 @@ io.sockets.on('connection', function (socket) {
 	//'join'에 대한 요청을 받고 있는 function입니다.	
 	socket.on('join', function(data) {
 		
+		
+		/********************************************************************************************************************/		
 		//데이터베이스에 요청할 쿼리문. requestQuery에 인자로 전달한다.
 		var query = "SELECT id, nickname_noun, nickname_adjective FROM tbl_member WHERE email = ?";
 		
@@ -83,20 +83,59 @@ io.sockets.on('connection', function (socket) {
 		var emailEscape = data.email.replace(".", "\.")
 		
 		//데이터베이스 쿼리가 종료된 후 실행될 callback함수, requestQuery에 인자로 전달한다.
-		var callback = function(oResult) {				
-				//console.log('\u001b[32m', "Result From Query -> oResult : ", oResult);
+		//채팅방 입장시 수행할 내용들
+		//TODO tbl_chat_room 에서 채팅방 상태값도 변경해주어야 한다. (팀원들과 논의)
+		//Select Query는 반환되는 인자값이 Array타입이다. [tuple1, tuple2, tuple3....] 각각의 tuple은 object이다.
+		var callback = function(aResult) {				
+				console.log('\u001b[32m', "Result From Query -> oResult : ", aResult);
 				
-								
+				var tuple = aResult[0];
 				//TODO 결과가 없을때를 대비한 error event를 만들자
-				//if ( userId === undefined || userId === null ) 
-				//	socket.emit('error', message);
-				socket.set('userId', oResult["id"]);
-				socket.set('nickname', oResult['nickname_noun']+oResult['nickname_adjective']);
+				//if ( userId === undefined || userId === null ) {
+					//	socket.emit('error', message);
+					//return;
+				//} 
 				
-				//마커에 저장된 정보가 전달된다.
-				//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
-				socket.join(data.chatRoomNumber);
+				
+				socket.set('userId', tuple["id"]);
+				socket.set('nickname', tuple['nickname_noun']+tuple['nickname_adjective']);
+				
+				//tbl_chat_room_has_tbl_member에 대한 쿼리실행
+				requestQuery(
+					"INSERT INTO tbl_chat_room_has_tbl_member(tbl_chat_room_id, tbl_member_id) VALUES (?, ?)",
+					[data.chatRoomNumber, tuple["id"]],
+					
+					//Insert Query는 반환되는 값이 Object타입이다.
+					//
+					//ex)
+					// { 
+					//  fieldCount: 0,
+					//  affectedRows: 1,
+					//  insertId: 0,
+					//  serverStatus: 2,
+					//  warningCount: 0,
+					//  message: '',
+					//  protocol41: true,
+					//  changedRows: 0 
+					// }
+					function(oResult) {
+						var affectedRows = oResult["affectedRows"];
+						
+						//TODO 결과가 없을때를 대비한 error event를 만들자						
+						//if ( affectedRows !== 1 ) {
+						//	socket.emit('error', message);
+						// 	return;
+						//} else {
+							
+						//마커에 저장된 정보가 전달된다.
+						//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
+						socket.join(data.chatRoomNumber);
+					}
+				);	
 		};
+		/********************************************************************************************************************/
+		
+		
 		
 		//데이터베이스 쿼리를 요청한다.
 		requestQuery(query, [emailEscape], callback);		
@@ -113,7 +152,6 @@ io.sockets.on('connection', function (socket) {
 	
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(message) {
-		
 		//Get Attribute
 		socket.get('room', function(error, room) {
 			//Room에 있는 모두에게 참여메시지를 보냅니다.
@@ -134,6 +172,7 @@ io.sockets.on('connection', function (socket) {
 //Webserver와의 통신을 위한 http 관련 소스코드
 //현재는 테스트코드 레벨이다.
 oHttpRequest= {
+	http: null,
 	options: {
 	  host: 'localhost',
 	  path: '/getId',
@@ -151,6 +190,7 @@ oHttpRequest= {
 	  });
 	},
 	initialize: function() {
+		this.http = require('http');
 		var req = http.request(this.options, this.callback);
 		req.end();
 	}
