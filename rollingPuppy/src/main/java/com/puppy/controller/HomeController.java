@@ -30,7 +30,7 @@ public class HomeController extends HttpServlet{
 		HttpSession session = request.getSession();
 		
 		// 세션 값이 있는 경우 main 페이지로 리다이렉트
-		if ( session.getAttribute(Constants.SESSION_MEMBER_ID) != null ) {
+		if ( session.getAttribute(Constants.SESSION_MEMBER_EMAIL) != null ) {
 			response.sendRedirect("/main");
 			return;
 		}

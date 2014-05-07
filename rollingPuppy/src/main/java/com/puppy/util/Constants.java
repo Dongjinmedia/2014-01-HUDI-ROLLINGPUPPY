@@ -2,7 +2,7 @@ package com.puppy.util;
 
 public class Constants {
 	
-	public static final String SESSION_MEMBER_ID = "member.id";
+	public static final String SESSION_MEMBER_EMAIL = "member.email";
 	public static final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
 	public static final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";
 	
