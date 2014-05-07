@@ -4,6 +4,8 @@ console.log('\u001b[32m', '=============Server Start=============');
 var socketio = require('socket.io');
 //mysql-connect Module load
 var mysql = require('mysql');
+//For http Request To WebServer
+var http = require('http');
 
 //Use Connection Pool
 var pool = mysql.createPool({
@@ -76,18 +78,18 @@ io.sockets.on('connection', function (socket) {
 	
 	//Room join
 	//사용자 접속 시 Room Join및 접속한 사용자들 Room참여 인원들에게 알립니다.
-	//'join'에 대한 요청을 받고 있는 function입니다.
+	//'join'에 대한 요청을 받고 있는 function입니다.	
 	socket.on('join', function(data) {
 		
-
+		console.log("email from client : "+data.email);
 		console.log("in join : ", requestQuery("SELECT * FROM tbl_member WHERE id = ?", [7432]));
 		//마커에 저장된 정보가 전달된다.
 		//채팅방 생성은 웹서버단에서 처리.		
 		//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
-		socket.join(data.roomNumber);
+		socket.join(data.chatRoomNumber);
 		
 		//Save Attribute
-		socket.set('room', data.roomNumber);
+		socket.set('room', data.chatRoomNumber);
 		
 		//Get Attribute
 		//Room에 있는 모두에게 참여메시지를 보냅니다.
@@ -114,3 +116,25 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 });
+
+
+var options = {
+  host: 'localhost',
+  path: '/getId',
+  port: '8080',
+  method: 'GET'
+};
+
+callback = function(response) {
+  var str = ''
+  response.on('data', function (chunk) {
+    str += chunk;
+  });
+
+  response.on('end', function () {
+    console.log(str);
+  });
+}
+
+var req = http.request(options, callback);
+req.end();

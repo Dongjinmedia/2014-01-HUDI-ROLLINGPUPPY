@@ -17,7 +17,7 @@
 </head>
 
 <body>
-<input type="hidden" id="nickname" value="<%=session.getAttribute(SESSION_NICKNAME_ADJECTIVE) + " " + session.getAttribute(SESSION_NICKNAME_NOUN)%>"/>
+<input type="hidden" id="email" value="${sessionScope['member.email']}"/>
 <div id="createChatRoom">
 	<div class="outer bg"></div>
 	<div class="centerArea">

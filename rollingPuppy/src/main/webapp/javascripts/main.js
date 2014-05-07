@@ -786,8 +786,8 @@ var oChat = {
 			}.bind(this), false);
 
 			//입장을 서버에 알린다
-			//TODO roomname 변경
-			this.socket.emit('join', {'userid': this.nickname, 'roomNumber': chatRoomNum});
+			//이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
+			this.socket.emit('join', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
 		},
 		enterChatRoomOthers: function(user) {
 			this.messageBox.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
@@ -801,6 +801,11 @@ var oChat = {
 		},
 		initialize: function() {
 			this.socket = io.connect('http://127.0.0.1:3080');
+			
+			//hidden attribute. User Identifier Database id Value.
+			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
+			this.socket.email = document.getElementById("email").value;
+			
 			//TODO 채팅전체 DIV를 가져오기. 하위 엘리먼트들은 그 ele을 중심으로 찾기
 //			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
 //			this.messageBox = document.getElementById("txtappend"); 
@@ -808,7 +813,7 @@ var oChat = {
 			
 			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
 			//Nodejs에서 웹서버에 요청하는 형태, 혹은 그 반대가 되어야 한다.
-			this.nickname = document.getElementById("nickname").value;
+			this.nickname = document.getElementById("user_name").value;
 
 //			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
 //			//메세지 전송버튼을 클릭할 시	
@@ -1147,6 +1152,16 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//Chatting을 위한  socket.io 초기화 영역
 	oChat.initialize();
+	//------------------------------------------------------------------------------------//
+	
+	/*
+	 * 모든 초기화 작업이후, hidden element를 삭제한다.
+	 */
+	//------------------------------------------------------------------------------------//
+	var aHiddenElement = document.querySelectorAll("input[type=hidden]");
+	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+		aHiddenElement[index].remove();
+	}
 	//------------------------------------------------------------------------------------//
 }
 
