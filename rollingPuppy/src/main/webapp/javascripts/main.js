@@ -346,7 +346,7 @@ var oNaverMap = {
 	    	}
 	    },
 	    
-	    //Zoom 조절을 위한 함수
+	    // Zoom 조절을 위한 함수
 	    changeZoom: function(nZoomLevel) {
 	        this.oCenterPoint = this.oMap.getCenter();
 
@@ -361,6 +361,24 @@ var oNaverMap = {
 	    getZoom: function() {
 	    	return this.oMap.getLevel();
 	    },
+
+	    // 줌 조절을 위해 줌인, 줌아웃 버튼에 클릭 이벤트 추가
+		addEventForZoom: function() {
+			this.oZoomController.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
+			this.oZoomController.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
+		},
+
+		// 줌인, 줌아웃 버튼에 클릭 이벤트가 발생하면 호출되는 줌 조절 메서드
+		changeZoomLevel: function(e){
+			var currentZoomLevel = this.getZoom();
+
+			if(e.target.id === "zoomInButton") {
+				this.changeZoom(++currentZoomLevel);
+			}
+			else if(e.target.id === "zoomOutButton") {
+				this.changeZoom(--currentZoomLevel);
+			}
+		},
 
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
@@ -513,25 +531,9 @@ var oNaverMap = {
 	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
 	        this.oZoomController = {
 	        		zoomInButton: document.getElementById("zoomInButton"),
-	        		zoomOutButton: document.getElementById("zoomOutButton"),
-	        		
-	        		addEventForZoom: function() {
-	        			this.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
-	        			this.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
-	        		},
-	        		
-	        		changeZoomLevel: function(e){
-	        			var currentZoomLevel = oNaverMap.getZoom();
-	        			
-	        			if(e.target.id === "zoomInButton") {
-	        				oNaverMap.changeZoom(++currentZoomLevel);
-	        			}
-	        			else if(e.target.id === "zoomOutButton") {
-	        				oNaverMap.changeZoom(--currentZoomLevel);
-	        			}
-	        		}
+	        		zoomOutButton: document.getElementById("zoomOutButton")
 	        }
-	        this.oZoomController.addEventForZoom();
+	        this.addEventForZoom();
 	    }
 };
 
