@@ -113,11 +113,10 @@ public class Util {
 				currentMarker.setLocation_longitude(room.getLocation_longitude());
 				currentMarker.setLocation_name(room.getLocation_name());
 				returnList.add(currentMarker);
-			} else {
-				//currentMarker가 room채팅방이 속해야 하는  Marker객체가 맞으므로, chatRoom객체의 데이터를 그대로 더해준다.
-				currentMarker.addChatRooms(
-						new JsonChatRoom( room.getId(), room.getTitle(), room.getMax() ));
 			}
+			//currentMarker가 room채팅방이 속해야 하는  Marker객체가 맞으므로, chatRoom객체의 데이터를 그대로 더해준다.
+			currentMarker.addChatRooms(
+					new JsonChatRoom( room.getId(), room.getTitle(), room.getMax() ));
 		}
 
 		return returnList;
