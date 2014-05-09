@@ -95,12 +95,10 @@
 		<a id="logo" href="/main"><img src="/images/logo.png"/></a>
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
-		<form action = "/search" method="post">
 		<div id="search_box">
 			<input name=search_word type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
-		</form>
 		<!-- 사용자 별명 -->
 		<p id="user_name">${sessionScope["member.nickname_adjective"]} ${sessionScope["member.nickname_noun"]}</p>
 
