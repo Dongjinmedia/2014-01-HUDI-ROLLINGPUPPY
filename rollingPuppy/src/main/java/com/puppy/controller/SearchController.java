@@ -24,7 +24,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import com.google.gson.Gson;
-import com.puppy.dao.impl.MemberDaoImpl;
 
 public class SearchController implements Controller {
 	
@@ -174,6 +173,14 @@ public class SearchController implements Controller {
 		URL requestURL = new URL(requestURLString);	
 		resultJsonData = getDataFromXML(request, response, requestURL);
 		out.println(gson.toJson(resultJsonData));
+	}
+
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -29,7 +29,7 @@
 
 <body>
 <!-- Test Unit -->
-<div id="TestUnitArea" class="on">
+<div id="TestUnitArea" class="off">
 	<div id="qunit"></div>
 	<div id="qunit-fixture"></div>
 </div>
