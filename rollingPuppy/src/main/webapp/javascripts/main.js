@@ -1052,8 +1052,33 @@ var oKeyboardAction = {
  **********************************************************************************************************/
 //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
 //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
-//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
-function reverseGeo(clickedLatlng){
+//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다.
+
+oReverseGeoCode = {
+		oGeoCoder: null,
+		address: null,
+		getAddress: function(latitude, longitude) {
+			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
+			this.oGeoCoder.geocode({'latLng': clickedLatlng}, this.callback.bind(this));
+			return this.address;
+		},
+		callback: function(results, status) {
+			if(status == google.maps.GeocoderStatus.OK) {
+	    		if (results[0]) {
+	    			this.address = results[0].formatted_address; 
+	    			//alert(results[0].formatted_address);
+	    		}
+	    	} else {
+	    		//alert("Geocoder failed due to: " + status);
+	    		return "Retry";
+	    	}
+		},
+		initialize: function() {
+			this.oGeoCoder = new google.maps.Geocoder();
+		}
+};
+
+var reverseGeo = function (clickedLatlng){
 	var oGeocoder = new google.maps.Geocoder();
 	var clickedAddress = "";
 	oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
@@ -1067,6 +1092,7 @@ function reverseGeo(clickedLatlng){
      			//console.log(results[1].formatted_address);
      			this.clickedAddress = results[0].formatted_address;
      			console.log("aaa",this.clickedAddress);
+     			return this.clickedAddress;
     		}
     	} else {
     		alert("Geocoder failed due to: " + status);
@@ -1123,6 +1149,11 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//키보드 입력에 대한 Object
 	oKeyboardAction.initialize();
+	//------------------------------------------------------------------------------------//
+
+	//------------------------------------------------------------------------------------//
+	//Reverse GeoCode (위도, 경도를 통한 주소값 추출) 초기화 영역
+	oReverseGeoCode.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//

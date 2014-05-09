@@ -14,9 +14,26 @@
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css?20140504">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+	
+	<!-- Test Unit -->
+	<link rel="stylesheet" href="/UnitTest/lib/qunit-1.14.0.css">
+	<style>
+		#TestUnitArea.on {
+			display: 	block;
+		}
+		#TestUnitArea.off {
+			display: none;
+		}
+	</style>
 </head>
 
 <body>
+<!-- Test Unit -->
+<div id="TestUnitArea" class="on">
+	<div id="qunit"></div>
+	<div id="qunit-fixture"></div>
+</div>
+
 <input type="hidden" id="email" value="${sessionScope['member.email']}"/>
 <div id="createChatRoom">
 	<div class="outer bg"></div>
@@ -145,9 +162,14 @@
 			</div>
 		</div>
 	</div>
-	
 </div>
+
 </body>
 <script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/javascripts/main.js?20140501"></script>
+
+<!-- Test Unit -->
+<script src="/UnitTest/lib/qunit-1.14.0.js"></script>
+<script src="/UnitTest/main.test.js"></script>
+
 </html>
