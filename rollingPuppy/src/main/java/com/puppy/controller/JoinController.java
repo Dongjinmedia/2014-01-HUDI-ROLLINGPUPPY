@@ -83,7 +83,7 @@ public class JoinController implements Controller {
 		PrintWriter out = response.getWriter();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		Gson gson = new Gson();
-		ThreeWayResult result = ThreeWayResult.UNEXPECTED_ERROR;
+		ThreeWayResult result = ThreeWayResult.SUCCESS;
 		
 		
 		String newbieEmail = request.getParameter("email");

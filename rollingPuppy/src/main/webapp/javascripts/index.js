@@ -232,8 +232,7 @@ function duplicateEmail(){
 				}else if (result === "SUCCESS"){
 					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
 				}else {
-					//alert("예기치 못한 사건이 발생했다!!");
-					console.log("ddd");
+					alert("예기치 못한 사건이 발생했다!!");
 				}
 			}
 		}
