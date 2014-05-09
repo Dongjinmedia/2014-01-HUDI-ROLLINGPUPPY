@@ -48,6 +48,7 @@
 			<form id="join_form" action="/join" method="post">
 				<p>
 					<input type="text" id="joinEmail" name="email" placeholder="Email" />
+					<p id="duplicateCheck"></p>
 				</p>
 				<p>
 					<input type="password" name="password" placeholder="Password" />
