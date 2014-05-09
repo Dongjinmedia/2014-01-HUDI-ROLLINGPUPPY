@@ -802,7 +802,7 @@ var oChat = {
 			this.inputBox.value="";
 		},
 		initialize: function() {
-			this.socket = io.connect('http://127.0.0.1:3080');
+			this.socket = io.connect('http://125.209.195.202:3080');
 			
 			//hidden attribute. User Identifier Database id Value.
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
