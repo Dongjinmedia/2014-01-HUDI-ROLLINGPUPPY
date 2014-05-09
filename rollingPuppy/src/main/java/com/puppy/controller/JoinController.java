@@ -81,18 +81,24 @@ public class JoinController implements Controller {
 		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		Gson gson = new Gson();
+		ThreeWayResult result = ThreeWayResult.UNEXPECTED_ERROR;
+		
 		
 		String newbieEmail = request.getParameter("email");
-		
 		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
 		Member member = memberDao.selectDuplicateMemberExists(newbieEmail);
-		boolean isExisted = false;
 		
 		if( member != null ) {
-			if ( member.getId() != 0 )
-				isExisted = true;
-		}
+			if ( member.getId() != 0 ) {
+				result = ThreeWayResult.FAIL;
+			} else {
+				result = ThreeWayResult.SUCCESS;
+			}
+		} 
+		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, result);
+		out.println(gson.toJson(resultJsonData));
 		
-		out.println(isExisted);
 	}
 }

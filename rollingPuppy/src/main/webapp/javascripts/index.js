@@ -211,7 +211,7 @@ function join(event) {
 	request.send(formData);
 }
 
-//****************************************************윤성소스 추가 끝
+//****************************************************join 추가 끝
 
 //id 중복 체크를 위한 함수 
 function duplicateEmail(){
@@ -223,13 +223,17 @@ function duplicateEmail(){
 		request.open("GET", url , true );
 		request.onreadystatechange = function(){
 			if ( request.readyState === 4 && request.status === 200 ) {
-				var isExisted = request.responseText;
-				console.log(isExisted);
-				
-				if( isExisted == true){
+				var oResult = JSON.parse(request.responseText);
+				var result = oResult["ThreeWayResult"];
+				console.log(result);
+
+				if( result === "FAIL" ){
 					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
-				}else {
+				}else if (result === "SUCCESS"){
 					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+				}else {
+					//alert("예기치 못한 사건이 발생했다!!");
+					console.log("ddd");
 				}
 			}
 		}
