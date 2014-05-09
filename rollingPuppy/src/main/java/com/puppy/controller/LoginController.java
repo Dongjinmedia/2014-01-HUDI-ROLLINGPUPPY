@@ -8,6 +8,7 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,7 +29,7 @@ import com.puppy.util.Util;
  */
 //For getParameter From Javascript new FormData (Ajax Request)
 @MultipartConfig
-public class LoginController implements Controller {
+public class LoginController extends HttpServlet implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	

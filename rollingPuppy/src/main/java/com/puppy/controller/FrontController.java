@@ -50,7 +50,7 @@ public class FrontController extends HttpServlet {
 		logger.info("method : "+requestMethod);
 		logger.info("url : "+requestUrl);
 		
-		if ( requestUrl.contains("/index") ) {
+		if ( requestUrl.contains("/index") || requestUrl.equalsIgnoreCase("/.next")) {
 			controller = new HomeController();
 			
 		} else if ( requestUrl.contains("/join") ) {
