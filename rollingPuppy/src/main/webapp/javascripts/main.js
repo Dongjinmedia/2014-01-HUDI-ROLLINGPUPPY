@@ -338,7 +338,7 @@ var oNaverMap = {
 	    	}
 	    },
 	    
-	    //Zoom 조절을 위한 함수
+	    // Zoom 조절을 위한 함수
 	    changeZoom: function(nZoomLevel) {
 	        this.oCenterPoint = this.oMap.getCenter();
 
@@ -353,6 +353,24 @@ var oNaverMap = {
 	    getZoom: function() {
 	    	return this.oMap.getLevel();
 	    },
+
+	    // 줌 조절을 위해 줌인, 줌아웃 버튼에 클릭 이벤트 추가
+		addEventForZoom: function() {
+			this.oZoomController.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
+			this.oZoomController.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
+		},
+
+		// 줌인, 줌아웃 버튼에 클릭 이벤트가 발생하면 호출되는 줌 조절 메서드
+		changeZoomLevel: function(e){
+			var currentZoomLevel = this.getZoom();
+
+			if(e.target.id === "zoomInButton") {
+				this.changeZoom(++currentZoomLevel);
+			}
+			else if(e.target.id === "zoomOutButton") {
+				this.changeZoom(--currentZoomLevel);
+			}
+		},
 
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
@@ -505,25 +523,9 @@ var oNaverMap = {
 	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
 	        this.oZoomController = {
 	        		zoomInButton: document.getElementById("zoomInButton"),
-	        		zoomOutButton: document.getElementById("zoomOutButton"),
-	        		
-	        		addEventForZoom: function() {
-	        			this.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
-	        			this.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
-	        		},
-	        		
-	        		changeZoomLevel: function(e){
-	        			var currentZoomLevel = oNaverMap.getZoom();
-	        			
-	        			if(e.target.id === "zoomInButton") {
-	        				oNaverMap.changeZoom(++currentZoomLevel);
-	        			}
-	        			else if(e.target.id === "zoomOutButton") {
-	        				oNaverMap.changeZoom(--currentZoomLevel);
-	        			}
-	        		}
+	        		zoomOutButton: document.getElementById("zoomOutButton")
 	        }
-	        this.oZoomController.addEventForZoom();
+	        this.addEventForZoom();
 	    }
 };
 
@@ -1042,8 +1044,33 @@ var oKeyboardAction = {
  **********************************************************************************************************/
 //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
 //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
-//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
-function reverseGeo(clickedLatlng){
+//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다.
+
+oReverseGeoCode = {
+		oGeoCoder: null,
+		address: null,
+		getAddress: function(latitude, longitude) {
+			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
+			this.oGeoCoder.geocode({'latLng': clickedLatlng}, this.callback.bind(this));
+			return this.address;
+		},
+		callback: function(results, status) {
+			if(status == google.maps.GeocoderStatus.OK) {
+	    		if (results[0]) {
+	    			this.address = results[0].formatted_address; 
+	    			//alert(results[0].formatted_address);
+	    		}
+	    	} else {
+	    		//alert("Geocoder failed due to: " + status);
+	    		return "Retry";
+	    	}
+		},
+		initialize: function() {
+			this.oGeoCoder = new google.maps.Geocoder();
+		}
+};
+
+var reverseGeo = function (clickedLatlng){
 	var oGeocoder = new google.maps.Geocoder();
 	var clickedAddress = "";
 	oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
@@ -1057,6 +1084,7 @@ function reverseGeo(clickedLatlng){
      			//console.log(results[1].formatted_address);
      			this.clickedAddress = results[0].formatted_address;
      			console.log("aaa",this.clickedAddress);
+     			return this.clickedAddress;
     		}
     	} else {
     		alert("Geocoder failed due to: " + status);
@@ -1113,6 +1141,11 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//키보드 입력에 대한 Object
 	oKeyboardAction.initialize();
+	//------------------------------------------------------------------------------------//
+
+	//------------------------------------------------------------------------------------//
+	//Reverse GeoCode (위도, 경도를 통한 주소값 추출) 초기화 영역
+	oReverseGeoCode.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//

@@ -2,11 +2,12 @@ package com.puppy.controller;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.PrintWriter;
 import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.xml.parsers.DocumentBuilder;
@@ -22,42 +23,40 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-@SuppressWarnings("serial")
-public class SearchController extends HttpServlet{
+import com.google.gson.Gson;
+
+public class SearchController implements Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=513cd098517cce82ec819f7862fb362f";
 	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
 	
 //	@Override
-//	public void doGet(HttpServletRequest request, HttpServletResponse response)
+//	public void doPost(HttpServletRequest request, HttpServletResponse response)
 //			throws ServletException, IOException {
-//		logger.info("into doGet");
+//		logger.info("into doPost of search Controller");
 //		
-//		RequestDispatcher view = request.getRequestDispatcher("search.jsp");
-//		view.forward(request, response);
-//		
+//		request.setCharacterEncoding("utf-8");
+//		response.setContentType("application/json");
+//		PrintWriter out = response.getWriter();
+//		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+//		Gson gson = new Gson();
+//	
+//		String requestKeyword = request.getParameter("search_word");
+//		System.out.println("search_word: " + requestKeyword);
+//		String requestURLString = REQUEST_URL_FRONT + "&query=" + requestKeyword +REQUEST_URL_TAIL;
+//		logger.info("requestURL :" + requestURLString);
+//		URL requestURL = new URL(requestURLString);	
+//		getDataFromXML(request, response, requestURL);
 //	}
-	
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-		request.setCharacterEncoding("utf-8");
-		String requestKeyword = request.getParameter("search_word");
-		System.out.println("search_word: " + requestKeyword);
-		String requestURLString = REQUEST_URL_FRONT + "&query=" + requestKeyword +REQUEST_URL_TAIL;
-		logger.info("requestURL :" + requestURLString);
-		URL requestURL = new URL(requestURLString);	
-		getDataFromXML(request, response, requestURL);
-	}
-	
+//	
 	
 	//꼭 읽어야 할 레퍼런스 
 	//http://ko.wikipedia.org/wiki/XPath
 	//http://viralpatel.net/blogs/java-xml-xpath-tutorial-parse-xml/
-	public void getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
+	public Map<String, Object> getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
 		
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		//dom object 해석을 위해 documentBuilder 객체 필요
 		//documentBuilder 객체를 만들기 위한 팩토리 클래스 선언
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -66,6 +65,7 @@ public class SearchController extends HttpServlet{
 		//이 객체는 root element 대표
 		//다른 packege의 document와의 차이점검색해볼것
 		Document document = null;
+
 		
 		try{
 			//DocumentBuilder클래스를 이용하여 xml 문서로부터 dom document 객체를 가져오기 위한 클래스 선언
@@ -98,55 +98,88 @@ public class SearchController extends HttpServlet{
 		
 		for(int i = 0 ; i< itemNodeList.getLength(); ++i){
 			Node targetNode = itemNodeList.item(i).getFirstChild();
-			System.out.println("가게명 :" + targetNode.getFirstChild().getNodeValue());
+			resultJsonData.put("storeName",targetNode.getFirstChild().getNodeValue());
+			//System.out.println("가게명 :" + targetNode.getFirstChild().getNodeValue());
 			
 			Node nextNode = targetNode.getNextSibling();
 			
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("링크 : "+nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("link",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("링크 : "+nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("category",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("설명 : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("explanation",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("설명 : "  + nextNode.getFirstChild().getNodeValue());
 			
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)			
-					System.out.println("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("phoneNumber",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("주소 : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("address",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("주소 : "  + nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
+					//System.out.println("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("roadAddress",nextNode.getFirstChild().getNodeValue());
 		
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("cartesianX",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
-					System.out.println("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
+					resultJsonData.put("cartesianY",nextNode.getFirstChild().getNodeValue());
+					//System.out.println("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
 			
-			System.out.println("\n=============================================\n\n\n");
-				
+			//System.out.println("\n=============================================\n\n\n");
 		}
+		return resultJsonData;
+	}
+
+
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		logger.info("indo doGet of Search Controller");
 		
 		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		Gson gson = new Gson();
+		
+		String searchKeyword = request.getParameter("searchKeyword");
+		String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword +REQUEST_URL_TAIL;
+		URL requestURL = new URL(requestURLString);	
+		resultJsonData = getDataFromXML(request, response, requestURL);
+		out.println(gson.toJson(resultJsonData));
+	}
+
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		
 	}
 	

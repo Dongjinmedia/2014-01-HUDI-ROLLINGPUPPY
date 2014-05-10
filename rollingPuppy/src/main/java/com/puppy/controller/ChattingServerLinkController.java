@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -14,13 +13,12 @@ import org.slf4j.LoggerFactory;
 
 import com.puppy.util.Constants;
 
-@SuppressWarnings("serial")
-public class ChattingServerLinkController extends HttpServlet{
+public class ChattingServerLinkController implements Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChattingServerLinkController.class);
 	
 	@Override
-	protected void doGet(HttpServletRequest request, HttpServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		
 		String requestURL = request.getRequestURI().toLowerCase();
@@ -33,5 +31,12 @@ public class ChattingServerLinkController extends HttpServlet{
 		
 		logger.info(""+session.getAttribute(Constants.SESSION_MEMBER_EMAIL));
 		out.println(session.getAttribute(Constants.SESSION_MEMBER_EMAIL));
+	}
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

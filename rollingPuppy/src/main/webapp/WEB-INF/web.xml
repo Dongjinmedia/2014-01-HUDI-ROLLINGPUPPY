@@ -6,7 +6,16 @@
 <web-app>
 	<display-name>Archetype Created Web Application</display-name>
 
-	<!-- Servlet Area -->
+
+	<filter>
+		<filter-name>EntranceFilter</filter-name>
+		<filter-class>com.puppy.filter.EntranceFilter</filter-class>
+	</filter>
+	
+	<filter-mapping>
+		<filter-name>EntranceFilter</filter-name>
+		<url-pattern>/*</url-pattern>
+	</filter-mapping>
 
 	<servlet>
 		<servlet-name>DBCPInit</servlet-name>
@@ -18,110 +27,35 @@
 		<load-on-startup>1</load-on-startup>
 	</servlet>
 
-	<servlet>
-		<servlet-name>Home Request</servlet-name>
-		<servlet-class>com.puppy.controller.HomeController</servlet-class>
-	</servlet>
 
+	<!-- Mapping관련 설명글 링크 http://lng1982.tistory.com/97 -->
 	<servlet>
-		<servlet-name>Join Request</servlet-name>
-		<servlet-class>com.puppy.controller.JoinController</servlet-class>
+		<servlet-name>Request</servlet-name>
+		<servlet-class>com.puppy.controller.FrontController</servlet-class>
 	</servlet>
-
-	<servlet>
-		<servlet-name>Login Request</servlet-name>
-		<servlet-class>com.puppy.controller.LoginController</servlet-class>
-	</servlet>
-	
-	<servlet>
-		<servlet-name>Logout Request</servlet-name>
-		<servlet-class>com.puppy.controller.LogoutController</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>Main Request</servlet-name>
-		<servlet-class>com.puppy.controller.MainController</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>ErrorPage Request</servlet-name>
-		<servlet-class>com.puppy.controller.ErrorController</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>Chat Request</servlet-name>
-		<servlet-class>com.puppy.controller.ChatController</servlet-class>
-	</servlet>
-	
-	<servlet>
-		<servlet-name>Search Request</servlet-name>
-		<servlet-class>com.puppy.controller.SearchController</servlet-class>
-	</servlet>
-
-	<servlet>
-		<servlet-name>ChattingServer Request</servlet-name>
-		<servlet-class>com.puppy.controller.ChattingServerLinkController</servlet-class>
-	</servlet>
-	<!-- Servlet-mapping Area -->
 
 	<servlet-mapping>
-		<servlet-name>Home Request</servlet-name>
-		<url-pattern>/index</url-pattern>
+		<servlet-name>Request</servlet-name>
+		<url-pattern>/</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>Join Request</servlet-name>
-		<url-pattern>/join</url-pattern>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.js</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>Login Request</servlet-name>
-		<url-pattern>/login</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>Logout Request</servlet-name>
-		<url-pattern>/logout</url-pattern>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.css</url-pattern>
 	</servlet-mapping>
 
 	<servlet-mapping>
-		<servlet-name>Main Request</servlet-name>
-		<url-pattern>/main</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>ErrorPage Request</servlet-name>
-		<url-pattern>/error</url-pattern>
-	</servlet-mapping>
-
-	<servlet-mapping>
-		<servlet-name>Chat Request</servlet-name>
-		<url-pattern>/chat/*</url-pattern>
-	</servlet-mapping>
-
-		
-	<servlet-mapping>
-		<servlet-name>Search Request</servlet-name>
-		<url-pattern>/search</url-pattern>
-	</servlet-mapping>
-	
-	<servlet-mapping>
-		<servlet-name>ChattingServer Request</servlet-name>
-		<url-pattern>/getId</url-pattern>
+		<servlet-name>default</servlet-name>
+		<url-pattern>*.png</url-pattern>
 	</servlet-mapping>
 
 	<welcome-file-list>
-		<welcome-file>index</welcome-file>
+		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-
-	<error-page>
-		<error-code>404</error-code>
-		<location>/error?type=404</location>
-	</error-page>
-
-	<error-page>
-		<error-code>500</error-code>
-		<location>/error?type=500</location>
-	</error-page>
 
 </web-app>

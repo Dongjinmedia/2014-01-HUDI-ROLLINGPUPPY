@@ -8,7 +8,6 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -27,10 +26,9 @@ import com.puppy.util.Util;
 /*
  * 로그인 요청에 대한 컨트롤러
  */
-@SuppressWarnings("serial")
 //For getParameter From Javascript new FormData (Ajax Request)
 @MultipartConfig
-public class LoginController extends HttpServlet {
+public class LoginController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 	
@@ -115,5 +113,12 @@ public class LoginController extends HttpServlet {
 		}
 		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, loginResult);
 		out.println(gson.toJson(resultJsonData));
+	}
+
+	@Override
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		
 	}
 }

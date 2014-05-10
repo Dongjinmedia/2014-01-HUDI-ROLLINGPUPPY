@@ -211,30 +211,35 @@ function join(event) {
 	request.send(formData);
 }
 
-//****************************************************윤성소스 추가 끝
+//****************************************************join 추가 끝
 
 //id 중복 체크를 위한 함수 
 function duplicateEmail(){
-	console.log("check!!");
+	var duplicateCheckPtag = document.getElementById("duplicateCheck");
 	var newbieEmail = document.getElementById("joinEmail").value;
 	var url = "/join?email="+newbieEmail;
-	
-	var request = new XMLHttpRequest();
-	request.open("GET", url , true );
-	request.onreadystatechange = function(){
-		if ( request.readyState === 4 && request.status === 200 ) {
-			var isExisted = request.responseText;
-			console.log(	isExisted);
-			console.log(isExisted == 'true' );
-			console.log(isExisted == "true" );
-			console.log(isExisted === "true" );
-			
-			if( isExisted == true){
-				alert("already exist");
+	if(isValidateEmailFormat(newbieEmail)){
+		var request = new XMLHttpRequest();
+		request.open("GET", url , true );
+		request.onreadystatechange = function(){
+			if ( request.readyState === 4 && request.status === 200 ) {
+				var oResult = JSON.parse(request.responseText);
+				var result = oResult["ThreeWayResult"];
+				console.log(result);
+
+				if( result === "FAIL" ){
+					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
+				}else if (result === "SUCCESS"){
+					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+				}else {
+					alert("예기치 못한 사건이 발생했다!!");
+				}
 			}
 		}
+		request.send(); //request를 보내는것 callback 함수당 
+	} else {
+		return;
 	}
-	request.send(); //request를 보내는것 callback 함수당 
 }
 
 
