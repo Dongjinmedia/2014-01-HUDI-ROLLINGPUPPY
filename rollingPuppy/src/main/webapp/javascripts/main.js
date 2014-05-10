@@ -118,10 +118,6 @@ var Panel = {
 	// CSS3 animation은 CSS 속성으로 동작합니다.
 	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
 	fnPanelButtonsHandler: function(event) {
-		// Exception 처리
-		if (!event || !event.target) {
-			return ;
-		}
 		event.preventDefault();
 
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
@@ -129,6 +125,7 @@ var Panel = {
 
 		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
+		// 등호가 세 개이면 type check까지 됨 (2개의 경우 "2" == 2 가 true)
 		if (strButtonClassName === 'panel_button_fold') {
 			boolFold = true;
 		}
@@ -160,11 +157,6 @@ var NavList = {
 	},
 	
 	fnNavButtonHandler: function(event) {
-		// 예외 처리.
-		// 이벤트나 클릭된 객체가 없을 시 탈출문.
-		if (!event || !event.target) {
-			return ;
-		}
 		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
 		if (event.target.tagName.toLowerCase() != 'a') {
 			return ;
