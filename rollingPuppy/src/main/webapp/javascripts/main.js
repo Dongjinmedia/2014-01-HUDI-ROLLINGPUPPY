@@ -100,16 +100,16 @@ var oAjax = {
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
 var Panel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
-	elContainer: document.getElementById('container'),
-	elPanel: document.getElementById('panel'),
+	elContainer: document.getElementById("container"),
+	elPanel: document.getElementById("panel"),
 	
 	// panel 관련 이벱트 등록 함수.
 	addEvents: function() {
-		var elPanelButtons = this.elPanel.querySelector('#panel_buttons');
+		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
 		
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		elPanelButtons.addEventListener(
-				'click',
+				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
 	},
@@ -126,39 +126,39 @@ var Panel = {
 		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
 		// 등호가 세 개이면 type check까지 됨 (2개의 경우 "2" == 2 가 true)
-		if (strButtonClassName === 'panel_button_fold') {
+		if (strButtonClassName === "panel_button_fold") {
 			boolFold = true;
 		}
 		
 		// boolFold == true 면 fold_panel 실행
 		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
-			this.elContainer.className = 'fold_panel';
+			this.elContainer.className = "fold_panel";
 		} else {
-			this.elContainer.className = 'unfold_panel';
+			this.elContainer.className = "unfold_panel";
 		}
 	}
 }
 
 // main.jsp의 nav_list 관련 기능들을 모아둔 객체
 var NavList = {
-	elNavList: document.getElementById('nav_list'),
+	elNavList: document.getElementById("nav_list"),
 	// 마지막 클릭된 nav_list 메뉴와 해당하는 panel_contents를 기억해둡니다.
 	// 기본값은 search로 되어 있습니다.
-	elLatestClickedMenu: document.querySelector('#nav_list>.on'),
-	elLatestPanelContents: document.querySelector('#panel_contents>.on'),
+	elLatestClickedMenu: document.querySelector("#nav_list>.on"),
+	elLatestPanelContents: document.querySelector("#panel_contents>.on"),
 	
 	// 이벤트 등록 함수. ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
 	addEvents: function() {
 		this.elNavList.addEventListener(
-				'click',
+				"click",
 				this.fnNavButtonHandler.bind(this)
 		);
 	},
 	
 	fnNavButtonHandler: function(event) {
 		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
-		if (event.target.tagName.toLowerCase() != 'a') {
+		if (event.target.tagName.toLowerCase() != "a") {
 			return ;
 		}
 		event.preventDefault();
@@ -166,16 +166,16 @@ var NavList = {
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.elLatestClickedMenu) {
-			this.elLatestClickedMenu.className = '';
-			this.elLatestPanelContents.className = '';
+			this.elLatestClickedMenu.className = "";
+			this.elLatestPanelContents.className = "";
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.elLatestClickedMenu = event.target.parentNode;
-		this.elLatestPanelContents = document.getElementById('pc_' + event.target.className);
+		this.elLatestPanelContents = document.getElementById("pc_" + event.target.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
-		this.elLatestClickedMenu.className = 'on';
-		this.elLatestPanelContents.className = 'on';
+		this.elLatestClickedMenu.className = "on";
+		this.elLatestPanelContents.className = "on";
 	}
 }
 
