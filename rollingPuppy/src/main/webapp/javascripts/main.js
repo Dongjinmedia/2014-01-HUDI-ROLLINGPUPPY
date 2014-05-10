@@ -45,6 +45,7 @@ function removeClassName(node, strClassName) {
 	}
 	
 	// node에 className가 다수 존재하는 경우의 target className 삭제
+	// node.className에 replace 결과물을 대입합니다.
 	node.className = node.className.replace(" " + strClassName, "").toString();
 }
 
