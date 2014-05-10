@@ -19,6 +19,35 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
+//Node에 className를 추가하는 함수
+function addClassName(node, strClassName) {
+	// 기존에 className가 없던 경우
+	if (node.className === "") {
+		node.className = strClassName;
+		return ;
+	}
+	
+	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+	node.className += " " + strClassName;
+}
+
+//Node에 특정 className을 제거하는 함수
+function removeClassName(node, strClassName) {
+	// 기존에 className가 없는 경우 함수를 종료합니다
+	if (node.className === "") {
+		return ;
+	}
+	
+	// node에 className이 존재하고, target className 하나만 있는 경우
+	if (node.className.length === strClassName.length) {
+		node.className = "";
+		return ;
+	}
+	
+	// node에 className가 다수 존재하는 경우의 target className 삭제
+	node.className = node.className.replace(" " + strClassName, "").toString();
+}
+
 //Ajax 통신을 담당하는 모듈 Object
 var oAjax = {
 		//Ajax 결과값을 담아두는 Object
@@ -133,9 +162,11 @@ var Panel = {
 		// boolFold == true 면 fold_panel 실행
 		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
-			this.elContainer.className = "fold_panel";
+			removeClassName(this.elContainer, "unfold_panel");
+			addClassName(this.elContainer, "fold_panel");
 		} else {
-			this.elContainer.className = "unfold_panel";
+			removeClassName(this.elContainer, "fold_panel");
+			addClassName(this.elContainer, "unfold_panel");
 		}
 	}
 }
@@ -166,16 +197,16 @@ var NavList = {
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.elLatestClickedMenu) {
-			this.elLatestClickedMenu.className = "";
-			this.elLatestPanelContents.className = "";
+			removeClassName(this.elLatestClickedMenu, "on");
+			removeClassName(this.elLatestPanelContents, "on");
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.elLatestClickedMenu = event.target.parentNode;
 		this.elLatestPanelContents = document.getElementById("pc_" + event.target.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
-		this.elLatestClickedMenu.className = "on";
-		this.elLatestPanelContents.className = "on";
+		addClassName(this.elLatestClickedMenu, "on");
+		addClassName(this.elLatestPanelContents, "on");
 	}
 }
 
