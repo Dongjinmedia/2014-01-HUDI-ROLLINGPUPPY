@@ -2,7 +2,6 @@ function initPage() {
 	var COOKIE_EMAIL = "member.lastLoggedEmail";
 	var lastLoggedEmail = getCookieValue(COOKIE_EMAIL);
 //	var emailToBeChecked = null;
-	
 	fillEmail(lastLoggedEmail);
 
 	//document.getElementById("join_form").onsubmit = validateJoinEmail;	
@@ -40,14 +39,16 @@ function getCookieValue(name) {
 
 //마지막으로 로그인 된 email 값을 login email box에 default로 삽입 
 function fillEmail(email) {
-	if (email == "") {
+	if (email === null) {
 		return ;
 	}
 	
 	var loginForm = document.forms[0];
 	var inputEmail = loginForm.querySelector("input[name=email]");
+	var checkboxKeepEmail = loginForm.querySelector("input[name=keepEmail]");
 	
 	inputEmail.value = email;
+	checkboxKeepEmail.checked = true;
 }
 
 //email validation check를 하는 함수

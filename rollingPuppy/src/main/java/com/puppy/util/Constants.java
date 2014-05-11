@@ -8,7 +8,7 @@ public class Constants {
 	
 	public static final String COOKIE_LAST_LOGGED_EMAIL = "member.lastLoggedEmail";
 	
-	public static final String REQUEST_KEEP_LOGIN = "keepLogin";
+	public static final String REQUEST_KEEP_EMAIL = "keepEmail";
 	public static final String REQUEST_EMAIL = "email"; 
 	public static final String REQUEST_PASSWORD = "password";
 	

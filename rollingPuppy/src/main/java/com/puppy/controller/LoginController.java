@@ -47,12 +47,12 @@ public class LoginController implements Controller {
 		// POST 정보를 저장합니다.
 		String email = null;
 		String password = null;
-		String keepLogin = null;
+		String keepEmail = null;
 		
 		
 		Part emailPart = request.getPart(Constants.REQUEST_EMAIL);
 		Part passwordPart = request.getPart(Constants.REQUEST_PASSWORD);
-		Part keepLoginPart = request.getPart(Constants.REQUEST_KEEP_LOGIN);
+		Part keepEmailPart = request.getPart(Constants.REQUEST_KEEP_EMAIL);
 		
 		if ( emailPart != null ) {
 			email = Util.getStringValueFromPart(emailPart);
@@ -62,18 +62,18 @@ public class LoginController implements Controller {
 			password = Util.getStringValueFromPart( passwordPart );
 		}
 		
-		if ( keepLoginPart != null ) {
-			keepLogin = Util.getStringValueFromPart( keepLoginPart );
+		if ( keepEmailPart != null ) {
+			keepEmail = Util.getStringValueFromPart( keepEmailPart );
 		}
 		
 		//TODO 이건 왜 있는거지?? <윤성>
-		if (keepLogin == null) {
-			keepLogin = "false";
+		if (keepEmail == null) {
+			keepEmail = "false";
 		}
 		
 		logger.info(email);
 		logger.info(password);
-		logger.info(keepLogin);
+		logger.info(keepEmail);
 		
 		// POST의 email, pw와 맞는 Member 정보를 가져와서 class에 담습니다.
 		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
@@ -84,10 +84,20 @@ public class LoginController implements Controller {
 			//2주동안 유효한 쿠키생성.
 			//TODO 이거는 그냥 만드는건가?? 이렇게 하는게 맞는건가 확인해주세요. (by 윤성)
 			
-			if ( keepLogin.equalsIgnoreCase("true")) {
+			if ( keepEmail.equalsIgnoreCase("true")) {
 				Cookie cookie = new Cookie(Constants.COOKIE_LAST_LOGGED_EMAIL, email);
 				cookie.setMaxAge(14 * 24 * 60 * 60);
 				response.addCookie(cookie);
+			} else {
+				Cookie[] cookies = request.getCookies();
+			    if (cookies != null) {
+			        for (int idx = 0; idx < cookies.length; idx++) {
+			        	if (cookies[idx].getName().equals(Constants.COOKIE_LAST_LOGGED_EMAIL)) {
+			        		cookies[idx].setMaxAge(0);
+			        		response.addCookie(cookies[idx]);
+			        	}
+			        }
+			    }
 			}
 			
 			HttpSession session = request.getSession();

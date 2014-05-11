@@ -36,7 +36,7 @@
 					<input type="password" name="password" placeholder="Password" />
 				</p>
 				<p>
-					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
+					<input type="checkbox" name="keepEmail"  value="true"> 이메일 저장하기
 				</p>
 				<p>
 					<input type="submit" id="login_button" value="Enter House" />
