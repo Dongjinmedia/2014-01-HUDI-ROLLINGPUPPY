@@ -280,7 +280,7 @@ div#panel {
 }
 
 #panel_contents .title {
-	width: 90%;
+	width: 100%;
 	font-weight: bold;
 }
 
@@ -331,6 +331,34 @@ li.bookmark .icon-delete:hover:before {
 	right: 10px;
 }
 
+li.chatting .icon-chatting:before {
+	content: "\f0e6";
+	margin-right: 5px;
+}
+
+li.chatting .title {
+	font-size: 1.3em;
+	margin-bottom: 0.5em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+li.chatting .limit {
+	font-size: 0.8em;
+}
+
+li.chatting .icon-participant:before {
+	content: "\f007";
+	margin-right: 5px;
+}
+
+li.chatting .address.icon-title:before {
+	content: "\f041";
+	margin-right: 5px;	
+}
+
+
 .pcFooter {
 	position: absolute;
 	width: 100%;
@@ -351,10 +379,6 @@ li.bookmark .icon-delete:hover:before {
 
 .pcFooter > li:hover {
 	border: 1px solid #DBDBDB;
-}
-
-.pcFooter .pageNumber {
-	font-size: 1em;
 }
 
 .icon-left:before {

@@ -142,7 +142,6 @@
 					<div id="pc_search" class="on">
 						<p>검색 결과가 나오는 창입니다.</p>
 						<ul>
-							<li class="cell chatRoom"></li>
 							<li class="cell search">
 								<p class="title icon-title">갈빗집</p>
 								<p class="category">한식 > 소고기구이</p>
@@ -151,7 +150,7 @@
 						</ul>
 							<ul class ="pcFooter">
 								<li><i class="paging icon-left"></i></li>
-								<li class="pageNumber">1</li>
+								<li>1</li>
 								<li>2</li>
 								<li>3</li>
 								<li><i class="paging icon-right"></i></li>
@@ -159,7 +158,16 @@
 						
 					</div>
 					<div id="pc_recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
-					<div id="pc_chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
+					<div id="pc_chatting">
+						<p>내가 속한 채팅방 목록이 보여지는 창입니다.</p>
+						<ul>
+							<li class="cell chatting">
+								<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
+								<p class="limit icon-participant">1 / 300</p>
+								<p class="address icon-title">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+							</li>
+						</ul>
+					</div>
 					<div id="pc_bookmark">관심장소로 지정한 지역을 보여주는 창입니다.
 						<ul>
 							<li class="cell bookmark">
