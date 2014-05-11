@@ -144,7 +144,6 @@
 				<div id="panel_contents">
 					<!-- pc == panel_content -->
 					<div id="pc_search" class="on">
-						<p>검색 결과가 나오는 창입니다.</p>
 						<ul>
 							<li class="cell search">
 								<p class="title icon-title">갈빗집</p>
@@ -161,9 +160,13 @@
 							</ul>
 						
 					</div>
-					<div id="pc_recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
+					<div id="pc_recommendation">
+						<div class="default">
+							<p class="icon-warning">
+							<p>추천 채팅방 리스크가 보여지는 창입니다.</p>
+						</div>
+					</div>
 					<div id="pc_chatting">
-						<p>내가 속한 채팅방 목록이 보여지는 창입니다.</p>
 						<ul>
 							<li class="cell chatting">
 								<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
@@ -173,7 +176,7 @@
 							</li>
 						</ul>
 					</div>
-					<div id="pc_bookmark">관심장소로 지정한 지역을 보여주는 창입니다.
+					<div id="pc_bookmark">
 						<ul>
 							<li class="cell bookmark">
 							  	<p class="title icon-bookmark">우리집</p>
@@ -183,7 +186,12 @@
 						</ul>
 						<ul class ="pcFooter"></ul>
 					</div>
-					<div id="pc_settings">설정창 입니다.</div>
+					<div id="pc_settings">
+						<div class="default">
+								<p class="icon-warning">
+								<p>설정창 입니다.</p>
+							</div>
+					</div>
 				</div>
 				<div id="panel_buttons">
 					<a class="panel_button_fold" href="#"></a>

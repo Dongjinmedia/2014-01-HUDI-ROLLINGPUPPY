@@ -274,6 +274,22 @@ div#panel {
 ** Panel 검색결과 리스트 스타일 시작
 */
 
+#panel_contents .default {
+	color: #F2F0F0;
+	text-align: center;
+	width: 300px;
+	height: 547px;
+	border: 20px solid #F2F0F0; 
+}
+
+#panel_contents .icon-warning:before {
+	margin-top: 30%;
+	margin-bottom: 10%;
+	color: #F2F0F0;
+	font-size: 10em;
+	content: "\f05b";
+}
+
 #panel_contents .cell {
 	position: relative;
 	width: 94%;
