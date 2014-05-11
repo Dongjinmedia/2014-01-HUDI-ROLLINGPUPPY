@@ -12,9 +12,9 @@
 	<title>Main Page</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css?20140501">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css?20140504">
-	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
+	<!-- <script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-	
+ -->	
 	<!-- Test Unit -->
 	<link rel="stylesheet" href="/UnitTest/lib/qunit-1.14.0.css">
 	<style>
@@ -33,7 +33,21 @@
 	<div id="qunit"></div>
 	<div id="qunit-fixture"></div>
 </div>
-
+<div id="template" class="hidden" style="display:none;">
+	<ul class>
+		<li class="cell chatRoom"></li>
+		<li class="cell search">
+			<i class="clicker icon-star"></i>
+			<p class="title">갈빗집</p>
+			<p class="category">한식 > 소고기구이</p>
+			<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+		</li>
+		<li class="cell bookmark">
+		  	<p class="title">우리집</p>
+		  	<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+		</li>
+	</ul>
+</div>
 <input type="hidden" id="email" value="${sessionScope['member.email']}"/>
 <div id="createChatRoom">
 	<div class="outer bg"></div>
@@ -125,7 +139,10 @@
 			<div id="panel">
 				<div id="panel_contents">
 					<!-- pc == panel_content -->
-					<div id="pc_search" class="on">검색 결과가 나오는 창입니다.</div>
+					<div id="pc_search" class="on">
+						검색 결과가 나오는 창입니다.
+						<ul></ul>
+					</div>
 					<div id="pc_recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
 					<div id="pc_chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
 					<div id="pc_bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>

@@ -225,8 +225,7 @@ div#panel {
 #panel_contents>div {
 	position: absolute;
 	top: 5px;
-	left: 5px;
-	width: calc(100% - 10px);
+	/* width: calc(100% - 10px); */
 	height: calc(100% - 10px);
 	color: black;
 	z-index: 100;
@@ -266,6 +265,55 @@ div#panel {
 .unfold_panel #panel .panel_button_unfold {
 	display: none;
 }
+
+/*  
+** Panel 검색결과 리스트 스타일 시작
+*/
+
+#pc_search {
+	width: 100%;
+}
+
+li.search{
+	position: relative;
+	width: 94%;
+	border-top: 1px solid #5F6263;
+	border-bottom: 1px solid #5F6263;
+	padding: 3%;
+	line-height: 20px;
+}
+
+li.search:hover{
+	background-color: #008AE1;
+}
+
+li.search i {
+	position: absolute;
+	right: 3%;
+}
+
+li.search .title {
+	width: 90%;
+	font-weight: bold;
+}
+
+li.search .category {
+	font-size: 0.8em;
+	color: #B9BBBD;
+}
+
+li.search .address {
+	line-height: 20px;
+	font-size : 0.8em;
+	/* white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden; */
+}
+
+/*  
+** Panel 검색결과 리스트 스타일 종료
+working
+*/
 
 div#content {
 	position: absolute;
@@ -418,7 +466,7 @@ div#content {
 ** Create Chatting Room에 대한 CSS영역 종료
 */
 
-/* 줌인/줌아웃 버튼 시작(작성자 : 박세훈) */
+/* 줌인/줌아웃 버튼 시작 */
 #zoomButton {
 	position: relative;
 	width: 30px;
