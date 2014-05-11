@@ -129,7 +129,11 @@
 				<ul id="nav_list">
 					<li class="on"><a href="#" class="search"></a></li>
 					<li><a href="#" class="recommendation"></a></li>
-					<li><a href="#" class="chatting"></a></li>
+					<li>
+						<a href="#" class="chatting">
+						</a>
+							<div class="notification">0</div>
+					</li>
 					<li><a href="#" class="bookmark"></a></li>
 					<li><a href="#" class="settings"></a></li>
 				</ul>
@@ -164,7 +168,8 @@
 							<li class="cell chatting">
 								<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
 								<p class="limit icon-participant">1 / 300</p>
-								<p class="address icon-title">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+								<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+								<div class="notification">0</div>
 							</li>
 						</ul>
 					</div>

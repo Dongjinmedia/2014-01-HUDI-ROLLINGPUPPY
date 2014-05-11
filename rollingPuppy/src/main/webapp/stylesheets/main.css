@@ -119,6 +119,10 @@ ul#nav_list {
 	list-style: none;
 }
 
+#nav_list li .notification {
+	padding: 8px 10px;
+}
+
 #nav_list a {
 	display: block;
 	width: 60px;
@@ -358,6 +362,17 @@ li.chatting .address.icon-title:before {
 	margin-right: 5px;	
 }
 
+.notification {
+	position: absolute;
+	padding: 4px 10px;
+	border-radius: 20px;
+	background-color: #FF3B3B;
+	color: #fff;
+	font-size: 13px;
+	display: inline-block;
+	top: -5px;
+	right: -20px;
+}
 
 .pcFooter {
 	position: absolute;
