@@ -224,9 +224,9 @@ div#panel {
 
 #panel_contents>div {
 	position: absolute;
-	top: 5px;
-	/* width: calc(100% - 10px); */
-	height: calc(100% - 10px);
+	width: 100%;
+	height: 100%;
+	/* height: calc(100% - 10px); */
 	color: black;
 	z-index: 100;
 	display: none;
@@ -270,11 +270,7 @@ div#panel {
 ** Panel 검색결과 리스트 스타일 시작
 */
 
-#pc_search {
-	width: 100%;
-}
-
-li.search{
+#panel_contents .cell {
 	position: relative;
 	width: 94%;
 	border-top: 1px solid #5F6263;
@@ -283,18 +279,59 @@ li.search{
 	line-height: 20px;
 }
 
-li.search:hover{
-	background-color: #008AE1;
-}
-
-li.search i {
-	position: absolute;
-	right: 3%;
-}
-
-li.search .title {
+#panel_contents .title {
 	width: 90%;
 	font-weight: bold;
+}
+
+#panel_contents .address {
+	line-height: 20px;
+	font-size : 0.8em;
+	/* white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden; */
+}
+
+#panel_contents > * {
+	width: 100%;
+}
+
+#panel_contents [class^=icon-]:before, #panel_contents [class*=" icon-"]:before {
+	font-family: FontAwesome;
+	font-weight: 400;
+	font-style: normal;
+	display: inline-block;
+	text-decoration: inherit;
+}
+
+li.search .title:before {
+	content: "\f041";
+	margin-right: 5px;
+}
+
+#panel_contents li:hover{
+	background-color: #FAFAFA;
+	cursor: pointer;
+}
+
+li.bookmark .title:before {
+	content: "\f005";
+	margin-right: 5px;
+}
+
+li.bookmark .icon-delete:before {
+	color: #F0F0F0;
+	content: "\f056";
+	position: absolute;
+	font-size: 20px;
+	top: 10px;
+	right: 10px;
+}
+
+li.bookmark .icon-delete:hover:before {
+	color: #000;
+	top: 10px;
+	right: 10px;
 }
 
 li.search .category {
@@ -302,12 +339,42 @@ li.search .category {
 	color: #B9BBBD;
 }
 
-li.search .address {
-	line-height: 20px;
-	font-size : 0.8em;
-	/* white-space: nowrap;
-  	text-overflow: ellipsis;
-  	overflow: hidden; */
+.pcFooter {
+	position: absolute;
+	margin-top: 10px;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+	bottom: 0px;
+}
+
+.pcFooter > li {
+	display: inline-block;
+	width: 15px;
+	height: 15px;	
+}
+
+.pcFooter .pageNumber {
+	font-size: 1em;
+}
+
+.pcFooter .paging  {
+	font-size: 27px;
+  	font-family: FontAwesome;
+  	font-style: normal;
+  	text-decoration: inherit;
+  	color: #008AE1;
+  	opacity: 0.5;
+  	text-align: center;
+  	display: inline-block;
+}
+
+.icon-left:before {
+	content: "\f053";	
+}
+
+.icon-right:before {
+	content: "\f054";	
 }
 
 /*  
