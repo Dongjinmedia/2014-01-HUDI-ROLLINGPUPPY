@@ -51,28 +51,16 @@ function removeClassName(node, strClassName) {
 
 //Ajax 통신을 담당하는 모듈 Object
 var oAjax = {
-		//Ajax 결과값을 담아두는 Object
-		oAjaxResult: null,
-		
 		//Ajax GET 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (url, oParameters) {
-			this._getObjectFromJsonRequest(url, "GET", oParameters, this.callback);
-			return this.oAjaxResult;
+		getObjectFromJsonGetRequest: function (url, oParameters, callback) {
+			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
 		},
 		
 		//Ajax POST 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonPostRequest: function (url, oParameters) {
-			this._getObjectFromJsonRequest(url, "POST", oParameters, this.callback);
-			return this.oAjaxResult;
-		},
-		
-		//서버통신이후에 Ajax 객체를 this에 bind해서 전달한다.
-		//메서드의 this는 XHR객체를 의미한다.
-		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
-		callback: function() {
-			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
+		getObjectFromJsonPostRequest: function (url, oParameters, callback) {
+			this._getObjectFromJsonRequest(url, "POST", oParameters, callback);
 		},
 		
 		//Ajax 요청함수
@@ -90,12 +78,10 @@ var oAjax = {
 			
 			request.open(method, url, false	);
 			request.onreadystatechange = function() {
-				
 				if (request.readyState == 4 && request.status == 200) {
-					var obj = JSON.parse(request.responseText);
-					//인자로 전달된 callback함수를 bind, 실행
+					//인자로 전달된 callback함수를 실행
 					if ( typeof callback == "function" ) {
-						callback.apply(request);
+						callback(request);
 					}
 				}
 			}
@@ -352,21 +338,23 @@ var oNaverMap = {
 	    		
 	    		
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
-	    		//var aResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
-	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
-	    		
-	    		var isSuccess = oResponse['isSuccess'];
-	    		
-	    		if ( isSuccess ) {
-	    			var aMarkerList = oResponse["markerList"];
-	    			//Marker정보가 담긴 Array를 돌면서 현재 맵뷰상의 마커정보를 업데이트한다.
-	    			for (var index in aMarkerList) {
-	    				this.updateViewPointMarker(aMarkerList[index]);
-	    			}
-	    		} else {
-	    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
+	    		//oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			var isSuccess = oResponse['isSuccess'];
+
+	    			if ( isSuccess ) {
+		    			var aMarkerList = oResponse["markerList"];
+		    			//Marker정보가 담긴 Array를 돌면서 현재 맵뷰상의 마커정보를 업데이트한다.
+		    			for (var index in aMarkerList) {
+		    				this.updateViewPointMarker(aMarkerList[index]);
+		    			}
+		    		} else {
+		    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
+		    		}
 	    		}
 	    		
+	    		oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters, callback.bind(this));
 	    	}
 	    },
 	    
@@ -956,7 +944,7 @@ var oCreateChattingRoom = {
 			}
 			
 			//서버와 통신하는 코드
-			var oRequestData = {
+			var oRequest = {
 					"title": roomNameValue,
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
@@ -968,42 +956,44 @@ var oCreateChattingRoom = {
 					"zoom": oNaverMap.getZoom()
 			};
 			
-			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
-			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			var callback = function(request) {
+    			var oResponse = JSON.parse(request.responseText);
+    			
+    			var isSuccess = oResponse['isSuccess'];
+    			var newMarker = oResponse["newMarker"];
+    			var markerNumber = newMarker["id"];
+    			
+    			console.log("markerNumber : ",markerNumber);
+    			
+    			if ( isSuccess === true 
+    					&& markerNumber !== null 
+    					&& markerNumber !== undefined 
+    					&& isNaN(markerNumber) === false ) {
+    				
+    				oNaverMap.updateViewPointMarker(newMarker);
+    				
+    				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
+    				//마커를 생성
+    				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
+    				
+    				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
+    		    	
+    		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+    		    	oMapClicker.invisible();
+    		    	
+    		    	//createChatRoom의 input value값들을 초기화한다.
+    		    	this.clearRoomNameValue();
+    		    	this.clearLimitNumValue();
+    		    	
+    		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
+    		    	this.invisible();
+    			} else {
+    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
+    			} 
+			};
 			
-			console.log("Ajax Result : ",oResponseData);
-			
-			var isSuccess = oResponseData['isSuccess'];
-			var newMarker = oResponseData["newMarker"];
-			var markerNumber = newMarker["id"];
-			
-			console.log("markerNumber : ",markerNumber);
-			
-			if ( isSuccess === true 
-					&& markerNumber !== null 
-					&& markerNumber !== undefined 
-					&& isNaN(markerNumber) === false ) {
-				
-				oNaverMap.updateViewPointMarker(newMarker);
-				
-				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
-				//마커를 생성
-				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
-				
-				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
-		    	
-		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
-		    	oMapClicker.invisible();
-		    	
-		    	//createChatRoom의 input value값들을 초기화한다.
-		    	this.clearRoomNameValue();
-		    	this.clearLimitNumValue();
-		    	
-		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
-		    	this.invisible();
-			} else {
-				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
-			} 
+			//oAjax모듈에게 request요청을 보내고, callback함수를 실행한다.
+			oAjax.getObjectFromJsonPostRequest("/chat/create", oRequest, callback.bind(this));
 		}
 }
 
