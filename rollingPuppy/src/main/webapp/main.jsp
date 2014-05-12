@@ -9,37 +9,21 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Main Page</title>
+	<title>Neighbor</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css?20140501">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css?20140504">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
 	<script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
-	
-	<!-- Test Unit -->
-	<link rel="stylesheet" href="/UnitTest/lib/qunit-1.14.0.css">
-	<style>
-		#TestUnitArea.on {
-			display: 	block;
-		}
-		#TestUnitArea.off {
-			display: none;
-		}
-	</style>
 </head>
 
 <body>
-<!-- Test Unit -->
-<div id="TestUnitArea" class="off">
-	<div id="qunit"></div>
-	<div id="qunit-fixture"></div>
-</div>
 <div id="template" class="hidden" style="display:none;">
-	<ul class>
+	<ul>
 		<li class="cell chatRoom"></li>
 		<li class="cell search">
 			<i class="clicker icon-star"></i>
 			<p class="title">갈빗집</p>
-			<p class="category">한식 > 소고기구이</p>
+			<p class="category">한식 &gt; 소고기구이</p>
 			<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
 		</li>
 		<li class="cell bookmark">
@@ -147,7 +131,7 @@
 						<ul>
 							<li class="cell search">
 								<p class="title icon-title">갈빗집</p>
-								<p class="category">한식 > 소고기구이</p>
+								<p class="category">한식 &gt; 소고기구이</p>
 								<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
 							</li>
 						</ul>
@@ -223,13 +207,8 @@
 		</div>
 	</div>
 </div>
-
 </body>
 <script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/javascripts/main.js?20140501"></script>
-
-<!-- Test Unit -->
-<script src="/UnitTest/lib/qunit-1.14.0.js"></script>
-<script src="/UnitTest/main.test.js"></script>
 
 </html>

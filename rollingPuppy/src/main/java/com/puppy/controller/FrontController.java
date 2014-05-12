@@ -76,6 +76,9 @@ public class FrontController extends HttpServlet {
 			
 		} else if ( requestUrl.contains("/getId") ) {
 			controller = new ChattingServerLinkController();
+			
+		} else if ( requestUrl.contains("/UnitTest") ) {
+			controller = new TestController();
 		} else {
 			//throw exception
 		}
