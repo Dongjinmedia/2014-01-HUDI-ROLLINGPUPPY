@@ -460,8 +460,6 @@ var oNaverMap = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	
-	            	//TODO markerClicker 객체에서 완성된 marker목록을 가져오도록 소스코드를 만들어야 한다.
-	            	//TODO List 목록 가져와서 리스트만들기 // working
 	            	//현재는 마커전체레벨로 저장하고 있다.
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
@@ -497,9 +495,22 @@ var oNaverMap = {
 		            //oCustomEvent.point의 x가 경도, y가 위도. 
 		            //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
 		            //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
-	                var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
-	                reverseGeo(clickedLatlng);
-	                
+	                //var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
+	                //reverseGeo(clickedLatlng);
+	                //oMapClicker.setLocationName(reverseGeo(clickedLatlng));
+
+	                //oMapClicker에 장소명을 업데이트한다.
+	                var callback = function(results, status){
+	                	if(status == google.maps.GeocoderStatus.OK) {
+	                		if (results[0]) {
+	                			console.log(results[0].formatted_address);
+	                			oMapClicker.setLocationName(results[0].formatted_address);
+	                		}
+	                	} else {
+	                		console.log("reverseGeoCode status not fine ");
+	                	}
+	                };
+	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
 	        }
 	    },
 
@@ -968,8 +979,6 @@ var oCreateChattingRoom = {
 			
 			console.log("markerNumber : ",markerNumber);
 			
-			//working
-			//TODO 마커에 고유 아이디값을 부여
 			if ( isSuccess === true 
 					&& markerNumber !== null 
 					&& markerNumber !== undefined 
@@ -1018,6 +1027,14 @@ var oMapClicker = {
 	clickBookMark: null,
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
+	
+	//위치정보를 보여주는 Element
+	eLocationName: null,
+	//MapClicker 상단에 표기되는 위치정보를 변경한다.
+	setLocationName: function(locationName) {
+		console.log(locationName);
+		this.eLocationName.innerText = locationName;
+	},
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
 		this.oMapClicker.style.left = clientPosX+'px';
@@ -1033,7 +1050,9 @@ var oMapClicker = {
 		this.oMapClicker = document.getElementById('mapClicker');
 		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
 		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
-
+		this.eLocationName = this.oMapClicker.querySelector(".locationName div");
+		
+		
 		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
 		this.invisible();
 
@@ -1080,22 +1099,10 @@ var oKeyboardAction = {
 
 oReverseGeoCode = {
 		oGeoCoder: null,
-		address: null,
-		getAddress: function(latitude, longitude) {
+		getAddress: function(latitude, longitude, callback) {
+			console.log("working");
 			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
-			this.oGeoCoder.geocode({'latLng': clickedLatlng}, this.callback.bind(this));
-			return this.address;
-		},
-		callback: function(results, status) {
-			if(status == google.maps.GeocoderStatus.OK) {
-	    		if (results[0]) {
-	    			this.address = results[0].formatted_address; 
-	    			//alert(results[0].formatted_address);
-	    		}
-	    	} else {
-	    		//alert("Geocoder failed due to: " + status);
-	    		return "Retry";
-	    	}
+			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
 		},
 		initialize: function() {
 			this.oGeoCoder = new google.maps.Geocoder();
@@ -1112,10 +1119,10 @@ var reverseGeo = function (clickedLatlng){
     			//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
     			//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
     			//console.log(results);
-    			console.log(results[0].formatted_address);
+    			//console.log(results[0].formatted_address);
      			//console.log(results[1].formatted_address);
      			this.clickedAddress = results[0].formatted_address;
-     			console.log("aaa",this.clickedAddress);
+     			//console.log("aaa",this.clickedAddress);
      			return this.clickedAddress;
     		}
     	} else {
@@ -1125,7 +1132,7 @@ var reverseGeo = function (clickedLatlng){
 	//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
 	//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
 	//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
-	console.log("bbb",this.clickedAddress);
+	//console.log("bbb",this.clickedAddress);
 }
 /*********************************************************************************************************
 * Reverse Geo code 끝 

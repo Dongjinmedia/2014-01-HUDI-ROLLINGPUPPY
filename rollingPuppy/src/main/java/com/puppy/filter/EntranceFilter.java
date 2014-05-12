@@ -8,7 +8,6 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-import javax.servlet.http.HttpServletRequest;
 
 public class EntranceFilter implements Filter{
 
@@ -20,8 +19,8 @@ public class EntranceFilter implements Filter{
 	public void doFilter(ServletRequest request, ServletResponse response,
 			FilterChain chain) throws IOException, ServletException {
 		
-		HttpServletRequest req = (HttpServletRequest) request;
-		String path = req.getRequestURI().substring(req.getContextPath().length());
+		//HttpServletRequest req = (HttpServletRequest) request;
+		//String path = req.getRequestURI().substring(req.getContextPath().length());
 
 		// 다음 필터로 이동
 	    chain.doFilter(request, response); 
