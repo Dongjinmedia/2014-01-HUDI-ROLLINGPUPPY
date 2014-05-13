@@ -576,6 +576,102 @@ div#content {
 ** Create Chatting Room에 대한 CSS영역 종료
 */
 
+/* 채팅방 스타일 영역 시작 */
+
+.chattingRoom {
+	position: absolute;
+	top: 50px;
+	left: 500px;
+	width: 400px;
+	height: 500px;
+	background-color: #FAFAFA;
+	border-radius: 3px;
+	z-index: 11;
+}
+
+.chattingRoomTopBar {
+	position: absolute;
+	width: 100%;
+	height: 20px;
+	border-radius: 3px 3px 0 0;
+	background-color: #37a2d6;
+}
+
+.chattingRoomTitle {
+	position: relative;
+	width: 200px;
+	height: 20px;
+	left: 10px;
+	float: left;
+}
+
+.foldChattingRoomButton {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	right: 30px;
+	float: right;
+}
+
+.exitChattingRoomButton {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	right: -15px;
+	float: right;
+}
+
+.chattingRoomContents {
+	position: absolute;
+	width: 340px;
+	height: 360px;
+	top: 20px;
+	float: left;
+	overflow: scroll;
+	overflow-x: hidden;
+	background-color: #FAFAFA;
+}
+
+.chattingMemberList {
+	position: absolute;
+	width: 60px;
+	height: 360px;
+	top: 20px;
+	left: 340px;
+	float: right;
+	overflow: scroll;
+	overflow-x: hidden;
+	background-color: #22a86d;
+}
+
+.chattingRoomFooter {
+	position: absolute;
+	width: 100%;
+	height: 120px;
+	top: 380px;
+	border-radius: 0 0 3px 3px;
+}
+
+.chattingInputBox {
+	position: relative;
+	width: 340px;
+	height: 120px;
+	float: left;
+	background-color: pink;
+	border-radius: 0 0 0 3px;
+}
+
+.chattingSendButton {
+	position: relative;
+	width: 60px;
+	height: 120px;
+	float: right;
+	background-color: orange;
+	border-radius: 0 0 3px 0;
+}
+
+/* 채팅방 스타일 영역 끝 */
+
 /* 줌인/줌아웃 버튼 시작 */
 #zoomButton {
 	position: relative;

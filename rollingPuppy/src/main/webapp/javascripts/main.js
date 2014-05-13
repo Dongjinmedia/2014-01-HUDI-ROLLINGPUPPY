@@ -862,6 +862,46 @@ var oChat = {
  **********************************************************************************************************/
 
 /*********************************************************************************************************
+ * 채팅창 이동에 대한  소스코드 시작
+ **********************************************************************************************************/
+
+document.querySelector(".chattingRoomTopBar").addEventListener("mousedown", mouseDown, false);
+window.addEventListener("mouseup", mouseUp, false);
+var distanceX = null;
+var distanceY = null;
+
+function mouseUp() {
+	 window.removeEventListener("mousemove", moveWindow, true);
+}
+
+function mouseDown(e) {
+	var mouseX = e.clientX - 61;
+	var mouseY = e.clientY - 52;
+	var targetWindow = document.querySelector(".chattingRoom");
+	var targetWindowStyle = {left: getStyle(targetWindow, "left"), top: getStyle(targetWindow, "top")};
+	var curX = targetWindowStyle.left.substring(0, targetWindowStyle.left.length-2);
+	var curY = targetWindowStyle.top.substring(0, targetWindowStyle.top.length-2);
+	distanceX = mouseX - curX;
+	distanceY = mouseY - curY;
+	
+	window.addEventListener("mousemove", moveWindow, true);
+}
+
+function moveWindow(e) {
+	var mouseX = e.clientX - 61;
+	var mouseY = e.clientY - 52;
+	var targetWindow = document.querySelector(".chattingRoom");
+
+	targetWindow.style.left = mouseX - distanceX + "px";
+	targetWindow.style.top = mouseY - distanceY + "px";
+}
+
+/*********************************************************************************************************
+ * 채팅창 이동에 대한  소스코드 종료
+ **********************************************************************************************************/
+
+
+/*********************************************************************************************************
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
  **********************************************************************************************************/
 //TODO oChat안으로 들어가야 한다.

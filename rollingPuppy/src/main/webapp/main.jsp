@@ -199,7 +199,22 @@
 				<!-- 지도 영역 -->
 				<div id="naver_map" class="naver_map"></div>
 			</div>
-			
+
+			<!-- 채팅방 영역 -->
+			<div class="chattingRoom">
+				<div class="chattingRoomTopBar">
+					<div class="chattingRoomTitle">방 제목</div>
+					<div class="foldChattingRoomButton">_</div>
+					<div class="exitChattingRoomButton">X</div>
+				</div>
+				<div class="chattingRoomContents"></div>
+				<div class="chattingMemberList"></div>
+				<div class="chattingRoomFooter">
+					<div class="chattingInputBox"></div>
+					<div class="chattingSendButton">전송하기</div>
+				</div>
+			</div>
+
 			<!-- 줌인/줌아웃 버튼 영역 -->
 			<div id="zoomButton">
 				<div id="zoomInButton"></div>
