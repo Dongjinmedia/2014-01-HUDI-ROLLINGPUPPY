@@ -42,7 +42,7 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 			
 			//when error occur
 			if (err) {
-				console.log("Generate Sql Query Failed!!");
+				console.log("Generate Sql Query Failed!!",err);
 			}
 			
 			callbackFunction(queryResult);
@@ -101,39 +101,57 @@ io.sockets.on('connection', function (socket) {
 				socket.set('userId', tuple["id"]);
 				socket.set('nickname', tuple['nickname_noun']+tuple['nickname_adjective']);
 				
-				//tbl_chat_room_has_tbl_member에 대한 쿼리실행
+				// 이미 채팅방에 입장해있는 사람인지 확인한 뒤
+				// Insert를 통해 입장을 시킨다.
 				requestQuery(
-					"INSERT INTO tbl_chat_room_has_tbl_member(tbl_chat_room_id, tbl_member_id) VALUES (?, ?)",
+					"SELECT * FROM tbl_chat_room_has_tbl_member WHERE tbl_chat_room_id = ? AND tbl_member_id = ?",
 					[data.chatRoomNumber, tuple["id"]],
-					
-					//Insert Query는 반환되는 값이 Object타입이다.
-					//
-					//ex)
-					// { 
-					//  fieldCount: 0,
-					//  affectedRows: 1,
-					//  insertId: 0,
-					//  serverStatus: 2,
-					//  warningCount: 0,
-					//  message: '',
-					//  protocol41: true,
-					//  changedRows: 0 
-					// }
-					function(oResult) {
-						var affectedRows = oResult["affectedRows"];
-						
-						//TODO 결과가 없을때를 대비한 error event를 만들자						
-						//if (oResult !== undefined, oResult !== null)
-						//if ( affectedRows !== 1 ) {
-						//	socket.emit('error', message);
-						// 	return;
-						//} else {
-							
-						//마커에 저장된 정보가 전달된다.
-						//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
-						socket.join(data.chatRoomNumber);
+					function(aResult){
+						if (aResult[0] === undefined) {
+							console.log("채팅방에 참여하지 않은 유저");
+
+							//tbl_chat_room_has_tbl_member에 대한 쿼리실행
+							requestQuery(
+								"INSERT INTO tbl_chat_room_has_tbl_member(tbl_chat_room_id, tbl_member_id) VALUES (?, ?)",
+								[data.chatRoomNumber, tuple["id"]],
+								
+								//Insert Query는 반환되는 값이 Object타입이다.
+								//
+								//ex)
+								// { 
+								//  fieldCount: 0,
+								//  affectedRows: 1,
+								//  insertId: 0,
+								//  serverStatus: 2,
+								//  warningCount: 0,
+								//  message: '',
+								//  protocol41: true,
+								//  changedRows: 0 
+								// }
+								function(oResult) {
+									var affectedRows = oResult["affectedRows"];
+									
+									//TODO 결과가 없을때를 대비한 error event를 만들자						
+									//if (oResult !== undefined, oResult !== null)
+									//if ( affectedRows !== 1 ) {
+									//	socket.emit('error', message);
+									// 	return;
+									//} else {
+										
+									//마커에 저장된 정보가 전달된다.
+									//마커에 저장되어있던 정보(room number)에 대한 소켓에 참여합니다.
+									socket.join(data.chatRoomNumber);
+								}
+							);	
+
+						}
+						else {
+							 console.log("CHATTING ROOM ID : " + aResult[0]["tbl_chat_room_id"]);
+							 console.log("MEMBER ID : " + aResult[0]["tbl_member_id"]);
+						}
 					}
-				);	
+				);
+
 		};
 		/********************************************************************************************************************/
 		
