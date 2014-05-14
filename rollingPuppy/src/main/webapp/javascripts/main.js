@@ -788,6 +788,7 @@ var oChat = {
 		eChattingContents: null,
 		eInputBox: null,
 		eSendButton: null,
+		eFoldButton: null,
 		eExitButton: null,
 		nickname: null,
 		currentChatRoomNumber: null,
@@ -818,7 +819,13 @@ var oChat = {
 			this.eInputBox.value="";
 		},
 		
-		exitChattingRoom: function(e){
+		// TODO 채팅방이 접히는 애니메이션 구현 필요
+		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
+		foldChattingRoom: function(e) {
+			this.eChattingRoom.setAttribute('style', 'display: none;');
+		},
+		
+		exitChattingRoom: function(e) {
 			this.socket.emit('exit', {'email': this.socket.email, 'chatRoomNumber': this.currentChatRoomNumber});
 			this.eChattingRoom.setAttribute('style', 'display: none;');
 		},
@@ -835,11 +842,17 @@ var oChat = {
 			this.eChattingContents = document.querySelector(".chattingContents");
 			this.eInputBox = document.querySelector(".chattingInputBox");
 			this.eSendButton = document.querySelector(".chattingSendButton");
+			this.eFoldButton = document.querySelector(".foldChattingRoomButton");
 			this.eExitButton = document.querySelector(".exitChattingRoomButton");
 			
 			// 메시지 전송 버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eSendButton.addEventListener("click", function(e) {
 				this.sendMessage( this.eInputBox.value );
+			}.bind(this), false);
+			
+			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
+			this.eFoldButton.addEventListener("click", function(e) {
+				this.foldChattingRoom();
 			}.bind(this), false);
 			
 			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
