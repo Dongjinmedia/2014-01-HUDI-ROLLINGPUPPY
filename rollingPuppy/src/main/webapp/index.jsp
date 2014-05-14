@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Rolling Puppy</title>
-	
+	<meta name="viewport" content="width=device-width", initial-scale=5.0, user-scalable=no />
 	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css?20140501">
 	<script src="/javascripts/index.js?20140501"></script>
 </head>
@@ -65,8 +65,6 @@
 				</p>
 			</form>
 		</div>
-		
 	</div>
-	<script src="/javascripts/index.js"></script>
 </body>
 </html>
