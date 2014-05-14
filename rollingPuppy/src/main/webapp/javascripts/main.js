@@ -1143,6 +1143,7 @@ oReverseGeoCode = {
 		getAddress: function(latitude, longitude, callback) {
 			console.log("working");
 			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
+			//callback function get Parameter -> results, status
 			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
 		},
 		initialize: function() {
@@ -1243,5 +1244,3 @@ function initialize() {
 	}
 	//------------------------------------------------------------------------------------//
 }
-
-window.onload = initialize();
