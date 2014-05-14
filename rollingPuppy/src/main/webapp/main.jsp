@@ -204,14 +204,14 @@
 			<div class="chattingRoom">
 				<div class="chattingRoomTopBar">
 					<div class="chattingRoomTitle">방 제목</div>
-					<div class="foldChattingRoomButton">_</div>
-					<div class="exitChattingRoomButton">X</div>
+					<div><button class="foldChattingRoomButton">_</button></div>
+					<div><button class="exitChattingRoomButton">X</button></div>
 				</div>
-				<div class="chattingRoomContents"></div>
+				<div class="chattingContents"></div>
 				<div class="chattingMemberList"></div>
 				<div class="chattingRoomFooter">
-					<div class="chattingInputBox"></div>
-					<div class="chattingSendButton">전송하기</div>
+					<textarea class="chattingInputBox"></textarea>
+					<div class="chattingSendButton">SEND</div>
 				</div>
 			</div>
 
