@@ -198,6 +198,28 @@ io.sockets.on('connection', function (socket) {
 		});
 	});
 	
+	// TODO 현재는 DB에서 사용자 정보를 삭제하는 작업만 된 상태. socket과의 connection을 끊는 부분의 구현이 필요하다.
+	// 채팅방을 나가겠다는 요청을 처리한다.
+	socket.on('exit', function(data) {
+
+		requestQuery(
+			// 채팅방을 나가려는 사용자의 정보를 가져온다.
+			"SELECT * FROM tbl_member WHERE email = ?",
+			[data["email"]],
+			// DB에서 가져온 사용자 정보(id값)와 클라이언트로부터 전달받은 채팅방 번호를 통해
+			// tbl_chat_room_has_tbl_member 테이블에서 해당 사용자를 제거한다. 
+			function(aResult) {
+				var tuple = aResult[0]
+				
+				requestQuery(
+					"DELETE FROM tbl_chat_room_has_tbl_member WHERE tbl_chat_room_id = ? AND tbl_member_id = ?",
+					[data.chatRoomNumber, tuple["id"]],
+					function(oResult) {
+						io.sockets.in(data.chatRoomNumber).emit('exit', tuple["nickname_noun"]);
+					});
+			});
+	})
+
 	//Connection을 끊거나, 끊겼을경우
 	socket.on('disconnect', function() {
 		socket.get('room', function(error, room) {
