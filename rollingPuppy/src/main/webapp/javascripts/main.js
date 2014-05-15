@@ -888,7 +888,7 @@ var oChat = {
 /*********************************************************************************************************
  * 채팅창 이동에 대한  소스코드 시작
  **********************************************************************************************************/
-
+/*
 document.querySelector(".chattingRoomTopBar").addEventListener("mousedown", mouseDown, false);
 window.addEventListener("mouseup", mouseUp, false);
 var distanceX = null;
@@ -919,7 +919,7 @@ function moveWindow(e) {
 	targetWindow.style.left = mouseX - distanceX + "px";
 	targetWindow.style.top = mouseY - distanceY + "px";
 }
-
+*/
 /*********************************************************************************************************
  * 채팅창 이동에 대한  소스코드 종료
  **********************************************************************************************************/
