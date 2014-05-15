@@ -96,13 +96,16 @@ public class DAO {
 				if ( sqlTargetData == null)
 					continue;
 				
+				/*
+				//Test Print Code
 				logger.info("fieldName : "+fieldName+" | fieldType : "+field.getType() + " | sqlTargetData :  "+sqlTargetData);
 				
 				if ( sqlTargetData.getClass() !=null 
 					&& sqlTargetData.getClass().getFields() != null 
 					&& sqlTargetData.getClass().getFields().length > 1 ) {
 					logger.info(" | sqlTargetType : "+sqlTargetData.getClass().getFields()[0].getType());
-				}
+				}*/
+				
 				//targetClass(DTO)에 담긴 모든 method(함수)중에서, "set메소드명"해당하는 Method객체를 가져온다.
 				//Parameter는
 				//1. 메소드명  

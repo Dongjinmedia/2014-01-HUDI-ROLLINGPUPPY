@@ -229,4 +229,5 @@
 <script>
 	window.onload = initialize();
 </script>
+<script type="text/javascript" src="/javascripts/search.js"></script> 
 </html>

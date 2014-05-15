@@ -4,7 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
@@ -31,31 +33,12 @@ public class SearchController implements Controller {
 	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=513cd098517cce82ec819f7862fb362f";
 	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
 	
-//	@Override
-//	public void doPost(HttpServletRequest request, HttpServletResponse response)
-//			throws ServletException, IOException {
-//		logger.info("into doPost of search Controller");
-//		
-//		request.setCharacterEncoding("utf-8");
-//		response.setContentType("application/json");
-//		PrintWriter out = response.getWriter();
-//		Map<String, Object> resultJsonData = new HashMap<String, Object>();
-//		Gson gson = new Gson();
-//	
-//		String requestKeyword = request.getParameter("search_word");
-//		System.out.println("search_word: " + requestKeyword);
-//		String requestURLString = REQUEST_URL_FRONT + "&query=" + requestKeyword +REQUEST_URL_TAIL;
-//		logger.info("requestURL :" + requestURLString);
-//		URL requestURL = new URL(requestURLString);	
-//		getDataFromXML(request, response, requestURL);
-//	}
-//	
-	
 	//꼭 읽어야 할 레퍼런스 
 	//http://ko.wikipedia.org/wiki/XPath
 	//http://viralpatel.net/blogs/java-xml-xpath-tutorial-parse-xml/
-	public Map<String, Object> getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
+	public List<Map<String, Object>> getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
 		
+		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		//dom object 해석을 위해 documentBuilder 객체 필요
 		//documentBuilder 객체를 만들기 위한 팩토리 클래스 선언
@@ -79,7 +62,7 @@ public class SearchController implements Controller {
 			System.err.println(e);
 		}
 		
-		System.out.println(document);
+		//System.out.println(document);
 		
 		//XPathFactory를 통해 XPath 객체를 가져옴
 		XPath xPath = XPathFactory.newInstance().newXPath();
@@ -99,15 +82,15 @@ public class SearchController implements Controller {
 		for(int i = 0 ; i< itemNodeList.getLength(); ++i){
 			Node targetNode = itemNodeList.item(i).getFirstChild();
 			resultJsonData.put("storeName",targetNode.getFirstChild().getNodeValue());
-			//System.out.println("가게명 :" + targetNode.getFirstChild().getNodeValue());
+			System.out.println("가게명 : " + targetNode.getFirstChild().getNodeValue());
 			
 			Node nextNode = targetNode.getNextSibling();
 			
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+				if ( nextNode.getFirstChild() != null) {
 					resultJsonData.put("link",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("링크 : "+nextNode.getFirstChild().getNodeValue());
-			
+					System.out.println("링크 : "+nextNode.getFirstChild().getNodeValue());					
+				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null)
@@ -150,10 +133,11 @@ public class SearchController implements Controller {
 				if ( nextNode.getFirstChild() != null)
 					resultJsonData.put("cartesianY",nextNode.getFirstChild().getNodeValue());
 					//System.out.println("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
-			
+
+			resultList.add(resultJsonData);
 			//System.out.println("\n=============================================\n\n\n");
 		}
-		return resultJsonData;
+		return resultList;
 	}
 
 
@@ -162,17 +146,20 @@ public class SearchController implements Controller {
 			throws ServletException, IOException {
 		logger.info("indo doGet of Search Controller");
 		
-		
+		request.setCharacterEncoding("utf-8");
+		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		Map<String, Object> resultJsonData = new HashMap<String, Object>();
+		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>(); 
 		Gson gson = new Gson();
 		
 		String searchKeyword = request.getParameter("searchKeyword");
 		String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword +REQUEST_URL_TAIL;
+		logger.info("requestURLString :" + requestURLString);
 		URL requestURL = new URL(requestURLString);	
-		resultJsonData = getDataFromXML(request, response, requestURL);
-		out.println(gson.toJson(resultJsonData));
+		resultList = getDataFromXML(request, response, requestURL);
+		out.println(gson.toJson(resultList));
+		
 	}
 
 

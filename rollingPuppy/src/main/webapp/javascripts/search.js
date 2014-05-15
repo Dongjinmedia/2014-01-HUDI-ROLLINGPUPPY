@@ -2,8 +2,7 @@ var searchAPIkeyRealServer = "513cd098517cce82ec819f7862fb362f";
 
 
 var initialize = function() {
-	var eSubmit = document.getElementById("submit");
-	//child로 해서 submit button 찾을것 
+	var eSubmit = document.getElementById("search_box").children[1]; 
 	console.log(eSubmit);
 	eSubmit.addEventListener('click', getResultXml, false);
 }
@@ -11,7 +10,7 @@ var initialize = function() {
 function getResultXml(event){
 	event.preventDefault();
 	
-	var queryKeyword = document.getElementById("search_box").value; 
+	var queryKeyword = document.getElementById("search_box").children[0].value; 
 	//child로 해서 search_word찾아라 
 	console.log(queryKeyword);
 	var url = "/search?searchKeyword="+queryKeyword;
