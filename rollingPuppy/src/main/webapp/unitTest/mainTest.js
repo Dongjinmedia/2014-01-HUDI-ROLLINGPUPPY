@@ -38,3 +38,24 @@ asyncTest("리버스 지오코드 Object의 getAddress 메소드 테스트", fun
 		equal(returnAddress, address);	
 	}.bind(this), 1000);
 });
+
+
+
+test("로그인 클릭 테스트", function(){
+
+	//Given
+	var loginNode = document.querySelector(".loginArea");
+	var loginNodeStyle = getStyleValue(loginNode, "display");
+	
+	var loginButton = document.querySelector(".c_login");
+	loginButton.addEventListener("click",loginChoiceONOFF);
+	
+	loginNode.style.display = "none";
+	
+	//When
+	fireEvent(loginButton,"click");
+
+	//Then
+	equal(loginNode.style.display, "block");
+	
+});

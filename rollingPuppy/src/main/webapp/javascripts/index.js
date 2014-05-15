@@ -1,14 +1,8 @@
 function initPage() {
 	var COOKIE_EMAIL = "member.lastLoggedEmail";
 	var lastLoggedEmail = getCookieValue(COOKIE_EMAIL);
-//	var emailToBeChecked = null;
 	fillEmail(lastLoggedEmail);
-
-	//document.getElementById("join_form").onsubmit = validateJoinEmail;	
-	//document.getElementById("login_form").onsubmit = validateLoginEmail;
 	
-
-	//윤성소스 추가
 	document.querySelector(".c_login").addEventListener('click', loginChoiceONOFF, false);
 	document.querySelector(".c_join").addEventListener('click', joinChoiceONOFF, false);
 	document.querySelector(".loginArea input[type=submit]").addEventListener('click', login, false);
@@ -51,17 +45,6 @@ function fillEmail(email) {
 	checkboxKeepEmail.checked = true;
 }
 
-//email validation check를 하는 함수
-//두 개의 submit 버튼중 어떤 버튼이 눌렸는지 즉, 어느 칸에 입력된 email에 대하여 validation check를 할 것인지 찾는 함수 
-//function checkClickedButtonJoin() {
-//	var emailToBeChecked = document.getElementById("joinEmail").value;​
-//	validateEmail(emailToBeChecked);
-//}
-//
-//function checkClickedButtonLogin() {
-//	var emailToBeChecked = document.getElementById("loginEmail").value;​
-//	validateEmail(emailToBeChecked);
-//}
 
 //input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함수 
 function isValidateEmailFormat(email) {
