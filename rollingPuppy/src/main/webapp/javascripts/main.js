@@ -979,7 +979,7 @@ var oCreateChattingRoom = {
 			
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
-			var limitNumValue = parseInt(this.eLimitNumberInput.value);
+			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
 			
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
