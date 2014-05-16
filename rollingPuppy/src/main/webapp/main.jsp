@@ -19,6 +19,12 @@
 <body>
 <div id="template" class="hidden" style="display:none;">
 	<ul>
+		<li class="cell none">
+			<div class="default">
+				<p class="icon-warning">
+				<p class="comment">추천 채팅방 리스트가 보여지는 창입니다.</p>
+			</div>
+		</li>
 		<li class="cell chatRoom"></li>
 		<li class="cell search">
 			<p class="title icon-title">갈빗집</p>
@@ -146,7 +152,7 @@
 					<div id="pc_recommendation">
 						<div class="default">
 							<p class="icon-warning">
-							<p>추천 채팅방 리스크가 보여지는 창입니다.</p>
+							<p>추천 채팅방 리스트가 보여지는 창입니다.</p>
 						</div>
 					</div>
 					<div id="pc_chatting">
