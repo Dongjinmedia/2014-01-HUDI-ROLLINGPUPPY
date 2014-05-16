@@ -39,7 +39,6 @@ public class SearchController implements Controller {
 	public List<Map<String, Object>> getDataFromXML(HttpServletRequest request, HttpServletResponse response,  URL requestURL ) throws IOException{
 		
 		List<Map<String, Object>> resultList = new ArrayList<Map<String,Object>>();
-		Map<String, Object> resultJsonData = new HashMap<String, Object>();
 		//dom object 해석을 위해 documentBuilder 객체 필요
 		//documentBuilder 객체를 만들기 위한 팩토리 클래스 선언
 		DocumentBuilderFactory builderFactory = DocumentBuilderFactory.newInstance();
@@ -48,7 +47,6 @@ public class SearchController implements Controller {
 		//이 객체는 root element 대표
 		//다른 packege의 document와의 차이점검색해볼것
 		Document document = null;
-
 		
 		try{
 			//DocumentBuilder클래스를 이용하여 xml 문서로부터 dom document 객체를 가져오기 위한 클래스 선언
@@ -80,6 +78,8 @@ public class SearchController implements Controller {
 		}
 		
 		for(int i = 0 ; i< itemNodeList.getLength(); ++i){
+			Map<String, Object> resultJsonData = new HashMap<String, Object>();
+			
 			Node targetNode = itemNodeList.item(i).getFirstChild();
 			resultJsonData.put("storeName",targetNode.getFirstChild().getNodeValue());
 			System.out.println("가게명 : " + targetNode.getFirstChild().getNodeValue());
@@ -89,57 +89,56 @@ public class SearchController implements Controller {
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null) {
 					resultJsonData.put("link",nextNode.getFirstChild().getNodeValue());
-					System.out.println("링크 : "+nextNode.getFirstChild().getNodeValue());					
+					logger.info("링크 : "+nextNode.getFirstChild().getNodeValue());					
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+				if ( nextNode.getFirstChild() != null) {
 					resultJsonData.put("category",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
-			
+					logger.info("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
+				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("explanation",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("설명 : "  + nextNode.getFirstChild().getNodeValue());
-			
+					logger.info("설명 : "  + nextNode.getFirstChild().getNodeValue());
+				}
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)			
+				if ( nextNode.getFirstChild() != null){			
 					resultJsonData.put("phoneNumber",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
-			
+					logger.info("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
+				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+		 		if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("address",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("주소 : "  + nextNode.getFirstChild().getNodeValue());
-			
+					logger.info("주소 : "  + nextNode.getFirstChild().getNodeValue());
+		 		}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
-					//System.out.println("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
+				if ( nextNode.getFirstChild() != null){
+					logger.info("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
 					resultJsonData.put("roadAddress",nextNode.getFirstChild().getNodeValue());
-		
+				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("cartesianX",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
-			
+					logger.info("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
+				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
-				if ( nextNode.getFirstChild() != null)
+				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("cartesianY",nextNode.getFirstChild().getNodeValue());
-					//System.out.println("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
-
+					logger.info("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
+				}
 			resultList.add(resultJsonData);
-			//System.out.println("\n=============================================\n\n\n");
+			logger.info("\n=============================================\n\n\n");
 		}
 		return resultList;
 	}
-
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -159,6 +158,7 @@ public class SearchController implements Controller {
 		URL requestURL = new URL(requestURLString);	
 		resultList = getDataFromXML(request, response, requestURL);
 		out.println(gson.toJson(resultList));
+		logger.info(gson.toJson(resultList));
 		
 	}
 
