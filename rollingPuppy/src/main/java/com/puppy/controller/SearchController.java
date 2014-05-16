@@ -57,7 +57,8 @@ public class SearchController implements Controller {
 			InputStream inputStream = requestURL.openStream();
 			document = builder.parse(inputStream);
 		} catch(Exception e){
-			System.err.println(e);
+			//System.err.println(e);
+			logger.error("Search Controller documentBuildFactory Error :",e);
 		}
 		
 		//System.out.println(document);
@@ -74,7 +75,7 @@ public class SearchController implements Controller {
 			String expression = "/rss/channel/item";
 			itemNodeList = (NodeList) xPath.compile(expression).evaluate(document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			System.err.println(e);
+			logger.error("XPath error : ",e);
 		}
 		
 		for(int i = 0 ; i< itemNodeList.getLength(); ++i){
@@ -82,60 +83,60 @@ public class SearchController implements Controller {
 			
 			Node targetNode = itemNodeList.item(i).getFirstChild();
 			resultJsonData.put("storeName",targetNode.getFirstChild().getNodeValue());
-			System.out.println("가게명 : " + targetNode.getFirstChild().getNodeValue());
+			//logger.info("가게명 : " + targetNode.getFirstChild().getNodeValue());
 			
 			Node nextNode = targetNode.getNextSibling();
 			
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null) {
 					resultJsonData.put("link",nextNode.getFirstChild().getNodeValue());
-					logger.info("링크 : "+nextNode.getFirstChild().getNodeValue());					
+					//logger.info("링크 : "+nextNode.getFirstChild().getNodeValue());					
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null) {
 					resultJsonData.put("category",nextNode.getFirstChild().getNodeValue());
-					logger.info("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("카테고리 : "  + nextNode.getFirstChild().getNodeValue());
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("explanation",nextNode.getFirstChild().getNodeValue());
-					logger.info("설명 : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("설명 : "  + nextNode.getFirstChild().getNodeValue());
 				}
 			
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null){			
 					resultJsonData.put("phoneNumber",nextNode.getFirstChild().getNodeValue());
-					logger.info("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("전화번호 : "  + nextNode.getFirstChild().getNodeValue());
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 		 		if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("address",nextNode.getFirstChild().getNodeValue());
-					logger.info("주소 : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("주소 : "  + nextNode.getFirstChild().getNodeValue());
 		 		}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null){
-					logger.info("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("도로명주소 : "  + nextNode.getFirstChild().getNodeValue());
 					resultJsonData.put("roadAddress",nextNode.getFirstChild().getNodeValue());
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("cartesianX",nextNode.getFirstChild().getNodeValue());
-					logger.info("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("카텍좌표계_X : "  + nextNode.getFirstChild().getNodeValue());
 				}
 			nextNode = nextNode.getNextSibling();
 			if (nextNode != null)
 				if ( nextNode.getFirstChild() != null){
 					resultJsonData.put("cartesianY",nextNode.getFirstChild().getNodeValue());
-					logger.info("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
+					//logger.info("카텍좌표계_Y : "  + nextNode.getFirstChild().getNodeValue());
 				}
 			resultList.add(resultJsonData);
-			logger.info("\n=============================================\n\n\n");
+			//logger.info("\n=============================================\n\n\n");
 		}
 		return resultList;
 	}

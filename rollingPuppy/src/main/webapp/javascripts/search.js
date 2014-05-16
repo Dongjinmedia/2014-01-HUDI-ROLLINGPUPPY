@@ -11,7 +11,6 @@ function getResultXml(event){
 	
 	
 	var queryKeyword = document.getElementById("search_box").children[0].value; 
-	//child로 해서 search_word찾아라 
 	var url = "/search?searchKeyword="+queryKeyword;
 	
 	var request = new XMLHttpRequest();
