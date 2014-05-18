@@ -107,11 +107,11 @@ public class Util {
 			
 			//만약 currentMarker가 null일경우 (맨 처음 실행될때를 의미)
 			//currentMarker의 아이디값과 room이 할당되어 있는 marker_id가 다를경우, 새로운 Marker객체를 생성한다.
-			if ( currentMarker == null || currentMarker.getId() != room.getTbl_marker_id() ) {
-				currentMarker = new JsonMarker(room.getTbl_marker_id());
-				currentMarker.setLocation_latitude(room.getLocation_latitude());
-				currentMarker.setLocation_longitude(room.getLocation_longitude());
-				currentMarker.setLocation_name(room.getLocation_name());
+			if ( currentMarker == null || currentMarker.getId() != room.getTblMarkerId() ) {
+				currentMarker = new JsonMarker(room.getTblMarkerId());
+				currentMarker.setLocation_latitude(room.getLocationLatitude());
+				currentMarker.setLocation_longitude(room.getLocationLongitude());
+				currentMarker.setLocation_name(room.getLocationName());
 				returnList.add(currentMarker);
 			}
 			//currentMarker가 room채팅방이 속해야 하는  Marker객체가 맞으므로, chatRoom객체의 데이터를 그대로 더해준다.

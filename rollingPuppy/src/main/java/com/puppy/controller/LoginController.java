@@ -96,8 +96,8 @@ public class LoginController implements Controller {
 			
 			//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다. 
 			session.setAttribute(Constants.SESSION_MEMBER_EMAIL, member.getEmail());
-			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNickname_adjective());
-			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNickname_noun());
+			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNicknameAdjective());
+			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNicknameNoun());
 			
 			//최종 로그인시간을 업데이트한다.
 			int successUpdateQueryNumber = memberDao.updateLastLoggedTime(member.getId());
@@ -108,7 +108,7 @@ public class LoginController implements Controller {
 			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(
 					Constants.JSON_RESPONSE_NICKNAME, //key 
-					member.getNickname_adjective() + " "+member.getNickname_noun()); //value
+					member.getNicknameAdjective() + " "+member.getNicknameNoun()); //value
 		} else {
 			//일치하는 비밀번호가 데이터베이스에 존재하지 않음
 			loginResult = ThreeWayResult.FAIL;

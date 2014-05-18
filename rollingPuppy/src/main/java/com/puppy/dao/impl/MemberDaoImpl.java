@@ -83,8 +83,8 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			insertPreparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			insertPreparedStatement.setString(1, member.getEmail());
 			insertPreparedStatement.setString(2, member.getPw());
-			insertPreparedStatement.setString(3, tempMember.getNickname_adjective());
-			insertPreparedStatement.setString(4, tempMember.getNickname_noun());
+			insertPreparedStatement.setString(3, tempMember.getNicknameAdjective());
+			insertPreparedStatement.setString(4, tempMember.getNicknameNoun());
 			
 			successQueryNumber = insertQuery(insertPreparedStatement, member); 
 		} catch (Exception e) {

@@ -85,11 +85,11 @@ public class ChatController implements Controller {
 		try {
 			//각각의 Part객체를 가져온다.
 			title = request.getAttribute( Constants.REQUEST_CHATROOM_TITLE ).toString();
-			max = (Integer) request.getAttribute( Constants.REQUEST_CHATROOM_MAX );
+			max = Integer.parseInt( request.getAttribute( Constants.REQUEST_CHATROOM_MAX ).toString() );
 			name = request.getAttribute( Constants.REQUEST_CHATROOM_NAME ).toString();
 			latitude = new BigDecimal( request.getAttribute( Constants.REQUEST_CHATROOM_LATITUDE ).toString() );
 			longitude = new BigDecimal( request.getAttribute( Constants.REQUEST_CHATROOM_LONGITUDE ).toString() );
-			zoom = (Integer) request.getAttribute( Constants.REQUEST_CHATROOM_ZOOM );
+			zoom = Integer.parseInt( request.getAttribute( Constants.REQUEST_CHATROOM_ZOOM ).toString() );
 			
 			//database에 입력해야하는 모든 데이터가 존재한다면
 			if ( title !=  null && max != 0 && name != null && latitude != null && longitude != null && zoom != 0 ) {
@@ -99,9 +99,9 @@ public class ChatController implements Controller {
 				
 				chatRoom.setTitle(title);
 				chatRoom.setMax(max);
-				chatRoom.setLocation_name(name);
-				chatRoom.setLocation_latitude(latitude);
-				chatRoom.setLocation_longitude(longitude);
+				chatRoom.setLocationName(name);
+				chatRoom.setLocationLatitude(latitude);
+				chatRoom.setLocationLongitude(longitude);
 				
 				//데이터베이스에 새로운 채팅방 데이터를 삽입
 				//insert메서드는 Parameter로 전달되는 DTO에 새로 추가되는 데이터베이스 행의 'id'값을 입력해준다. 
@@ -116,10 +116,10 @@ public class ChatController implements Controller {
 					//클라이언트에서 사용하는 데이터만을 모아서 보내기 위한 JsonDTO선언
 					//데이터를 모두 담아둔다.
 					//자세한 사항은 Util의 getMarkerCentralListFromChatRoomList함수에 설명을 참조하자.
-					JsonMarker newMarker = new JsonMarker(chatRoom.getTbl_marker_id());
-					newMarker.setLocation_name(chatRoom.getLocation_name());
-					newMarker.setLocation_latitude(chatRoom.getLocation_latitude());
-					newMarker.setLocation_longitude(chatRoom.getLocation_longitude());
+					JsonMarker newMarker = new JsonMarker(chatRoom.getTblMarkerId());
+					newMarker.setLocation_name(chatRoom.getLocationName());
+					newMarker.setLocation_latitude(chatRoom.getLocationLatitude());
+					newMarker.setLocation_longitude(chatRoom.getLocationLongitude());
 					
 					newMarker.addChatRooms(new JsonChatRoom(chatRoom.getId(), chatRoom.getTitle(), chatRoom.getMax()));
 					
