@@ -1,19 +1,19 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /*
  * 404, 500 Error 발생시 자동으로 호출되는 Controller
  */
-@SuppressWarnings("serial")
-public class ErrorController extends HttpServlet{
+public class ErrorController implements Controller {
 		
 	private static final Logger logger = LoggerFactory.getLogger(ErrorController.class);
 	
@@ -21,8 +21,7 @@ public class ErrorController extends HttpServlet{
 	private final String ERROR404_JSPFILE_NAME = "error404.jsp";
 	private final String ERROR500_JSPFILE_NAME = "error500.jsp";
 	
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
 		//요청에 대한 statusCode를 반환
 		Object statusCodeObject = request.getAttribute("javax.servlet.error.status_code");
@@ -72,6 +71,13 @@ public class ErrorController extends HttpServlet{
 		
 		RequestDispatcher view = request.getRequestDispatcher(errorPage);
 		view.forward(request, response); 
+		
+	}
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO Auto-generated method stub
 		
 	}
 }

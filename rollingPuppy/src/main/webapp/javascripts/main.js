@@ -19,30 +19,48 @@ function getNode(node) {
     return document.getElementById(node);
 }
 
+//Node에 className를 추가하는 함수
+function addClassName(node, strClassName) {
+	// 기존에 className가 없던 경우
+	if (node.className === "") {
+		node.className = strClassName;
+		return ;
+	}
+	
+	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+	node.className += " " + strClassName;
+}
+
+//Node에 특정 className을 제거하는 함수
+function removeClassName(node, strClassName) {
+	// 기존에 className가 없는 경우 함수를 종료합니다
+	if (node.className === "") {
+		return ;
+	}
+	
+	// node에 className이 존재하고, target className 하나만 있는 경우
+	if (node.className.length === strClassName.length) {
+		node.className = "";
+		return ;
+	}
+	
+	// node에 className가 다수 존재하는 경우의 target className 삭제
+	// node.className에 replace 결과물을 대입합니다.
+	node.className = node.className.replace(" " + strClassName, "").toString();
+}
+
 //Ajax 통신을 담당하는 모듈 Object
 var oAjax = {
-		//Ajax 결과값을 담아두는 Object
-		oAjaxResult: null,
-		
 		//Ajax GET 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (url, oParameters) {
-			this._getObjectFromJsonRequest(url, "GET", oParameters, this.callback);
-			return this.oAjaxResult;
+		getObjectFromJsonGetRequest: function (url, oParameters, callback) {
+			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
 		},
 		
 		//Ajax POST 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonPostRequest: function (url, oParameters) {
-			this._getObjectFromJsonRequest(url, "POST", oParameters, this.callback);
-			return this.oAjaxResult;
-		},
-		
-		//서버통신이후에 Ajax 객체를 this에 bind해서 전달한다.
-		//메서드의 this는 XHR객체를 의미한다.
-		//TODO 안좋은 방법같은데 조금 더 리서치를 해보자..
-		callback: function() {
-			window.oAjax.oAjaxResult =  JSON.parse(this.responseText);
+		getObjectFromJsonPostRequest: function (url, oParameters, callback) {
+			this._getObjectFromJsonRequest(url, "POST", oParameters, callback);
 		},
 		
 		//Ajax 요청함수
@@ -60,12 +78,10 @@ var oAjax = {
 			
 			request.open(method, url, false	);
 			request.onreadystatechange = function() {
-				
 				if (request.readyState == 4 && request.status == 200) {
-					var obj = JSON.parse(request.responseText);
-					//인자로 전달된 callback함수를 bind, 실행
+					//인자로 전달된 callback함수를 실행
 					if ( typeof callback == "function" ) {
-						callback.apply(request);
+						callback(request);
 					}
 				}
 			}
@@ -100,16 +116,16 @@ var oAjax = {
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
 var Panel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
-	elContainer: document.getElementById('container'),
-	elPanel: document.getElementById('panel'),
+	elContainer: document.getElementById("container"),
+	elPanel: document.getElementById("panel"),
 	
 	// panel 관련 이벱트 등록 함수.
 	addEvents: function() {
-		var elPanelButtons = this.elPanel.querySelector('#panel_buttons');
+		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
 		
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		elPanelButtons.addEventListener(
-				'click',
+				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
 	},
@@ -118,10 +134,6 @@ var Panel = {
 	// CSS3 animation은 CSS 속성으로 동작합니다.
 	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
 	fnPanelButtonsHandler: function(event) {
-		// Exception 처리
-		if (!event || !event.target) {
-			return ;
-		}
 		event.preventDefault();
 
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
@@ -129,44 +141,42 @@ var Panel = {
 
 		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
-		if (strButtonClassName === 'panel_button_fold') {
+		// 등호가 세 개이면 type check까지 됨 (2개의 경우 "2" == 2 가 true)
+		if (strButtonClassName === "panel_button_fold") {
 			boolFold = true;
 		}
 		
 		// boolFold == true 면 fold_panel 실행
 		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
-			this.elContainer.className = 'fold_panel';
+			removeClassName(this.elContainer, "unfold_panel");
+			addClassName(this.elContainer, "fold_panel");
 		} else {
-			this.elContainer.className = 'unfold_panel';
+			removeClassName(this.elContainer, "fold_panel");
+			addClassName(this.elContainer, "unfold_panel");
 		}
 	}
 }
 
 // main.jsp의 nav_list 관련 기능들을 모아둔 객체
 var NavList = {
-	elNavList: document.getElementById('nav_list'),
+	elNavList: document.getElementById("nav_list"),
 	// 마지막 클릭된 nav_list 메뉴와 해당하는 panel_contents를 기억해둡니다.
 	// 기본값은 search로 되어 있습니다.
-	elLatestClickedMenu: document.querySelector('#nav_list>.on'),
-	elLatestPanelContents: document.querySelector('#panel_contents>.on'),
+	elLatestClickedMenu: document.querySelector("#nav_list>.on"),
+	elLatestPanelContents: document.querySelector("#panel_contents>.on"),
 	
 	// 이벤트 등록 함수. ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
 	addEvents: function() {
 		this.elNavList.addEventListener(
-				'click',
+				"click",
 				this.fnNavButtonHandler.bind(this)
 		);
 	},
 	
 	fnNavButtonHandler: function(event) {
-		// 예외 처리.
-		// 이벤트나 클릭된 객체가 없을 시 탈출문.
-		if (!event || !event.target) {
-			return ;
-		}
 		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
-		if (event.target.tagName.toLowerCase() != 'a') {
+		if (event.target.tagName.toLowerCase() != "a") {
 			return ;
 		}
 		event.preventDefault();
@@ -174,16 +184,16 @@ var NavList = {
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.elLatestClickedMenu) {
-			this.elLatestClickedMenu.className = '';
-			this.elLatestPanelContents.className = '';
+			removeClassName(this.elLatestClickedMenu, "on");
+			removeClassName(this.elLatestPanelContents, "on");
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.elLatestClickedMenu = event.target.parentNode;
-		this.elLatestPanelContents = document.getElementById('pc_' + event.target.className);
+		this.elLatestPanelContents = document.getElementById("pc_" + event.target.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
-		this.elLatestClickedMenu.className = 'on';
-		this.elLatestPanelContents.className = 'on';
+		addClassName(this.elLatestClickedMenu, "on");
+		addClassName(this.elLatestPanelContents, "on");
 	}
 }
 
@@ -328,21 +338,23 @@ var oNaverMap = {
 	    		
 	    		
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
-	    		//var aResponse = oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
-	    		var oResponse = oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters);
-	    		
-	    		var isSuccess = oResponse['isSuccess'];
-	    		
-	    		if ( isSuccess ) {
-	    			var aMarkerList = oResponse["markerList"];
-	    			//Marker정보가 담긴 Array를 돌면서 현재 맵뷰상의 마커정보를 업데이트한다.
-	    			for (var index in aMarkerList) {
-	    				this.updateViewPointMarker(aMarkerList[index]);
-	    			}
-	    		} else {
-	    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
+	    		//oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			var isSuccess = oResponse['isSuccess'];
+
+	    			if ( isSuccess ) {
+		    			var aMarkerList = oResponse["markerList"];
+		    			//Marker정보가 담긴 Array를 돌면서 현재 맵뷰상의 마커정보를 업데이트한다.
+		    			for (var index in aMarkerList) {
+		    				this.updateViewPointMarker(aMarkerList[index]);
+		    			}
+		    		} else {
+		    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
+		    		}
 	    		}
 	    		
+	    		oAjax.getObjectFromJsonPostRequest("/chat/getList", oParameters, callback.bind(this));
 	    	}
 	    },
 	    
@@ -436,8 +448,6 @@ var oNaverMap = {
 	            // 겹침 마커 클릭한거면
 	            if (!oCustomEvent.clickCoveredMarker) {
 	            	
-	            	//TODO markerClicker 객체에서 완성된 marker목록을 가져오도록 소스코드를 만들어야 한다.
-	            	//TODO List 목록 가져와서 리스트만들기 // working
 	            	//현재는 마커전체레벨로 저장하고 있다.
 	                
 	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
@@ -473,9 +483,22 @@ var oNaverMap = {
 		            //oCustomEvent.point의 x가 경도, y가 위도. 
 		            //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
 		            //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
-	                var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
-	                reverseGeo(clickedLatlng);
-	                
+	                //var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
+	                //reverseGeo(clickedLatlng);
+	                //oMapClicker.setLocationName(reverseGeo(clickedLatlng));
+
+	                //oMapClicker에 장소명을 업데이트한다.
+	                var callback = function(results, status){
+	                	if(status == google.maps.GeocoderStatus.OK) {
+	                		if (results[0]) {
+	                			console.log(results[0].formatted_address);
+	                			oMapClicker.setLocationName(results[0].formatted_address);
+	                		}
+	                	} else {
+	                		console.log("reverseGeoCode status not fine ");
+	                	}
+	                };
+	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
 	        }
 	    },
 
@@ -761,46 +784,52 @@ var oMarkerClicker = {
 //working
 var oChat = {
 		socket: null,
-		messageBox: null,
-		inputBox: null,
+		eChattingRoom: null,
+		eChattingContents: null,
+		eInputBox: null,
+		eSendButton: null,
+		eFoldButton: null,
+		eExitButton: null,
 		nickname: null,
+		currentChatRoomNumber: null,
+		
+		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
-			alert("채팅방으로 이동합니다.");
-			var content = document.getElementById("content");
-			/*
-			 * TODO 하드코딩으로 추가하는 형태가 아닌, 미리 HTML에 채팅방소스를 구현해놓고, display값을 변경하면서 사용하는 식으로
-			 */
-			content.insertAdjacentHTML( 'beforeend',
-					"<div id='chat' style='position:absolute;left:50%;top:50%;display:block;'>" +
-						"<div id='textarea'>" +
-							"<dl id='txtappend'></dl>" +
-						"</div><br/>" +
-						"<input type='text' style='width: 255px;' id='txt' /><input type='button' value='Enter' id='btn'/>" +
-					"</div>");
+			// 채팅방 넘버를 저장해둔다.
+			this.currentChatRoomNumber = chatRoomNum; 
 			
-			
-			//TODO 위의 insertAdjacentHTML 형식을 없애면 삭제합니다.
-			//메세지 전송버튼을 클릭할 시
-			this.messageBox = document.getElementById("txtappend"); 
-			this.inputBox = document.getElementById("txt");
-			document.getElementById("btn").addEventListener('click', function(e) {
-				this.sendMessage( this.inputBox.value );
-			}.bind(this), false);
+			// 채팅창을 화면에 보이게 만든다.
+			this.eChattingRoom.setAttribute('style', 'display: block;');
 
-			//입장을 서버에 알린다
-			//이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
+			// 입장을 서버에 알린다.
+			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
 			this.socket.emit('join', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
 		},
+
 		enterChatRoomOthers: function(user) {
-			this.messageBox.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
+			this.eChattingContents.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
 		},
+		
 		sendMessage: function(message) {
 			this.socket.emit('message', this.nickname+ " : " + message);
 		},
+		
 		getMessage: function(message) {
-			this.messageBox.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
-			this.inputBox.value="";
+			this.eChattingContents.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
+			this.eInputBox.value="";
 		},
+		
+		// TODO 채팅방이 접히는 애니메이션 구현 필요
+		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
+		foldChattingRoom: function(e) {
+			this.eChattingRoom.setAttribute('style', 'display: none;');
+		},
+		
+		exitChattingRoom: function(e) {
+			this.socket.emit('exit', {'email': this.socket.email, 'chatRoomNumber': this.currentChatRoomNumber});
+			this.eChattingRoom.setAttribute('style', 'display: none;');
+		},
+		
 		initialize: function() {
 			this.socket = io.connect('http://125.209.195.202:3080');
 			
@@ -808,21 +837,33 @@ var oChat = {
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
 			this.socket.email = document.getElementById("email").value;
 			
-			//TODO 채팅전체 DIV를 가져오기. 하위 엘리먼트들은 그 ele을 중심으로 찾기
-//			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
-//			this.messageBox = document.getElementById("txtappend"); 
-//			this.inputBox = document.getElementById("txt");
+			// 채팅방을 이루고 있는 각 엘리먼트들을 가져온다.
+			this.eChattingRoom = document.querySelector(".chattingRoom");
+			this.eChattingContents = document.querySelector(".chattingContents");
+			this.eInputBox = document.querySelector(".chattingInputBox");
+			this.eSendButton = document.querySelector(".chattingSendButton");
+			this.eFoldButton = document.querySelector(".foldChattingRoomButton");
+			this.eExitButton = document.querySelector(".exitChattingRoomButton");
+			
+			// 메시지 전송 버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
+			this.eSendButton.addEventListener("click", function(e) {
+				this.sendMessage( this.eInputBox.value );
+			}.bind(this), false);
+			
+			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
+			this.eFoldButton.addEventListener("click", function(e) {
+				this.foldChattingRoom();
+			}.bind(this), false);
+			
+			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
+			this.eExitButton.addEventListener("click", function(e) {
+				this.exitChattingRoom();
+			}.bind(this), false);
 			
 			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
 			//Nodejs에서 웹서버에 요청하는 형태, 혹은 그 반대가 되어야 한다.
 			//P Tag에서는 .value가 적용되지 않아서 .innerText를 사용하였다.
 			this.nickname = document.getElementById("user_name").innerText;
-			
-//			TODO 현재는 InsertAdjacent로 하기 때문에 사용하지 못합니다.
-//			//메세지 전송버튼을 클릭할 시	
-//			document.getElementById("btn").addEventListener('click', function(e) {
-//				this.sendMessage( this.inputBox.value );
-//			}, false);
 			
 			//새로 접속 한 사용자가 있을 경우 알림을 받는다.
 			this.socket.on('join', function(user) {
@@ -832,11 +873,57 @@ var oChat = {
 			this.socket.on('message', function (message) {
 				this.getMessage(message);
 			}.bind(this));
+			
+			// TODO 채팅방에서 나가면 방에 남아있는 사람들이 누가 나갔는지 볼 수 있게 메시지를 띄워준다.
+			// 채팅방에서 나가면 알림을 해준다.
+			this.socket.on('exit', function (nickname) {
+				alert("채팅방에서 나가셨어요~");
+			})
 		}
 };
 /*********************************************************************************************************
  * Chatting에 대한 소스코드 종료
  **********************************************************************************************************/
+
+/*********************************************************************************************************
+ * 채팅창 이동에 대한  소스코드 시작
+ **********************************************************************************************************/
+/*
+document.querySelector(".chattingRoomTopBar").addEventListener("mousedown", mouseDown, false);
+window.addEventListener("mouseup", mouseUp, false);
+var distanceX = null;
+var distanceY = null;
+
+function mouseUp() {
+	 window.removeEventListener("mousemove", moveWindow, true);
+}
+
+function mouseDown(e) {
+	var mouseX = e.clientX - 61;
+	var mouseY = e.clientY - 52;
+	var targetWindow = document.querySelector(".chattingRoom");
+	var targetWindowStyle = {left: getStyle(targetWindow, "left"), top: getStyle(targetWindow, "top")};
+	var curX = targetWindowStyle.left.substring(0, targetWindowStyle.left.length-2);
+	var curY = targetWindowStyle.top.substring(0, targetWindowStyle.top.length-2);
+	distanceX = mouseX - curX;
+	distanceY = mouseY - curY;
+	
+	window.addEventListener("mousemove", moveWindow, true);
+}
+
+function moveWindow(e) {
+	var mouseX = e.clientX - 61;
+	var mouseY = e.clientY - 52;
+	var targetWindow = document.querySelector(".chattingRoom");
+
+	targetWindow.style.left = mouseX - distanceX + "px";
+	targetWindow.style.top = mouseY - distanceY + "px";
+}
+*/
+/*********************************************************************************************************
+ * 채팅창 이동에 대한  소스코드 종료
+ **********************************************************************************************************/
+
 
 /*********************************************************************************************************
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
@@ -892,7 +979,7 @@ var oCreateChattingRoom = {
 			
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
-			var limitNumValue = parseInt(this.eLimitNumberInput.value);
+			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
 			
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
@@ -921,7 +1008,7 @@ var oCreateChattingRoom = {
 			}
 			
 			//서버와 통신하는 코드
-			var oRequestData = {
+			var oRequest = {
 					"title": roomNameValue,
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
@@ -933,44 +1020,44 @@ var oCreateChattingRoom = {
 					"zoom": oNaverMap.getZoom()
 			};
 			
-			//oAjax모듈에게 request요청을 보내고, response 데이터를 Object형태로 가져온다.
-			var oResponseData = oAjax.getObjectFromJsonPostRequest("/chat/create", oRequestData);
+			var callback = function(request) {
+    			var oResponse = JSON.parse(request.responseText);
+    			
+    			var isSuccess = oResponse['isSuccess'];
+    			var newMarker = oResponse["newMarker"];
+    			var markerNumber = newMarker["id"];
+    			
+    			console.log("markerNumber : ",markerNumber);
+    			
+    			if ( isSuccess === true 
+    					&& markerNumber !== null 
+    					&& markerNumber !== undefined 
+    					&& isNaN(markerNumber) === false ) {
+    				
+    				oNaverMap.updateViewPointMarker(newMarker);
+    				
+    				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
+    				//마커를 생성
+    				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
+    				
+    				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
+    		    	
+    		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+    		    	oMapClicker.invisible();
+    		    	
+    		    	//createChatRoom의 input value값들을 초기화한다.
+    		    	this.clearRoomNameValue();
+    		    	this.clearLimitNumValue();
+    		    	
+    		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
+    		    	this.invisible();
+    			} else {
+    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
+    			} 
+			};
 			
-			console.log("Ajax Result : ",oResponseData);
-			
-			var isSuccess = oResponseData['isSuccess'];
-			var newMarker = oResponseData["newMarker"];
-			var markerNumber = newMarker["id"];
-			
-			console.log("markerNumber : ",markerNumber);
-			
-			//working
-			//TODO 마커에 고유 아이디값을 부여
-			if ( isSuccess === true 
-					&& markerNumber !== null 
-					&& markerNumber !== undefined 
-					&& isNaN(markerNumber) === false ) {
-				
-				oNaverMap.updateViewPointMarker(newMarker);
-				
-				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
-				//마커를 생성
-				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
-				
-				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
-		    	
-		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
-		    	oMapClicker.invisible();
-		    	
-		    	//createChatRoom의 input value값들을 초기화한다.
-		    	this.clearRoomNameValue();
-		    	this.clearLimitNumValue();
-		    	
-		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
-		    	this.invisible();
-			} else {
-				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
-			} 
+			//oAjax모듈에게 request요청을 보내고, callback함수를 실행한다.
+			oAjax.getObjectFromJsonPostRequest("/chat/create", oRequest, callback.bind(this));
 		}
 }
 
@@ -994,6 +1081,14 @@ var oMapClicker = {
 	clickBookMark: null,
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
+	
+	//위치정보를 보여주는 Element
+	eLocationName: null,
+	//MapClicker 상단에 표기되는 위치정보를 변경한다.
+	setLocationName: function(locationName) {
+		console.log(locationName);
+		this.eLocationName.innerText = locationName;
+	},
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
 		this.oMapClicker.style.left = clientPosX+'px';
@@ -1009,7 +1104,9 @@ var oMapClicker = {
 		this.oMapClicker = document.getElementById('mapClicker');
 		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
 		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
-
+		this.eLocationName = this.oMapClicker.querySelector(".locationName div");
+		
+		
 		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
 		this.invisible();
 
@@ -1052,8 +1149,22 @@ var oKeyboardAction = {
  **********************************************************************************************************/
 //results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
 //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
-//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다. 
-function reverseGeo(clickedLatlng){
+//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다.
+
+oReverseGeoCode = {
+		oGeoCoder: null,
+		getAddress: function(latitude, longitude, callback) {
+			console.log("working");
+			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
+			//callback function get Parameter -> results, status
+			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
+		},
+		initialize: function() {
+			this.oGeoCoder = new google.maps.Geocoder();
+		}
+};
+
+var reverseGeo = function (clickedLatlng){
 	var oGeocoder = new google.maps.Geocoder();
 	var clickedAddress = "";
 	oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
@@ -1063,10 +1174,11 @@ function reverseGeo(clickedLatlng){
     			//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
     			//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
     			//console.log(results);
-    			console.log(results[0].formatted_address);
+    			//console.log(results[0].formatted_address);
      			//console.log(results[1].formatted_address);
      			this.clickedAddress = results[0].formatted_address;
-     			console.log("aaa",this.clickedAddress);
+     			//console.log("aaa",this.clickedAddress);
+     			return this.clickedAddress;
     		}
     	} else {
     		alert("Geocoder failed due to: " + status);
@@ -1075,7 +1187,7 @@ function reverseGeo(clickedLatlng){
 	//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
 	//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
 	//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
-	console.log("bbb",this.clickedAddress);
+	//console.log("bbb",this.clickedAddress);
 }
 /*********************************************************************************************************
 * Reverse Geo code 끝 
@@ -1124,6 +1236,11 @@ function initialize() {
 	//키보드 입력에 대한 Object
 	oKeyboardAction.initialize();
 	//------------------------------------------------------------------------------------//
+
+	//------------------------------------------------------------------------------------//
+	//Reverse GeoCode (위도, 경도를 통한 주소값 추출) 초기화 영역
+	oReverseGeoCode.initialize();
+	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
 	//Chatting을 위한  socket.io 초기화 영역
@@ -1140,5 +1257,3 @@ function initialize() {
 	}
 	//------------------------------------------------------------------------------------//
 }
-
-window.onload = initialize();

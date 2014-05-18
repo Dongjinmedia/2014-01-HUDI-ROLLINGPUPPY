@@ -1,0 +1,46 @@
+<mappings>
+	<mapping>
+		<url>/index</url>
+		<controller>com.puppy.controller.HomeController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/join</url>
+		<controller>com.puppy.controller.JoinController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/login</url>
+		<controller>com.puppy.controller.LoginController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/logout</url>
+		<controller>com.puppy.controller.LogoutController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/main</url>
+		<controller>com.puppy.controller.MainController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/chat/*</url>
+		<controller>com.puppy.controller.ChatController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/error</url>
+		<controller>com.puppy.controller.ErrorController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/search</url>
+		<controller>com.puppy.controller.SearchController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/unitTest</url>
+		<controller>com.puppy.controller.TestController</controller>
+	</mapping>
+</mappings>

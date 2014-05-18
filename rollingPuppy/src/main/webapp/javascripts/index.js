@@ -1,15 +1,8 @@
 function initPage() {
 	var COOKIE_EMAIL = "member.lastLoggedEmail";
 	var lastLoggedEmail = getCookieValue(COOKIE_EMAIL);
-//	var emailToBeChecked = null;
-	
 	fillEmail(lastLoggedEmail);
-
-	//document.getElementById("join_form").onsubmit = validateJoinEmail;	
-	//document.getElementById("login_form").onsubmit = validateLoginEmail;
 	
-
-	//윤성소스 추가
 	document.querySelector(".c_login").addEventListener('click', loginChoiceONOFF, false);
 	document.querySelector(".c_join").addEventListener('click', joinChoiceONOFF, false);
 	document.querySelector(".loginArea input[type=submit]").addEventListener('click', login, false);
@@ -40,27 +33,18 @@ function getCookieValue(name) {
 
 //마지막으로 로그인 된 email 값을 login email box에 default로 삽입 
 function fillEmail(email) {
-	if (email == "") {
+	if (email === null) {
 		return ;
 	}
 	
 	var loginForm = document.forms[0];
 	var inputEmail = loginForm.querySelector("input[name=email]");
+	var checkboxKeepEmail = loginForm.querySelector("input[name=keepEmail]");
 	
 	inputEmail.value = email;
+	checkboxKeepEmail.checked = true;
 }
 
-//email validation check를 하는 함수
-//두 개의 submit 버튼중 어떤 버튼이 눌렸는지 즉, 어느 칸에 입력된 email에 대하여 validation check를 할 것인지 찾는 함수 
-//function checkClickedButtonJoin() {
-//	var emailToBeChecked = document.getElementById("joinEmail").value;​
-//	validateEmail(emailToBeChecked);
-//}
-//
-//function checkClickedButtonLogin() {
-//	var emailToBeChecked = document.getElementById("loginEmail").value;​
-//	validateEmail(emailToBeChecked);
-//}
 
 //input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함수 
 function isValidateEmailFormat(email) {
@@ -211,30 +195,35 @@ function join(event) {
 	request.send(formData);
 }
 
-//****************************************************윤성소스 추가 끝
+//****************************************************join 추가 끝
 
 //id 중복 체크를 위한 함수 
 function duplicateEmail(){
-	console.log("check!!");
+	var duplicateCheckPtag = document.getElementById("duplicateCheck");
 	var newbieEmail = document.getElementById("joinEmail").value;
 	var url = "/join?email="+newbieEmail;
-	
-	var request = new XMLHttpRequest();
-	request.open("GET", url , true );
-	request.onreadystatechange = function(){
-		if ( request.readyState === 4 && request.status === 200 ) {
-			var isExisted = request.responseText;
-			console.log(	isExisted);
-			console.log(isExisted == 'true' );
-			console.log(isExisted == "true" );
-			console.log(isExisted === "true" );
-			
-			if( isExisted == true){
-				alert("already exist");
+	if(isValidateEmailFormat(newbieEmail)){
+		var request = new XMLHttpRequest();
+		request.open("GET", url , true );
+		request.onreadystatechange = function(){
+			if ( request.readyState === 4 && request.status === 200 ) {
+				var oResult = JSON.parse(request.responseText);
+				var result = oResult["ThreeWayResult"];
+				console.log(result);
+
+				if( result === "FAIL" ){
+					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
+				}else if (result === "SUCCESS"){
+					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+				}else {
+					alert("예기치 못한 사건이 발생했다!!");
+				}
 			}
 		}
+		request.send(); //request를 보내는것 callback 함수당 
+	} else {
+		return;
 	}
-	request.send(); //request를 보내는것 callback 함수당 
 }
 
 

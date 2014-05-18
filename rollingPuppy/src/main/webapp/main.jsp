@@ -9,7 +9,7 @@
 
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<title>Main Page</title>
+	<title>Neighbor</title>
 	<link type="text/css" rel="stylesheet" href="/stylesheets/reset.css?20140501">
 	<link type="text/css" rel="stylesheet" href="/stylesheets/main.css?20140504">
 	<script type="text/javascript" src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script> 
@@ -17,6 +17,26 @@
 </head>
 
 <body>
+<div id="template" class="hidden" style="display:none;">
+	<ul>
+		<li class="cell none">
+			<div class="default">
+				<p class="icon-warning">
+				<p class="comment">추천 채팅방 리스트가 보여지는 창입니다.</p>
+			</div>
+		</li>
+		<li class="cell chatRoom"></li>
+		<li class="cell search">
+			<p class="title icon-title">갈빗집</p>
+			<p class="category">한식 &gt; 소고기구이</p>
+			<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+		</li>
+		<li class="cell bookmark">
+		  	<p class="title">우리집</p>
+		  	<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+		</li>
+	</ul>
+</div>
 <input type="hidden" id="email" value="${sessionScope['member.email']}"/>
 <div id="createChatRoom">
 	<div class="outer bg"></div>
@@ -78,12 +98,10 @@
 		<a id="logo" href="/main"><img src="/images/logo.png"/></a>
 		
 		<!--검색 박스와 검색 버튼을 포함하는 영역-->
-		<form action = "/search" method="post">
 		<div id="search_box">
 			<input name=search_word type="text"></input>
 			<button class="button" type="submit">검색</button>
 		</div>
-		</form>
 		<!-- 사용자 별명 -->
 		<p id="user_name">${sessionScope["member.nickname_adjective"]} ${sessionScope["member.nickname_noun"]}</p>
 
@@ -100,7 +118,11 @@
 				<ul id="nav_list">
 					<li class="on"><a href="#" class="search"></a></li>
 					<li><a href="#" class="recommendation"></a></li>
-					<li><a href="#" class="chatting"></a></li>
+					<li>
+						<a href="#" class="chatting">
+						</a>
+							<div class="notification">0</div>
+					</li>
 					<li><a href="#" class="bookmark"></a></li>
 					<li><a href="#" class="settings"></a></li>
 				</ul>
@@ -110,11 +132,55 @@
 			<div id="panel">
 				<div id="panel_contents">
 					<!-- pc == panel_content -->
-					<div id="pc_search" class="on">검색 결과가 나오는 창입니다.</div>
-					<div id="pc_recommendation">추천 채팅방 리스크가 보여지는 창입니다.</div>
-					<div id="pc_chatting">내가 속한 채팅방 목록이 보여지는 창입니다.</div>
-					<div id="pc_bookmark">관심장소로 지정한 지역을 보여주는 창입니다.</div>
-					<div id="pc_settings">설정창 입니다.</div>
+					<div id="pc_search" class="on">
+						<ul>
+							<li class="cell search">
+								<p class="title icon-title">갈빗집</p>
+								<p class="category">한식 &gt; 소고기구이</p>
+								<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+							</li>
+						</ul>
+							<ul class ="pcFooter">
+								<li><i class="paging icon-left"></i></li>
+								<li>1</li>
+								<li>2</li>
+								<li>3</li>
+								<li><i class="paging icon-right"></i></li>
+							</ul>
+						
+					</div>
+					<div id="pc_recommendation">
+						<div class="default">
+							<p class="icon-warning">
+							<p>추천 채팅방 리스트가 보여지는 창입니다.</p>
+						</div>
+					</div>
+					<div id="pc_chatting">
+						<ul>
+							<li class="cell chatting">
+								<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
+								<p class="limit icon-participant">1 / 300</p>
+								<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+								<div class="notification">0</div>
+							</li>
+						</ul>
+					</div>
+					<div id="pc_bookmark">
+						<ul>
+							<li class="cell bookmark">
+							  	<p class="title icon-bookmark">우리집</p>
+							  	<i class="icon-delete"></i>
+							  	<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+							</li>
+						</ul>
+						<ul class ="pcFooter"></ul>
+					</div>
+					<div id="pc_settings">
+						<div class="default">
+								<p class="icon-warning">
+								<p>설정창 입니다.</p>
+							</div>
+					</div>
 				</div>
 				<div id="panel_buttons">
 					<a class="panel_button_fold" href="#"></a>
@@ -125,6 +191,7 @@
 		
 		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->
 		<div id='mapClicker'>
+			<div class="locationName"><div></div></div>
 			<div class='marker'></div>
 			<div class='pulse'></div>
 			<div class='clickerMenu'>
@@ -137,7 +204,22 @@
 				<!-- 지도 영역 -->
 				<div id="naver_map" class="naver_map"></div>
 			</div>
-			
+
+			<!-- 채팅방 영역 -->
+			<div class="chattingRoom">
+				<div class="chattingRoomTopBar">
+					<div class="chattingRoomTitle">방 제목</div>
+					<div><button class="foldChattingRoomButton">_</button></div>
+					<div><button class="exitChattingRoomButton">X</button></div>
+				</div>
+				<div class="chattingContents"></div>
+				<div class="chattingMemberList"></div>
+				<div class="chattingRoomFooter">
+					<textarea class="chattingInputBox"></textarea>
+					<div class="chattingSendButton">SEND</div>
+				</div>
+			</div>
+
 			<!-- 줌인/줌아웃 버튼 영역 -->
 			<div id="zoomButton">
 				<div id="zoomInButton"></div>
@@ -145,9 +227,12 @@
 			</div>
 		</div>
 	</div>
-	
 </div>
 </body>
 <script type="text/javascript" src="http://125.209.195.202:3080/socket.io/socket.io.js"></script>
 <script type="text/javascript" src="/javascripts/main.js?20140509"></script>
+<script>
+	window.onload = initialize();
+</script>
+<script type="text/javascript" src="/javascripts/search.js"></script> 
 </html>

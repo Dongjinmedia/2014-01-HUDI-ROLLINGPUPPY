@@ -5,7 +5,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 	<title>Rolling Puppy</title>
-	
+	<meta name="viewport" content="width=device-width", initial-scale=5.0, user-scalable=no />
 	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css?20140501">
 	<script src="/javascripts/index.js?20140501"></script>
 </head>
@@ -36,7 +36,7 @@
 					<input type="password" name="password" placeholder="Password" />
 				</p>
 				<p>
-					<input type="checkbox" name="keepLogin"  value="true"> 로그인 유지
+					<input type="checkbox" name="keepEmail"  value="true"> 이메일 저장하기
 				</p>
 				<p>
 					<input type="submit" id="login_button" value="Enter House" />
@@ -48,6 +48,7 @@
 			<form id="join_form" action="/join" method="post">
 				<p>
 					<input type="text" id="joinEmail" name="email" placeholder="Email" />
+					<p id="duplicateCheck"></p>
 				</p>
 				<p>
 					<input type="password" name="password" placeholder="Password" />
@@ -64,8 +65,6 @@
 				</p>
 			</form>
 		</div>
-		
 	</div>
-	<script src="/javascripts/index.js"></script>
 </body>
 </html>

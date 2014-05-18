@@ -7,9 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.Part;
@@ -38,16 +36,13 @@ import com.puppy.util.Util;
  * 		multipart/form-data POST request.
  */
 
-@SuppressWarnings("serial")
 //TODO Get방식일때의 처리!!
 @MultipartConfig
-public class ChatController extends HttpServlet {
+public class ChatController implements Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 	
-	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//TODO Delete Log into doGet
 		logger.info("into doGet");
 		
@@ -62,9 +57,7 @@ public class ChatController extends HttpServlet {
 		}
 	}
 	
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//TODO Delete Log into doPost
 		logger.info("into doPost");
 		

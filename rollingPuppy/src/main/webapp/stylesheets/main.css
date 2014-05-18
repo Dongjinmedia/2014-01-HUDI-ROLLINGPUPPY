@@ -38,6 +38,7 @@ div#wrapper {
 	min-height: 400px;
 	width: 100%;
 	height: 100%;
+	overflow: hidden;
 }
 
 div#header {
@@ -117,6 +118,10 @@ ul#nav_list {
 	color: #ffffff;
 	text-align: center;
 	list-style: none;
+}
+
+#nav_list li .notification {
+	padding: 8px 10px;
 }
 
 #nav_list a {
@@ -224,11 +229,9 @@ div#panel {
 
 #panel_contents>div {
 	position: absolute;
-	position: absolute;
-	top: 0px;
-	left: 0px;
-	width: 340px;
+	width: 100%;
 	height: 100%;
+	/* height: calc(100% - 10px); */
 	color: black;
 	z-index: 100;
 	display: none;
@@ -267,6 +270,161 @@ div#panel {
 .unfold_panel #panel .panel_button_unfold {
 	display: none;
 }
+
+/*  
+** Panel 검색결과 리스트 스타일 시작
+*/
+
+#panel_contents .default {
+	color: #F2F0F0;
+	text-align: center;
+	width: 300px;
+	height: 547px;
+	border: 20px solid #F2F0F0; 
+}
+
+#panel_contents .icon-warning:before {
+	margin-top: 30%;
+	margin-bottom: 10%;
+	color: #F2F0F0;
+	font-size: 10em;
+	content: "\f05b";
+}
+
+#panel_contents .cell {
+	position: relative;
+	width: 94%;
+	border-top: 1px solid #5F6263;
+	border-bottom: 1px solid #5F6263;
+	padding: 3%;
+	line-height: 20px;
+}
+
+#panel_contents .title {
+	width: 100%;
+	font-weight: bold;
+}
+
+#panel_contents .address {
+	line-height: 20px;
+	font-size : 0.8em;
+	/* white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden; */
+}
+
+#panel_contents > * {
+	width: 100%;
+}
+
+li.search .title:before {
+	content: "\f041";
+	margin-right: 5px;
+}
+
+#panel_contents li:hover{
+	background-color: #FAFAFA;
+	cursor: pointer;
+}
+
+li.search .category {
+	font-size: 0.8em;
+	color: #B9BBBD;
+}
+
+li.bookmark .title:before {
+	content: "\f005";
+	margin-right: 5px;
+}
+
+li.bookmark .icon-delete:before {
+	color: #F0F0F0;
+	content: "\f056";
+	position: absolute;
+	font-size: 20px;
+	top: 10px;
+	right: 10px;
+}
+
+li.bookmark .icon-delete:hover:before {
+	color: #000;
+	top: 10px;
+	right: 10px;
+}
+
+li.chatting .icon-chatting:before {
+	content: "\f0e6";
+	margin-right: 5px;
+}
+
+li.chatting .title {
+	font-size: 1.3em;
+	margin-bottom: 0.5em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+li.chatting .limit {
+	font-size: 0.8em;
+}
+
+li.chatting .icon-participant:before {
+	content: "\f007";
+	margin-right: 5px;
+}
+
+li.chatting .address.icon-title:before {
+	content: "\f041";
+	margin-right: 5px;	
+}
+
+.notification {
+	position: absolute;
+	padding: 4px 10px;
+	border-radius: 20px;
+	background-color: #FF3B3B;
+	color: #fff;
+	font-size: 13px;
+	display: inline-block;
+	top: -5px;
+	right: -20px;
+}
+
+.pcFooter {
+	position: absolute;
+	width: 100%;
+	height: 10%;
+	text-align: center;
+	bottom: 0px;
+}
+
+.pcFooter > li {
+	display: inline-block;
+	width: 15px;
+	height: 15px;	
+	border: 1px solid #FBFBFB;
+	font-size: 1em;
+	margin-top: 3%;
+	padding: 0.5em;
+}
+
+.pcFooter > li:hover {
+	border: 1px solid #DBDBDB;
+}
+
+.icon-left:before {
+	content: "\f053";	
+}
+
+.icon-right:before {
+	content: "\f054";	
+}
+
+/*  
+** Panel 검색결과 리스트 스타일 종료
+working
+*/
 
 div#content {
 	position: absolute;
@@ -419,7 +577,105 @@ div#content {
 ** Create Chatting Room에 대한 CSS영역 종료
 */
 
-/* 줌인/줌아웃 버튼 시작(작성자 : 박세훈) */
+/* 채팅방 스타일 영역 시작 */
+
+.chattingRoom {
+	position: absolute;
+	display: none;
+	top: 50px;
+	left: 500px;
+	width: 400px;
+	height: 500px;
+	background-color: #FAFAFA;
+	border-radius: 3px;
+	z-index: 11;
+}
+
+.chattingRoomTopBar {
+	position: absolute;
+	width: 100%;
+	height: 20px;
+	border-radius: 3px 3px 0 0;
+	background-color: #37a2d6;
+}
+
+.chattingRoomTitle {
+	position: relative;
+	width: 200px;
+	height: 20px;
+	left: 10px;
+	float: left;
+}
+
+.foldChattingRoomButton {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	right: 30px;
+	float: right;
+}
+
+.exitChattingRoomButton {
+	position: relative;
+	width: 20px;
+	height: 20px;
+	right: -15px;
+	float: right;
+	text-align: center;
+}
+
+.chattingContents {
+	position: absolute;
+	width: 340px;
+	height: 360px;
+	top: 20px;
+	float: left;
+	overflow: scroll;
+	overflow-x: hidden;
+	background-color: #FAFAFA;
+}
+
+.chattingMemberList {
+	position: absolute;
+	width: 60px;
+	height: 360px;
+	top: 20px;
+	left: 340px;
+	float: right;
+	overflow: scroll;
+	overflow-x: hidden;
+	background-color: #22a86d;
+}
+
+.chattingRoomFooter {
+	position: absolute;
+	width: 100%;
+	height: 120px;
+	top: 380px;
+	border-radius: 0 0 3px 3px;
+}
+
+.chattingInputBox {
+	position: relative;
+	width: 340px;
+	height: 120px;
+	float: left;
+	background-color: pink;
+	border-radius: 0 0 0 3px;
+}
+
+.chattingSendButton {
+	position: relative;
+	width: 60px;
+	height: 120px;
+	float: right;
+	background-color: orange;
+	border-radius: 0 0 3px 0;
+}
+
+/* 채팅방 스타일 영역 끝 */
+
+/* 줌인/줌아웃 버튼 시작 */
 #zoomButton {
 	position: relative;
 	width: 30px;
@@ -740,10 +996,29 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	top: 50%;
 }
 
+.locationName {
+	position: absolute;
+}
+
+.locationName > div {
+	top: -35px;
+	font-size: 13px;
+	position: relative;
+	left: -50%;
+	color: #64abd1;
+	font-weight: bold;
+	white-space: nowrap;
+	opacity: 0.5;
+}
+
+.locationName > div:hover {
+	opacity: 1.0;
+}
+
 .clickerMenu {
 	position: absolute;
 	width: 50px;
-	margin-left: -25px;
+	margin-left: -28px;
 	top: 40px;
 	height: 20px;
 	background: #fff;
