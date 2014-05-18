@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +19,10 @@ import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.ThreeWayResult;
-import com.puppy.util.Util;
 
 /*
  * 로그인 요청에 대한 컨트롤러
  */
-//For getParameter From Javascript new FormData (Ajax Request)
-@MultipartConfig
 public class LoginController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -50,21 +45,18 @@ public class LoginController implements Controller {
 		String keepEmail = null;
 		
 		
-		Part emailPart = request.getPart(Constants.REQUEST_EMAIL);
-		Part passwordPart = request.getPart(Constants.REQUEST_PASSWORD);
-		Part keepEmailPart = request.getPart(Constants.REQUEST_KEEP_EMAIL);
+		Object emailObject = request.getAttribute(Constants.REQUEST_EMAIL);
+		Object passwordObject = request.getAttribute(Constants.REQUEST_PASSWORD);
+		Object keepEmailObject = request.getAttribute(Constants.REQUEST_KEEP_EMAIL);
 		
-		if ( emailPart != null ) {
-			email = Util.getStringValueFromPart(emailPart);
+		if ( emailObject !=null 
+				&& passwordObject != null
+				&& keepEmailObject != null ) {
+			email = emailObject.toString();
+			password = passwordObject.toString();
+			keepEmail = keepEmailObject.toString();
 		}
-		
-		if ( passwordPart != null ) {
-			password = Util.getStringValueFromPart( passwordPart );
-		}
-		
-		if ( keepEmailPart != null ) {
-			keepEmail = Util.getStringValueFromPart( keepEmailPart );
-		}
+			
 		
 		//TODO 이건 왜 있는거지?? <윤성>
 		if (keepEmail == null) {
