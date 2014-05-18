@@ -1,7 +1,10 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
@@ -32,6 +35,16 @@ public class FrontController extends HttpServlet {
 	}
 	
 	protected void requestAnaliyzer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+		ServletContext servletContext = request.getServletContext();
+		
+		@SuppressWarnings("unchecked")
+		Map<String, String> urlMappingObject = (Map<String, String>) servletContext.getAttribute("urlMappingObject");
+		
+		logger.info("sc test1 : "+urlMappingObject.get("/test1"));
+		logger.info("sc test2 : "+urlMappingObject.get("/test2"));
+		logger.info("sc test3 : "+urlMappingObject.get("/test3"));
+		
 		Method method = null; 
 		//ModelAndView modelAndView = null;
 		Controller controller = null;
