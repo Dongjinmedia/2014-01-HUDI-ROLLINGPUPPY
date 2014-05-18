@@ -491,11 +491,10 @@ var oNaverMap = {
 	                var callback = function(results, status){
 	                	if(status == google.maps.GeocoderStatus.OK) {
 	                		if (results[0]) {
-	                			console.log(results[0].formatted_address);
 	                			oMapClicker.setLocationName(results[0].formatted_address);
 	                		}
 	                	} else {
-	                		console.log("reverseGeoCode status not fine ");
+	                		//console.log("reverseGeoCode status not fine ");
 	                	}
 	                };
 	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
@@ -1027,7 +1026,7 @@ var oCreateChattingRoom = {
     			var newMarker = oResponse["newMarker"];
     			var markerNumber = newMarker["id"];
     			
-    			console.log("markerNumber : ",markerNumber);
+    			//console.log("markerNumber : ",markerNumber);
     			
     			if ( isSuccess === true 
     					&& markerNumber !== null 
@@ -1086,7 +1085,7 @@ var oMapClicker = {
 	eLocationName: null,
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
-		console.log(locationName);
+		//console.log(locationName);
 		this.eLocationName.innerText = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
@@ -1154,7 +1153,7 @@ var oKeyboardAction = {
 oReverseGeoCode = {
 		oGeoCoder: null,
 		getAddress: function(latitude, longitude, callback) {
-			console.log("working");
+			//console.log("working");
 			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
 			//callback function get Parameter -> results, status
 			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
