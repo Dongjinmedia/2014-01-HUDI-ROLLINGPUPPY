@@ -44,11 +44,11 @@ public class InitializeListener implements ServletContextListener{
 		List<Map<String, Object>> urlMappingList = xmlReader.getListFromXPath(expression);
 		
 		//TODO 테스트코드 삭제
-		for (Map<String, Object> map : urlMappingList) {
-			logger.info("===============================");
-			logger.info( "URL: "+ map.get("url"));
-			logger.info( "CONTROLLER: "+ map.get("controller"));
-		}
+		//for (Map<String, Object> map : urlMappingList) {
+		//	logger.info("===============================");
+		//	logger.info( "URL: "+ map.get("url"));
+		//	logger.info( "CONTROLLER: "+ map.get("controller"));
+		//}
 		
 		//메모리(Context)에 저장할 URL Mapping 객체
 		Map<String, String> urlMappingObject = new HashMap<String, String>();

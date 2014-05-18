@@ -1,7 +1,6 @@
 package com.puppy.controller;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -41,10 +40,6 @@ public class FrontController extends HttpServlet {
 		@SuppressWarnings("unchecked")
 		Map<String, String> urlMappingObject = (Map<String, String>) servletContext.getAttribute("urlMappingObject");
 		
-		logger.info("sc test1 : "+urlMappingObject.get("/test1"));
-		logger.info("sc test2 : "+urlMappingObject.get("/test2"));
-		logger.info("sc test3 : "+urlMappingObject.get("/test3"));
-		
 		Method method = null; 
 		//ModelAndView modelAndView = null;
 		Controller controller = null;
@@ -63,38 +58,52 @@ public class FrontController extends HttpServlet {
 		logger.info("method : "+requestMethod);
 		logger.info("url : "+requestUrl);
 		
-		if ( requestUrl.contains("/index") || requestUrl.equalsIgnoreCase("/.next")) {
-			controller = new HomeController();
+		if ( urlMappingObject.containsKey(requestUrl) ) {
 			
-		} else if ( requestUrl.contains("/join") ) {
-			controller = new JoinController();
+			String controllerName = urlMappingObject.get(requestUrl);
+			try {
+				@SuppressWarnings("unchecked")
+				Class<Controller> klass = (Class<Controller>) Class.forName( controllerName );
+				controller = klass.newInstance();
+				
+			} catch (Exception e) {
+				logger.error("ClassLoad", e);
+			}
 			
-		} else if ( requestUrl.contains("/login") ) {
-			controller = new LoginController();
 			
-		} else if ( requestUrl.contains("/logout") ) {
-			controller = new LogoutController();
-			
-		} else if ( requestUrl.contains("/main") ) {
-			controller = new MainController();
-			
-		} else if ( requestUrl.contains("/error") ) {
-			controller = new ErrorController();
-			
-		} else if ( requestUrl.contains("/chat/") ) {
-			controller = new ChatController();
-			
-		} else if ( requestUrl.contains("/search") ) {
-			controller = new SearchController();
-			
-		} else if ( requestUrl.contains("/getId") ) {
-			controller = new ChattingServerLinkController();
-			
-		} else if ( requestUrl.contains("/UnitTest") ) {
-			controller = new TestController();
 		} else {
 			//throw exception
 		}
+		
+//		if ( requestUrl.contains("/index") || requestUrl.equalsIgnoreCase("/.next")) {
+//			controller = new HomeController();
+//			
+//		} else if ( requestUrl.contains("/join") ) {
+//			controller = new JoinController();
+//			
+//		} else if ( requestUrl.contains("/login") ) {
+//			controller = new LoginController();
+//			
+//		} else if ( requestUrl.contains("/logout") ) {
+//			controller = new LogoutController();
+//			
+//		} else if ( requestUrl.contains("/main") ) {
+//			controller = new MainController();
+//			
+//		} else if ( requestUrl.contains("/error") ) {
+//			controller = new ErrorController();
+//			
+//		} else if ( requestUrl.contains("/chat/") ) {
+//			controller = new ChatController();
+//			
+//		} else if ( requestUrl.contains("/search") ) {
+//			controller = new SearchController();
+//			
+//		} else if ( requestUrl.contains("/UnitTest") ) {
+//			controller = new TestController();
+//		} else {
+//			//throw exception
+//		}
 		
 		if ( controller != null )
 			passController(request, response, method, controller);

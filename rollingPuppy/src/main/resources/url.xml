@@ -1,21 +1,46 @@
 <mappings>
 	<mapping>
-		<url>/test1</url>
-		<controller>test1Controller</controller>
+		<url>/index</url>
+		<controller>com.puppy.controller.HomeController</controller>
 	</mapping>
 	
 	<mapping>
-		<url>/test2</url>
-		<controller>test2Controller</controller>
+		<url>/join</url>
+		<controller>com.puppy.controller.JoinController</controller>
 	</mapping>
 	
 	<mapping>
-		<url>/test3</url>
-		<controller>test3Controller</controller>
+		<url>/login</url>
+		<controller>com.puppy.controller.LoginController</controller>
 	</mapping>
 	
 	<mapping>
-		<url>/test4</url>
-		<controller>test4Controller</controller>
+		<url>/logout</url>
+		<controller>com.puppy.controller.LogoutController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/main</url>
+		<controller>com.puppy.controller.MainController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/chat</url>
+		<controller>com.puppy.controller.ChatController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/error</url>
+		<controller>com.puppy.controller.ErrorController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/search</url>
+		<controller>com.puppy.controller.SearchController</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/unitTest</url>
+		<controller>TestController</controller>
 	</mapping>
 </mappings>
