@@ -121,4 +121,26 @@ public class Util {
 
 		return returnList;
 	}
+
+	public static String getUnderBarlConventionString(String carmelValue) {
+		
+		StringBuilder sb = new StringBuilder();
+		
+		for ( int index = 0 ; index < carmelValue.length() ; ++ index ) {
+			char target = carmelValue.charAt(index);
+			
+			if (isUpperCase(target)) {
+				sb.append("_");
+				sb.append(new Character(target).toString().toLowerCase());
+			} else {
+				sb.append(target);
+			}
+		}
+
+		return sb.toString();
+	}
+	
+	private static boolean isUpperCase(char ch) {
+	    return ch >= 'A' && ch <= 'Z';
+	}
 }
