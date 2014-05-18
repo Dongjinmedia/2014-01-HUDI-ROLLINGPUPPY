@@ -25,7 +25,7 @@
 	</mapping>
 	
 	<mapping>
-		<url>/chat</url>
+		<url>/chat/*</url>
 		<controller>com.puppy.controller.ChatController</controller>
 	</mapping>
 	
@@ -41,6 +41,6 @@
 	
 	<mapping>
 		<url>/unitTest</url>
-		<controller>TestController</controller>
+		<controller>com.puppy.controller.TestController</controller>
 	</mapping>
 </mappings>

@@ -1,6 +1,7 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -57,56 +58,74 @@ public class FrontController extends HttpServlet {
 		
 		logger.info("method : "+requestMethod);
 		logger.info("url : "+requestUrl);
+
 		
-		if ( urlMappingObject.containsKey(requestUrl) ) {
-			
-			String controllerName = urlMappingObject.get(requestUrl);
-			try {
-				@SuppressWarnings("unchecked")
-				Class<Controller> klass = (Class<Controller>) Class.forName( controllerName );
-				controller = klass.newInstance();
-				
-			} catch (Exception e) {
-				logger.error("ClassLoad", e);
-			}
-			
-			
-		} else {
-			//throw exception
+		
+		/*
+		 * wildcard(*) 설정에 대해 대응하기 위한 소스코드
+		 * uriPaths는 요청되는 url을 "/"를 단위로 잘라서 배열로 저장한다.
+		 * 
+		 * possibleURL은 요청된 url을 조작하여 *를 가지는 url값으로 변경한뒤,
+		 * list에 담아놓는 그릇이다. 예를들어 /a/b/c라는 요청 url에 대해 /a/b/c, /a/b/*, /a/* 에 대한 모든경우로 url을 분리한뒤,
+		 * 비교하기 위해 사용된다. 
+		 * 
+		 * tempPath는 요청 url을 다루기위한 임시변수이다.
+		 */
+		String uriPaths[] = requestUrl.split("/"); 
+		String tempPath = requestUrl;
+		
+ 
+		//1. url 혹은 2.url/ 에 대한 요청 모두를 처리할 수 있도록 마지막 char값을 확인한다. 
+		if (tempPath.endsWith("/"))
+			tempPath = tempPath.substring(0, tempPath.length()-1);
+		
+		ArrayList<String> possibleURL = new ArrayList<String>();
+		possibleURL.add(tempPath);
+		
+		/*
+		 * uriPaths배열의 갯수-1 만큼을 수행하며 possibleURL을 채운다.
+		 * 루트Path는 필요없기 때문에 0이 아니라 1까지 체크하는 것이다.
+		 */
+		for (int index = uriPaths.length-1 ; index > 1 ; --index) {
+			tempPath = replaceLast(tempPath, uriPaths[index], "");
+			possibleURL.add(tempPath+"*");
+			tempPath = tempPath.substring(0, tempPath.length()-1);
 		}
 		
-//		if ( requestUrl.contains("/index") || requestUrl.equalsIgnoreCase("/.next")) {
-//			controller = new HomeController();
-//			
-//		} else if ( requestUrl.contains("/join") ) {
-//			controller = new JoinController();
-//			
-//		} else if ( requestUrl.contains("/login") ) {
-//			controller = new LoginController();
-//			
-//		} else if ( requestUrl.contains("/logout") ) {
-//			controller = new LogoutController();
-//			
-//		} else if ( requestUrl.contains("/main") ) {
-//			controller = new MainController();
-//			
-//		} else if ( requestUrl.contains("/error") ) {
-//			controller = new ErrorController();
-//			
-//		} else if ( requestUrl.contains("/chat/") ) {
-//			controller = new ChatController();
-//			
-//		} else if ( requestUrl.contains("/search") ) {
-//			controller = new SearchController();
-//			
-//		} else if ( requestUrl.contains("/UnitTest") ) {
-//			controller = new TestController();
-//		} else {
-//			//throw exception
-//		}
+		/*
+		 * requestURL에 해당하는 Controller명을 저장하기 위한 변수
+		 * 이 정보를 기준으로 controller를 reflection으로 실행한다.
+		 */
+		String controllerName = null;
+		
+		//possibleURL 리스트를 url-controller가 맵핑된 리스트와 비교한다.
+		for (String url : possibleURL) {
+			if ( urlMappingObject.containsKey(url) )
+				controllerName = urlMappingObject.get(url);
+		}
+		
+		//만약 해당하는 url값이 맵핑테이블에 없을경우 404 Error페이지를 노출한다.
+		if ( controllerName == null ) {
+			response.sendRedirect("/error?type=404");
+			return;
+		}
+		
+		//찾아낸 ClassName을 기반으로 Controller Class를 찾아낸후
+		//객체를 생성한다.
+		try {
+			@SuppressWarnings("unchecked")
+			Class<Controller> klass = (Class<Controller>) Class.forName( controllerName );
+			controller = klass.newInstance();
+			
+		} catch (Exception e) {
+			logger.error("ClassLoad", e);
+		}
 		
 		if ( controller != null )
 			passController(request, response, method, controller);
+		//알 수 없는 오류발생
+		else
+			response.sendRedirect("/error?type=500");
 	}
 	
 	public void passController(HttpServletRequest request, HttpServletResponse response, Method method, Controller controller) throws ServletException, IOException {
@@ -116,4 +135,7 @@ public class FrontController extends HttpServlet {
 			controller.doGet(request, response);
 	}
 	
+	public String replaceLast(String text, String regex, String replacement) {
+        return text.replaceFirst("(?s)(.*)" + regex, "$1" + replacement);
+    }
 }
