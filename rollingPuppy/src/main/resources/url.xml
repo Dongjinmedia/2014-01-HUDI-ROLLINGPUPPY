@@ -1,1 +1,21 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<mappings>
+	<mapping>
+		<url>/test1</url>
+		<controller>test1Controller</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/test2</url>
+		<controller>test2Controller</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/test3</url>
+		<controller>test3Controller</controller>
+	</mapping>
+	
+	<mapping>
+		<url>/test4</url>
+		<controller>test4Controller</controller>
+	</mapping>
+</mappings>
