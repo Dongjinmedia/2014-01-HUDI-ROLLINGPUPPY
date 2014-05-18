@@ -1,7 +1,10 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -10,12 +13,27 @@ import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.puppy.util.Method;
+import com.puppy.util.Util;
 
+/*
+ * 채팅방에 대한 요청들을 처리할 컨트롤러.
+ * URL을 분석해서 해당하는 메소드를 실행하도록 만들어져있다.
+ * 
+ * @MultipartConfig는 자바스크립트에서 Ajax요청시, formData를 전달할 수 있도록 하기 위해서 선언하였다.
+ * Servlet에서 formData(정확히 이야기해서 MultipartRequest)를 처리하기 위해서는 선언되어야 하는 어노테이션이며,
+ * 전달하는 FormData를 Servlet에서는 multipart로 인식한다. 아래의 링크를 확인해보자.
+ * http://stackoverflow.com/questions/10292382/html-5-formdata-and-java-servlets
+ * 
+ * Part클래스에 대한 설명은 다음과 같다
+ *  	This class represents a part or form item that was received within a
+ * 		multipart/form-data POST request.
+ */
 @SuppressWarnings("serial")
 @MultipartConfig
 public class FrontController extends HttpServlet {
@@ -31,6 +49,25 @@ public class FrontController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
+		
+		/*
+		 * MultiPart는 Post방식일 경우에만 동작한다. 그러므로 doPost 메소드 안에서 처리한다.
+		 * 
+		 * 일반적으로 사용하는 Parameter처럼
+		 * 간단하게 사용할 수 있도록 request객체에 setAttribute해준다. 
+		 */
+		if ( (request.getParts() != null) && !(request.getParts().isEmpty()) ) {
+			Collection<Part> partsCollection = request.getParts();
+			Iterator<Part> partsIterator = partsCollection.iterator();
+			
+			while (partsIterator.hasNext()) {
+				Part part = partsIterator.next();
+				request.setAttribute(part.getName(), Util.getStringValueFromPart(part));
+				logger.info("part.getName : "+part.getName());
+				logger.info("part value : "+ Util.getStringValueFromPart(part));
+			}
+		}
+		
 		requestAnaliyzer(request, response);
 	}
 	
