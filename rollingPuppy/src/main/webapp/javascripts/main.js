@@ -810,6 +810,7 @@ var oChat = {
 		socket: null,
 		eChattingRoom: null,
 		eChattingContents: null,
+		eChattingMemberList: null,
 		eInputBox: null,
 		eSendButton: null,
 		eFoldButton: null,
@@ -843,6 +844,14 @@ var oChat = {
 			this.eInputBox.value="";
 		},
 		
+		//dada
+		getMemberList: function(){
+			var oParameters = {
+					
+			}; 
+			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callback)
+		},
+		
 		// TODO 채팅방이 접히는 애니메이션 구현 필요
 		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
 		foldChattingRoom: function(e) {
@@ -864,6 +873,7 @@ var oChat = {
 			// 채팅방을 이루고 있는 각 엘리먼트들을 가져온다.
 			this.eChattingRoom = document.querySelector(".chattingRoom");
 			this.eChattingContents = document.querySelector(".chattingContents");
+			this.eChattingMemberList = this.eChattingContents.nextElementSibling();
 			this.eInputBox = document.querySelector(".chattingInputBox");
 			this.eSendButton = document.querySelector(".chattingSendButton");
 			this.eFoldButton = document.querySelector(".foldChattingRoomButton");

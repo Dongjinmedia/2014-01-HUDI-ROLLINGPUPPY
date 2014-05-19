@@ -53,7 +53,16 @@ public class ChatController implements Controller {
 		//현재 GET요청에서는 에러가 발생중이다.
 		} else if ( requestURL.contains("getlist") ) {
 			getChattingRoomList(request, response);
+		} else if (requestURL.contains("getMembers")){
+			getChattingMemberList(request, response);
 		}
+	}
+
+	private void getChattingMemberList(HttpServletRequest request,
+			HttpServletResponse response) {
+		
+		logger.info("into getChattingMemberList");
+		
 	}
 
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -207,4 +216,6 @@ public class ChatController implements Controller {
 		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
 		out.println(gson.toJson(resultJsonData));
 	}
+	
+	
 }
