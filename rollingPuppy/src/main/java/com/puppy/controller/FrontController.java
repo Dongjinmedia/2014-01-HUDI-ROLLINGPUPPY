@@ -56,7 +56,7 @@ public class FrontController extends HttpServlet {
 		 * 일반적으로 사용하는 Parameter처럼
 		 * 간단하게 사용할 수 있도록 request객체에 setAttribute해준다. 
 		 */
-		if ( (request.getParts() != null) && !(request.getParts().isEmpty()) ) {
+		if ( request != null && (request.getParts() != null) && !(request.getParts().isEmpty()) ) {
 			Collection<Part> partsCollection = request.getParts();
 			Iterator<Part> partsIterator = partsCollection.iterator();
 			
@@ -76,7 +76,7 @@ public class FrontController extends HttpServlet {
 		ServletContext servletContext = request.getServletContext();
 		
 		@SuppressWarnings("unchecked")
-		Map<String, String> urlMappingObject = (Map<String, String>) servletContext.getAttribute("urlMappingObject");
+		Map<String, Controller> urlMappingObject = (Map<String, Controller>) servletContext.getAttribute("urlMappingObject");
 		
 		Method method = null; 
 		//ModelAndView modelAndView = null;
@@ -129,33 +129,10 @@ public class FrontController extends HttpServlet {
 			tempPath = tempPath.substring(0, tempPath.length()-1);
 		}
 		
-		/*
-		 * requestURL에 해당하는 Controller명을 저장하기 위한 변수
-		 * 이 정보를 기준으로 controller를 reflection으로 실행한다.
-		 */
-		String controllerName = null;
-		
 		//possibleURL 리스트를 url-controller가 맵핑된 리스트와 비교한다.
 		for (String url : possibleURL) {
 			if ( urlMappingObject.containsKey(url) )
-				controllerName = urlMappingObject.get(url);
-		}
-		
-		//만약 해당하는 url값이 맵핑테이블에 없을경우 404 Error페이지를 노출한다.
-		if ( controllerName == null ) {
-			response.sendRedirect("/error?type=404");
-			return;
-		}
-		
-		//찾아낸 ClassName을 기반으로 Controller Class를 찾아낸후
-		//객체를 생성한다.
-		try {
-			@SuppressWarnings("unchecked")
-			Class<Controller> klass = (Class<Controller>) Class.forName( controllerName );
-			controller = klass.newInstance();
-			
-		} catch (Exception e) {
-			logger.error("ClassLoad", e);
+				controller = urlMappingObject.get(url);
 		}
 		
 		if ( controller != null )

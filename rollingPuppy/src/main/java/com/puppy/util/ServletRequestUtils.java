@@ -2,8 +2,6 @@ package com.puppy.util;
 
 import javax.servlet.ServletRequest;
 
-import com.sun.xml.internal.bind.v2.TODO;
-
 public class ServletRequestUtils {
 
 	public static String getParameter(ServletRequest request, String name) {
