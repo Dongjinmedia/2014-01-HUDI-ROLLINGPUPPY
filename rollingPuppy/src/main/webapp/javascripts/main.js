@@ -540,7 +540,7 @@ var oNaverMap = {
 
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
-	        eNmap.setAttribute("style", "width:100%;height:100%;");
+	        eNmap.style.cssText = "width:100%;height:100%;";
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
@@ -662,7 +662,7 @@ var oMarkerClicker = {
 		
 		//높이값을 채팅방 영역에 맞게 조절
 		//TODO 하드코딩되어 있는 px 수정 (26)
-		this.eChattingDivBox.setAttribute("style", "height:" + 26*aChatRoomInMarker.length + "px;");
+		this.eChattingDivBox.style.cssText = "height:" + 26*aChatRoomInMarker.length + "px;";
 		
 		return this.controlBox;
 	},
@@ -701,7 +701,7 @@ var oMarkerClicker = {
 	//메뉴버튼위에 마우스가 올라갔을때
 	mouseOver: function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
-		this.menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
+		this.menu.style.cssText = "width:150px;height:150px;margin:-75px 0 0 -75px";
 	},	
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
@@ -709,7 +709,7 @@ var oMarkerClicker = {
 		//클릭된 메뉴가 없을경우
 		if (!this.isClickedComponentExists()) {
 			//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
-			this.menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');					
+			this.menu.style.cssText = "width:75px;height:75px;margin:-37.5px 0 0 -37.5px";
 		}
 	},
 	
@@ -717,18 +717,17 @@ var oMarkerClicker = {
 	changeClickStatus: function(oIcon, oMenu) {
 		oIcon.setAttribute('status','clicked');
 		oIcon.style.status = 'clicked';
-		oIcon.children[0].setAttribute('style', 'background: #9dd;');
+		oIcon.children[0].style.backgroundColor = "#9dd";
 		this.mouseOver();		
 	},
 	
 	//클릭되었던 상태의 아이콘을 다시 클릭 했을경우
 	changeNoneClickStatus: function(oIcon, oMenu) {
-		oMenu.setAttribute('style','display: none');
 		oMenu.style.display = 'none';
 	
 		oIcon.setAttribute('status','none');
 		oIcon.style.status = 'none';
-		oIcon.children[0].setAttribute('style', 'background: #8cc;');
+		oIcon.children[0].style.backgroundColor = "#8cc";
 		
 		if (!this.isClickedComponentExists()) {
 			this.mouseOut();		
@@ -799,7 +798,7 @@ var oChat = {
 			this.currentChatRoomNumber = chatRoomNum; 
 			
 			// 채팅창을 화면에 보이게 만든다.
-			this.eChattingRoom.setAttribute('style', 'display: block;');
+			this.eChattingRoom.style.display = "block";
 
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
@@ -822,12 +821,12 @@ var oChat = {
 		// TODO 채팅방이 접히는 애니메이션 구현 필요
 		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
 		foldChattingRoom: function(e) {
-			this.eChattingRoom.setAttribute('style', 'display: none;');
+			this.eChattingRoom.style.display = "none";
 		},
 		
 		exitChattingRoom: function(e) {
 			this.socket.emit('exit', {'email': this.socket.email, 'chatRoomNumber': this.currentChatRoomNumber});
-			this.eChattingRoom.setAttribute('style', 'display: none;');
+			this.eChattingRoom.style.display = "none"
 		},
 		
 		initialize: function() {
@@ -940,11 +939,11 @@ var oCreateChattingRoom = {
 		eRoomAddress: null,
 		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function() {
-			this.oCreateChatRoom.setAttribute('style', 'display:block;');
+			this.oCreateChatRoom.style.display = "block";
 		},
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
-			this.oCreateChatRoom.setAttribute('style', 'display:none;');
+			this.oCreateChatRoom.style.display = "none";
 		},
 		initialize: function() {
 			
