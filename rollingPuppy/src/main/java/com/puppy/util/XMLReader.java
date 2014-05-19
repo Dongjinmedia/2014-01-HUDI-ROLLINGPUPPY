@@ -95,7 +95,7 @@ public class XMLReader {
 			itemNodeList = (NodeList) xPath.compile(XPathExpression).evaluate(
 					document, XPathConstants.NODESET);
 		} catch (XPathExpressionException e) {
-			System.err.println(e);
+			logger.error("XPath error :",e);
 		}
 
 		//추출한 nodeList 자료형에서 map형태의 list를 새로 만든다. 

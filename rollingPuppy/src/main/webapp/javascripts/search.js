@@ -48,12 +48,12 @@ function getResultXml(event){
 					var eSearchedTitle = eCopiedTemplate.querySelector(".title");
 					var eSearchedCategory = eCopiedTemplate.querySelector(".category");
 					var eSearchedAddress = eCopiedTemplate.querySelector(".address");
-								
-					eSearchedTitle.innerHTML = aResult[i]["storeName"]; 
+					
+					eSearchedTitle.innerHTML = aResult[i]["title"]; 
 					eSearchedCategory.innerText = aResult[i]["category"]; 
 					eSearchedAddress.innerText = aResult[i]["address"];
-					eCopiedTemplate["cartesianX"] = aResult[i]["cartesianX"];
-					eCopiedTemplate["cartesianY"] = aResult[i]["cartesianY"];
+					eCopiedTemplate["cartesianX"] = aResult[i]["mapx"];
+					eCopiedTemplate["cartesianY"] = aResult[i]["mapy"];
 					
 					//template을 원하는 위치에 삽입
 					eTarget.appendChild(eCopiedTemplate);

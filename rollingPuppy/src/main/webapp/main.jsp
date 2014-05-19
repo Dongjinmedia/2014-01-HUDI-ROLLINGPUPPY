@@ -134,11 +134,6 @@
 					<!-- pc == panel_content -->
 					<div id="pc_search" class="on">
 						<ul>
-							<li class="cell search">
-								<p class="title icon-title">갈빗집</p>
-								<p class="category">한식 &gt; 소고기구이</p>
-								<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
-							</li>
 						</ul>
 							<ul class ="pcFooter">
 								<li><i class="paging icon-left"></i></li>

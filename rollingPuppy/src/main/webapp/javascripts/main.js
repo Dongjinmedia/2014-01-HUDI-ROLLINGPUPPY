@@ -174,8 +174,6 @@ var Panel = {
 			//찾은 좌표로 지도의 중심을 재설정한다. 
 			oNaverMap.oMap.setCenter(oPoint);
 		}
-		
-		
 	},
 
 	initialize: function(){
