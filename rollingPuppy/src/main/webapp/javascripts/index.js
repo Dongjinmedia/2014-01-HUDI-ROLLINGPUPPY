@@ -123,23 +123,21 @@ function login(event) {
 	var url = "/login";
 	var request = new XMLHttpRequest();
 	request.open("POST", url, true);
-	request.onreadystatechange = function() {
-		if (request.readyState == 4 && request.status == 200) {
-			var oResult = JSON.parse(request.responseText);
+	request.onload = function() {
+		var oResult = JSON.parse(request.responseText);
 			
-			var result = oResult['ThreeWayResult'];
-			console.log(result);
+		var result = oResult['ThreeWayResult'];
+		console.log(result);
 			
-			if ( result === "SUCCESS" ) {
-				alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
-				window.location = "/main";
-			} else if ( result === "FAIL" ) {
-				alert("아이디와 비밀번호를 다시 확인해 주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
-				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
+		if ( result === "SUCCESS" ) {
+			alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
+			window.location = "/main";
+		} else if ( result === "FAIL" ) {
+			alert("아이디와 비밀번호를 다시 확인해 주세요.");
+		} else if ( result === "UNEXPECTED_ERROR"){ 
+			alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
+		} else {
+			alert("비정상적 접근입니다.");
 		}
 	}
 	request.send(formData);
@@ -176,21 +174,19 @@ function join(event) {
 	var url = "/join";
 	var request = new XMLHttpRequest();
 	request.open("POST", url, true);
-	request.onreadystatechange = function() {
-		if (request.readyState == 4 && request.status == 200) {
-			var oResult = JSON.parse(request.responseText);
-			var result = oResult['ThreeWayResult'];
-			if ( result === "SUCCESS" ) {
-				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
-				window.location = "/";
-			} else if ( result === "ALREADY_EXISTS"){
-				alert("이미 존재하는 아이디입니다.\n다른 아이디로 시도해주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
+	request.onload = function() {
+		var oResult = JSON.parse(request.responseText);
+		var result = oResult['ThreeWayResult'];
+		if ( result === "SUCCESS" ) {
+			alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
+			window.location = "/";
+		} else if ( result === "ALREADY_EXISTS"){
+			alert("이미 존재하는 아이디입니다.\n다른 아이디로 시도해주세요.");
+		} else if ( result === "UNEXPECTED_ERROR"){ 
 
-				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
+			alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
+		} else {
+			alert("비정상적 접근입니다.");
 		}
 	}
 	request.send(formData);
@@ -206,19 +202,17 @@ function duplicateEmail(){
 	if(isValidateEmailFormat(newbieEmail)){
 		var request = new XMLHttpRequest();
 		request.open("GET", url , true );
-		request.onreadystatechange = function(){
-			if ( request.readyState === 4 && request.status === 200 ) {
-				var oResult = JSON.parse(request.responseText);
-				var result = oResult["ThreeWayResult"];
-				console.log(result);
+		request.onload = function(){
+			var oResult = JSON.parse(request.responseText);
+			var result = oResult["ThreeWayResult"];
+			console.log(result);
 
-				if( result === "FAIL" ){
-					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
-				}else if (result === "SUCCESS"){
-					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
-				}else {
-					alert("예기치 못한 사건이 발생했다!!");
-				}
+			if( result === "FAIL" ){
+				duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
+			}else if (result === "SUCCESS"){
+				duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+			}else {
+				alert("예기치 못한 사건이 발생했다!!");
 			}
 		}
 		request.send(); //request를 보내는것 callback 함수당 

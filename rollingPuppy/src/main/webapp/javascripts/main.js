@@ -77,15 +77,11 @@ var oAjax = {
 				return null;
 			
 			request.open(method, url, false	);
-			request.onreadystatechange = function() {
-				if (request.readyState == 4 && request.status == 200) {
-					//인자로 전달된 callback함수를 실행
-					if ( typeof callback == "function" ) {
-						callback(request);
-					}
+			request.onload = function() {
+				if ( typeof callback == "function" ) {
+					callback(request);
 				}
 			}
-			
 			
 			//만약 parameter값이 존재할경우 parameter에 대한 데이터를  formData형식으로 캡슐화해서 전달한다.
 			//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
