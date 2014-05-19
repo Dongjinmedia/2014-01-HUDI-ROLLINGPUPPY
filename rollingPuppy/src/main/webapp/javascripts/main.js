@@ -127,7 +127,6 @@ var Panel = {
 		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
 		var eSearchPanelContents = this.elPanel.querySelector("#pc_search");
-
 		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
 	},
 	
@@ -158,18 +157,21 @@ var Panel = {
 		}
 	},
 	
+	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
 	searchResultSelectHandler: function(event){
-		var clickedTarget = event.target;
-		//console.log(event.target.tagName);
-		
+		var clickedTarget = event.target;	
+		//현재 하나의 cell은 세개의 p태그로 이루어져있다.
+		//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
 		if(clickedTarget.tagName == "P"){
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+			//그 cell의 속성으로 저장된 좌표를 불러온다. 
 			var destinationTarget = clickedTarget.parentNode;
-			//console.log(destinationTarget);
 			var destinationCartesianX = destinationTarget["cartesianX"];
 			var destinationCartesianY = destinationTarget["cartesianY"];
-			
+			//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
 			var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
-			console.log(oPoint);
+			//찾은 좌표로 지도의 중심을 재설정한다. 
 			oNaverMap.oMap.setCenter(oPoint);
 		}
 		
