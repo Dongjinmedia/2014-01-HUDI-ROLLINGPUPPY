@@ -113,9 +113,9 @@ var oAjax = {
 var Panel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	elContainer: document.getElementById("container"),
-	elPanel: document.getElementById("panel"),
+	elPanel: null,
 	
-	// panel 관련 이벱트 등록 함수.
+	// panel 관련 이벤트 등록 함수.
 	addEvents: function() {
 		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
 		
@@ -124,6 +124,11 @@ var Panel = {
 				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
+		
+		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
+		var eSearchPanelContents = this.elPanel.querySelector("#pc_search");
+
+		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
 	},
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
@@ -151,8 +156,32 @@ var Panel = {
 			removeClassName(this.elContainer, "fold_panel");
 			addClassName(this.elContainer, "unfold_panel");
 		}
+	},
+	
+	searchResultSelectHandler: function(event){
+		var clickedTarget = event.target;
+		//console.log(event.target.tagName);
+		
+		if(clickedTarget.tagName == "P"){
+			var destinationTarget = clickedTarget.parentNode;
+			//console.log(destinationTarget);
+			var destinationCartesianX = destinationTarget["cartesianX"];
+			var destinationCartesianY = destinationTarget["cartesianY"];
+			
+			var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
+			console.log(oPoint);
+			oNaverMap.oMap.setCenter(oPoint);
+		}
+		
+		
+	},
+
+	initialize: function(){
+		this.elPanel = document.getElementById("panel");	
+		this.addEvents();
 	}
 }
+
 
 // main.jsp의 nav_list 관련 기능들을 모아둔 객체
 var NavList = {
@@ -1197,7 +1226,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel.addEvents();
+	Panel.initialize();
 	NavList.addEvents();	
 	//------------------------------------------------------------------------------------//
 	

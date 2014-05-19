@@ -3,7 +3,6 @@ var searchAPIkeyRealServer = "513cd098517cce82ec819f7862fb362f";
 
 var initialize = function() {
 	var eSubmit = document.getElementById("search_box").children[1]; 
-	console.log(eSubmit);
 	eSubmit.addEventListener('click', getResultXml, false);
 }
 
@@ -64,5 +63,6 @@ function getResultXml(event){
 	}
 	request.send();
 }
+
 
 window.onload = initialize;
