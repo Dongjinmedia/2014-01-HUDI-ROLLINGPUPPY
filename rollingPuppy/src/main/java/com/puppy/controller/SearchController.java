@@ -32,7 +32,7 @@ public class SearchController implements Controller {
 		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		List<Map<String, Object>> resultList = new ArrayList<Map<String, Object>>();
+		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 		Gson gson = new Gson();
 
 		String searchKeyword = request.getParameter("searchKeyword");
