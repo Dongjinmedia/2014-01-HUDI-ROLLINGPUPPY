@@ -42,7 +42,7 @@ public class InitializeListener implements ServletContextListener{
 		//Util 패키지에 생성된 XMLReader 클래스 객체 생성
 		XMLReader xmlReader = new XMLReader(urlXmlStream);
 		String expression = "/mappings/mapping";
-		List<Map<String, Object>> urlMappingList = xmlReader.getListFromXPath(expression);
+		List<Map<String, String>> urlMappingList = xmlReader.getListFromXPath(expression);
 		
 		//TODO 테스트코드 삭제
 		//for (Map<String, Object> map : urlMappingList) {
@@ -71,7 +71,7 @@ public class InitializeListener implements ServletContextListener{
 		 * 
 		 * 하지만 key, value형태에서 key값이 url과 일치한다면 검색의 cost가 현져하게 낮아지기 때문이다. 
 		 */
-		for (Map<String, Object> map : urlMappingList) {
+		for (Map<String, String> map : urlMappingList) {
 			try {
 				//찾아낸 ClassName을 기반으로 Controller Class를 찾아낸후 map에 넣고 있다.
 				urlMappingObject.put(map.get("url").toString(),  (Controller) Class.forName( map.get("controller").toString() ).newInstance());

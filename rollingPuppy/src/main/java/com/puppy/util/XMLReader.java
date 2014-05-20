@@ -81,10 +81,10 @@ public class XMLReader {
 		xPath = XPathFactory.newInstance().newXPath();
 	}
 	
-	public List<Map<String, Object>> getListFromXPath(String XPathExpression) {
+	public List<Map<String, String>> getListFromXPath(String XPathExpression) {
 		
 		//리턴할 데이터
-		List<Map<String, Object>> resultXmlList = new ArrayList<Map<String, Object>>(); 
+		List<Map<String, String>> resultXmlList = new ArrayList<Map<String, String>>(); 
 		
 		/*
 		 * 각각의 검색결과값을 담고있는 리스트
@@ -102,7 +102,7 @@ public class XMLReader {
 		for (int i = 0; i < itemNodeList.getLength(); ++i) {
 			
 			//리턴할 데이터인 list에 담기위한 map선언
-			Map<String, Object> resultXmlData = new HashMap<String ,Object>();
+			Map<String, String> resultXmlData = new HashMap<String ,String>();
 			
 			//nodeList 중 for문에 해당하는 아이템을 가져온후
 			//그 아이템의 첫번째자식노드를 가져온다.
