@@ -94,7 +94,8 @@ public class LoginController implements Controller {
 			
 			HttpSession session = request.getSession();
 			
-			//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다. 
+			//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다.
+			session.setAttribute(Constants.SESSION_MEMBER_ID, member.getId());
 			session.setAttribute(Constants.SESSION_MEMBER_EMAIL, member.getEmail());
 			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNicknameAdjective());
 			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNicknameNoun());
