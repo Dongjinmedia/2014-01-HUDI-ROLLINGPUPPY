@@ -361,7 +361,6 @@ var oNaverMap = {
 	    			"rightBottomY": aCurrentMapPoints[1]['y']
 	    		};
 	    		
-	    		//fafa
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
 	    		//oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
 	    		var callback = function(request) {
@@ -852,18 +851,32 @@ var oChat = {
 			}; 
 			
 			var callBack = function(request){
+				var eTemplate = document.getElementById("template").querySelector(".chatMember");
+				console.log(this.eChattingMemberList);
+				var eTarget = this.eChattingMemberList.querySelector("ul");	
+				
+				//이미 존재하는 검색 결과가 있다면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+				
 				var aResponse = JSON.parse(request.responseText);
-				//console.log("dada",oResponse);
 				
 				for( var i = 0 ; i < aResponse.length ; ++i){
-					var id = aResponse[i]["id"];
+					var eCopiedTemplate = eTemplate.cloneNode(true);
+					
 					var nicknameAdjective = aResponse[i]["nicknameAdjective"];
 					var nicknameNoun = aResponse[i]["nicknameNoun"];
+					var nicknameFull = nicknameAdjective + " " + nicknameNoun;
 					
+					var eNamePlace = eCopiedTemplate.querySelector("p");
+					eNamePlace.innerText = nicknameFull;	
 					
+					eTarget.appendChild(eCopiedTemplate);
 				}
 			};
-			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack);
+			
+			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack.bind(this));
 		},
 		
 		
