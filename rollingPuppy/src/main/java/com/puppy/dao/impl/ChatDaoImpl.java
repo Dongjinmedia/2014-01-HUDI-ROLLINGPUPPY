@@ -1,13 +1,18 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
+import com.puppy.dto.Member;
 import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
@@ -176,12 +181,14 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	public int insertMarkerAndGetLastSavedID(Marker marker) {
 		logger.info("ChatDaoImpl insertMarkerAndGetLastSavedID");
 		
+		//jdbc query문을 객체화 하는 것 
+		//statement는 sql injection 에 취약하기 때문에 preparedStatement를 사용
 		PreparedStatement preparedStatement = null;
 		int markerId = 0;
 		
 		try {
 			String query = "INSERT INTO tbl_marker(location_name, location_latitude, location_longitude, zoom_level) values (?, ?, ?, ?)";
-			
+			//connection객체 + sql 쿼리 = preparedStatement
 			preparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			preparedStatement.setString(1, marker.getLocationName());
 			preparedStatement.setBigDecimal(2, marker.getLocationLatitude());
@@ -199,4 +206,37 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		
 		return markerId;
 	}
+
+	@Override
+	public List<Member> getChatMemberList(int currentChatRoomNumber) {
+		logger.info("ChatDaoImpl getChatMemberList");
+		
+		PreparedStatement preparedStatement = null;
+		List<Member> chatMemberList = new ArrayList<Member>();
+		
+		String query = "SELECT "
+							+ "t_member.id, t_member.nickname_noun, t_member.nickname_adjective "
+					  + "FROM "
+					  		+ "tbl_chat_room_has_tbl_member  AS t_chat_member "
+					 + "INNER JOIN "
+					 		+ "tbl_member AS t_member "
+					 + "ON "
+					 		+ "t_chat_member.tbl_chat_room_id = ? "
+					 + "AND"
+					 		+ " t_chat_member.tbl_member_id = t_member.id"; 
+		
+		try {
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, currentChatRoomNumber);
+		} catch (SQLException e) {
+			logger.error("getChatMemberList Error", e);
+		}
+		
+		chatMemberList = selectList(Member.class, preparedStatement);
+		
+				
+		return chatMemberList;
+	}
+	
+	
 }

@@ -82,4 +82,14 @@ public class Member {
 	public void setLastLoggedTime(Timestamp lastLoggedTime) {
 		this.lastLoggedTime = lastLoggedTime;
 	}
+	
+	@Override
+	public String toString() {
+		return "Member [id=" + id + ", email=" + email + ", pw=" + pw
+				+ ", sex=" + sex + ", birth=" + birth + ", point=" + point
+				+ ", nicknameAdjective=" + nicknameAdjective
+				+ ", nicknameNoun=" + nicknameNoun + ", lastLoggedTime="
+				+ lastLoggedTime + ", createdTime=" + createdTime
+				+ ", updatedTime=" + updatedTime + "]";
+	}
 }

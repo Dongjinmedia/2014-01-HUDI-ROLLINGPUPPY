@@ -14,8 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.dao.DAO;
+import com.puppy.dao.MemberDao;
 import com.puppy.dao.impl.ChatDaoImpl;
+import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
@@ -38,6 +42,11 @@ public class ChatController implements Controller {
 		}
 	}
 	
+	/*
+	 * if-else로 request를 비교하는 구문에서는 모두 소문자로 표기한다.
+	 * requestURL을 toLowerCase로 변환하고 있기 때문이다.
+	 * TODO Annotation처리 할때 리팩토링 
+	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//TODO Delete Log into doPost
 		logger.info("into doPost");
@@ -53,15 +62,35 @@ public class ChatController implements Controller {
 		//현재 GET요청에서는 에러가 발생중이다.
 		} else if ( requestURL.contains("getlist") ) {
 			getChattingRoomList(request, response);
-		} else if (requestURL.contains("getMembers")){
+		} else if (requestURL.contains("getmembers")){
 			getChattingMemberList(request, response);
 		}
 	}
 
 	private void getChattingMemberList(HttpServletRequest request,
-			HttpServletResponse response) {
-		
+			HttpServletResponse response) throws IOException {
 		logger.info("into getChattingMemberList");
+		
+		String currentChatRoomNumberString = (String)request.getAttribute("currentChatRoomNumber");
+		int currentChatRoomNumber = Integer.parseInt(currentChatRoomNumberString);
+		
+		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
+		List<Member> chatMemberList = chatDao.getChatMemberList(currentChatRoomNumber);
+		
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		
+		/*
+		for (Member member : chatMemberList) {
+			logger.info("===================");
+			logger.info(member.toString());
+		}*/
+		
+		out.println(gson.toJson(chatMemberList));
+		logger.info(gson.toJson(chatMemberList));
+		
 		
 	}
 

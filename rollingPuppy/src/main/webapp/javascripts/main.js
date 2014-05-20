@@ -361,7 +361,7 @@ var oNaverMap = {
 	    			"rightBottomY": aCurrentMapPoints[1]['y']
 	    		};
 	    		
-	    		
+	    		//fafa
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
 	    		//oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
 	    		var callback = function(request) {
@@ -829,6 +829,7 @@ var oChat = {
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
 			this.socket.emit('join', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
+			this.getMemberList();
 		},
 
 		enterChatRoomOthers: function(user) {
@@ -847,10 +848,24 @@ var oChat = {
 		//dada
 		getMemberList: function(){
 			var oParameters = {
-					
+				"currentChatRoomNumber": this.currentChatRoomNumber
 			}; 
-			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callback)
+			
+			var callBack = function(request){
+				var aResponse = JSON.parse(request.responseText);
+				//console.log("dada",oResponse);
+				
+				for( var i = 0 ; i < aResponse.length ; ++i){
+					var id = aResponse[i]["id"];
+					var nicknameAdjective = aResponse[i]["nicknameAdjective"];
+					var nicknameNoun = aResponse[i]["nicknameNoun"];
+					
+					
+				}
+			};
+			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack);
 		},
+		
 		
 		// TODO 채팅방이 접히는 애니메이션 구현 필요
 		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
@@ -873,7 +888,7 @@ var oChat = {
 			// 채팅방을 이루고 있는 각 엘리먼트들을 가져온다.
 			this.eChattingRoom = document.querySelector(".chattingRoom");
 			this.eChattingContents = document.querySelector(".chattingContents");
-			this.eChattingMemberList = this.eChattingContents.nextElementSibling();
+			this.eChattingMemberList = this.eChattingContents.nextElementSibling;
 			this.eInputBox = document.querySelector(".chattingInputBox");
 			this.eSendButton = document.querySelector(".chattingSendButton");
 			this.eFoldButton = document.querySelector(".foldChattingRoomButton");
