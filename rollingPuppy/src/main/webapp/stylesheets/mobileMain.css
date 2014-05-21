@@ -1,0 +1,141 @@
+body {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+body * {
+	display: block;
+	font-size: 15px;
+	font-family: Helvetica;
+}
+
+header {
+	width: 100%;
+	height: 50px;
+	background-color: #F5F5F5;
+	border-bottom: 1px solid #555;
+	z-index: 10;
+}
+
+logo>a {
+	position: absolute;
+	top: 11px;
+	left: 5px;
+	width: 100px;
+	height: 33px;
+	background: url("./logo.png") no-repeat;
+	background-size: 100%;
+}
+
+searchBox {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	left: 110px;
+	height: 50px;
+}
+
+searchBox form {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+searchBox form * {
+	display: inline-block;
+}
+
+searchBox inputTextWrapper {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	bottom: 5px;
+	left: 0px;
+	background-color: white;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #ABABAB;
+}
+
+inputTextWrapper inputTextPositioner {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	bottom: 0px;
+	left: 10px;
+}
+
+inputTextPositioner input[type=text] {
+	position: absolute;
+	font-size: 17px;
+	line-height: 27px;
+	top: 5.5px;
+	width: 100%;
+	height: 27px;
+	border: none;
+	padding: 0px;
+}
+
+searchBox input[type=submit] {
+	display: none;
+}
+
+navigation {
+	z-index: 10;
+}
+
+menu {
+	display: table;
+	width: 100%;
+	height: 43px;
+	border-bottom: 1px solid #9e9f9f;
+	background-color: #FDFDFD;
+	table-layout: fixed;
+}
+
+menu>* {
+	display: table-cell;
+	white-space: nowrap;
+	text-align: center;
+	width: 25%;
+}
+
+menu>search.on {
+	border-bottom: 3px solid #5d8bfc;
+}
+
+menu>chatting.on {
+	border-bottom: 3px solid #aac700;
+}
+
+menu>bookmark.on {
+	border-bottom: 3px solid #febd01;
+}
+
+menu>setting.on {
+	border-bottom: 3px solid #f16559;
+}
+
+menu a {
+	color: #303133;
+	font-weight: bold;
+	text-shadow: 0px -1px 1px rgba(255, 255, 255, 0.7);
+	line-height: 40px;
+}
+
+/* ================= */
+map {
+	position: absolute;
+	top: 95px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	background-color: #323232;
+	z-index: 1;
+}
