@@ -124,7 +124,6 @@ var Panel = {
 				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
-		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
 		var eSearchPanelContents = this.elPanel.querySelector("#pc_search");
 		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));

@@ -4,8 +4,8 @@
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 	<title>Neighbor</title>
-	<link rel="stylesheet" type="text/stylesheet" href="/stylesheets/reset.css">
-	<link rel="stylesheet" type="text/stylesheet" href="/stylesheets/mobileMain.css">
+	<link rel="stylesheet" type="text/stylesheet" href="reset.css">
+	<link rel="stylesheet" type="text/stylesheet" href="mobile.css">
 </head>
 
 <!-- Custom tag는 IE에서 정상적으로 동작하지 않는다 -->
@@ -40,7 +40,10 @@
 				<a href="#">설정</a>
 			</setting>
 		</menu>
-		<panelController></panelController>
+		<panelController>
+			<a class="panelButtonFold" href="#">fold</a>
+			<a class="panelButtonUnfold" href="#">unfold</a>
+		</panelController>
 	</navigation>
 	<panel>
 		<section>
@@ -65,3 +68,7 @@
 	<footer></footer>	
 </body>
 </html>
+<script type="text/javascript" src="mobileMain.js"></script>
+<script>
+window.onload = init();
+</script>
