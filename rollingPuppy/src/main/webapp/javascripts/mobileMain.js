@@ -41,7 +41,6 @@ var oPanel ={
 
 	panelButtonsHandler : function(event) {
 		event.preventDefault();
-
 		var strButtonClassName = event.target.className;
 
 		var boolFold = false;
