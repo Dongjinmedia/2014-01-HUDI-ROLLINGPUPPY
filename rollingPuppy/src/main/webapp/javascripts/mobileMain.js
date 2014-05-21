@@ -2,10 +2,9 @@ var oPanel ={
 	ePanelController: document.querySelector("panelController"),
 	
 	addEvents: function() {
-		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
-		
+		console.log("addEvents");
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
-		elPanelButtons.addEventListener(
+		this.ePanelController.addEventListener(
 			"click",
 			this.panelButtonsHandler.bind(this)
 		);
@@ -52,15 +51,16 @@ var oPanel ={
 		}
 
 		if (boolFold) {
-			this.removeClassName(this.elContainer, "unfold_panel");
-			this.addClassName(this.elContainer, "fold_panel");
+			this.removeClassName(this.ePanelController, "unfold_panel");
+			this.addClassName(this.ePanelController, "fold_panel");
 		} else {
-			this.removeClassName(this.elContainer, "fold_panel");
-			this.addClassName(this.elContainer, "unfold_panel");
+			this.removeClassName(this.ePanelController, "fold_panel");
+			this.addClassName(this.ePanelController, "unfold_panel");
 		}
 	},
 
 	init : function(){
 		this.addEvents();
+		console.log("init");
 	}
 }

@@ -151,6 +151,7 @@ panel {
 
 
 /*dada*/
+/*
 .fold_panel #panel {
     animation: fold;
     animation-duration: 0.4s;
@@ -190,7 +191,7 @@ panel {
 	from { -webkit-transform: translateX(0px); }
 	to { -webkit-transform: translateX(337px); }
 }
-
+*/
 
 
 /* ================= */
