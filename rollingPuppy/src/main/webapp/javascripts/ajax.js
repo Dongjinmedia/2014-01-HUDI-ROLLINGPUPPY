@@ -2,7 +2,9 @@
 var oAjax = {
 		//Ajax GET 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (url, oParameters, callback) {
+		getObjectFromJsonGetRequest: function (incompleteUrl, sParameters, callback) {
+			var url = incompleteUrl + sParameters;
+			var oParameters = null;
 			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
 		},
 		
@@ -15,6 +17,7 @@ var oAjax = {
 		//Ajax 요청함수
 		//TODO CROSS BROWSER 시 하위링크 참조 
 		//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
+		
 		
 		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
 		//formData 형태로 만들어 서버에 요청보낸다.
