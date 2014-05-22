@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 import com.puppy.dao.impl.EnteredChatRoomDaoImpl;
 import com.puppy.dto.EnteredChatRoom;
 import com.puppy.util.Constants;
+import com.puppy.util.UAgentInfo;
 
 /*
  * 로그인 이후 사용자가 머무는 유일한 페이지
@@ -37,9 +38,19 @@ public class MainController implements Controller {
 			response.sendRedirect("/");
 			return;
 		}
+		
 		getEnteredChattingRoomList(request, response);
 		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
 		view.forward(request, response); 
+		
+		if ( isThisRequestCommingFromAMobileDevice(request) ) {
+			response.sendRedirect("/mobile");
+		} else {
+			RequestDispatcher view = null;
+			view = request.getRequestDispatcher("main.jsp");
+			view.forward(request, response); 
+		}
+		
 	}
 
 	@Override
@@ -72,4 +83,18 @@ public class MainController implements Controller {
 		out.println(gson.toJson(lists));
 	}
 
+	private boolean isThisRequestCommingFromAMobileDevice(HttpServletRequest request){
+
+	    // http://www.hand-interactive.com/m/resources/detect-mobile-java.htm
+	    String userAgent = request.getHeader("User-Agent");
+	    String httpAccept = request.getHeader("Accept");
+
+	    UAgentInfo detector = new UAgentInfo(userAgent, httpAccept);
+
+	    if (detector.detectMobileQuick()) {
+	        return true;
+	    }
+
+	    return false;
+	}
 }

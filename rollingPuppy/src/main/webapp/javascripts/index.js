@@ -108,11 +108,13 @@ oLogin = {
 		}
 		//check input value END
 		
-		var formData = new FormData(form);
-		var url = "/login";
-		var request = new XMLHttpRequest();
-		request.open("POST", url, true);
-		request.onload = function() {
+		var oParameter = {
+			"email": form[0].value,
+			"password": form[1].value,
+			"keepEmail": form[2].value
+		};
+
+		callback = function(request) {
 			var oResult = JSON.parse(request.responseText);
 				
 			var result = oResult['ThreeWayResult'];
@@ -129,7 +131,8 @@ oLogin = {
 				alert("비정상적 접근입니다.");
 			}
 		}
-		request.send(formData);
+		
+		oAjax.getObjectFromJsonPostRequest("/login", oParameter, callback);
 	},
 	initialize: function() {
 		var lastLoggedEmail = oCookie.getEmailCoockieValue();
@@ -193,12 +196,13 @@ oJoin = {
 		}
 		//check input value END
 		
-		
-		var formData = new FormData(form);
-		var url = "/join";
-		var request = new XMLHttpRequest();
-		request.open("POST", url, true);
-		request.onload = function() {
+		var oParameter = {
+				"email": form[0].value,
+				"password": form[1].value,
+				"radio-input": form[2].value
+		};
+
+		var callback = function(request) {
 			var oResult = JSON.parse(request.responseText);
 			var result = oResult['ThreeWayResult'];
 			if ( result === "SUCCESS" ) {
@@ -213,7 +217,8 @@ oJoin = {
 				alert("비정상적 접근입니다.");
 			}
 		}
-		request.send(formData);
+		oAjax.getObjectFromJsonPostRequest("/join", oParameter, callback);
+		
 	},
 	initialize: function() {
 		document.querySelector(".joinArea input[type=submit]").addEventListener('click', this.join, false);

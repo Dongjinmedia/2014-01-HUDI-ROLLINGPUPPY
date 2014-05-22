@@ -230,9 +230,10 @@
 </body>
 <script type="text/javascript"
 	src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/javascripts/util.js?20140522"></script>
 <script type="text/javascript" src="/javascripts/main.js?20140501"></script>
 <script>
 	window.onload = initialize();
 </script>
-<script type="text/javascript" src="/javascripts/search.js"></script>
+<script type="text/javascript" src="/javascripts/search.js?20140521"></script>
 </html>
