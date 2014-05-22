@@ -1,6 +1,7 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +12,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.puppy.dao.impl.EnteredChatRoomDaoImpl;
+import com.puppy.dto.EnteredChatRoom;
 import com.puppy.util.Constants;
 import com.puppy.util.UAgentInfo;
 
@@ -38,6 +42,7 @@ public class MainController implements Controller {
 			response.sendRedirect("/mobile");
 		} else {
 			RequestDispatcher view = null;
+			getEnteredChattingRoomIdList(request, response);
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
 		}
@@ -65,4 +70,25 @@ public class MainController implements Controller {
 
 	    return false;
 	}
+	
+	public void getEnteredChattingRoomIdList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+
+		Gson gson = new Gson();
+		List<EnteredChatRoom> lists = null;
+		
+		int userId = 0;
+		
+		try {
+			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
+
+			if ( userId != 0 ) {
+				EnteredChatRoomDaoImpl enteredChatRoomDaoImpl = EnteredChatRoomDaoImpl.getInstance();
+				lists = enteredChatRoomDaoImpl.selectEnteredChatRoomList(userId);
+			}
+		} catch (Exception e ) {
+			logger.error("Request Get Entered Chatting Room List With User ID", e);
+		}
+		request.setAttribute("enteredChattingRoomList", gson.toJson(lists));
+	}
+
 }

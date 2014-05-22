@@ -96,6 +96,13 @@
 			<div class="menu-bookmark content"></div>
 		</div>
 	</div>
+	
+		<!-- hidden Area2 (For Entered Chatting Room List) -->
+	<div style="display: none;">
+		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
+	</div>
+	
+	
 	<!--페이지 전체를 감싸는 영역-->
 	<div id="wrapper">
 

@@ -835,6 +835,12 @@ var oChat = {
 			this.eChattingRoom.style.display = "none"
 		},
 		
+		// sehun working
+		// TODO 채팅방 아이디를 파싱해서 소켓 연결하는 부분 완성 필요
+		connectSocketWithEnteredChattingRoom: function() {
+			var chattingRoomList = document.getElementById("enteredChattingRoomList");
+		},
+		
 		initialize: function() {
 			this.socket = io.connect('http://127.0.0.1:3080');
 			
@@ -884,7 +890,9 @@ var oChat = {
 			// 채팅방에서 나가면 알림을 해준다.
 			this.socket.on('exit', function (nickname) {
 				alert("채팅방에서 나가셨어요~");
-			})
+			});
+			
+			this.connectSocketWithEnteredChattingRoom();
 		}
 };
 /*********************************************************************************************************
