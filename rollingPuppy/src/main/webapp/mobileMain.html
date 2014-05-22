@@ -5,7 +5,7 @@
 	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
 	<title>Neighbor</title>
 	<link rel="stylesheet" type="text/stylesheet" href="reset.css">
-	<link rel="stylesheet" type="text/stylesheet" href="mobile.css">
+	<link rel="stylesheet" type="text/stylesheet" href="mobileMain	.css">
 </head>
 
 <!-- Custom tag는 IE에서 정상적으로 동작하지 않는다 -->
@@ -46,29 +46,40 @@
 		</panelController>
 	</navigation>
 	<panel>
-		<section>
-			<card></card>
-			<card></card>
-			<card></card>					
-		</section>
-		<section>
-			<card></card>
-			<card></card>
-			<card></card>					
-		</section>
-		<section>
-			<card></card>
-			<card></card>
-			<card></card>					
-		</section>
+		<sectionContainer>
+			<section>
+				<h1 style="color:white;font-size:3em;">검색</h1>
+				<card></card>
+				<card></card>
+				<card></card>					
+			</section>
+			<section>
+				<h1 style="color:white;font-size:3em;">채팅방</h1>
+				<card></card>
+				<card></card>
+				<card></card>					
+			</section>
+			<section>
+				<h1 style="color:white;font-size:3em;">관심장소</h1>
+				<card></card>
+				<card></card>
+				<card></card>					
+			</section>
+			<section>
+				<h1 style="color:white;font-size:3em;">설정</h1>
+				<card></card>
+				<card></card>
+				<card></card>
+			</section>
+		<panelContainer>
 	</panel>
 
 	<map></map>
 
 	<footer></footer>	
+	<script type="text/javascript" src="mobileMain.js"></script>
+	<script type="text/javascript" style="display:none">
+		window.onload = oPanel.init();
+	</script>
 </body>
 </html>
-<script type="text/javascript" src="mobileMain.js"></script>
-<script>
-window.onload = init();
-</script>
