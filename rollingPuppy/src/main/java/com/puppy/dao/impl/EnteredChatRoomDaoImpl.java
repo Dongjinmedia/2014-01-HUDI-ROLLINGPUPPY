@@ -6,13 +6,13 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.puppy.dao.EnteredChatRoomDao;
 import com.puppy.dao.DAO;
+import com.puppy.dao.EnteredChatRoomDao;
 import com.puppy.dto.EnteredChatRoom;
 
 public class EnteredChatRoomDaoImpl extends DAO implements EnteredChatRoomDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MemberDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(EnteredChatRoomDaoImpl.class);
 	
 	private static EnteredChatRoomDaoImpl instance = null;
 	
@@ -48,5 +48,5 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 		
 		return lists;
 	}
-
+	
 }
