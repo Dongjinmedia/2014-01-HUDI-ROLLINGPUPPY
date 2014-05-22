@@ -7,7 +7,7 @@
 	<title>Rolling Puppy</title>
 	<meta name="viewport" content="width=device-width", initial-scale=5.0, user-scalable=no />
 	<link rel="stylesheet" type="text/css" href="/stylesheets/index.css?20140501">
-	<script type="text/javascript" src="/javascripts/ajax.js?20140522"></script>
+	<script type="text/javascript" src="/javascripts/util.js?20140522"></script>
 	<script src="/javascripts/index.js?20140522"></script>
 </head>
 

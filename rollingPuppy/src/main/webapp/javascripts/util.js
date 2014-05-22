@@ -73,7 +73,7 @@ oTemplate = {
 				eTarget.removeChild(eTarget.firstChild);
 			}
 		},
-		specifyTemplate : function(oResponse, eDefaultTemplate, eTarget,  ){
+		specifyTemplate : function(oResponse, eDefaultTemplate, eTarget){
 			//여기안에 for 문 이하 다 넣을 것 
 		},
 		//쓸데없이 세분화 한듯
@@ -93,7 +93,7 @@ oTemplate = {
 
 		//template에 내용 넣기
 		fillTemplateContents: function( aResponse, aInnerContents, aInnerContentsElement){
-			for ( var i = 0 ; i < aInnerContents.length < ++i ){
+			for ( var i = 0 ; i < aInnerContents.length ; ++i ){
 				aInnerContentsElement[i].innerHTML =aResponse[i][aInnerContents[i]];
 			}
 		},
