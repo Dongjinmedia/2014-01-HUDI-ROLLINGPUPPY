@@ -75,10 +75,11 @@ var oPanel ={
 			this.addClassName(this.ePanelController, "unfold_panel");
 		}
 	},
+	
 	/* 윤성작업중 시작 */
 	ePanel: document.querySelector("panel"),
-	eSectionContainer: document.querySelector("sectionContainer"),
-	aSection: document.querySelectorAll("sectionContainer section"),
+	eContents: document.querySelector("contents"),
+	aSection: document.querySelectorAll("contents section"),
 	aMenu: document.querySelector("navigation menu").children,
 	
 	//현재 화면에 보이는 패널의 인덱스번호
@@ -118,7 +119,7 @@ var oPanel ={
 			 return false;
 		} else {
 			console.log(nMoveLength);
-			this.eSectionContainer.style.webkitTransform = "translate("+nMoveLength+"px)";
+			this.eContents.style.webkitTransform = "translate("+nMoveLength+"px)";
 		}
 	},
 	
@@ -143,8 +144,8 @@ var oPanel ={
 		if (this.nCurrentViewPanelIndex >=0 && this.nCurrentViewPanelIndex <=3 ) {
 			this._setPosition();
 			
-			this.eSectionContainer.style.webkitTransform = "translate(0)";
-			this.eSectionContainer.style.webkitTransition = null;
+			this.eContents.style.webkitTransform = "translate(0)";
+			this.eContents.style.webkitTransition = null;
 		} else {
 			this.nCurrentViewPanelIndex = nTempIndex;
 		}
