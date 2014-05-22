@@ -10,21 +10,12 @@ public class Member {
 	private String sex;
 	private Date birth;
 	private int point;
-	private String nickname_adjective;
-	private String nickname_noun;
-	private Timestamp last_logged_time;
-	private Timestamp created_time;
-	private Timestamp updated_time;
+	private String nicknameAdjective;
+	private String nicknameNoun;
+	private Timestamp lastLoggedTime;
+	private Timestamp createdTime;
+	private Timestamp updatedTime;
 	
-	@Override
-	public String toString() {
-		return "Member [id=" + id + ", email=" + email + ", pw=" + pw
-				+ ", sex=" + sex + ", birth=" + birth + ", point=" + point
-				+ ", nickname_adjective=" + nickname_adjective
-				+ ", nickname_noun=" + nickname_noun + ", last_logged_time="
-				+ last_logged_time + ", created_time=" + created_time
-				+ ", updated_time=" + updated_time + "]";
-	}
 	public String getSex() {
 		return sex;
 	}
@@ -43,29 +34,29 @@ public class Member {
 	public void setPoint(int point) {
 		this.point = point;
 	}
-	public String getNickname_adjective() {
-		return nickname_adjective;
+	public String getNicknameAdjective() {
+		return nicknameAdjective;
 	}
-	public void setNickname_adjective(String nickname_adjective) {
-		this.nickname_adjective = nickname_adjective;
+	public void setNicknameAdjective(String nicknameAdjective) {
+		this.nicknameAdjective = nicknameAdjective;
 	}
-	public String getNickname_noun() {
-		return nickname_noun;
+	public String getNicknameNoun() {
+		return nicknameNoun;
 	}
-	public void setNickname_noun(String nickname_noun) {
-		this.nickname_noun = nickname_noun;
+	public void setNicknameNoun(String nicknameNoun) {
+		this.nicknameNoun = nicknameNoun;
 	}
-	public Timestamp getCreated_time() {
-		return created_time;
+	public Timestamp getCreatedTime() {
+		return createdTime;
 	}
-	public void setCreated_time(Timestamp created_time) {
-		this.created_time = created_time;
+	public void setCreatedTime(Timestamp createdTime) {
+		this.createdTime = createdTime;
 	}
-	public Timestamp getUpdated_time() {
-		return updated_time;
+	public Timestamp getUpdatedTime() {
+		return updatedTime;
 	}
-	public void setUpdated_time(Timestamp updated_time) {
-		this.updated_time = updated_time;
+	public void setUpdatedTime(Timestamp updatedTime) {
+		this.updatedTime = updatedTime;
 	}
 	public String getPw() {
 		return pw;
@@ -85,10 +76,20 @@ public class Member {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-	public Timestamp getLast_logged_time() {
-		return last_logged_time;
+	public Timestamp getLastLoggedTime() {
+		return lastLoggedTime;
 	}
-	public void setLast_logged_time(Timestamp last_logged_time) {
-		this.last_logged_time = last_logged_time;
+	public void setLastLoggedTime(Timestamp lastLoggedTime) {
+		this.lastLoggedTime = lastLoggedTime;
+	}
+	
+	@Override
+	public String toString() {
+		return "Member [id=" + id + ", email=" + email + ", pw=" + pw
+				+ ", sex=" + sex + ", birth=" + birth + ", point=" + point
+				+ ", nicknameAdjective=" + nicknameAdjective
+				+ ", nicknameNoun=" + nicknameNoun + ", lastLoggedTime="
+				+ lastLoggedTime + ", createdTime=" + createdTime
+				+ ", updatedTime=" + updatedTime + "]";
 	}
 }

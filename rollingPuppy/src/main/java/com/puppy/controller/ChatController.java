@@ -7,44 +7,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.dao.DAO;
+import com.puppy.dao.MemberDao;
 import com.puppy.dao.impl.ChatDaoImpl;
+import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
 import com.puppy.util.Util;
-/*
- * 채팅방에 대한 요청들을 처리할 컨트롤러.
- * URL을 분석해서 해당하는 메소드를 실행하도록 만들어져있다.
- * TODO FrontController Pattern으로 확장해야 한다.
- * 
- * @MultipartConfig는 자바스크립트에서 Ajax요청시, formData를 전달할 수 있도록 하기 위해서 선언하였다.
- * Servlet에서 formData(정확히 이야기해서 MultipartRequest)를 처리하기 위해서는 선언되어야 하는 어노테이션이며,
- * 기존에 request.getParameter()로 가져오던 형태도,   request.getPart() 메소드를 통해서 Part형식으로 가져와야 한다.
- * 
- * Part클래스에 대한 설명은 다음과 같다
- *  	This class represents a part or form item that was received within a
- * 		multipart/form-data POST request.
- */
 
-//TODO Get방식일때의 처리!!
-@MultipartConfig
 public class ChatController implements Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 	
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		//TODO Delete Log into doGet
-		logger.info("into doGet");
 		
 		String requestURL = request.getRequestURI().toLowerCase();
 		
@@ -57,6 +42,11 @@ public class ChatController implements Controller {
 		}
 	}
 	
+	/*
+	 * if-else로 request를 비교하는 구문에서는 모두 소문자로 표기한다.
+	 * requestURL을 toLowerCase로 변환하고 있기 때문이다.
+	 * TODO Annotation처리 할때 리팩토링 
+	 */
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		//TODO Delete Log into doPost
 		logger.info("into doPost");
@@ -72,15 +62,38 @@ public class ChatController implements Controller {
 		//현재 GET요청에서는 에러가 발생중이다.
 		} else if ( requestURL.contains("getlist") ) {
 			getChattingRoomList(request, response);
+		} else if (requestURL.contains("getmembers")){
+			getChattingMemberList(request, response);
 		}
 	}
-	/*
-	 * 위에서 설명한것과 같이, Ajax통신을 통한 Servlet요청에서 formData를 사용할경우, request.getParameter를 사용하면 안된다.
-	 * 실제로 request.getParameter("test1"); null 값을 반환한다.
-	 * 
-	 * 전달하는 FormData를 Servlet에서는 multipart로 인식한다. 아래의 링크를 확인해보자.
-	 * http://stackoverflow.com/questions/10292382/html-5-formdata-and-java-servlets
-	 */
+
+	private void getChattingMemberList(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		logger.info("into getChattingMemberList");
+		
+		String currentChatRoomNumberString = (String)request.getAttribute("currentChatRoomNumber");
+		int currentChatRoomNumber = Integer.parseInt(currentChatRoomNumberString);
+		
+		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
+		List<Member> chatMemberList = chatDao.getChatMemberList(currentChatRoomNumber);
+		
+		
+		response.setContentType("application/json");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		
+		/*
+		for (Member member : chatMemberList) {
+			logger.info("===================");
+			logger.info(member.toString());
+		}*/
+		
+		out.println(gson.toJson(chatMemberList));
+		logger.info(gson.toJson(chatMemberList));
+		
+		
+	}
+
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
 		
 		//response 형식을 json으로 선언
@@ -107,40 +120,14 @@ public class ChatController implements Controller {
 		BigDecimal longitude = null;
 		int zoom = 0;
 		
-		Part titlePart = null;
-		Part maxPart = null;
-		Part namePart = null;
-		Part latitudePart = null;
-		Part longitudePart = null;
-		Part zoomPart = null;
-		
 		try {
 			//각각의 Part객체를 가져온다.
-			titlePart = request.getPart( Constants.REQUEST_CHATROOM_TITLE );
-			maxPart = request.getPart( Constants.REQUEST_CHATROOM_MAX );
-			namePart = request.getPart( Constants.REQUEST_CHATROOM_NAME );
-			latitudePart = request.getPart( Constants.REQUEST_CHATROOM_LATITUDE );
-			longitudePart = request.getPart( Constants.REQUEST_CHATROOM_LONGITUDE );
-			zoomPart = request.getPart( Constants.REQUEST_CHATROOM_ZOOM );
-			
-			//각각의 Part객체가 null이 아닐경우, 원하고자 하는 자료형으로 캐스팅하여 Value를 가져온다.
-			if ( titlePart != null )
-				title =  Util.getStringValueFromPart( titlePart );
-			
-			if ( maxPart != null )
-				max = Integer.parseInt( Util.getStringValueFromPart( maxPart ));
-			
-			if ( namePart != null )
-				name = Util.getStringValueFromPart( namePart );
-			
-			if ( latitudePart != null )
-				latitude = new BigDecimal( Util.getStringValueFromPart( latitudePart ));
-			
-			if ( longitudePart != null )
-				longitude = new BigDecimal( Util.getStringValueFromPart( longitudePart ));
-			
-			if ( zoomPart != null )
-				zoom = Integer.parseInt( Util.getStringValueFromPart(zoomPart ));
+			title = request.getAttribute( Constants.REQUEST_CHATROOM_TITLE ).toString();
+			max = Integer.parseInt( request.getAttribute( Constants.REQUEST_CHATROOM_MAX ).toString() );
+			name = request.getAttribute( Constants.REQUEST_CHATROOM_NAME ).toString();
+			latitude = new BigDecimal( request.getAttribute( Constants.REQUEST_CHATROOM_LATITUDE ).toString() );
+			longitude = new BigDecimal( request.getAttribute( Constants.REQUEST_CHATROOM_LONGITUDE ).toString() );
+			zoom = Integer.parseInt( request.getAttribute( Constants.REQUEST_CHATROOM_ZOOM ).toString() );
 			
 			//database에 입력해야하는 모든 데이터가 존재한다면
 			if ( title !=  null && max != 0 && name != null && latitude != null && longitude != null && zoom != 0 ) {
@@ -150,9 +137,9 @@ public class ChatController implements Controller {
 				
 				chatRoom.setTitle(title);
 				chatRoom.setMax(max);
-				chatRoom.setLocation_name(name);
-				chatRoom.setLocation_latitude(latitude);
-				chatRoom.setLocation_longitude(longitude);
+				chatRoom.setLocationName(name);
+				chatRoom.setLocationLatitude(latitude);
+				chatRoom.setLocationLongitude(longitude);
 				
 				//데이터베이스에 새로운 채팅방 데이터를 삽입
 				//insert메서드는 Parameter로 전달되는 DTO에 새로 추가되는 데이터베이스 행의 'id'값을 입력해준다. 
@@ -167,10 +154,10 @@ public class ChatController implements Controller {
 					//클라이언트에서 사용하는 데이터만을 모아서 보내기 위한 JsonDTO선언
 					//데이터를 모두 담아둔다.
 					//자세한 사항은 Util의 getMarkerCentralListFromChatRoomList함수에 설명을 참조하자.
-					JsonMarker newMarker = new JsonMarker(chatRoom.getTbl_marker_id());
-					newMarker.setLocation_name(chatRoom.getLocation_name());
-					newMarker.setLocation_latitude(chatRoom.getLocation_latitude());
-					newMarker.setLocation_longitude(chatRoom.getLocation_longitude());
+					JsonMarker newMarker = new JsonMarker(chatRoom.getTblMarkerId());
+					newMarker.setLocation_name(chatRoom.getLocationName());
+					newMarker.setLocation_latitude(chatRoom.getLocationLatitude());
+					newMarker.setLocation_longitude(chatRoom.getLocationLongitude());
 					
 					newMarker.addChatRooms(new JsonChatRoom(chatRoom.getId(), chatRoom.getTitle(), chatRoom.getMax()));
 					
@@ -219,11 +206,6 @@ public class ChatController implements Controller {
 		boolean isSuccess = false;
 		
 		//request Parameter를 위한 변수선언
-		Part leftTopXPart = null;
-		Part leftTopYPart = null;
-		Part rightBottomXPart = null;
-		Part rightBottomYPart = null;
-		
 		float leftTopX = 0;
 		float leftTopY = 0;
 		float rightBottomX = 0;
@@ -231,23 +213,11 @@ public class ChatController implements Controller {
 		
 		try {
 			
-			leftTopXPart = request.getPart( Constants.REQUEST_ROOMLIST_LEFTTOPX);
-			leftTopYPart = request.getPart( Constants.REQUEST_ROOMLIST_LEFTTOPY);
-			rightBottomXPart = request.getPart( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX);
-			rightBottomYPart = request.getPart( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY);
-			
-			
-			if ( leftTopXPart != null )
-				leftTopX = Float.parseFloat( Util.getStringValueFromPart( leftTopXPart ) );
-			
-			if ( leftTopYPart != null )
-				leftTopY = Float.parseFloat( Util.getStringValueFromPart( leftTopYPart ) );
-			
-			if ( rightBottomXPart != null )
-				rightBottomX = Float.parseFloat( Util.getStringValueFromPart( rightBottomXPart ) );
-			
-			if ( rightBottomYPart != null )
-				rightBottomY = Float.parseFloat( Util.getStringValueFromPart( rightBottomYPart ) );
+			//TODO Object To Float에 대한 방법이 이것밖에 없는가..?
+			leftTopX = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_LEFTTOPX).toString() );
+			leftTopY = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_LEFTTOPY).toString() );
+			rightBottomX = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX).toString() );
+			rightBottomY = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY).toString() );
 			
 			if ( leftTopX !=0  && leftTopY !=0
 				&& rightBottomX != 0
@@ -275,4 +245,6 @@ public class ChatController implements Controller {
 		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
 		out.println(gson.toJson(resultJsonData));
 	}
+	
+	
 }

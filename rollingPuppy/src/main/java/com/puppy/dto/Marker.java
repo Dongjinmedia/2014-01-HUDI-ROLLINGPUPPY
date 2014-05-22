@@ -5,11 +5,11 @@ import java.sql.Timestamp;
 
 public class Marker {
 	private int id;
-	private String location_name;
-	private BigDecimal location_latitude;
-	private BigDecimal location_longitude;
-	private int zoom_level;
-	private Timestamp created_time;
+	private String locationName;
+	private BigDecimal locationLatitude;
+	private BigDecimal locationLongitude;
+	private int zoomLevel;
+	private Timestamp createdTime;
 	
 	public int getId() {
 		return id;
@@ -17,34 +17,34 @@ public class Marker {
 	public void setId(int id) {
 		this.id = id;
 	}
-	public String getLocation_name() {
-		return location_name;
+	public String getLocationName() {
+		return locationName;
 	}
-	public void setLocation_name(String location_name) {
-		this.location_name = location_name;
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
-	public BigDecimal getLocation_latitude() {
-		return location_latitude;
+	public BigDecimal getLocationLatitude() {
+		return locationLatitude;
 	}
-	public void setLocation_latitude(BigDecimal location_latitude) {
-		this.location_latitude = location_latitude;
+	public void setLocationLatitude(BigDecimal locationLatitude) {
+		this.locationLatitude = locationLatitude;
 	}
-	public BigDecimal getLocation_longitude() {
-		return location_longitude;
+	public BigDecimal getLocationLongitude() {
+		return locationLongitude;
 	}
-	public void setLocation_longitude(BigDecimal location_longitude) {
-		this.location_longitude = location_longitude;
+	public void setLocationLongitude(BigDecimal locationLongitude) {
+		this.locationLongitude = locationLongitude;
 	}
-	public int getZoom_level() {
-		return zoom_level;
+	public int getZoomLevel() {
+		return zoomLevel;
 	}
-	public void setZoom_level(int zoom_level) {
-		this.zoom_level = zoom_level;
+	public void setZoomLevel(int zoomLevel) {
+		this.zoomLevel = zoomLevel;
 	}
-	public Timestamp getCreated_time() {
-		return created_time;
+	public Timestamp getCreatedTime() {
+		return createdTime;
 	}
-	public void setCreated_time(Timestamp created_time) {
-		this.created_time = created_time;
+	public void setCreatedTime(Timestamp createdTime) {
+		this.createdTime = createdTime;
 	}
 }

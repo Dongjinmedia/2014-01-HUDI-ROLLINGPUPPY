@@ -8,17 +8,17 @@ public class ChatRoom {
 	private int id;
 	private String title;
 	private int max;
-	private String location_name;
-	private BigDecimal location_latitude;
-	private BigDecimal location_longitude;
-	private Timestamp created_time;
-	private int tbl_marker_id;
+	private String locationName;
+	private BigDecimal locationLatitude;
+	private BigDecimal locationLongitude;
+	private Timestamp createdTime;
+	private int tblMarkerId;
 	
-	public int getTbl_marker_id() {
-		return tbl_marker_id;
+	public int getTblMarkerId() {
+		return tblMarkerId;
 	}
-	public void setTbl_marker_id(int tbl_marker_id) {
-		this.tbl_marker_id = tbl_marker_id;
+	public void setTblMarkerId(int tblMarkerId) {
+		this.tblMarkerId = tblMarkerId;
 	}
 	public int getId() {
 		return id;
@@ -38,28 +38,28 @@ public class ChatRoom {
 	public void setMax(int max) {
 		this.max = max;
 	}
-	public String getLocation_name() {
-		return location_name;
+	public String getLocationName() {
+		return locationName;
 	}
-	public void setLocation_name(String location_name) {
-		this.location_name = location_name;
+	public void setLocationName(String locationName) {
+		this.locationName = locationName;
 	}
-	public BigDecimal getLocation_latitude() {
-		return location_latitude;
+	public BigDecimal getLocationLatitude() {
+		return locationLatitude;
 	}
-	public void setLocation_latitude(BigDecimal location_latitude) {
-		this.location_latitude = location_latitude;
+	public void setLocationLatitude(BigDecimal locationLatitude) {
+		this.locationLatitude = locationLatitude;
 	}
-	public BigDecimal getLocation_longitude() {
-		return location_longitude;
+	public BigDecimal getLocationLongitude() {
+		return locationLongitude;
 	}
-	public void setLocation_longitude(BigDecimal location_longitude) {
-		this.location_longitude = location_longitude;
+	public void setLocationLongitude(BigDecimal locationLongitude) {
+		this.locationLongitude = locationLongitude;
 	}
-	public Timestamp getCreated_time() {
-		return created_time;
+	public Timestamp getCreatedTime() {
+		return createdTime;
 	}
-	public void setCreated_time(Timestamp created_time) {
-		this.created_time = created_time;
+	public void setCreatedTime(Timestamp createdTime) {
+		this.createdTime = createdTime;
 	}
 }

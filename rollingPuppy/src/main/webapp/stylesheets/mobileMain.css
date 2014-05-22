@@ -1,0 +1,249 @@
+body {
+	position: absolute;
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+body * {
+	display: block;
+	font-size: 15px;
+	font-family: Helvetica;
+}
+
+header {
+	width: 100%;
+	height: 50px;
+	background-color: #F5F5F5;
+	border-bottom: 1px solid #555;
+	z-index: 10;
+}
+
+logo>a {
+	position: absolute;
+	top: 11px;
+	left: 5px;
+	width: 100px;
+	height: 33px;
+	background: url("./logo.png") no-repeat;
+	background-size: 100%;
+}
+
+searchBox {
+	position: absolute;
+	top: 0px;
+	right: 0px;
+	left: 110px;
+	height: 50px;
+}
+
+searchBox form {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+
+searchBox form * {
+	display: inline-block;
+}
+
+searchBox inputTextWrapper {
+	position: absolute;
+	top: 5px;
+	right: 5px;
+	bottom: 5px;
+	left: 0px;
+	background-color: white;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #ABABAB;
+}
+
+inputTextWrapper inputTextPositioner {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	bottom: 0px;
+	left: 10px;
+}
+
+inputTextPositioner input[type=text] {
+	position: absolute;
+	font-size: 17px;
+	line-height: 27px;
+	top: 5.5px;
+	width: 100%;
+	height: 27px;
+	border: none;
+	padding: 0px;
+}
+
+searchBox input[type=submit] {
+	display: none;
+}
+
+navigation {
+	z-index: 10;
+}
+
+menu {
+	display: table;
+	width: 100%;
+	height: 43px;
+	border-bottom: 1px solid #9e9f9f;
+	background-color: #FDFDFD;
+	table-layout: fixed;
+}
+
+menu>* {
+	display: table-cell;
+	white-space: nowrap;
+	text-align: center;
+	width: 25%;
+}
+
+menu>search.on {
+	border-bottom: 3px solid #5d8bfc;
+}
+
+menu>chatting.on {
+	border-bottom: 3px solid #aac700;
+}
+
+menu>bookmark.on {
+	border-bottom: 3px solid #febd01;
+}
+
+menu>setting.on {
+	border-bottom: 3px solid #f16559;
+}
+
+menu a {
+	color: #303133;
+	font-weight: bold;
+	text-shadow: 0px -1px 1px rgba(255, 255, 255, 0.7);
+	line-height: 40px;
+}
+
+/*fafa*/
+panelController {
+	position: absolute;
+	background-color: #FDFDFD;
+	border : 1px solid #C41FB9;
+	width: 100%;
+	height: 22px; 
+	z-index: 2;
+}
+
+/*panel {
+	position: absolute;
+	top: -1000px;
+	width: 100%;
+	height: 100%;
+	border-bottom: 1px solid #A7A7A7;
+	background-color: #FEFEFE;
+	z-index: 11;
+}*/
+
+
+/*dada*/
+.fold_panel #panel {
+    animation: fold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: fold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes fold {
+	from { -webkit-transform: translateY(337px); }
+	to { -webkit-transform: translateY(0px); }
+}
+@-webkit-keyframes fold {
+	from { -webkit-transform: translateY(337px); }
+	to { -webkit-transform: translateY(0px); }
+}
+
+.unfold_panel #panel {
+    animation: unfold;
+    animation-duration: 0.4s;
+    animation-timing-function: ease;
+    animation-fill-mode: forwards;
+
+    -webkit-animation: unfold;
+    -webkit-animation-duration: 0.4s;
+    -webkit-animation-timing-function: ease;
+    -webkit-animation-fill-mode: forwards;
+}
+@keyframes unfold {
+	from { -webkit-transform: translateY(0px); }
+	to { -webkit-transform: translateY(337px); }
+}
+@-webkit-keyframes unfold {
+	from { -webkit-transform: translateY(0px); }
+	to { -webkit-transform: translateY(337px); }
+}
+
+
+/* ================= */
+/*map {
+	position: absolute;
+	top: 95px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	background-color: black;
+	border: 1px solid black;
+	z-index: 1;
+}*/
+
+panel {
+	width: 100%;
+	height: 300px;
+	background-color: #0f0;
+	display: block;
+	overflow-x: hidden;
+	overflow-y: hidden;
+}
+
+sectionContainer {
+	position: relative;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+sectionContainer > section:nth-of-type(1) {
+	left: 0%;
+	background-color: #000;
+}
+
+sectionContainer > section:nth-of-type(2) {
+	left: 100%;
+	background-color: #f00;
+}
+
+sectionContainer > section:nth-of-type(3) {
+	left: 200%;
+	background-color: #0f0;
+}
+
+sectionContainer > section:nth-of-type(4) {
+	left: 300%;	
+	background-color: #00f;
+}
+
+sectionContainer > section {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	color: #f00;
+	z-index: 50;
+}

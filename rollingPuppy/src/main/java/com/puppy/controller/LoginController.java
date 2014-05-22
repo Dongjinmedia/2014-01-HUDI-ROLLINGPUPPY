@@ -6,12 +6,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.annotation.MultipartConfig;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import javax.servlet.http.Part;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,13 +19,10 @@ import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.ThreeWayResult;
-import com.puppy.util.Util;
 
 /*
  * 로그인 요청에 대한 컨트롤러
  */
-//For getParameter From Javascript new FormData (Ajax Request)
-@MultipartConfig
 public class LoginController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
@@ -50,21 +45,18 @@ public class LoginController implements Controller {
 		String keepEmail = null;
 		
 		
-		Part emailPart = request.getPart(Constants.REQUEST_EMAIL);
-		Part passwordPart = request.getPart(Constants.REQUEST_PASSWORD);
-		Part keepEmailPart = request.getPart(Constants.REQUEST_KEEP_EMAIL);
+		Object emailObject = request.getAttribute(Constants.REQUEST_EMAIL);
+		Object passwordObject = request.getAttribute(Constants.REQUEST_PASSWORD);
+		Object keepEmailObject = request.getAttribute(Constants.REQUEST_KEEP_EMAIL);
 		
-		if ( emailPart != null ) {
-			email = Util.getStringValueFromPart(emailPart);
+		if ( emailObject !=null 
+				&& passwordObject != null
+				&& keepEmailObject != null ) {
+			email = emailObject.toString();
+			password = passwordObject.toString();
+			keepEmail = keepEmailObject.toString();
 		}
-		
-		if ( passwordPart != null ) {
-			password = Util.getStringValueFromPart( passwordPart );
-		}
-		
-		if ( keepEmailPart != null ) {
-			keepEmail = Util.getStringValueFromPart( keepEmailPart );
-		}
+			
 		
 		//TODO 이건 왜 있는거지?? <윤성>
 		if (keepEmail == null) {
@@ -102,10 +94,11 @@ public class LoginController implements Controller {
 			
 			HttpSession session = request.getSession();
 			
-			//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다. 
+			//회원의 정확한 식별을 위한 데이터베이스의 index number값을 저장한다.
+			session.setAttribute(Constants.SESSION_MEMBER_ID, member.getId());
 			session.setAttribute(Constants.SESSION_MEMBER_EMAIL, member.getEmail());
-			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNickname_adjective());
-			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNickname_noun());
+			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNicknameAdjective());
+			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNicknameNoun());
 			
 			//최종 로그인시간을 업데이트한다.
 			int successUpdateQueryNumber = memberDao.updateLastLoggedTime(member.getId());
@@ -116,7 +109,7 @@ public class LoginController implements Controller {
 			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(
 					Constants.JSON_RESPONSE_NICKNAME, //key 
-					member.getNickname_adjective() + " "+member.getNickname_noun()); //value
+					member.getNicknameAdjective() + " "+member.getNicknameNoun()); //value
 		} else {
 			//일치하는 비밀번호가 데이터베이스에 존재하지 않음
 			loginResult = ThreeWayResult.FAIL;
@@ -128,7 +121,6 @@ public class LoginController implements Controller {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		// TODO Auto-generated method stub
 		
 	}
 }

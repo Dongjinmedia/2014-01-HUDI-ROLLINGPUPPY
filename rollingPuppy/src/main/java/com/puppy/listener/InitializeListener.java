@@ -12,6 +12,7 @@ import javax.servlet.ServletContextListener;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.puppy.controller.Controller;
 import com.puppy.util.XMLReader;
 
 /*
@@ -41,7 +42,7 @@ public class InitializeListener implements ServletContextListener{
 		//Util 패키지에 생성된 XMLReader 클래스 객체 생성
 		XMLReader xmlReader = new XMLReader(urlXmlStream);
 		String expression = "/mappings/mapping";
-		List<Map<String, Object>> urlMappingList = xmlReader.getListFromXPath(expression);
+		List<Map<String, String>> urlMappingList = xmlReader.getListFromXPath(expression);
 		
 		//TODO 테스트코드 삭제
 		//for (Map<String, Object> map : urlMappingList) {
@@ -51,7 +52,7 @@ public class InitializeListener implements ServletContextListener{
 		//}
 		
 		//메모리(Context)에 저장할 URL Mapping 객체
-		Map<String, String> urlMappingObject = new HashMap<String, String>();
+		Map<String, Controller> urlMappingObject = new HashMap<String, Controller>();
 		
 		/*
 		 * 현재 list형태로 이루어져 있는 url mapping 데이터를 map으로 이루어진 key, value형태로 변경한다.
@@ -70,8 +71,13 @@ public class InitializeListener implements ServletContextListener{
 		 * 
 		 * 하지만 key, value형태에서 key값이 url과 일치한다면 검색의 cost가 현져하게 낮아지기 때문이다. 
 		 */
-		for (Map<String, Object> map : urlMappingList) {
-			urlMappingObject.put(map.get("url").toString(), map.get("controller").toString() );
+		for (Map<String, String> map : urlMappingList) {
+			try {
+				//찾아낸 ClassName을 기반으로 Controller Class를 찾아낸후 map에 넣고 있다.
+				urlMappingObject.put(map.get("url").toString(),  (Controller) Class.forName( map.get("controller").toString() ).newInstance());
+			} catch (Exception e) {
+				logger.error("Initialize Error", e);
+			}
 		}
 		
 		servletContext.setAttribute("urlMappingObject", urlMappingObject);

@@ -10,8 +10,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.puppy.util.Util;
 
 /*
  * Data Access Object
@@ -81,7 +84,7 @@ public class DAO {
 			instances.add(newInstance);
 			
 			//Query를 통해 리턴받은 리스트중 (데이터베이스의 행), 앞에서부터 순차적으로 한행씩 꺼낸다. 
-			Map<String, Object> sqlTargetResult = sqlResult.get(i);
+			Map<String, Object> tuple = sqlResult.get(i);
 
 			//targetClass(DTO)에 담긴 Field(변수)를 하나씩 돌면서 아래내용을 수행한다.
 			for (Field field : fields) {
@@ -90,7 +93,7 @@ public class DAO {
 				
 				
 				//"행"에 해당하는 Map영역에서, 필드에 해당하는 항목의 데이터를 가져온다.
-				Object sqlTargetData = sqlTargetResult.get(fieldName);
+				Object sqlTargetData = tuple.get( Util.getUnderBarlConventionString(fieldName) ) ;
 				
 				//만약 필드에 해당하는 데이터가 null일경우, 다음필드로 넘어간다.
 				if ( sqlTargetData == null)
@@ -104,7 +107,8 @@ public class DAO {
 					&& sqlTargetData.getClass().getFields() != null 
 					&& sqlTargetData.getClass().getFields().length > 1 ) {
 					logger.info(" | sqlTargetType : "+sqlTargetData.getClass().getFields()[0].getType());
-				}*/
+				}
+				*/
 				
 				//targetClass(DTO)에 담긴 모든 method(함수)중에서, "set메소드명"해당하는 Method객체를 가져온다.
 				//Parameter는
@@ -122,7 +126,7 @@ public class DAO {
 				
 				//메소드를 실제로 실행시켜준다.
 				//setMethod(Paramter)를 실행시켜주는것!!
-				method.invoke(newInstance, sqlTargetResult.get(fieldName)); // set메소드 호출.
+				method.invoke(newInstance, sqlTargetData ); // set메소드 호출.
 			}
 		}
 		return instances;

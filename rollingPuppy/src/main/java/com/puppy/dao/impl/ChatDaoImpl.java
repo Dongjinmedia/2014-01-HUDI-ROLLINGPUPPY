@@ -1,13 +1,18 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
+import com.puppy.dto.Member;
 import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
@@ -32,10 +37,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		
 		//Database 질의를 위한 DTO설정
 		Marker marker = new Marker();
-		marker.setLocation_name(chatRoom.getLocation_name());
-		marker.setLocation_latitude(chatRoom.getLocation_latitude());
-		marker.setLocation_longitude(chatRoom.getLocation_longitude());
-		marker.setZoom_level(zoom);
+		marker.setLocationName(chatRoom.getLocationName());
+		marker.setLocationLatitude(chatRoom.getLocationLatitude());
+		marker.setLocationLongitude(chatRoom.getLocationLongitude());
+		marker.setZoomLevel(zoom);
 		
 		//채팅방 생성을 요청했던 좌표값에 
 		//해당하는 Marker를 검색.
@@ -51,7 +56,7 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			return 0;
 		} else {
 			//marker아이디값을 정상적으로 가져온다면 메서드 Parameter인 ChatRoom 객체에 marker_id를 저장한다. (Call by Reference) 
-			chatRoom.setTbl_marker_id(markerId);
+			chatRoom.setTblMarkerId(markerId);
 		}
 		
 		
@@ -61,10 +66,10 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			preparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			preparedStatement.setString(1, chatRoom.getTitle());
 			preparedStatement.setInt(2, chatRoom.getMax());
-			preparedStatement.setString(3, chatRoom.getLocation_name());
-			preparedStatement.setBigDecimal(4, chatRoom.getLocation_latitude());
-			preparedStatement.setBigDecimal(5, chatRoom.getLocation_longitude());
-			preparedStatement.setInt(6, chatRoom.getTbl_marker_id());
+			preparedStatement.setString(3, chatRoom.getLocationName());
+			preparedStatement.setBigDecimal(4, chatRoom.getLocationLatitude());
+			preparedStatement.setBigDecimal(5, chatRoom.getLocationLongitude());
+			preparedStatement.setInt(6, chatRoom.getTblMarkerId());
 			
 			//query실행후, 데이터베이스에 성공적으로 삽입된 행의 갯수를 리턴한다.
 			successQueryNumber = insertQuery(preparedStatement, chatRoom);
@@ -121,8 +126,8 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		//4. 만약 둘다 존재하지 않을경우, 새로운 Marker를 생성한후, 아이디값을 리턴한다.
 		PreparedStatement preparedStatement = null;
 		int markerId = 0;
-		Float latitudeRange = Util.getLatitudeRangeFromZoomLevel(marker.getZoom_level());
-		Float longitudeRange = Util.getLongitudeRangeFromZoomLevel(marker.getZoom_level());
+		Float latitudeRange = Util.getLatitudeRangeFromZoomLevel(marker.getZoomLevel());
+		Float longitudeRange = Util.getLongitudeRangeFromZoomLevel(marker.getZoomLevel());
 		
 		
 		try {
@@ -140,11 +145,11 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 													+ " FROM tbl_marker";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
-			preparedStatement.setString(1, marker.getLocation_name());
-			preparedStatement.setFloat(2, marker.getLocation_latitude().floatValue()-latitudeRange);
-			preparedStatement.setFloat(3, marker.getLocation_latitude().floatValue()+latitudeRange);
-			preparedStatement.setFloat(4, marker.getLocation_longitude().floatValue()-longitudeRange);
-			preparedStatement.setFloat(5, marker.getLocation_longitude().floatValue()+longitudeRange);
+			preparedStatement.setString(1, marker.getLocationName());
+			preparedStatement.setFloat(2, marker.getLocationLatitude().floatValue()-latitudeRange);
+			preparedStatement.setFloat(3, marker.getLocationLatitude().floatValue()+latitudeRange);
+			preparedStatement.setFloat(4, marker.getLocationLongitude().floatValue()-longitudeRange);
+			preparedStatement.setFloat(5, marker.getLocationLongitude().floatValue()+longitudeRange);
 			
 			//TempMarker클래스는 Query문 결과 리턴되는 "이름이 일치하는" 마커아이디와 "인근거리로 포함되는" 마커아이디를 리턴받기 위한 temp class이다.
 			TempMarkerIdClass idInstance = selectOne(TempMarkerIdClass.class, preparedStatement);
@@ -176,17 +181,19 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	public int insertMarkerAndGetLastSavedID(Marker marker) {
 		logger.info("ChatDaoImpl insertMarkerAndGetLastSavedID");
 		
+		//jdbc query문을 객체화 하는 것 
+		//statement는 sql injection 에 취약하기 때문에 preparedStatement를 사용
 		PreparedStatement preparedStatement = null;
 		int markerId = 0;
 		
 		try {
 			String query = "INSERT INTO tbl_marker(location_name, location_latitude, location_longitude, zoom_level) values (?, ?, ?, ?)";
-			
+			//connection객체 + sql 쿼리 = preparedStatement
 			preparedStatement = ConnectionPool.getInsertPreparedStatement(query);
-			preparedStatement.setString(1, marker.getLocation_name());
-			preparedStatement.setBigDecimal(2, marker.getLocation_latitude());
-			preparedStatement.setBigDecimal(3, marker.getLocation_longitude());
-			preparedStatement.setInt(4, marker.getZoom_level());
+			preparedStatement.setString(1, marker.getLocationName());
+			preparedStatement.setBigDecimal(2, marker.getLocationLatitude());
+			preparedStatement.setBigDecimal(3, marker.getLocationLongitude());
+			preparedStatement.setInt(4, marker.getZoomLevel());
 			
 			//쿼리결과로 insert된 데이터베이스 행 갯수가 0 이상일때 (1일때)
 			if ( insertQuery(preparedStatement, marker) > 0 ) {
@@ -199,4 +206,37 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		
 		return markerId;
 	}
+
+	@Override
+	public List<Member> getChatMemberList(int currentChatRoomNumber) {
+		logger.info("ChatDaoImpl getChatMemberList");
+		
+		PreparedStatement preparedStatement = null;
+		List<Member> chatMemberList = new ArrayList<Member>();
+		
+		String query = "SELECT "
+							+ "t_member.id, t_member.nickname_noun, t_member.nickname_adjective "
+					  + "FROM "
+					  		+ "tbl_chat_room_has_tbl_member  AS t_chat_member "
+					 + "INNER JOIN "
+					 		+ "tbl_member AS t_member "
+					 + "ON "
+					 		+ "t_chat_member.tbl_chat_room_id = ? "
+					 + "AND"
+					 		+ " t_chat_member.tbl_member_id = t_member.id"; 
+		
+		try {
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, currentChatRoomNumber);
+		} catch (SQLException e) {
+			logger.error("getChatMemberList Error", e);
+		}
+		
+		chatMemberList = selectList(Member.class, preparedStatement);
+		
+				
+		return chatMemberList;
+	}
+	
+	
 }

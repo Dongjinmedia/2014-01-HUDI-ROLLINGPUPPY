@@ -49,67 +49,6 @@ function removeClassName(node, strClassName) {
 	node.className = node.className.replace(" " + strClassName, "").toString();
 }
 
-//Ajax 통신을 담당하는 모듈 Object
-var oAjax = {
-		//Ajax GET 요청함수
-		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (url, oParameters, callback) {
-			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
-		},
-		
-		//Ajax POST 요청함수
-		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonPostRequest: function (url, oParameters, callback) {
-			this._getObjectFromJsonRequest(url, "POST", oParameters, callback);
-		},
-		
-		//Ajax 요청함수
-		//TODO CROSS BROWSER 시 하위링크 참조 
-		//http://stackoverflow.com/questions/8286934/post-formdata-via-xmlhttprequest-object-in-js-cross-browser
-		
-		//Object의 key, value형태의 데이터가 파라미터로 전달되면, 해당 데이터를
-		//formData 형태로 만들어 서버에 요청보낸다.
-		_getObjectFromJsonRequest: function(url, method, oParameters, callback) {
-			var request = new XMLHttpRequest();
-			
-			//요청 메서드가 get이나 post가 아닐경우, 잘못된 요청이다.
-			if (method !== "GET" && method !== "POST" )
-				return null;
-			
-			request.open(method, url, false	);
-			request.onreadystatechange = function() {
-				if (request.readyState == 4 && request.status == 200) {
-					//인자로 전달된 callback함수를 실행
-					if ( typeof callback == "function" ) {
-						callback(request);
-					}
-				}
-			}
-			
-			
-			//만약 parameter값이 존재할경우 parameter에 대한 데이터를  formData형식으로 캡슐화해서 전달한다.
-			//Object.keys(obj).length === 0;  <-  ECMAScript 5 support is available
-			if ( oParameters !== null && Object.keys(oParameters).length !== 0 ) {
-				
-				var formData = new FormData();
-				
-				for (var key in oParameters){
-					//hasOwnProperty is used to check if your target really have that property, 
-					//rather than have it inherited from its prototype. A bit simplier would be
-				    if (oParameters.hasOwnProperty(key)) {
-				    	formData.append(key, oParameters[key]);
-				    }
-				}
-				request.send(formData);
-				
-			//parameter값이 존재하지 않으면 그냥 request를 보낸다.
-			} else {
-				request.send();
-			}
-		}
-}
-
-
 /*********************************************************************************************************
  * 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
@@ -117,9 +56,9 @@ var oAjax = {
 var Panel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	elContainer: document.getElementById("container"),
-	elPanel: document.getElementById("panel"),
+	elPanel: null,
 	
-	// panel 관련 이벱트 등록 함수.
+	// panel 관련 이벤트 등록 함수.
 	addEvents: function() {
 		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
 		
@@ -128,6 +67,9 @@ var Panel = {
 				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
+		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
+		var eSearchPanelContents = this.elPanel.querySelector("#pc_search");
+		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
 	},
 	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
@@ -155,8 +97,33 @@ var Panel = {
 			removeClassName(this.elContainer, "fold_panel");
 			addClassName(this.elContainer, "unfold_panel");
 		}
+	},
+	
+	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
+	searchResultSelectHandler: function(event){
+		var clickedTarget = event.target;	
+		//현재 하나의 cell은 세개의 p태그로 이루어져있다.
+		//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
+		if(clickedTarget.tagName == "P"){
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+			//그 cell의 속성으로 저장된 좌표를 불러온다. 
+			var destinationTarget = clickedTarget.parentNode;
+			var destinationCartesianX = destinationTarget["cartesianX"];
+			var destinationCartesianY = destinationTarget["cartesianY"];
+			//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
+			var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
+			//찾은 좌표로 지도의 중심을 재설정한다. 
+			oNaverMap.oMap.setCenter(oPoint);
+		}
+	},
+
+	initialize: function(){
+		this.elPanel = document.getElementById("panel");	
+		this.addEvents();
 	}
 }
+
 
 // main.jsp의 nav_list 관련 기능들을 모아둔 객체
 var NavList = {
@@ -335,7 +302,6 @@ var oNaverMap = {
 	    			"rightBottomX": aCurrentMapPoints[1]['x'],
 	    			"rightBottomY": aCurrentMapPoints[1]['y']
 	    		};
-	    		
 	    		
 	    		//TODO GET방식의 요청에서 서버에러가 발생하고 있으므로, 임시로 POST요청을하도록 한다.
 	    		//oAjax.getObjectFromJsonGetRequest("/chat/getList", oParameters);
@@ -539,7 +505,7 @@ var oNaverMap = {
 
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
-	        eNmap.setAttribute("style", "width:100%;height:100%;");
+	        eNmap.style.cssText = "width:100%;height:100%;";
 	        
 	        //setSize를 이용해서 변경을 하면 화면이 전부 날아가는 현상이 발생함..
 	        //this.oMap.setSize(new nhn.api.map.Size(this.mapDivWidth, this.mapDivHeight));
@@ -661,7 +627,7 @@ var oMarkerClicker = {
 		
 		//높이값을 채팅방 영역에 맞게 조절
 		//TODO 하드코딩되어 있는 px 수정 (26)
-		this.eChattingDivBox.setAttribute("style", "height:" + 26*aChatRoomInMarker.length + "px;");
+		this.eChattingDivBox.style.cssText = "height:" + 26*aChatRoomInMarker.length + "px;";
 		
 		return this.controlBox;
 	},
@@ -700,7 +666,7 @@ var oMarkerClicker = {
 	//메뉴버튼위에 마우스가 올라갔을때
 	mouseOver: function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
-		this.menu.setAttribute("style", "width:150px;height:150px;margin:-75px 0 0 -75px");			
+		this.menu.style.cssText = "width:150px;height:150px;margin:-75px 0 0 -75px";
 	},	
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
@@ -708,7 +674,7 @@ var oMarkerClicker = {
 		//클릭된 메뉴가 없을경우
 		if (!this.isClickedComponentExists()) {
 			//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
-			this.menu.setAttribute('style', 'width:75px;height:75px;margin:-37.5px 0 0 -37.5px');					
+			this.menu.style.cssText = "width:75px;height:75px;margin:-37.5px 0 0 -37.5px";
 		}
 	},
 	
@@ -716,18 +682,17 @@ var oMarkerClicker = {
 	changeClickStatus: function(oIcon, oMenu) {
 		oIcon.setAttribute('status','clicked');
 		oIcon.style.status = 'clicked';
-		oIcon.children[0].setAttribute('style', 'background: #9dd;');
+		oIcon.children[0].style.backgroundColor = "#9dd";
 		this.mouseOver();		
 	},
 	
 	//클릭되었던 상태의 아이콘을 다시 클릭 했을경우
 	changeNoneClickStatus: function(oIcon, oMenu) {
-		oMenu.setAttribute('style','display: none');
 		oMenu.style.display = 'none';
 	
 		oIcon.setAttribute('status','none');
 		oIcon.style.status = 'none';
-		oIcon.children[0].setAttribute('style', 'background: #8cc;');
+		oIcon.children[0].style.backgroundColor = "#8cc";
 		
 		if (!this.isClickedComponentExists()) {
 			this.mouseOut();		
@@ -785,6 +750,7 @@ var oChat = {
 		socket: null,
 		eChattingRoom: null,
 		eChattingContents: null,
+		eChattingMemberList: null,
 		eInputBox: null,
 		eSendButton: null,
 		eFoldButton: null,
@@ -798,11 +764,12 @@ var oChat = {
 			this.currentChatRoomNumber = chatRoomNum; 
 			
 			// 채팅창을 화면에 보이게 만든다.
-			this.eChattingRoom.setAttribute('style', 'display: block;');
+			this.eChattingRoom.style.display = "block";
 
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
 			this.socket.emit('join', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
+			this.getMemberList();
 		},
 
 		enterChatRoomOthers: function(user) {
@@ -818,15 +785,51 @@ var oChat = {
 			this.eInputBox.value="";
 		},
 		
+		//dada
+		getMemberList: function(){
+			var oParameters = {
+				"currentChatRoomNumber": this.currentChatRoomNumber
+			}; 
+			
+			var callBack = function(request){
+				var eTemplate = document.getElementById("template").querySelector(".chatMember");
+				console.log(this.eChattingMemberList);
+				var eTarget = this.eChattingMemberList.querySelector("ul");	
+				
+				//이미 존재하는 검색 결과가 있다면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+				
+				var aResponse = JSON.parse(request.responseText);
+				
+				for( var i = 0 ; i < aResponse.length ; ++i){
+					var eCopiedTemplate = eTemplate.cloneNode(true);
+					
+					var nicknameAdjective = aResponse[i]["nicknameAdjective"];
+					var nicknameNoun = aResponse[i]["nicknameNoun"];
+					var nicknameFull = nicknameAdjective + " " + nicknameNoun;
+					
+					var eNamePlace = eCopiedTemplate.querySelector("p");
+					eNamePlace.innerText = nicknameFull;	
+					
+					eTarget.appendChild(eCopiedTemplate);
+				}
+			};
+			
+			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack.bind(this));
+		},
+		
+		
 		// TODO 채팅방이 접히는 애니메이션 구현 필요
 		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
 		foldChattingRoom: function(e) {
-			this.eChattingRoom.setAttribute('style', 'display: none;');
+			this.eChattingRoom.style.display = "none";
 		},
 		
 		exitChattingRoom: function(e) {
 			this.socket.emit('exit', {'email': this.socket.email, 'chatRoomNumber': this.currentChatRoomNumber});
-			this.eChattingRoom.setAttribute('style', 'display: none;');
+			this.eChattingRoom.style.display = "none"
 		},
 		
 		initialize: function() {
@@ -839,6 +842,7 @@ var oChat = {
 			// 채팅방을 이루고 있는 각 엘리먼트들을 가져온다.
 			this.eChattingRoom = document.querySelector(".chattingRoom");
 			this.eChattingContents = document.querySelector(".chattingContents");
+			this.eChattingMemberList = this.eChattingContents.nextElementSibling;
 			this.eInputBox = document.querySelector(".chattingInputBox");
 			this.eSendButton = document.querySelector(".chattingSendButton");
 			this.eFoldButton = document.querySelector(".foldChattingRoomButton");
@@ -939,11 +943,11 @@ var oCreateChattingRoom = {
 		eRoomAddress: null,
 		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function() {
-			this.oCreateChatRoom.setAttribute('style', 'display:block;');
+			this.oCreateChatRoom.style.display = "block";
 		},
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
-			this.oCreateChatRoom.setAttribute('style', 'display:none;');
+			this.oCreateChatRoom.style.display = "none";
 		},
 		initialize: function() {
 			
@@ -1201,7 +1205,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel.addEvents();
+	Panel.initialize();
 	NavList.addEvents();	
 	//------------------------------------------------------------------------------------//
 	
