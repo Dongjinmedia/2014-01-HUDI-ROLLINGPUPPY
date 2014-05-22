@@ -1,5 +1,6 @@
 var oPanel ={
 	ePanelController: document.querySelector("panelController"),
+	ePanelWrapper: document.querySelector("panelWrapper"),
 	
 	addEvents: function() {
 		console.log("addEvents");
@@ -58,21 +59,21 @@ var oPanel ={
 	},
 
 	panelButtonsHandler : function(event) {
+		console.log(event.target);
 		event.preventDefault();
 		var strButtonClassName = event.target.className;
 
 		var boolFold = false;
-
-		if(this.strButtonClassName === "panelButtonFold"){
+		if(strButtonClassName === "panelFold"){
 			boolFold = true;
 		}
 
 		if (boolFold) {
-			this.removeClassName(this.ePanelController, "unfold_panel");
-			this.addClassName(this.ePanelController, "fold_panel");
+			this.removeClassName(this.ePanelWrapper, "unfold_panel");
+			this.addClassName(this.ePanelWrapper, "fold_panel");
 		} else {
-			this.removeClassName(this.ePanelController, "fold_panel");
-			this.addClassName(this.ePanelController, "unfold_panel");
+			this.removeClassName(this.ePanelWrapper, "fold_panel");
+			this.addClassName(this.ePanelWrapper, "unfold_panel");
 		}
 	},
 	

@@ -1,8 +1,7 @@
-body {
-	position: absolute;
-	display: block;
-	width: 100%;
+body, html {
+	position: relative;
 	height: 100%;
+	overflow: hidden;
 }
 
 a {
@@ -16,11 +15,12 @@ body * {
 }
 
 header {
+	position: absolute;
 	width: 100%;
 	height: 50px;
 	background-color: #F5F5F5;
 	border-bottom: 1px solid #555;
-	z-index: 10;
+	z-index: 100;
 }
 
 logo>a {
@@ -87,7 +87,9 @@ searchBox input[type=submit] {
 }
 
 navigation {
-	z-index: 10;
+	position: absolute;
+	top: 51px;
+	z-index: 100;
 }
 
 menu {
@@ -136,12 +138,12 @@ panelWrapper {
 	right: 0px;
 	bottom: 0px;
 	left: 0px;
-	overflow: hidden;
 	z-index: 10;
 }
 
 panel {
 	position: absolute;
+	top: -100%;
 	width: 100%;
 	height: 100%;
 	background-color: #FDFDFD;
@@ -189,7 +191,7 @@ section h1 {
 }
 
 /*dada*/
-.fold_panel #panel {
+panelWrapper.fold_panel {
     animation: fold;
     animation-duration: 0.4s;
     animation-timing-function: ease;
@@ -201,15 +203,15 @@ section h1 {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes fold {
-	from { -webkit-transform: translateY(337px); }
+	from { -webkit-transform: translateY(100%); }
 	to { -webkit-transform: translateY(0px); }
 }
 @-webkit-keyframes fold {
-	from { -webkit-transform: translateY(337px); }
+	from { -webkit-transform: translateY(100%); }
 	to { -webkit-transform: translateY(0px); }
 }
 
-.unfold_panel #panel {
+panelWrapper.unfold_panel {
     animation: unfold;
     animation-duration: 0.4s;
     animation-timing-function: ease;
@@ -222,13 +224,55 @@ section h1 {
 }
 @keyframes unfold {
 	from { -webkit-transform: translateY(0px); }
-	to { -webkit-transform: translateY(337px); }
+	to { -webkit-transform: translateY(100%); }
 }
 @-webkit-keyframes unfold {
 	from { -webkit-transform: translateY(0px); }
-	to { -webkit-transform: translateY(337px); }
+	to { -webkit-transform: translateY(100%); }
 }
 
+panelController {
+	position: absolute;
+	width: 80px;
+	height: 30px;
+	left: 50%;
+	margin-left: -40px;
+	bottom: 0px;
+	z-index: 100;
+}
+
+panelController * {
+	position: absolute;
+	width: 100%;
+	height: 100%;	
+}
+
+.panelUnfold {
+	display: block;
+	bottom: -30px;
+	background-color: red;
+}
+
+.panelFold {
+	display: none;
+	background-color: blue;
+}
+
+.unfold_panel .panelUnfold {
+	display: none;
+}
+
+.unfold_panel .panelFold {
+	display: block;
+}
+
+.fold_panel .panelUnfold {
+	display: block;
+}
+
+.fold_panel .panelFold {
+	display: none;
+}
 
 /* ================= */
 map {

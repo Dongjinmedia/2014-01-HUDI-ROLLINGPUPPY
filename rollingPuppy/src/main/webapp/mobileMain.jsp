@@ -42,10 +42,6 @@
 				<a href="#">설정</a>
 			</setting>
 		</menu>
-		<panelController>
-			<a class="panelButtonFold" href="#">fold</a>
-			<a class="panelButtonUnfold" href="#">unfold</a>
-		</panelController>
 	</navigation>
 	<panelWrapper>
 		<panel>
@@ -63,6 +59,10 @@
 					<h1>설정</h1>
 				</section>
 			</contents>
+			<panelController>
+				<div class="panelFold"></div>
+				<div class="panelUnfold"></div>
+			</panelController>
 		</panel>
 	</panelWrapper>
 
