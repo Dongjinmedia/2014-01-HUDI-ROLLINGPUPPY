@@ -56,3 +56,31 @@ var oAjax = {
 			}
 		}
 }
+
+//template을 담당하는 객체
+oTemplate = {
+		//template element 
+		eDefaultTemplate : null,
+		//삽입할 위치의 기준이 되는 element
+		eTarget : null, 
+		//이전에 넣었던 templates 지우기
+		deletePreviousTemplate : function(eTarget){
+			while(eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		},
+		//copy template node
+		copyTemplate : function(eDefaultTemplate){
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			return eCopiedDefaultTemplate;
+		},
+		//template에 내용 넣기
+		fillTemplateContents: function(eCopiedDefaultTemplate, ){
+			
+		},
+		//template을 원하는 위치에 삽입
+
+		//이거 필요 없을 듯 
+		initialize: function(){ 
+		}
+};
