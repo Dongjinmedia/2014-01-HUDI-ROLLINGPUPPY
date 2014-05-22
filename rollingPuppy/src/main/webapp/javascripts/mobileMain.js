@@ -1,5 +1,6 @@
 var oPanel ={
 	ePanelController: document.querySelector("panelController"),
+	ePanelWrapper: document.querySelector("panelWrapper"),
 	
 	addEvents: function() {
 		console.log("addEvents");
@@ -58,27 +59,28 @@ var oPanel ={
 	},
 
 	panelButtonsHandler : function(event) {
+		console.log(event.target);
 		event.preventDefault();
 		var strButtonClassName = event.target.className;
 
 		var boolFold = false;
-
-		if(this.strButtonClassName === "panelButtonFold"){
+		if(strButtonClassName === "panelFold"){
 			boolFold = true;
 		}
 
 		if (boolFold) {
-			this.removeClassName(this.ePanelController, "unfold_panel");
-			this.addClassName(this.ePanelController, "fold_panel");
+			this.removeClassName(this.ePanelWrapper, "unfold_panel");
+			this.addClassName(this.ePanelWrapper, "fold_panel");
 		} else {
-			this.removeClassName(this.ePanelController, "fold_panel");
-			this.addClassName(this.ePanelController, "unfold_panel");
+			this.removeClassName(this.ePanelWrapper, "fold_panel");
+			this.addClassName(this.ePanelWrapper, "unfold_panel");
 		}
 	},
+	
 	/* 윤성작업중 시작 */
 	ePanel: document.querySelector("panel"),
-	eSectionContainer: document.querySelector("sectionContainer"),
-	aSection: document.querySelectorAll("sectionContainer section"),
+	eContents: document.querySelector("contents"),
+	aSection: document.querySelectorAll("contents section"),
 	aMenu: document.querySelector("navigation menu").children,
 	
 	//현재 화면에 보이는 패널의 인덱스번호
@@ -118,7 +120,7 @@ var oPanel ={
 			 return false;
 		} else {
 			console.log(nMoveLength);
-			this.eSectionContainer.style.webkitTransform = "translate("+nMoveLength+"px)";
+			this.eContents.style.webkitTransform = "translate("+nMoveLength+"px)";
 		}
 	},
 	
@@ -143,8 +145,8 @@ var oPanel ={
 		if (this.nCurrentViewPanelIndex >=0 && this.nCurrentViewPanelIndex <=3 ) {
 			this._setPosition();
 			
-			this.eSectionContainer.style.webkitTransform = "translate(0)";
-			this.eSectionContainer.style.webkitTransition = null;
+			this.eContents.style.webkitTransform = "translate(0)";
+			this.eContents.style.webkitTransition = null;
 		} else {
 			this.nCurrentViewPanelIndex = nTempIndex;
 		}

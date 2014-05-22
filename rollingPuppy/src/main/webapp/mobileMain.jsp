@@ -14,7 +14,7 @@
 <!-- IE는 Custom tag를 하나하나 등록시켜줘야 한다 -->
 <body>
 	<header>
-		<logo><a href="./m.main.html"></a></logo>
+		<logo><a href="/mobile"></a></logo>
 		<searchBox>
 			<form name="search">
 				<inputTextWrapper>
@@ -42,39 +42,29 @@
 				<a href="#">설정</a>
 			</setting>
 		</menu>
-		<panelController>
-			<a class="panelButtonFold" href="#">fold</a>
-			<a class="panelButtonUnfold" href="#">unfold</a>
-		</panelController>
 	</navigation>
-	<panel>
-		<sectionContainer>
-			<section>
-				<h1 style="color:white;font-size:3em;">검색</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">채팅방</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">관심장소</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">설정</h1>
-				<card></card>
-				<card></card>
-				<card></card>
-			</section>
-		<panelContainer>
-	</panel>
+	<panelWrapper>
+		<panel>
+			<contents>
+				<section>
+					<h1>검색</h1>
+				</section>
+				<section>
+					<h1>채팅방</h1>
+				</section>
+				<section>
+					<h1>관심장소</h1>
+				</section>
+				<section>
+					<h1>설정</h1>
+				</section>
+			</contents>
+			<panelController>
+				<div class="panelFold"></div>
+				<div class="panelUnfold"></div>
+			</panelController>
+		</panel>
+	</panelWrapper>
 
 	<map></map>
 
