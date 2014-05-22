@@ -48,4 +48,9 @@
 		<url>/mobile</url>
 		<controller>com.puppy.controller.MobileController</controller>
 	</mapping>
+	
+	<mapping>
+		<url>/panel/enteredChattingRoomList</url>
+		<controller>com.puppy.controller.ChattingRoomListInPanelController</controller>
+	</mapping>
 </mappings>

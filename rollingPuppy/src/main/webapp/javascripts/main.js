@@ -148,6 +148,7 @@ var NavList = {
 		}
 		event.preventDefault();
 		
+		
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.elLatestClickedMenu) {
@@ -162,6 +163,7 @@ var NavList = {
 		addClassName(this.elLatestClickedMenu, "on");
 		addClassName(this.elLatestPanelContents, "on");
 	}
+	
 }
 
 /*********************************************************************************************************
