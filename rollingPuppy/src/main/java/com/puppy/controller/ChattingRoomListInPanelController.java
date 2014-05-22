@@ -26,8 +26,9 @@ public class ChattingRoomListInPanelController implements Controller {
 
 		String userAction = request.getParameter("userAction");
 		
-		if( userAction == "selectChattingRoomListPanel")
+		if( userAction.equals("selectChattingRoomListPanel") ) {
 			getEnteredChattingRoomList(request, response);
+		}
 		
 	}
 

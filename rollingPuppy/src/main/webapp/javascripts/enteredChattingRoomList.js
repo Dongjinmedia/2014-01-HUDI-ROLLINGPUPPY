@@ -5,14 +5,12 @@ var initialize = function() {
 
 function getResultXml(event){
 	
-	var queryKeyword = "selectChattingRoomListPanel"; 
 	var incompleteUrl = "/panel/enteredChattingRoomList?userAction=";
+	var queryKeyword = "selectChattingRoomListPanel"; 
 	
 	var callback = function(request){
 		
-		console.log(request.responseText);
 		var aResult = JSON.parse(request.responseText);
-
 		console.log(aResult);
 
 		if(aResult.length === 0){
