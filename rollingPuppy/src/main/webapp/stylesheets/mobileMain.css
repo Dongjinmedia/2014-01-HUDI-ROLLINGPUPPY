@@ -139,7 +139,7 @@ panelController {
 	z-index: 2;
 }
 
-panel {
+/*panel {
 	position: absolute;
 	top: -1000px;
 	width: 100%;
@@ -147,7 +147,7 @@ panel {
 	border-bottom: 1px solid #A7A7A7;
 	background-color: #FEFEFE;
 	z-index: 11;
-}
+}*/
 
 
 /*dada*/
@@ -192,9 +192,8 @@ panel {
 }
 
 
-
 /* ================= */
-map {
+/*map {
 	position: absolute;
 	top: 95px;
 	right: 0px;
@@ -203,4 +202,4 @@ map {
 	background-color: black;
 	border: 1px solid black;
 	z-index: 1;
-}
+}*/
