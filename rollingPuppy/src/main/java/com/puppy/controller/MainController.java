@@ -39,14 +39,11 @@ public class MainController implements Controller {
 			return;
 		}
 		
-		getEnteredChattingRoomList(request, response);
-		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
-		view.forward(request, response); 
-		
 		if ( isThisRequestCommingFromAMobileDevice(request) ) {
 			response.sendRedirect("/mobile");
 		} else {
 			RequestDispatcher view = null;
+			getEnteredChattingRoomList(request, response);
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
 		}
