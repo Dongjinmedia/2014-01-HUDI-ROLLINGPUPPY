@@ -1,6 +1,8 @@
 package com.puppy.controller;
 
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
 
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -11,6 +13,9 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
+import com.puppy.dao.impl.EnteredChatRoomDaoImpl;
+import com.puppy.dto.EnteredChatRoom;
 import com.puppy.util.Constants;
 
 /*
@@ -32,7 +37,7 @@ public class MainController implements Controller {
 			response.sendRedirect("/");
 			return;
 		}
-		
+		getEnteredChattingRoomList(request, response);
 		RequestDispatcher view = request.getRequestDispatcher("main.jsp");
 		view.forward(request, response); 
 	}
@@ -43,4 +48,28 @@ public class MainController implements Controller {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	public void getEnteredChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		response.setContentType("application/json");
+		
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		List<EnteredChatRoom> lists = null;
+		
+		int userId = 0;
+		
+		try {
+			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
+
+			if ( userId != 0 ) {
+				EnteredChatRoomDaoImpl enteredChatRoomDaoImpl = EnteredChatRoomDaoImpl.getInstance();
+				lists = enteredChatRoomDaoImpl.selectEnteredChatRoomList(userId);
+			}
+		} catch (Exception e ) {
+			logger.error("Request Get Entered Chatting Room List With User ID", e);
+		}
+		out.println(gson.toJson(lists));
+	}
+
 }

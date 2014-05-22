@@ -14,10 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.puppy.dao.DAO;
-import com.puppy.dao.MemberDao;
 import com.puppy.dao.impl.ChatDaoImpl;
-import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
