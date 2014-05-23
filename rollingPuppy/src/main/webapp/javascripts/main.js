@@ -763,10 +763,7 @@ var oChat = {
 		
 		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
-			// 채팅방 넘버를 저장해둔다.
 			this.currentChatRoomNumber = chatRoomNum; 
-			
-			// 채팅창을 화면에 보이게 만든다.
 			this.eChattingRoom.style.display = "block";
 
 			// 입장을 서버에 알린다.
@@ -823,9 +820,6 @@ var oChat = {
 			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack.bind(this));
 		},
 		
-		
-		// TODO 채팅방이 접히는 애니메이션 구현 필요
-		// TODO 접어둔 채팅방을 패널의 '채팅중' 메뉴에서 확인할 수 있도록 하는 기능 구현 필요
 		foldChattingRoom: function(e) {
 			this.eChattingRoom.style.display = "none";
 		},
@@ -835,10 +829,20 @@ var oChat = {
 			this.eChattingRoom.style.display = "none"
 		},
 		
-		// sehun working
-		// TODO 채팅방 아이디를 파싱해서 소켓 연결하는 부분 완성 필요
+		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList");
+			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			var chattingRoomListToJson = JSON.parse(chattingRoomList);
+			var chattingRoomIdList = new Array();
+			
+			for ( var i = 0; i < chattingRoomListToJson.length ; i++ ) {
+				chattingRoomIdList.push(chattingRoomListToJson[i].chatRoomId);
+			}
+			
+			for ( var i = 0; i < chattingRoomIdList.length ; i++ ) {
+				var chatRoomNum = chattingRoomIdList[i];
+				this.socket.emit('autoConnectWithEnteredChattingRoom', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
+			}
 		},
 		
 		initialize: function() {
@@ -892,6 +896,7 @@ var oChat = {
 				alert("채팅방에서 나가셨어요~");
 			});
 			
+			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
 			this.connectSocketWithEnteredChattingRoom();
 		}
 };

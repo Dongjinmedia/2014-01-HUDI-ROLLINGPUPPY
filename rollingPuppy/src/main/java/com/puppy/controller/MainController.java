@@ -42,7 +42,7 @@ public class MainController implements Controller {
 			response.sendRedirect("/mobile");
 		} else {
 			RequestDispatcher view = null;
-			getEnteredChattingRoomIdList(request, response);
+			getEnteredChattingRoomList(request, response);
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
 		}
@@ -71,7 +71,7 @@ public class MainController implements Controller {
 	    return false;
 	}
 	
-	public void getEnteredChattingRoomIdList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+	public void getEnteredChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		Gson gson = new Gson();
 		List<EnteredChatRoom> lists = null;

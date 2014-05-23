@@ -68,6 +68,12 @@ INSERT tbl_message
 //Socket Connection
 io.sockets.on('connection', function (socket) {
 	
+	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
+	socket.on('autoConnectWithEnteredChattingRoom', function(data) {
+		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber);
+		socket.join(data.chatRoomNumber);
+	});
+
 	//Room join
 	//사용자 접속 시 Room Join및 접속한 사용자들 Room참여 인원들에게 알립니다.
 	//'join'에 대한 요청을 받고 있는 function입니다.	
