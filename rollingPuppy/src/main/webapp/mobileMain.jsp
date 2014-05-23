@@ -59,10 +59,10 @@
 					<h1>설정</h1>
 				</section>
 			</contents>
-			<panelController>
-				<div class="panelFold"></div>
-				<div class="panelUnfold"></div>
-			</panelController>
+			<panelButtons>
+				<fold><div class="panelFold" href="#"></div></fold>
+				<unfold><div class="panelUnfold" href="#"></div></unfold>
+			</panelButtons>
 		</panel>
 	</panelWrapper>
 

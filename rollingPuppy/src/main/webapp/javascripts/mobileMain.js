@@ -1,11 +1,11 @@
 var oPanel ={
-	ePanelController: document.querySelector("panelController"),
+	ePanelButtons: document.querySelector("panelButtons"),
 	ePanelWrapper: document.querySelector("panelWrapper"),
 	
 	addEvents: function() {
 		console.log("addEvents");
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
-		this.ePanelController.addEventListener(
+		this.ePanelButtons.addEventListener(
 			"click",
 			this.panelButtonsHandler.bind(this)
 		);
