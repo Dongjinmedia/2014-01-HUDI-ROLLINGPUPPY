@@ -958,8 +958,10 @@ var oCreateChattingRoom = {
 		//채팅방을 생성하려고 하는 곳의 주소 
 		eRoomAddress: null,
 		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
-		visible: function() {
+		visible: function(locationName) {
 			this.oCreateChatRoom.style.display = "block";
+			//console.log(this.eRoomAddress);
+			this.eRoomAddress.innerText = locationName;
 		},
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
@@ -972,8 +974,7 @@ var oCreateChattingRoom = {
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
 			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
-			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg');
-			this.eRoomAddress.innerHTML = "zzz"; //역지오 코딩을 통한 주소값 삽입 코드 
+			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
 			eOuterBg.addEventListener('click', function() {
@@ -995,7 +996,6 @@ var oCreateChattingRoom = {
 		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
 			e.preventDefault();
-			
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
@@ -1032,7 +1032,7 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": ""+Math.random(),
+					"locationName": ""+this.eRoomAddress,
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.
@@ -1106,6 +1106,7 @@ var oMapClicker = {
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
 		console.log(locationName);
+		
 		this.eLocationName.innerText = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
@@ -1131,8 +1132,8 @@ var oMapClicker = {
 
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		this.clickAdd.addEventListener('click', function(e) {
-			oCreateChattingRoom.visible();
-		}, false);
+			oCreateChattingRoom.visible(this.eLocationName.innerText);
+		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
 		this.clickBookMark.addEventListener('click', function(e) {
@@ -1173,7 +1174,7 @@ var oKeyboardAction = {
 oReverseGeoCode = {
 		oGeoCoder: null,
 		getAddress: function(latitude, longitude, callback) {
-			console.log("working");
+			//console.log("working");
 			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
 			//callback function get Parameter -> results, status
 			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
