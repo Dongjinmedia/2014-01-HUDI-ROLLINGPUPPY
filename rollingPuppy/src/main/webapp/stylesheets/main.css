@@ -371,12 +371,12 @@ li.chatRoom .limit {
 	font-size: 0.8em;
 }
 
-li.chatRoom .icon-participant:before {
+.icon-participant:before {
 	content: "\f007";
 	margin-right: 5px;
 }
 
-li.chatRoom .address.icon-title:before {
+.address.icon-title:before {
 	content: "\f041";
 	margin-right: 5px;	
 }
@@ -528,8 +528,7 @@ div#content {
 	content: "\f0c0";
 }
 
-/* 삭제예정 */
-#createChatRoom [class^=icon-]:before,[class*=" icon-"]:before {
+[class^=icon-]:before,[class*=" icon-"]:before {
 	font-family: FontAwesome;
 	font-weight: 400;
 	font-style: normal;
@@ -537,7 +536,7 @@ div#content {
 	text-decoration: inherit;
 }
 
-#createChatRoom label[class^=icon-]:before,label[class*=" icon-"]:before {
+label[class^=icon-]:before,label[class*=" icon-"]:before {
 	position: absolute;
 	text-align: center;
 	font-size: 200%;
@@ -546,7 +545,6 @@ div#content {
 	margin-top: -25%;
 	margin-left: -25%;
 }
-/* 삭제예정 */
 
 #createChatRoom input[type="text"], #createChatRoom input[type="number"] {
 	background: #e5e5e5;
@@ -659,6 +657,36 @@ div#content {
 	overflow: hidden;
 	color: #fff;
 	cursor: move;
+	padding: 3%;
+}
+
+.top .title {
+	margin-top: 0.7em;
+	font-size: 1.1em;
+}
+
+.top .title:before {
+	margin-right: 5px;
+}
+
+.top .limit {
+	font-size: 0.6em;
+	margin: 0.9em 0 0 0.3em;
+	color: #7a8696;
+}
+
+.top.limit:before {
+	margin-right: 5px;
+}
+
+.top .address {
+	font-size: 0.6em;
+	margin: 0.3em 0 0 0.3em;
+	color: #7a8696;
+}
+
+.top.address:before {
+	margin-right: 5px;
 }
 
 .leftArea .middle {
