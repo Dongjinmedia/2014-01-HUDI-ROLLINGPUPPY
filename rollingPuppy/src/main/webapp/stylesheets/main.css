@@ -689,6 +689,36 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	margin-right: 5px;
 }
 
+.top .menu {
+	position: absolute;
+	right: -1%;
+	top: 11%;
+	width: 3em;
+	height: 1em;
+	cursor: pointer;
+}
+
+.top .menu .icon-exit:before {
+	content: "\f08b";
+	font-size: 1em;
+	color: #7a8696;
+}
+
+.top .menu .icon-exit:hover:before {
+	color: #fff;
+}
+
+.top .menu .icon-aside:before {
+	content: "\f019";
+	font-size: 1em;
+	color: #7a8696;
+	margin-right: 5px;
+}
+
+.top .menu .icon-aside:hover:before {
+	color: #fff;
+}
+
 .leftArea .middle {
 	display: inline-block;
 	width: 100%;

@@ -208,6 +208,10 @@
 							<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
 							<p class="limit icon-participant">1 / 300</p>
 							<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+							<div class="menu">
+								<i class="icon-aside" title="접어두기"></i>
+								<i class="icon-exit" title="채팅방 나가기"></i>
+						</div>
 						</div>
 						<div class="middle">
 							<ul class="chattingContents">
