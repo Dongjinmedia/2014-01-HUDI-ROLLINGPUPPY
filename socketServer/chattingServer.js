@@ -52,7 +52,8 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 
 //3080포트에 대해 socket.io listening
 var io = socketio.listen(3080);
-
+io.set('close timeout', 60);
+io.set('heartbeat timeout', 60);
 
 /*************************
 DB 연동에 대한 TODO LIST

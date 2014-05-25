@@ -585,6 +585,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 }
 
 #chatWindow {
+	!display: none;
 	width: 500px;
 	height: 600px;
 	position: relative;

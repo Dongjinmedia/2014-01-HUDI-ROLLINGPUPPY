@@ -751,8 +751,9 @@ var oMarkerClicker = {
 //working
 var oChat = {
 		socket: null,
-		eChattingRoom: null,
+		eChatWindow: null,
 		eChattingContents: null,
+		eRightArea: null,
 		eChattingMemberList: null,
 		eInputBox: null,
 		eSendButton: null,
@@ -764,7 +765,7 @@ var oChat = {
 		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
 			this.currentChatRoomNumber = chatRoomNum; 
-			this.eChattingRoom.style.display = "block";
+			this.eChatWindow.style.display = "block";
 
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
@@ -785,7 +786,6 @@ var oChat = {
 			this.eInputBox.value="";
 		},
 		
-		//dada
 		getMemberList: function(){
 			var oParameters = {
 				"currentChatRoomNumber": this.currentChatRoomNumber
@@ -821,12 +821,12 @@ var oChat = {
 		},
 		
 		foldChattingRoom: function(e) {
-			this.eChattingRoom.style.display = "none";
+			this.eChatWindow.style.display = "none";
 		},
 		
 		exitChattingRoom: function(e) {
 			this.socket.emit('exit', {'email': this.socket.email, 'chatRoomNumber': this.currentChatRoomNumber});
-			this.eChattingRoom.style.display = "none"
+			this.eChatWindow.style.display = "none"
 		},
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
@@ -853,18 +853,23 @@ var oChat = {
 			this.socket.email = document.getElementById("email").value;
 			
 			// 채팅방을 이루고 있는 각 엘리먼트들을 가져온다.
-			this.eChattingRoom = document.querySelector(".chattingRoom");
-			this.eChattingContents = document.querySelector(".chattingContents");
-			this.eChattingMemberList = this.eChattingContents.nextElementSibling;
-			this.eInputBox = document.querySelector(".chattingInputBox");
-			this.eSendButton = document.querySelector(".chattingSendButton");
-			this.eFoldButton = document.querySelector(".foldChattingRoomButton");
-			this.eExitButton = document.querySelector(".exitChattingRoomButton");
+			this.eChatWindow = document.getElementById("chatWindow");
+			this.eChattingContents = this.eChatWindow.querySelector(".chattingContents");
+			this.eRightArea = this.eChatWindow.querySelector(".rightArea");
+			this.eChattingMemberList = this.eRightArea.querySelector(".chattingMemberList");
+			this.eInputBox = this.eChatWindow.querySelector(".inputArea");
+			//TODO 찾아서 없애기
+			//this.eSendButton = this.eChatWindow.querySelector(".chattingSendButton");
+			this.eFoldButton = this.eChatWindow.querySelector(".icon-aside");
+			this.eExitButton = this.eChatWindow.querySelector(".icon-exit");
 			
-			// 메시지 전송 버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
-			this.eSendButton.addEventListener("click", function(e) {
-				this.sendMessage( this.eInputBox.value );
-			}.bind(this), false);
+			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
+			this.eInputBox.onkeydown = function(event) {
+				//alert("in : " + event.keyCode);
+				if ( event.keyCode == 13 ) {
+					this.sendMessage( this.eInputBox.value );
+				}
+			}.bind(this);
 			
 			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
 			this.eFoldButton.addEventListener("click", function(e) {
@@ -907,8 +912,8 @@ var oChat = {
 /*********************************************************************************************************
  * 채팅창 이동에 대한  소스코드 시작
  **********************************************************************************************************/
-/*
-document.querySelector(".chattingRoomTopBar").addEventListener("mousedown", mouseDown, false);
+
+document.getElementById("chatWindow").querySelector(".top").addEventListener("mousedown", mouseDown, false);
 window.addEventListener("mouseup", mouseUp, false);
 var distanceX = null;
 var distanceY = null;
@@ -920,7 +925,7 @@ function mouseUp() {
 function mouseDown(e) {
 	var mouseX = e.clientX - 61;
 	var mouseY = e.clientY - 52;
-	var targetWindow = document.querySelector(".chattingRoom");
+	var targetWindow = document.getElementById("chatWindow");
 	var targetWindowStyle = {left: getStyle(targetWindow, "left"), top: getStyle(targetWindow, "top")};
 	var curX = targetWindowStyle.left.substring(0, targetWindowStyle.left.length-2);
 	var curY = targetWindowStyle.top.substring(0, targetWindowStyle.top.length-2);
@@ -933,12 +938,12 @@ function mouseDown(e) {
 function moveWindow(e) {
 	var mouseX = e.clientX - 61;
 	var mouseY = e.clientY - 52;
-	var targetWindow = document.querySelector(".chattingRoom");
+	var targetWindow = document.getElementById("chatWindow");
 
 	targetWindow.style.left = mouseX - distanceX + "px";
 	targetWindow.style.top = mouseY - distanceY + "px";
 }
-*/
+
 /*********************************************************************************************************
  * 채팅창 이동에 대한  소스코드 종료
  **********************************************************************************************************/
