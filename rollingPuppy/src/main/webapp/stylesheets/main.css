@@ -304,6 +304,9 @@ div#panel {
 	width: 100%;
 	font-weight: bold;
 }
+#panel_contents .title:before {
+	margin-right: 5px;
+}
 
 #panel_contents .address {
 	line-height: 20px;
@@ -319,7 +322,6 @@ div#panel {
 
 li.search .title:before {
 	content: "\f041";
-	margin-right: 5px;
 }
 
 #panel_contents li:hover{
@@ -352,12 +354,12 @@ li.bookmark .icon-delete:hover:before {
 	right: 10px;
 }
 
-li.chatting .icon-chatting:before {
+li.chatRoom .icon-chatting:before {
 	content: "\f0e6";
 	margin-right: 5px;
 }
 
-li.chatting .title {
+li.chatRoom .title {
 	font-size: 1.3em;
 	margin-bottom: 0.5em;
 	overflow: hidden;
@@ -365,16 +367,16 @@ li.chatting .title {
 	text-overflow: ellipsis;
 }
 
-li.chatting .limit {
+li.chatRoom .limit {
 	font-size: 0.8em;
 }
 
-li.chatting .icon-participant:before {
+li.chatRoom .icon-participant:before {
 	content: "\f007";
 	margin-right: 5px;
 }
 
-li.chatting .address.icon-title:before {
+li.chatRoom .address.icon-title:before {
 	content: "\f041";
 	margin-right: 5px;	
 }
@@ -578,101 +580,274 @@ div#content {
 */
 
 /* 채팅방 스타일 영역 시작 */
-
-.chattingRoom {
-	position: absolute;
-	display: none;
-	top: 50px;
-	left: 500px;
-	width: 400px;
-	height: 500px;
-	background-color: #FAFAFA;
-	border-radius: 3px;
-	z-index: 11;
+#chatWindow *{
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	box-sizing: border-box;
 }
 
-.chattingRoomTopBar {
-	position: absolute;
-	width: 100%;
-	height: 20px;
-	border-radius: 3px 3px 0 0;
-	background-color: #37a2d6;
-}
-
-.chattingRoomTitle {
+#chatWindow {
+	width: 500px;
+	height: 600px;
 	position: relative;
-	width: 200px;
-	height: 20px;
-	left: 10px;
+}
+
+#chatWindow .leftArea {
+	position:relative;
+	width: 80%;
+	height: 100%;
 	float: left;
+	border: 0.1em solid #3a4655;
+	border-right: 0;
+	border-radius: 0.2em 0 0 0.2em;
+	background-color: #fff;
+	z-index: 1;
 }
 
-.foldChattingRoomButton {
+#chatWindow .rightArea {
 	position: relative;
-	width: 20px;
-	height: 20px;
-	right: 30px;
-	float: right;
+	width: 20%;
+	height: 100%;
+	float: left;
+	border: 0.1em solid #3a4655;
+	border-radius: 0 0.2em 0.2em 0;
+	background-color: #fff;
 }
 
-.exitChattingRoomButton {
-	position: relative;
+.rightArea:after {
+	position: absolute;  
+	top: -0.1em;
+	right: -20px;
 	width: 20px;
-	height: 20px;
-	right: -15px;
-	float: right;
+	height: 100%;
+	background-color: #424f5f;
+	border-bottom: 0.2em solid #3a4655;
+	border-radius: 0 0.2em 0.2em 0;
+	color: #fff;
+	line-height: 35em;
 	text-align: center;
+	display: inline-block;
+}
+
+.rightArea.unfold {
+	left: 0%;
+	-webkit-transition: all 2s ease-in-out;
+	-moz-transition: all 2s ease-in-out;
+	-o-transition: all 2s ease-in-out;
+	transition: all 2s ease-in-out;
+}
+
+.rightArea.fold {
+	right: 20%;
+}
+
+.rightArea.unfold:after {
+	content: "<";
+}
+
+.rightArea.fold:after {
+	content: ">";
+}
+
+.leftArea .top {
+	width: 100%;
+	height: 90px;
+	border-bottom: 0.1em solid #3a4655;
+	border-right: 0.1em solid #384652;
+	background-color: #424f5f;
+	opacity: 1;
+	overflow: hidden;
+	color: #fff;
+	cursor: move;
+}
+
+.leftArea .middle {
+	display: inline-block;
+	width: 100%;
+	height: 60%;
+}
+
+.leftArea .bottom {
+	display: inline-block;
+	width: 100%;
+	height: 25%;
+	border-top: 0.1em solid #C7C7C7;
+}
+
+.inputArea {
+	width: 100%;
+	height: 90%;
+	font-size: 1em;
+	background: none;
+	color: #000;
+	resize: none;
+	outline: none;
+	border: 0;
+	padding: 0.5em 0.6em;
+	color: #92a2c2;
+}
+
+.chattingMemberList ul{
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	list-style-type: none;
+	padding: 0;
+	overflow-y: scroll;
+	margin: 0px;
+}
+
+.chattingMemberList li {
+	padding: 10px 0;
+	text-align: center;
+	overflow: ellipsis;
+}
+
+.chattingMemberList li p {
+	margin: 0px;
+	font-size: 0.7em;
 }
 
 .chattingContents {
-	position: absolute;
-	width: 340px;
-	height: 360px;
-	top: 20px;
 	float: left;
-	overflow: scroll;
-	overflow-x: hidden;
-	background-color: #FAFAFA;
-}
-
-.chattingMemberList {
-	position: absolute;
-	width: 60px;
-	height: 360px;
-	top: 20px;
-	left: 340px;
-	float: right;
-	overflow: scroll;
-	overflow-x: hidden;
-	background-color: #22a86d;
-}
-
-.chattingRoomFooter {
-	position: absolute;
+	display: inline-block;
 	width: 100%;
-	height: 120px;
-	top: 380px;
-	border-radius: 0 0 3px 3px;
+	padding: 5% 2.5% 0 2.5%;
+	height: 100%;
+	margin: auto;
+	list-style: none;
+	overflow-y: scroll;
+	overflow-x: hidden;
 }
 
-.chattingInputBox {
+.chattingContents li {
 	position: relative;
-	width: 340px;
-	height: 120px;
-	float: left;
-	background-color: pink;
-	border-radius: 0 0 0 3px;
+	clear: both;
+	display: inline-block;
+	padding: 10px 10px 10px 10px;
+	margin: 0 0 20px 0;
+	font-size: 0.8em;
+	font-weight: bold;
+	border-radius: 10px;
+	background-color: #fff;
+	border: 0.1em solid #C1C1C1;
+	!background-color: rgba(25, 147, 147, 0.2);
 }
 
-.chattingSendButton {
-	position: relative;
-	width: 60px;
-	height: 120px;
+/* Chat - Avatar */
+.chattingContents li:before {
+	position: absolute;
+	top: 0;
+	width: 3em;
+	height: 3em;
+	border-radius: 2em;
+	content: '';
+}
+
+/* Chat - Speech Bubble Arrow */
+.chattingContents li:after {
+	position: absolute;
+	top: 15px;
+	content: '';
+	width: 0;
+	height: 0;
+	border-top: 15px solid #C7C7C7;
+	opacity: 0.3;
+	!border-top: 15px solid rgba(25, 147, 147, 0.2);
+}
+
+.chattingContents li:nth-child(odd) {
+	animation: show-chat-odd 0.15s 1 ease-in;
+	-moz-animation: show-chat-odd 0.15s 1 ease-in;
+	-webkit-animation: show-chat-odd 0.15s 1 ease-in;
 	float: right;
-	background-color: orange;
-	border-radius: 0 0 3px 0;
+	margin-right: 4.5em;
+	color: #92A2BC;
 }
 
+.chattingContents li:nth-child(odd):before {
+	right: -4.5em;
+	background-image: url(http://tv01.search.naver.net/ugc?t=252x448&q=http://cafefiles.naver.net/20130812_190/anjfqhk567_1376295469608Mdu8u_JPEG/___-1.jpeg);
+}
+
+.chattingContents li:nth-child(odd):after {
+	border-right: 1em solid transparent;
+	right: -1em;
+}
+
+.chattingContents li:nth-child(even) {
+	animation: show-chat-even 0.15s 1 ease-in;
+	-moz-animation: show-chat-even 0.15s 1 ease-in;
+	-webkit-animation: show-chat-even 0.15s 1 ease-in;
+	float: left;
+	margin-left: 4.5em;
+	color: #000;
+}
+
+.chattingContents li:nth-child(even):before {
+	left: -4.5em;
+	background-image: url(https://avatars2.githubusercontent.com/u/3844023?s=140);
+}
+
+.chattingContents li:nth-child(even):after {
+	border-left: 1em solid transparent;
+	left: -1em;
+}
+
+@keyframes show-chat-even {
+  0% {
+    margin-left: -480px;
+  }
+
+  100% {
+    margin-left: 0;
+  }
+}
+@-moz-keyframes show-chat-even {
+  0% {
+    margin-left: -480px;
+  }
+
+  100% {
+    margin-left: 0;
+  }
+}
+@-webkit-keyframes show-chat-even {
+  0% {
+    margin-left: -480px;
+  }
+
+  100% {
+    margin-left: 0;
+  }
+}
+@keyframes show-chat-odd {
+  0% {
+    margin-right: -480px;
+  }
+
+  100% {
+    margin-right: 0;
+  }
+}
+@-moz-keyframes show-chat-odd {
+  0% {
+    margin-right: -480px;
+  }
+
+  100% {
+    margin-right: 0;
+  }
+}
+@-webkit-keyframes show-chat-odd {
+  0% {
+    margin-right: -480px;
+  }
+
+  100% {
+    margin-right: 0;
+  }
+}
 /* 채팅방 스타일 영역 끝 */
 
 /* 줌인/줌아웃 버튼 시작 */

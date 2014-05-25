@@ -33,21 +33,17 @@
 				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
 			</li>
 			<li class="cell chatRoom">
-				<div class="cell chatting">
 					<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
 					<p class="limit icon-participant">1 / 300</p>
 					<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
 					<div class="notification">0</div>
-				</div>
 			</li>
 			<li class="cell bookmark">
 				<p class="title">우리집</p>
 				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
 			</li>
-			<li class="person chatMember">
-				<img src="/images/person_icon.png"></img>
-				<p class="personName"></p>
-			</li>
+			<li class="person chatMember"><img src="/images/person_icon.png"></img>
+				<p class="personName"></p></li>
 		</ul>
 	</div>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
@@ -96,13 +92,13 @@
 			<div class="menu-bookmark content"></div>
 		</div>
 	</div>
-	
-		<!-- hidden Area2 (For Entered Chatting Room List) -->
+
+	<!-- hidden Area2 (For Entered Chatting Room List) -->
 	<div style="display: none;">
 		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
 	</div>
-	
-	
+
+
 	<!--페이지 전체를 감싸는 영역-->
 	<div id="wrapper">
 
@@ -206,24 +202,39 @@
 				</div>
 
 				<!-- 채팅방 영역 -->
-				<div class="chattingRoom">
-					<div class="chattingRoomTopBar">
-						<div class="chattingRoomTitle">방 제목</div>
-						<div>
-							<button class="foldChattingRoomButton">_</button>
+				<div id="chatWindow">
+					<div class="leftArea">
+						<div class="top">
+							<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
+							<p class="limit icon-participant">1 / 300</p>
+							<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
 						</div>
-						<div>
-							<button class="exitChattingRoomButton">X</button>
+						<div class="middle">
+							<ul class="chattingContents">
+								<li>안녕하니?</li>
+								<li>웅 안녕못해</li>
+								<li>싸울래?</li>
+								<li>미안 잘못했어ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ</li>
+							</ul>
+						</div>
+						<div class="bottom">
+							<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
 						</div>
 					</div>
-					<div class="chattingContents"></div>
-					<div class="chattingMemberList">
-						<ul>
-						</ul>
-					</div>
-					<div class="chattingRoomFooter">
-						<textarea class="chattingInputBox"></textarea>
-						<div class="chattingSendButton">SEND</div>
+					<div class="rightArea fold">
+						<div class="chattingMemberList">
+							<ul>
+								<li class="person chatMember"><img class="profile"
+									src="https://cdn1.iconfinder.com/data/icons/gnomeicontheme/32x32/stock/generic/stock_person.png">
+									<p class="nickname adjective">날아라</p>
+									<p class="nickname noun">윤성</p></li>
+
+								<li class="person chatMember"><img class="profile"
+									src="https://cdn1.iconfinder.com/data/icons/gnomeicontheme/32x32/stock/generic/stock_person.png">
+									<p class="nickname adjective">꿀렁꿀렁</p>
+									<p class="nickname noun">윤성</p></li>
+							</ul>
+						</div>
 					</div>
 				</div>
 
@@ -244,5 +255,6 @@
 	window.onload = initialize();
 </script>
 <script type="text/javascript" src="/javascripts/search.js?20140521"></script>
-<script type="text/javascript" src="/javascripts/enteredChattingRoomList.js?20140522"></script>
+<script type="text/javascript"
+	src="/javascripts/enteredChattingRoomList.js?20140522"></script>
 </html>
