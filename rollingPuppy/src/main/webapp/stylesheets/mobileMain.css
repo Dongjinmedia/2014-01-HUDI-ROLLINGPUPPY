@@ -233,8 +233,8 @@ panelWrapper.unfold_panel {
 
 panelButtons {
 	position: absolute;
-	width: 50px;
-	height: 20px;
+	width: 52px;
+	height: 21px;
 	left: 50%;
 	margin-left: -25px;
 	bottom: 0px;
@@ -243,8 +243,8 @@ panelButtons {
 
 panelButtons > * {
 	position: absolute;
-	width: 100%;
-	height: 100%;
+	width: 50px;
+	height: 20px;
 	background-color: #EEE;
 	border: 1px solid #ABABAB;
 }
@@ -256,6 +256,7 @@ unfold {
 	border-bottom-right-radius: 5px;
 	-webkit-border-bottom-left-radius: 5px;
 	-webkit-border-bottom-right-radius: 5px;
+	border-top: 0px;
 }
 
 fold {
@@ -264,6 +265,7 @@ fold {
 	border-top-right-radius: 5px;
 	-webkit-border-top-left-radius: 5px;
 	-webkit-border-top-right-radius: 5px;
+	border-bottom: 0px;
 }
 
 .unfold_panel unfold {

@@ -59,12 +59,15 @@ var oPanel ={
 	},
 
 	panelButtonsHandler : function(event) {
-		console.log(event.target);
+		if (event.target.tagName.toLowerCase() !== "div") {
+			return;
+		}
+		
 		event.preventDefault();
 		var strButtonClassName = event.target.className;
 
 		var boolFold = false;
-		if(strButtonClassName === "panelFold"){
+		if (strButtonClassName === "panelFold"){
 			boolFold = true;
 		}
 
