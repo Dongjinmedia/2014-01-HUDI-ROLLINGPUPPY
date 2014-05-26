@@ -1,5 +1,6 @@
 console.log('\u001b[1m');
 console.log('\u001b[32m', '=============Server Start=============');
+console.log('\u001b[1m');
 
 //socket.io Module load
 var socketio = require('socket.io');
@@ -14,7 +15,8 @@ var pool = mysql.createPool({
 	database	: 'rolling_puppy',
 	charset		: 'UTF8_GENERAL_CI',
 	timezone	: 'local',
-	password	: 'dlrudals'
+	password	: 'dlrudals',
+	connectionLimit : 30
 });
 
 //database 질의를 위해 사용하는 함수
@@ -23,16 +25,12 @@ var pool = mysql.createPool({
 //예를들어 ( select * from tbl_member where email=?, nickname_adjective=?, nickname_noun=? )인 sql에 해당하는
 //aInsertValues는 다음과 같을 수 있다. ['lvev9925@naver.com', '날으는', '윤성']
 function requestQuery(sql, aInsertValues, callbackFunction) {
-	
 	//sql QueryGenerator. 
 	//Like Java PreparedStatement Class
 	var sql = mysql.format(sql, aInsertValues);	
-	
 	var resultData = pool.getConnection(function(err, connection) {
-		//test
-		console.log("sql : ", sql);
+
 		//when error occur
-		
 		if (err) {
 			console.log("error occur : ",err);
 		}
@@ -47,6 +45,8 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 			
 			callbackFunction(queryResult);
 		});
+		
+		connection.release();
 	});
 };
 
@@ -72,6 +72,7 @@ io.sockets.on('connection', function (socket) {
 	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
 	socket.on('autoConnectWithEnteredChattingRoom', function(data) {
 		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber);
+		console.log('\u001b[0m');
 		socket.join(data.chatRoomNumber);
 	});
 
@@ -180,8 +181,20 @@ io.sockets.on('connection', function (socket) {
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(message) {
 		//Get Attribute
+		
+		console.log("message request!!!");
 		socket.get('chatRoomNumber', function(error, chatRoomNumber) {
+			
+			if (error) {
+				console.log("error occur : "+error);
+			}
+			
 			socket.get('userId', function (error, userId){
+				
+				if (error) {
+					console.log("error occur : "+error);
+				}
+				
 				requestQuery(
 					//Param1
 					"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
@@ -189,8 +202,9 @@ io.sockets.on('connection', function (socket) {
 					[chatRoomNumber, userId, message],
 					//Param3
 					function(oResult) {
+						console.log("message request result oResult : "+oResult);
 						var affectedRows = oResult["affectedRows"];
-					
+						
 						//TODO 결과가 없을때를 대비한 error event를 만들자						
 						//if ( affectedRows !== 1 ) {
 						//	socket.emit('error', message);
