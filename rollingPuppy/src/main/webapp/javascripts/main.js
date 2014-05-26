@@ -1185,21 +1185,11 @@ var oKeyboardAction = {
 		if ( getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
 			oCreateChattingRoom.invisible();
 	},
-	enterPress: function(event) {
-		if ( event.target.className = "button") {
-			//dada
-		}
-	}
 	initialize: function() {
 		document.onkeydown = function(event) {
 			//alert("in : " + event.keyCode);
 			if ( event.keyCode == 27 ) {
 				this.escPress();
-			}
-		}.bind(this);
-		document.onkeydown = function(event) {
-			if( event.keyCode == 13 ) {
-				this.enterPress(event);
 			}
 		}.bind(this);
 	}	
@@ -1262,7 +1252,8 @@ var reverseGeo = function (clickedLatlng){
  **********************************************************************************************************/
 oSearching = {
 		eSubmit: null,
-		getResultXml: function(event) {
+		eSearchBox: null,
+		getResultXml: function() {
 			var queryKeyword = document.getElementById("search_box").children[0].value; 
 			var incompleteUrl = "/search?searchKeyword=";
 			
@@ -1302,9 +1293,16 @@ oSearching = {
 			};
 			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
 		},
+		startSearch: function(event){
+			if(event.keyCode == 13) {
+				this.getResultXml();
+			}
+		},
 		initialize: function() {
-			this.eSubmit = document.getElementById("search_box").children[1]; 
-			this.eSubmit.addEventListener('click', getResultXml, false);
+			this.eSearchBox = document.getElementById("search_box");
+			this.eSubmit = this.eSearchBox.children[1]; 
+			this.eSubmit.addEventListener('click', this.getResultXml.bind(this), false);
+			this.eSearchBox.addEventListener('keydown', this.startSearch.bind(this), false);
 		}
 }
 /*********************************************************************************************************
@@ -1381,6 +1379,11 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
+	//검색을 위한  oSearching 초기화 영역
+	oSearching.initialize();
+	//------------------------------------------------------------------------------------//
+	
+	//------------------------------------------------------------------------------------//
 	//키보드 입력에 대한 Object
 	oKeyboardAction.initialize();
 	//------------------------------------------------------------------------------------//
@@ -1393,11 +1396,6 @@ function initialize() {
 	//------------------------------------------------------------------------------------//
 	//Chatting을 위한  socket.io 초기화 영역
 	oChat.initialize();
-	//------------------------------------------------------------------------------------//
-	
-	//------------------------------------------------------------------------------------//
-	//검색을 위한  oSearching 초기화 영역
-	oSearching.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	
