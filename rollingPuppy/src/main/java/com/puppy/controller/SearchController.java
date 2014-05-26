@@ -21,7 +21,7 @@ public class SearchController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=513cd098517cce82ec819f7862fb362f";
-	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
+	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=20";
 	private static final String SEARCH_EXPRESSION ="/rss/channel/item";
 
 	@Override

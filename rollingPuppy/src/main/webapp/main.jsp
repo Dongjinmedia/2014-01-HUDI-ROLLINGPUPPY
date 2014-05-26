@@ -142,6 +142,8 @@
 						<div id="pc_search" class="on">
 							<ul>
 							</ul>
+							
+							<!-- 추후 여유가 될 때, 개발. scroll로 대체  
 							<ul class="pcFooter">
 								<li><i class="paging icon-left"></i></li>
 								<li>1</li>
@@ -149,6 +151,7 @@
 								<li>3</li>
 								<li><i class="paging icon-right"></i></li>
 							</ul>
+							-->
 
 						</div>
 						<div id="pc_recommendation">

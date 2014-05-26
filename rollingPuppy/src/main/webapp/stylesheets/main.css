@@ -212,6 +212,7 @@ div#panel {
     -webkit-animation-duration: 0.4s;
     -webkit-animation-timing-function: ease;
     -webkit-animation-fill-mode: forwards;
+    overflow: scroll;
 }
 @keyframes unfold {
 	from { -webkit-transform: translateX(0px); }
