@@ -225,7 +225,7 @@
 							<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
 						</div>
 					</div>
-					<div class="rightArea fold">
+					<div class="rightArea unfold">
 						<div class="chattingMemberList">
 							<ul>
 								<li class="person chatMember"><img class="profile"

@@ -916,8 +916,26 @@ var oChat = {
 				alert("채팅방에서 나가셨어요~");
 			});
 			
+			//ChatWindow에서 참여자 리스트 패널 fold, unfold 이벤트를 연결한다.
+			this.eRightArea.addEventListener('click', function(e) {
+				
+				//element 외의 영역을 클릭하는것이기 떄문에 before, after항목을 클릭한 경우이다.
+				if ( e.offsetX > this.offsetWidth) {
+					
+					if ( e.target.className.indexOf("unfold") !== -1 ) {
+						removeClassName(this, "unfold");
+						addClassName(this, "fold");
+					} else {
+						removeClassName(this, "fold");						
+						addClassName(this, "unfold");
+					}					
+				}
+			}, false);
+			
+			
 			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
 			this.connectSocketWithEnteredChattingRoom();
+			
 		}
 };
 /*********************************************************************************************************
