@@ -778,12 +778,20 @@ var oChat = {
 		},
 		
 		sendMessage: function(message) {
-			this.socket.emit('message', this.nickname+ " : " + message);
+			this.socket.emit('message', message);
+			this.eInputBox.value="";
 		},
 		
 		getMessage: function(message) {
-			this.eChattingContents.insertAdjacentHTML( 'beforeend',"<dd style='margin:0px;'>"+message+"</dd");
-			this.eInputBox.value="";
+			//TODO 전용우 교수님께 질문
+			//이렇게 사용해야하는것이 좋나?
+		    var eNewMessage = document.createElement('li');
+	    	var newMessageText = document.createTextNode(message);
+	    	eNewMessage.appendChild(newMessageText);
+	    	
+			this.eChattingContents.appendChild(eNewMessage);
+			
+			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
 		},
 		
 		getMemberList: function(){
@@ -865,7 +873,12 @@ var oChat = {
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {
+				
+				//test code
+				//TODO delete this code
 				//alert("in : " + event.keyCode);
+				//console.log("in : " + event.keyCode);
+				
 				if ( event.keyCode == 13 ) {
 					this.sendMessage( this.eInputBox.value );
 				}
@@ -878,7 +891,9 @@ var oChat = {
 			
 			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
 			this.eExitButton.addEventListener("click", function(e) {
-				this.exitChattingRoom();
+				if ( confirm("Are you sure Exit Chatting Room?")) {
+					this.exitChattingRoom();
+				}
 			}.bind(this), false);
 			
 			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
