@@ -585,7 +585,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 }
 
 #chatWindow {
-	!display: none;
+	display: none;
 	width: 500px;
 	height: 600px;
 	position: relative;
@@ -911,12 +911,11 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 /* 줌인/줌아웃 버튼 시작 */
 #zoomButton {
-	position: relative;
+	position: absolute;
 	width: 30px;
 	height: 48px;
-	float: right;
-	margin-top: 40px;
-	margin-right: 40px;
+	right: 30px;
+	top: 30px;
 }
 
 #zoomInButton {
