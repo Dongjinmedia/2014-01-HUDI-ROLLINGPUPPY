@@ -916,6 +916,23 @@ var oChat = {
 				alert("채팅방에서 나가셨어요~");
 			});
 			
+			//ChatWindow에서 참여자 리스트 패널 fold, unfold 이벤트를 연결한다.
+			this.eRightArea.addEventListener('click', function(e) {
+				
+				//element 외의 영역을 클릭하는것이기 떄문에 before, after항목을 클릭한 경우이다.
+				if ( e.offsetX > this.offsetWidth) {
+					
+					if ( e.target.className.indexOf("unfold") !== -1 ) {
+						removeClassName(this, "unfold");
+						addClassName(this, "fold");
+					} else {
+						removeClassName(this, "fold");						
+						addClassName(this, "unfold");
+					}					
+				}
+			}, false);
+			
+						
 			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
 			this.connectSocketWithEnteredChattingRoom();
 		}
@@ -1125,8 +1142,6 @@ var oMapClicker = {
 	eLocationName: null,
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
-		console.log(locationName);
-		
 		this.eLocationName.innerText = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
@@ -1170,11 +1185,21 @@ var oKeyboardAction = {
 		if ( getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
 			oCreateChattingRoom.invisible();
 	},
+	enterPress: function(event) {
+		if ( event.target.className = "button") {
+			//dada
+		}
+	}
 	initialize: function() {
 		document.onkeydown = function(event) {
 			//alert("in : " + event.keyCode);
 			if ( event.keyCode == 27 ) {
 				this.escPress();
+			}
+		}.bind(this);
+		document.onkeydown = function(event) {
+			if( event.keyCode == 13 ) {
+				this.enterPress(event);
 			}
 		}.bind(this);
 	}	
@@ -1232,8 +1257,91 @@ var reverseGeo = function (clickedLatlng){
 /*********************************************************************************************************
 * Reverse Geo code 끝 
  **********************************************************************************************************/
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 시작 
+ **********************************************************************************************************/
+oSearching = {
+		eSubmit: null,
+		getResultXml: function(event) {
+			var queryKeyword = document.getElementById("search_box").children[0].value; 
+			var incompleteUrl = "/search?searchKeyword=";
+			
+			var callback = function(request){
+				
+				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
+				console.log(aResult);
+				if(aResult.length == 0){
+					oTemplate.showDefaultTemplate("pc_search", ".comment", "검색 결과가 존재하지 않습니다.")
+				} else {
+					
+					//template element가져오기
+					var eTemplate = document.getElementById("template").querySelector(".search");			
+					//aResult를 for문을 돌며 template element를 복사한 변수를 가져와서 데이터 삽입 
+					var eTarget = document.getElementById("pc_search").querySelector("ul");
+					//이미 존재하는 검색 결과가 있다면 지운다.
+					while (eTarget.firstChild) {
+						eTarget.removeChild(eTarget.firstChild);
+					}
+					
+					for( var i = 0 ; i < aResult.length ; ++i){
+						var eCopiedTemplate = eTemplate.cloneNode(true);
+						var eSearchedTitle = eCopiedTemplate.querySelector(".title");
+						var eSearchedCategory = eCopiedTemplate.querySelector(".category");
+						var eSearchedAddress = eCopiedTemplate.querySelector(".address");
+						
+						eSearchedTitle.innerHTML = aResult[i]["title"]; 
+						eSearchedCategory.innerText = aResult[i]["category"]; 
+						eSearchedAddress.innerText = aResult[i]["address"];
+						eCopiedTemplate["cartesianX"] = aResult[i]["mapx"];
+						eCopiedTemplate["cartesianY"] = aResult[i]["mapy"];
+						
+						//template을 원하는 위치에 삽입
+						eTarget.appendChild(eCopiedTemplate);
+					}
+				}
+			};
+			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+		},
+		initialize: function() {
+			this.eSubmit = document.getElementById("search_box").children[1]; 
+			this.eSubmit.addEventListener('click', getResultXml, false);
+		}
+}
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 종료 
+ **********************************************************************************************************/
+/*********************************************************************************************************
+ * template 객체화 소스코드 시작 
+ **********************************************************************************************************/
+oTemplate = {
+		//이전에 넣었던 templates 지우기
+		deletePreviousTemplate : function(eTarget){
+			while(eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		},
+		showDefaultTemplate: function(targetPosId, targetContentsSelector, sExplanation){
+			var eDefaultTemplate = document.getElementById("template").querySelector(".default");
+			var eTarget = document.getElementById(targetPosId).querySelector("ul");
 
+			this.deletePreviousTemplate(eTarget);
 
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(targetContentsSelector).innerText = sExplanation;
+
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		specifyTemplate : function(aResponse, eDefaultTemplate, eTarget, callback){
+			for( var i = 0 ; aResponse.length ; ++i){
+				var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(ture);
+				callback(aResponse[i], eDefaultTemplate);
+				eTarget.appendChild(eCopiedDefaultTemplate);
+			}
+		}
+};
+/*********************************************************************************************************
+ * template 객체화 소스코드 종료 
+ **********************************************************************************************************/
 
 /*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
@@ -1286,6 +1394,12 @@ function initialize() {
 	//Chatting을 위한  socket.io 초기화 영역
 	oChat.initialize();
 	//------------------------------------------------------------------------------------//
+	
+	//------------------------------------------------------------------------------------//
+	//검색을 위한  oSearching 초기화 영역
+	oSearching.initialize();
+	//------------------------------------------------------------------------------------//
+	
 	
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
