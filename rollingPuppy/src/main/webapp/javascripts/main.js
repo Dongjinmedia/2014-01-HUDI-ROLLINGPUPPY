@@ -115,6 +115,8 @@ var Panel = {
 			var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
 			//찾은 좌표로 지도의 중심을 재설정한다. 
 			oNaverMap.oMap.setCenter(oPoint);
+			//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+			oNaverMap.oMap.setLevel(13);
 		}
 	},
 
