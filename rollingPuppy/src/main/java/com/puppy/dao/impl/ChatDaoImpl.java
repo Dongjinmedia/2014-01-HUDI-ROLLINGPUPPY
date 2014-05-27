@@ -237,6 +237,25 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 				
 		return chatMemberList;
 	}
+
+	@Override
+	public int updateCurrentChatRoomFoldTime(int userId, int currentChatRoomNumber) {
+		logger.info("ChatDaoImpl updateCurrentChatRoomFoldTime");
+		
+		int successQueryNumber = 0;
+		try {
+			String sql = "UPDATE tbl_chat_room_has_tbl_member SET fold_time = NOW() WHERE tbl_chat_room_id = ? AND tbl_member_id = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
+			preparedStatement.setInt(1, currentChatRoomNumber);
+			preparedStatement.setInt(2, userId);
+
+			successQueryNumber = updateQuery(preparedStatement);
+		} catch (Exception e) {
+			logger.error("in updateCurrentChatRoomFoldTime", e);
+		}
+		
+		return successQueryNumber;
+	}
 	
 	
 }

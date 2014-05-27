@@ -19,6 +19,7 @@ public class Constants {
 	public static final String REQUEST_CHATROOM_LATITUDE = "locationLatitude";
 	public static final String REQUEST_CHATROOM_LONGITUDE = "locationLongitude";
 	public static final String REQUEST_CHATROOM_ZOOM = "zoom";
+	public static final String REQUEST_CHATROOM_NUMBER= "chatRoomNumber";
 	
 	public static final String REQUEST_ROOMLIST_LEFTTOPX = "leftTopX";
 	public static final String REQUEST_ROOMLIST_LEFTTOPY = "leftTopY";
