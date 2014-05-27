@@ -693,8 +693,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 .top .menu {
 	position: absolute;
-	right: -1%;
-	top: 11%;
+	right: 2%;
+	top: 70px;
 	width: 3em;
 	height: 1em;
 	cursor: pointer;
@@ -768,145 +768,114 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	font-size: 0.7em;
 }
 
+.chattingContents li{
+  clear: both;
+  position: relative;
+  margin-bottom: 30px;
+}
+
 .chattingContents {
-	float: left;
-	display: inline-block;
-	width: 100%;
-	padding: 5% 2.5% 0 2.5%;
-	height: 100%;
-	margin: auto;
-	list-style: none;
-	overflow-y: scroll;
-	overflow-x: hidden;
+  float: left;
+  display: inline-block;
+  width: 100%;
+  padding: 5% 2.5% 0 2.5%;
+  height: 100%;
+  margin: auto;
+  list-style: none;
+  overflow-y: scroll;
+  overflow-x: hidden;
 }
 
-.chattingContents li {
-	position: relative;
-	clear: both;
-	display: inline-block;
-	padding: 10px 10px 10px 10px;
-	margin: 0 0 20px 0;
-	font-size: 0.8em;
-	font-weight: bold;
-	border-radius: 10px;
-	background-color: #fff;
-	border: 0.1em solid #C1C1C1;
-	!background-color: rgba(25, 147, 147, 0.2);
+.chattingContents li .profile {
+  width: 3em;
+  height: 3em;
+  display: inline-block;
+  border-radius: 2em;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-image: url("https://avatars2.githubusercontent.com/u/3844023?s=140");
+  position: relative;
+  top: 0em;
+}
+.chattingContents .notice .message {
+  min-width: 100%;  
+  max-width: 100%;
+  text-align: center;
+  background-color: #7a8696;
+  color: #fff;
+  font-weight: bold;
+  font-size: 0.7em;
+  padding: 0.5em 0;
 }
 
-/* Chat - Avatar */
-.chattingContents li:before {
-	position: absolute;
-	top: 0;
-	width: 3em;
-	height: 3em;
-	border-radius: 2em;
-	content: '';
+.chattingContents .user {
+  text-align: right;
 }
 
-/* Chat - Speech Bubble Arrow */
-.chattingContents li:after {
-	position: absolute;
-	top: 15px;
-	content: '';
-	width: 0;
-	height: 0;
-	border-top: 15px solid #C7C7C7;
-	opacity: 0.3;
-	!border-top: 15px solid rgba(25, 147, 147, 0.2);
+.chattingContents .user .time {
+  position: relative;
 }
 
-.chattingContents li:nth-child(odd) {
-	animation: show-chat-odd 0.15s 1 ease-in;
-	-moz-animation: show-chat-odd 0.15s 1 ease-in;
-	-webkit-animation: show-chat-odd 0.15s 1 ease-in;
-	float: right;
-	margin-right: 4.5em;
-	color: #92A2BC;
+.chattingContents .user .message {
+  max-width: 80%;
+  text-align: justify;
+  padding-left: 14px;
+  color: #92a2c2;
 }
 
-.chattingContents li:nth-child(odd):before {
-	right: -4.5em;
-	background-image: url(http://tv01.search.naver.net/ugc?t=252x448&q=http://cafefiles.naver.net/20130812_190/anjfqhk567_1376295469608Mdu8u_JPEG/___-1.jpeg);
+.chattingContents li .message {
+  position: relative;
+  top: 0em;
+  clear: both;
+  display: inline-block;
+  padding: 10px 10px 10px 10px;
+  margin: 20px 0 0 0;
+  font-size: 0.8em;
+  font-weight: bold;
+  border-radius: 10px;
+  background-color: #fff;
+  border: 0.1em solid #C1C1C1;
+  max-width: 70%;
+  overflow: hidden;
+  white-space: normal;
+  word-break: break-all;
 }
 
-.chattingContents li:nth-child(odd):after {
-	border-right: 1em solid transparent;
-	right: -1em;
+.chattingContents li .nickname {
+  font-size: 0.7em;
+  position: absolute;
+  top: 0.5em;
+  margin-left: 0.4em;
+  font-weight: bold;
+  color: #7a8696;
 }
 
-.chattingContents li:nth-child(even) {
-	animation: show-chat-even 0.15s 1 ease-in;
-	-moz-animation: show-chat-even 0.15s 1 ease-in;
-	-webkit-animation: show-chat-even 0.15s 1 ease-in;
-	float: left;
-	margin-left: 4.5em;
-	color: #000;
+.chattingContents li .time {
+  font-size: 0.3em;
+  position: absolute;
+  bottom: 0.5em;
+  margin-left: 0.3em;
+  font-weight: bold;
+  color: #7a8696;
 }
 
-.chattingContents li:nth-child(even):before {
-	left: -4.5em;
-	background-image: url(https://avatars2.githubusercontent.com/u/3844023?s=140);
+.chattingContents li .message:before {
+  position: absolute;
+  top: 0;
+  width: 3em;
+  height: 3em;
+  border-radius: 2em;
+  content: '';
 }
 
-.chattingContents li:nth-child(even):after {
-	border-left: 1em solid transparent;
-	left: -1em;
-}
-
-@keyframes show-chat-even {
-  0% {
-    margin-left: -480px;
-  }
-
-  100% {
-    margin-left: 0;
-  }
-}
-@-moz-keyframes show-chat-even {
-  0% {
-    margin-left: -480px;
-  }
-
-  100% {
-    margin-left: 0;
-  }
-}
-@-webkit-keyframes show-chat-even {
-  0% {
-    margin-left: -480px;
-  }
-
-  100% {
-    margin-left: 0;
-  }
-}
-@keyframes show-chat-odd {
-  0% {
-    margin-right: -480px;
-  }
-
-  100% {
-    margin-right: 0;
-  }
-}
-@-moz-keyframes show-chat-odd {
-  0% {
-    margin-right: -480px;
-  }
-
-  100% {
-    margin-right: 0;
-  }
-}
-@-webkit-keyframes show-chat-odd {
-  0% {
-    margin-right: -480px;
-  }
-
-  100% {
-    margin-right: 0;
-  }
+.chattingContents li .message:after {
+  position: absolute;
+  top: 15px;
+  content: '';
+  width: 0;
+  height: 0;
+  border-top: 15px solid #C7C7C7;
+  opacity: 0.3;
 }
 /* 채팅방 스타일 영역 끝 */
 
