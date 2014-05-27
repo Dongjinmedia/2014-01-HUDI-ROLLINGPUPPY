@@ -624,7 +624,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	border-bottom: 0.2em solid #3a4655;
 	border-radius: 0 0.2em 0.2em 0;
 	color: #fff;
-	line-height: 35em;
+	!line-height: 35em;
+	line-height: 300%;
 	text-align: center;
 	display: inline-block;
 }
@@ -745,6 +746,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	border: 0;
 	padding: 0.5em 0.6em;
 	color: #92a2c2;
+	line-height: 1.5em;
 }
 
 .chattingMemberList ul{

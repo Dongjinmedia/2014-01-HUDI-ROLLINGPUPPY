@@ -20,6 +20,7 @@ import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
+import com.puppy.util.ThreeWayResult;
 import com.puppy.util.Util;
 
 public class ChatController implements Controller {
@@ -61,7 +62,34 @@ public class ChatController implements Controller {
 			getChattingRoomList(request, response);
 		} else if (requestURL.contains("getmembers")){
 			getChattingMemberList(request, response);
+		} else if (requestURL.contains("foldcurrentchatroom")){
+			updateChattingRoomFoldTime(request, response);
 		}
+	}
+
+	private void updateChattingRoomFoldTime(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		logger.info("into updateChattingRoomFoldTime");
+		response.setContentType("application/json");
+		
+		PrintWriter out = response.getWriter();
+		
+		ThreeWayResult result = ThreeWayResult.FAIL;
+		
+		int currentChatRoomNumber = Integer.parseInt(request.getAttribute(Constants.REQUEST_CHATROOM_NUMBER).toString()); 
+		int userId = Integer.parseInt(request.getSession().getAttribute(Constants.SESSION_MEMBER_ID).toString());
+		
+		if ( currentChatRoomNumber !=0 && userId != 0 ) {
+			ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
+			int successQueryNumber = chatDao.updateCurrentChatRoomFoldTime(userId, currentChatRoomNumber);
+			
+			if ( successQueryNumber > 0 )
+				result = ThreeWayResult.SUCCESS;
+			
+			logger.info("successQueryNumber : "+successQueryNumber);
+		}
+		
+		out.println(result);
 	}
 
 	private void getChattingMemberList(HttpServletRequest request,

@@ -830,8 +830,30 @@ var oChat = {
 			oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack.bind(this));
 		},
 		
+		//working
 		foldChattingRoom: function(e) {
-			this.eChatWindow.style.display = "none";
+			//서버에 채팅방 fold에 대한 요청을 보낸다.
+			
+			var url = "/chat/foldCurrentChatRoom";
+			
+			oParameter = {
+				"chatRoomNumber": this.currentChatRoomNumber 	
+			};
+			
+			var callback = function(request) {
+				var result = request.responseText;
+
+				// TODO 교수님께 질문드리기
+				// ===로 비교하면 false 계속 리턴된다.. 왜그럴까? (index.js와 비교해서 볼것!)
+				if ( result.indexOf("SUCCESS") !== -1 ) {
+					this.eChatWindow.style.display = "none";
+				} else {
+					alert("다시 시도해주세요.");
+				}
+			}.bind(this);
+			
+			oAjax.getObjectFromJsonPostRequest(url, oParameter, callback);
+			
 		},
 		
 		exitChattingRoom: function(e) {

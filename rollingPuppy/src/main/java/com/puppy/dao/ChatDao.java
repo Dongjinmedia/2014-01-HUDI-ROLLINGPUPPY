@@ -12,4 +12,5 @@ public interface ChatDao {
 	public List<ChatRoom> selectChatRoomListFromPoints(float leftTopX, float leftTopY, float rightBottomX, float rightBottomY);
 	public int selectMarkerIDFromLocationInfo(Marker marker);
 	public List<Member> getChatMemberList(int currentChatRoomNumber);
+	public int updateCurrentChatRoomFoldTime(int userId, int currentChatRoomNumber);
 }
