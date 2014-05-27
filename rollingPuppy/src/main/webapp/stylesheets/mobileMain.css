@@ -234,7 +234,7 @@ panelWrapper.unfold_panel {
 panelButtons {
 	position: absolute;
 	width: 52px;
-	height: 21px;
+	height: 26px;
 	left: 50%;
 	margin-left: -25px;
 	bottom: 0px;
@@ -244,27 +244,27 @@ panelButtons {
 panelButtons > * {
 	position: absolute;
 	width: 50px;
-	height: 20px;
+	height: 25px;
 	background-color: #EEE;
 	border: 1px solid #ABABAB;
 }
 
 unfold {
 	display: block;
-	bottom: -20px;
-	border-bottom-left-radius: 5px;
-	border-bottom-right-radius: 5px;
-	-webkit-border-bottom-left-radius: 5px;
-	-webkit-border-bottom-right-radius: 5px;
+	bottom: -25px;
+	border-bottom-left-radius: 10px;
+	border-bottom-right-radius: 10px;
+	-webkit-border-bottom-left-radius: 10px;
+	-webkit-border-bottom-right-radius: 10px;
 	border-top: 0px;
 }
 
 fold {
 	display: none;
-	border-top-left-radius: 5px;
-	border-top-right-radius: 5px;
-	-webkit-border-top-left-radius: 5px;
-	-webkit-border-top-right-radius: 5px;
+	border-top-left-radius: 10px;
+	border-top-right-radius: 10px;
+	-webkit-border-top-left-radius: 10px;
+	-webkit-border-top-right-radius: 10px;
 	border-bottom: 0px;
 }
 
