@@ -47,16 +47,36 @@
 		<panel>
 			<contents>
 				<section>
-					<h1>검색</h1>
+					<sectionContents>
+						<h1>검색</h1>
+						<card></card>
+						<card></card>
+						<card></card>
+					</sectionContents>
 				</section>
 				<section>
-					<h1>채팅방</h1>
+					<sectionContents>
+						<h1>채팅방</h1>
+						<card></card>
+						<card></card>
+						<card></card>
+					</sectionContents>
 				</section>
 				<section>
-					<h1>관심장소</h1>
+					<sectionContents>
+						<h1>관심장소</h1>
+						<card></card>
+						<card></card>
+						<card></card>
+					</sectionContents>
 				</section>
 				<section>
-					<h1>설정</h1>
+					<sectionContents>
+						<h1>설정</h1>
+						<card></card>
+						<card></card>
+						<card></card>
+					</sectionContents>
 				</section>
 			</contents>
 			<panelButtons>

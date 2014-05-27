@@ -181,14 +181,31 @@ contents section:nth-of-type(4) {
 	background-color: #f16559;
 }
 
-section h1 {
+section sectionContents {
 	position: absolute;
+	top: 10px;
+	right: 10px;
+	bottom: 40px;
+	left: 10px;
+}
+
+section h1 {
 	color: white;
 	font-size: 3em;
 	font-weight: bold;
-	top: 10px;
-	left: 10px;
+	margin-bottom: 10px;
 }
+
+card {
+	width: 100%;
+	height: 80px;
+	margin-left: -1px;
+	margin-bottom: 3px;
+	background-color: #FEFEFE;
+	border: 1px solid #ABABAB;
+	border-radius: 8px;
+	-webkit-border-radius: 8px;
+} 
 
 /*dada*/
 panelWrapper.fold_panel {
