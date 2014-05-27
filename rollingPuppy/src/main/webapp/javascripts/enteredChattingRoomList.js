@@ -58,4 +58,4 @@ function getResultXml(event){
 	oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
 }
 
-window.onload = initialize;
+//window.onload = initialize;

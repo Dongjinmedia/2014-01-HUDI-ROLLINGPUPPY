@@ -53,22 +53,39 @@ function removeClassName(node, strClassName) {
  * 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
-var Panel = {
+var panel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
-	elContainer: document.getElementById("container"),
-	elPanel: null,
+	eContainer: document.getElementById("container"),
+	ePanel: null,
 	
-	// panel 관련 이벤트 등록 함수.
+	//nav_list 관련 기능들을 모아둔 변수
+	eNavList: document.getElementById("nav_list"),
+	// 마지막 클릭된 nav_list 메뉴와 해당하는 panel_contents를 기억해둡니다.
+	// 기본값은 search로 되어 있습니다.
+	eLatestClickedMenu: document.querySelector("#nav_list>.on"),
+	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
+	eSearchMenu: document.querySelector("#nav_list>.search"),
+	eChattingMenu: document.querySelector("#nav_list>.chatting"),
+	
+	// panel및 nav 관련 이벤트 등록 함수.
 	addEvents: function() {
-		var elPanelButtons = this.elPanel.querySelector("#panel_buttons");
+		var ePanelButtons = this.ePanel.querySelector("#panel_buttons");
 		
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
-		elPanelButtons.addEventListener(
+		ePanelButtons.addEventListener(
 				"click",
 				this.fnPanelButtonsHandler.bind(this)
 		);
+		
+		//ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
+		this.eNavList.addEventListener(
+				"click",
+				this.fnNavButtonHandler.bind(this)
+		);
+		
+		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
-		var eSearchPanelContents = this.elPanel.querySelector("#pc_search");
+		var eSearchPanelContents = this.ePanel.querySelector("#pc_search");
 		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
 	},
 	
@@ -91,13 +108,32 @@ var Panel = {
 		// boolFold == true 면 fold_panel 실행
 		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
-			removeClassName(this.elContainer, "unfold_panel");
-			addClassName(this.elContainer, "fold_panel");
+			removeClassName(this.eContainer, "unfold_panel");
+			addClassName(this.eContainer, "fold_panel");
 		} else {
-			removeClassName(this.elContainer, "fold_panel");
-			addClassName(this.elContainer, "unfold_panel");
+			removeClassName(this.eContainer, "fold_panel");
+			addClassName(this.eContainer, "unfold_panel");
 		}
 	},
+	
+	fnNavButtonHandler: function(event) {
+		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
+		if (event.target.tagName.toLowerCase() != "a") {
+			return ;
+		}
+		event.preventDefault();
+		
+		this.unFoldByMenuElement(event.target);
+	},
+	
+	clickSearchMenu() {
+		this.unFoldByMenuElement(this.eSearchMenu);
+	},
+	
+	clickChattingMenu() {
+		this.unFoldByMenuElement(this.eChattingMenu);
+	},
+	
 	
 	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
 	searchResultSelectHandler: function(event){
@@ -120,52 +156,26 @@ var Panel = {
 		}
 	},
 
-	initialize: function(){
-		this.elPanel = document.getElementById("panel");	
-		this.addEvents();
-	}
-}
-
-
-// main.jsp의 nav_list 관련 기능들을 모아둔 객체
-var NavList = {
-	elNavList: document.getElementById("nav_list"),
-	// 마지막 클릭된 nav_list 메뉴와 해당하는 panel_contents를 기억해둡니다.
-	// 기본값은 search로 되어 있습니다.
-	elLatestClickedMenu: document.querySelector("#nav_list>.on"),
-	elLatestPanelContents: document.querySelector("#panel_contents>.on"),
-	
-	// 이벤트 등록 함수. ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
-	addEvents: function() {
-		this.elNavList.addEventListener(
-				"click",
-				this.fnNavButtonHandler.bind(this)
-		);
-	},
-	
-	fnNavButtonHandler: function(event) {
-		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
-		if (event.target.tagName.toLowerCase() != "a") {
-			return ;
-		}
-		event.preventDefault();
-		
-		
+	unFoldByMenuElement: function(menuElement) {
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
-		if (this.elLatestClickedMenu) {
-			removeClassName(this.elLatestClickedMenu, "on");
-			removeClassName(this.elLatestPanelContents, "on");
+		if (this.eLatestClickedMenu) {
+			removeClassName(this.eLatestClickedMenu, "on");
+			removeClassName(this.eLatestPanelContents, "on");
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
-		this.elLatestClickedMenu = event.target.parentNode;
-		this.elLatestPanelContents = document.getElementById("pc_" + event.target.className);
+		this.eLatestClickedMenu = menuElement.parentNode;
+		this.eLatestPanelContents = document.getElementById("pc_" + menuElement.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
-		addClassName(this.elLatestClickedMenu, "on");
-		addClassName(this.elLatestPanelContents, "on");
-	}
+		addClassName(this.eLatestClickedMenu, "on");
+		addClassName(this.eLatestPanelContents, "on");
+	},
 	
+	initialize: function(){
+		this.ePanel = document.getElementById("panel");	
+		this.addEvents();
+	}
 }
 
 /*********************************************************************************************************
@@ -877,6 +887,61 @@ var oChat = {
 			}
 		},
 		
+		updateChattingPanelList: function(){
+			
+			var incompleteUrl = "/panel/enteredChattingRoomList?userAction=";
+			var queryKeyword = "selectChattingRoomListPanel"; 
+			
+			var callback = function(request){
+				
+				var aResult = JSON.parse(request.responseText);
+				console.log(aResult);
+
+				if(aResult.length === 0){
+					var eDefaultTemplate = document.getElementById("template").querySelector(".default");			
+					var eTarget = document.getElementById("pc_chatting").querySelector("ul");
+
+					//이미 존재하는 채팅방 목록이 있면 지운다.
+					while (eTarget.firstChild) {
+						eTarget.removeChild(eTarget.firstChild);
+					}
+					
+					var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+					eCopiedDefaultTemplate.querySelector(".comment").innerText = "채팅 중인 채팅방이 없습니다.";
+					//template을 원하는 위치에 삽입
+					eTarget.appendChild(eCopiedDefaultTemplate);
+					
+				} else {
+					
+					//template element가져오기
+					var eTemplate = document.getElementById("template").querySelector(".chatRoom");			
+					//aResult를 for문을 돌며 template element를 복사한 변수를 가져와서 데이터 삽입 
+					var eTarget = document.getElementById("pc_chatting").querySelector("ul");
+					
+					//이미 존재하는 채팅방 목록이 있면 지운다.
+					while (eTarget.firstChild) {
+						eTarget.removeChild(eTarget.firstChild);
+					}
+					
+					for( var i = 0 ; i < aResult.length ; ++i){
+						var eCopiedTemplate = eTemplate.cloneNode(true);
+						var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
+						var eChattingRoomMax = eCopiedTemplate.querySelector(".limit");
+						var eChattingRoomAddress = eCopiedTemplate.querySelector(".address");
+						
+						eChattingRoomTitle.innerHTML = aResult[i]["chatRoomTitle"]; 
+						eChattingRoomMax.innerText = aResult[i]["max"]; 
+						eChattingRoomAddress.innerText = aResult[i]["locationName"];
+
+						//template을 원하는 위치에 삽입
+						eTarget.appendChild(eCopiedTemplate);
+					}
+				}
+			};
+			
+			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+		},
+		
 		initialize: function() {
 			this.socket = io.connect('http://127.0.0.1:3080');
 			
@@ -959,6 +1024,8 @@ var oChat = {
 			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
 			this.connectSocketWithEnteredChattingRoom();
 			
+			//채팅패널의 Contents에 리스트를 업데이트한다.
+			this.updateChattingPanelList();
 		}
 };
 /*********************************************************************************************************
@@ -1372,8 +1439,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	Panel.initialize();
-	NavList.addEvents();	
+	panel.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
