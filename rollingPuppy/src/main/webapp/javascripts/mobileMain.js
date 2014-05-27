@@ -6,7 +6,7 @@ var oPanel ={
 		console.log("addEvents");
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		this.ePanelButtons.addEventListener(
-			"click",
+			"touchend",
 			this.panelButtonsHandler.bind(this)
 		);
 		
