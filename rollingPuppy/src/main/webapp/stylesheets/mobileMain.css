@@ -230,15 +230,15 @@ panelWrapper.foldPanel {
 }
 
 @keyframes fold {
-	from { transform:translateY(100%); }
+	from { transform: translateY(100%); }
 	to { transform: translateY(0px); }
 }
 @-webkit-keyframes fold {
-	from { -webkit-transform:translateY(100%); }
+	from { -webkit-transform: translateY(100%); }
 	to { -webkit-transform: translateY(0px); }
 }
 @-moz-keyframes fold {
-	from { -moz-transform:translateY(100%); }
+	from { -moz-transform: translateY(100%); }
 	to { -moz-transform: translateY(0px); }
 }
 
@@ -259,15 +259,15 @@ panelWrapper.unfoldPanel {
 	-moz-animation-fill-mode: forwards;
 }
 @keyframes unfold {
-	from { transform:translateY(0px); }
+	from { transform: translateY(0px); }
 	to { transform: translateY(100%); }
 }
 @-webkit-keyframes unfold {
-	from { -webkit-transform:translateY(0px); }
+	from { -webkit-transform: translateY(0px); }
 	to { -webkit-transform: translateY(100%); }
 }
 @-moz-keyframes unfold {
-	from { -moz-transform:translateY(0px); }
+	from { -moz-transform: translateY(0px); }
 	to { -moz-transform: translateY(100%); }
 }
 
