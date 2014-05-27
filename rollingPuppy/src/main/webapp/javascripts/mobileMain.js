@@ -4,8 +4,9 @@ var oPanel ={
 	
 	addEvents: function() {
 		console.log("addEvents");
-		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 
+		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
+		// window에 orientation 속성이 있다면 모바일기기로 판단한다.
 		if (typeof window.orientation !== "undefined") {
 			this.ePanelButtons.addEventListener(
 					"touchend",
@@ -17,6 +18,37 @@ var oPanel ={
 					this.panelButtonsHandler.bind(this)
 			);
 		}
+		
+		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
+		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
+		//    Chrome, Safari를 위한 webkitAnimationEnd
+		//    IE를 위한 animationend
+		//	  FireFox를 위한 mozAnimationEnd
+		//    ** 브라우저 별 Custom tag 지원상황이 달라 정상동작함을 확인하지 못했습니다.
+		// TODO Custom tag를 div + id / class 형태로 변경하기
+		if (typeof document.documentElement.webkitMatchesSelector === "function") {
+			this.ePanelWrapper.addEventListener(
+					"webkitAnimationEnd",
+					this.animationEndHandler.bind(this)
+			);
+		}
+		else if (typeof document.documentElement.msMatchesSelector === "function") {
+			this.ePanelWrapper.addEventListener(
+					"animationend",
+					this.animationEndHandler.bind(this)
+			);
+		}
+		else if (typeof document.documentElement.mozMatchesSelector === "function") {
+			this.ePanelWrapper.addEventListener(
+					"mozAnimationEnd",
+					this.animationEndHandler.bind(this)
+			);
+		}
+		else {
+			console.log("도대체 어떤 브라우저를 쓰시길래....");
+			return ;
+		}
+		
 		
 		/* 윤성작업중 시작 */
 		// panel영역에 대한 flicking이벤트 연결
@@ -66,6 +98,8 @@ var oPanel ={
 		node.className = node.className.replace(" " + strClassName, "").toString();
 	},
 
+	// paenlButton에 click 혹은 touch 이벤트가 발생하면 실행되는 콜백함수 입니다.
+	// panelWrapper의 className를 변경하여 animation 효과를 발생시킵니다.
 	panelButtonsHandler : function(event) {
 		if (event.target.tagName.toLowerCase() !== "div") {
 			return;
@@ -80,11 +114,25 @@ var oPanel ={
 		}
 
 		if (boolFold) {
-			this.removeClassName(this.ePanelWrapper, "unfold_panel");
-			this.addClassName(this.ePanelWrapper, "fold_panel");
+			this.removeClassName(this.ePanelWrapper, "unfoldedPanel");
+			this.addClassName(this.ePanelWrapper, "foldPanel");
 		} else {
-			this.removeClassName(this.ePanelWrapper, "fold_panel");
-			this.addClassName(this.ePanelWrapper, "unfold_panel");
+			this.removeClassName(this.ePanelWrapper, "foldedPanel");
+			this.addClassName(this.ePanelWrapper, "unfoldPanel");
+		}
+	},
+	
+	animationEndHandler: function(event) {
+		if (this.ePanelWrapper.className === "unfoldPanel") {
+			this.removeClassName(this.ePanelWrapper, "unfoldPanel");
+			this.addClassName(this.ePanelWrapper, "unfoldedPanel");
+		}
+		else if (this.ePanelWrapper.className === "foldPanel") {
+			this.removeClassName(this.ePanelWrapper, "foldPanel");
+			this.addClassName(this.ePanelWrapper, "foldedPanel");
+		}
+		else {
+			return ;
 		}
 	},
 	
