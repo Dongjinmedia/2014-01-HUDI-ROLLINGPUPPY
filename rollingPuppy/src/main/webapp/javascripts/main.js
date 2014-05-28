@@ -171,7 +171,7 @@ var oAside= {
 	
 	unFoldByMenuElement: function(menuElement) {
 		
-		console.log(menuElement);
+		//console.log(menuElement);
 		
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
@@ -1382,9 +1382,10 @@ oSearching = {
 		eSubmit: null,
 		eSearchBox: null,
 		getResultXml: function() {
-			var queryKeyword = document.getElementById("search_box").children[0].value; 
-			var incompleteUrl = "/search?searchKeyword=";
-			
+			var oParameters = {
+				"queryKeyword" : document.getElementById("search_box").children[0].value	
+			};
+			var url = "/search"
 			var callback = function(request){
 				
 				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
@@ -1417,12 +1418,11 @@ oSearching = {
 						//template을 원하는 위치에 삽입
 						eTarget.appendChild(eCopiedTemplate);
 					}
-					
 					//검색결과 Panel을 열어준다.
 					oAside.clickSearchMenu();
 				}
 			};
-			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
 		},
 		startSearch: function(event){
 			if(event.keyCode == 13) {
