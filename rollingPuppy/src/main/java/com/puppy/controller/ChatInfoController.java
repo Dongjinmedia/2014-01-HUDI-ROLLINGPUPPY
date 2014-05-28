@@ -3,6 +3,7 @@ package com.puppy.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +16,8 @@ import com.google.gson.Gson;
 import com.puppy.dao.impl.MyChatInfoDaoImpl;
 import com.puppy.dto.MyChatInfo;
 import com.puppy.util.Constants;
+import com.puppy.util.JsonChatInfo;
+import com.puppy.util.Util;
 
 public class ChatInfoController implements Controller {
 
@@ -28,7 +31,8 @@ public class ChatInfoController implements Controller {
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
-		List<MyChatInfo> lists = null;
+		Map<String, JsonChatInfo> returnData = null;
+		
 		int userId = 0;
 		
 		try {
@@ -36,14 +40,18 @@ public class ChatInfoController implements Controller {
 
 			if ( userId != 0 ) {
 				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
-				lists = myChatInfoDaoImpl.selectMyChatInfo(userId);
+				List<MyChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
+				
+				//List<Member> memberList = myChatInfoDaoImpl.selectParticipantFromChatRoomId(); 
+				
+				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);
 			}
 		} catch (Exception e ) {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);
 		}
 		
-		out.println(gson.toJson(lists));
-		logger.info(gson.toJson(lists));
+		out.println(gson.toJson(returnData));
+		logger.info(gson.toJson(returnData));
 	}
 
 	@Override

@@ -4,11 +4,14 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Part;
 
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.MyChatInfo;
 
 public class Util {
 	/*
@@ -122,6 +125,25 @@ public class Util {
 		return returnList;
 	}
 
+	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfo) {
+		
+		Map<String, JsonChatInfo> resultMap = new HashMap<String, JsonChatInfo>(); 
+		
+		for (MyChatInfo chatRoom : myChatInfo) {
+			resultMap.put(
+									"" + chatRoom.getChatRoomId(), 
+									new JsonChatInfo(
+																	chatRoom.getChatRoomTitle(), 
+																	chatRoom.getLocationName(), 
+																	chatRoom.getMax(), 
+																	chatRoom.getUnreadMessageNum()
+																)
+									);
+		}
+		
+		return resultMap;
+	}
+	
 	public static String getUnderBarlConventionString(String carmelValue) {
 		
 		StringBuilder sb = new StringBuilder();

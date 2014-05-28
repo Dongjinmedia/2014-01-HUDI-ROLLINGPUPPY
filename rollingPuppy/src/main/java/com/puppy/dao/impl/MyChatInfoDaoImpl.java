@@ -38,7 +38,6 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 //					+ "WHERE crm.tbl_member_id = ?";
 			
 			String query = "SELECT "
-											+ "crm.tbl_member_id AS user_id, "
 											+ "crm.tbl_chat_room_id AS chat_room_id, "
 											+ "cr.title AS chat_room_title, "
 											+ "cr.max AS max, cr.location_name AS location_name, "
@@ -46,7 +45,13 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 											+ "(SELECT "
 													+ "COUNT(id) "
 											+ "FROM tbl_message "
-											+ "WHERE created_time > crm.fold_time) AS unread_message "
+											+ "WHERE created_time > crm.fold_time) AS unread_message_num "
+											+ "(SELECT "
+													+ "GROUP_CONCAT(t_member.id) "
+											+ "FROM tbl_member as t_member "
+											+ "INNER JOIN tbl_chat_room_has_tbl_member AS crm2 "
+											+ "ON t_member.id = crm2.tbl_member_id "
+											+ "WHERE crm.tbl_chat_room_id = crm2.tbl_chat_room_id) AS participantList "
 									+ "FROM tbl_chat_room_has_tbl_member AS crm "
 									+ "INNER JOIN tbl_chat_room AS cr "
 									+ "ON crm.tbl_chat_room_id = cr.id "

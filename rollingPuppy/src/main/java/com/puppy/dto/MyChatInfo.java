@@ -3,19 +3,13 @@ package com.puppy.dto;
 
 public class MyChatInfo {
 	
-	private int userId;
 	private int chatRoomId;
 	private String chatRoomTitle;
 	private int max;
 	private String locationName;
 	private int unreadMessageNum;
+	private String participantList;
 	
-	public int getUserId() {
-		return userId;
-	}
-	public void setUserId(int userId) {
-		this.userId = userId;
-	}
 	public int getChatRoomId() {
 		return chatRoomId;
 	}
@@ -45,6 +39,12 @@ public class MyChatInfo {
 	}
 	public void setUnreadMessageNum(int unreadMessageNum) {
 		this.unreadMessageNum = unreadMessageNum;
+	}
+	public String getParticipantList() {
+		return participantList;
+	}
+	public void setParticipantList(String participantList) {
+		this.participantList = participantList;
 	}
 	
 }
