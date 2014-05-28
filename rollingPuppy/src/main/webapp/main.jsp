@@ -42,8 +42,11 @@
 				<p class="title">우리집</p>
 				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
 			</li>
-			<li class="person chatMember"><img src="/images/person_icon.png"></img>
-				<p class="personName"></p></li>
+			<li class="person chatMember">
+				<img class="profile" src="/images/person_icon.png"/>
+				<p class="nickname adjective">날아라</p>
+				<p class="nickname noun">윤성</p>
+			</li>
 		</ul>
 	</div>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
