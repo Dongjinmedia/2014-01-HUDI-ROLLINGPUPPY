@@ -7,6 +7,7 @@ var oPanel ={
 
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		// window에 orientation 속성이 있다면 모바일기기로 판단한다.
+		// TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것!
 		if (typeof window.orientation !== "undefined") {
 			this.ePanelButtons.addEventListener(
 					"touchend",
@@ -24,28 +25,18 @@ var oPanel ={
 		//    Chrome, Safari를 위한 webkitAnimationEnd
 		//    IE를 위한 animationend
 		//	  FireFox를 위한 mozAnimationEnd
-		//    ** 브라우저 별 Custom tag 지원상황이 달라 정상동작함을 확인하지 못했습니다.
-		//       (FireFox, IE에서 스타일시트 적용이 되지 않음)
-		// TODO Custom tag를 div + id / class 형태로 변경하기
-		if (typeof document.documentElement.webkitMatchesSelector === "function") {
+		if (typeof document.body.style.webkitTransition !== "undefined") {
 			this.ePanelWrapper.addEventListener(
 					"webkitAnimationEnd",
 					this.animationEndHandler.bind(this)
 			);
-		}
-		else if (typeof document.documentElement.msMatchesSelector === "function") {
+		} else if (typeof document.body.style.msTransition !== "undefined"
+				|| typeof document.body.style.MozTransition !== "undefined") {
 			this.ePanelWrapper.addEventListener(
 					"animationend",
 					this.animationEndHandler.bind(this)
 			);
-		}
-		else if (typeof document.documentElement.mozMatchesSelector === "function") {
-			this.ePanelWrapper.addEventListener(
-					"MozAnimationEnd",
-					this.animationEndHandler.bind(this)
-			);
-		}
-		else {
+		} else {
 			console.log("도대체 어떤 브라우저를 쓰시길래....");
 			return ;
 		}
@@ -102,7 +93,8 @@ var oPanel ={
 	// paenlButton에 click 혹은 touch 이벤트가 발생하면 실행되는 콜백함수 입니다.
 	// panelWrapper의 className를 변경하여 animation 효과를 발생시킵니다.
 	panelButtonsHandler : function(event) {
-		if (event.target.tagName.toLowerCase() !== "div") {
+		var rePanelButtons = /panel/g;
+		if (rePanelButtons.test(event.target.className) !== true) {
 			return;
 		}
 		
