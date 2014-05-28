@@ -66,7 +66,16 @@ var oAside= {
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
 	eSearchMenu: document.querySelector("#nav_list .search"),
 	eChattingMenu: document.querySelector("#nav_list .chatting"),
+	eRecommendMenu: document.querySelector("#nav_list .recommendation"),
+	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
+	eSettingMenu: document.querySelector("#nav_list .settings"),
+	
 	eChattingNotification: document.querySelector("#nav_list .notification"),
+	
+	commingSoon: function(event) {
+		event.preventDefault();
+		alert("Comming Soon~\n준비중인 메뉴입니다.^^");
+	},
 	
 	// panel및 nav 관련 이벤트 등록 함수.
 	addEvents: function() {
@@ -81,6 +90,9 @@ var oAside= {
 		//Navigation영역의 버튼에 이벤트를 할당한다.
 		this.eSearchMenu.addEventListener("click", this.clickSearchMenu.bind(this));
 		this.eChattingMenu.addEventListener("click", this.clickChattingMenu.bind(this));
+		this.eRecommendMenu.addEventListener("click", this.commingSoon.bind(this));
+		this.eBookmarkMenu.addEventListener("click", this.commingSoon.bind(this));
+		this.eSettingMenu.addEventListener("click", this.commingSoon.bind(this));
 		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
 		var eSearchPanelContents = this.ePanel.querySelector("#pc_search");
@@ -908,8 +920,8 @@ var oChat = {
 			var oTarget = this.oInfo[chatRoomNum];
 			
 			this.eChatWindowTitle.innerText = oTarget["title"];
-			this.eChatWindowAddress = oTarget["locationName"];
-			this.eChatWindowParticipant = oTarget["participantNum"] + " / " + oTarget["max"];
+			this.eChatWindowAddress.innerText = oTarget["locationName"];
+			this.eChatWindowParticipant.innerText = oTarget["participantNum"] + " / " + oTarget["max"];
 		},
 		
 		//패널의 채팅리스트에 존재하는 채팅방의 Notification VIew를 업데이트한다.
