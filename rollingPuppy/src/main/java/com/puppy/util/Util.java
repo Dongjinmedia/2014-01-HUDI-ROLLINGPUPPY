@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -127,8 +128,10 @@ public class Util {
 
 	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfo) {
 		
+		//리턴데이터를 담는 그릇
 		Map<String, JsonChatInfo> resultMap = new HashMap<String, JsonChatInfo>(); 
 		
+		//for문을 돌면서 원하는 형태로 데이터를 담는다.
 		for (MyChatInfo chatRoom : myChatInfo) {
 			resultMap.put(
 									"" + chatRoom.getChatRoomId(), 
@@ -164,5 +167,20 @@ public class Util {
 	
 	private static boolean isUpperCase(char ch) {
 	    return ch >= 'A' && ch <= 'Z';
+	}
+
+	public static Map<String, List<String>> getParticipantListFromChatInfoList(List<MyChatInfo> chatInfoList) {
+		
+		Map<String, List<String>> resultMap = new HashMap<String, List<String>>();
+		
+		for (MyChatInfo myChatInfo : chatInfoList) {
+			resultMap.put("" + myChatInfo.getChatRoomId(), getListFromString(myChatInfo.getParticipantList()));
+		}
+		
+		return resultMap;
+	}
+
+	private static List<String> getListFromString(String participantList) {
+		return new ArrayList<String>(Arrays.asList(participantList.split(",")));
 	}
 }
