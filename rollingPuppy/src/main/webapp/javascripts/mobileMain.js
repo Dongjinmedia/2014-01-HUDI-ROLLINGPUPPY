@@ -25,6 +25,7 @@ var oPanel ={
 		//    IE를 위한 animationend
 		//	  FireFox를 위한 mozAnimationEnd
 		//    ** 브라우저 별 Custom tag 지원상황이 달라 정상동작함을 확인하지 못했습니다.
+		//       (FireFox, IE에서 스타일시트 적용이 되지 않음)
 		// TODO Custom tag를 div + id / class 형태로 변경하기
 		if (typeof document.documentElement.webkitMatchesSelector === "function") {
 			this.ePanelWrapper.addEventListener(

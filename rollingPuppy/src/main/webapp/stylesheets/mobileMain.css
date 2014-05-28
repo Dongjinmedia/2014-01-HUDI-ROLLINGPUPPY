@@ -189,8 +189,9 @@ section sectionContents {
 	position: absolute;
 	top: 10px;
 	right: 10px;
-	bottom: 40px;
+	bottom: 35px;
 	left: 10px;
+	overflow: scroll;
 }
 
 section h1 {
