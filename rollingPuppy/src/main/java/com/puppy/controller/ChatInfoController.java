@@ -41,7 +41,9 @@ public class ChatInfoController implements Controller {
 			if ( userId != 0 ) {
 				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
 				List<MyChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
-				
+				for (MyChatInfo myChatInfo : chatInfoList) {
+					System.out.println("HERE~!~!~!~!~!~!~!~!" + myChatInfo.getParticipantList());
+				}
 				//List<Member> memberList = myChatInfoDaoImpl.selectParticipantFromChatRoomId(); 
 				
 				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);

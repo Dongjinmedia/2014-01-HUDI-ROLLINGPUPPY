@@ -7,7 +7,7 @@ public class MyChatInfo {
 	private String chatRoomTitle;
 	private int max;
 	private String locationName;
-	private int unreadMessageNum;
+	private long unreadMessageNum;
 	private String participantList;
 	
 	public int getChatRoomId() {
@@ -34,17 +34,17 @@ public class MyChatInfo {
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
 	}
-	public int getUnreadMessageNum() {
+	public long getUnreadMessageNum() {
 		return unreadMessageNum;
 	}
-	public void setUnreadMessageNum(int unreadMessageNum) {
+	public void setUnreadMessageNum(long unreadMessageNum) {
 		this.unreadMessageNum = unreadMessageNum;
 	}
 	public String getParticipantList() {
+		
 		return participantList;
 	}
 	public void setParticipantList(String participantList) {
 		this.participantList = participantList;
 	}
-	
 }

@@ -927,8 +927,7 @@ var oChat = {
 		
 		updateChattingPanelList: function(){
 			
-			var incompleteUrl = "/panel/enteredChattingRoomList?userAction=";
-			var queryKeyword = "selectChattingRoomListPanel"; 
+			var incompleteUrl = "/chatInfo/getMyChatInfo";
 			
 			var callback = function(request){
 				
@@ -977,7 +976,7 @@ var oChat = {
 				}
 			};
 			
-			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+			oAjax.getObjectFromJsonGetRequest(incompleteUrl, "", callback);
 		},
 		
 		initialize: function() {

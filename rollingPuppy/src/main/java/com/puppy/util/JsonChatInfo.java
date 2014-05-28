@@ -5,11 +5,11 @@ public class JsonChatInfo {
 	private String title;
 	private String locationName;
 	private int max;
-	private int unreadMessageNum;
+	private long unreadMessageNum;
 	
 	//private Map<String, JsonParticipant> oParticipant;
 	
-	public JsonChatInfo(String title, String locationName, int max, int unreadMessageNum) {
+	public JsonChatInfo(String title, String locationName, int max, long unreadMessageNum) {
 		this.title = title;
 		this.locationName = locationName;
 		this.max = max;
@@ -40,13 +40,11 @@ public class JsonChatInfo {
 		this.max = max;
 	}
 
-	public int getUnreadMessageNum() {
+	public long getUnreadMessageNum() {
 		return unreadMessageNum;
 	}
 
-	public void setUnreadMessageNum(int unreadMessageNum) {
+	public void setUnreadMessageNum(long unreadMessageNum) {
 		this.unreadMessageNum = unreadMessageNum;
 	}
-	
-	
 }
