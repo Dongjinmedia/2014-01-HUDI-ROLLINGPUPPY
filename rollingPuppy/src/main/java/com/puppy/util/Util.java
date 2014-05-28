@@ -11,10 +11,17 @@ import java.util.Map;
 
 import javax.servlet.http.Part;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.puppy.controller.ChatInfoController;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.MyChatInfo;
 
 public class Util {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Util.class);
+	
 	/*
 	 * getParameterValue From Javascript FormData
 	 * 바이너리데이터를 String데이터로 가져오기 위한 함수
@@ -182,5 +189,19 @@ public class Util {
 
 	private static List<String> getListFromString(String participantList) {
 		return new ArrayList<String>(Arrays.asList(participantList.split(",")));
+	}
+
+	public static String getTotalStringList(List<MyChatInfo> chatInfoList) {
+		
+		String returnString = "";
+		
+		for (MyChatInfo myChatInfo : chatInfoList) {
+			returnString += myChatInfo.getParticipantList() + ",";
+		}
+		
+		returnString =returnString.substring(0, returnString.length()-1);
+		
+		logger.info("resultString : "+returnString);
+		return returnString;
 	}
 }

@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 
 import com.puppy.dao.DAO;
 import com.puppy.dao.MyChatInfoDao;
+import com.puppy.dto.Member;
 import com.puppy.dto.MyChatInfo;
 
 public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
@@ -55,6 +56,23 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 			preparedStatement.setInt(1, userId);
 			
 			lists = selectList(MyChatInfo.class, preparedStatement);
+			
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		
+		return lists;
+	}
+
+	@Override
+	public List<Member> selectAllParticipantFromChatRoomId(String totalListString) {
+		PreparedStatement preparedStatement = null;
+		List<Member> lists = null;
+		
+		try {
+			String query = "SELECT nickname_adjective, nickname_noun FROM tbl_member WHERE id in ("+totalListString+")";
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			lists = selectList(Member.class, preparedStatement);
 			
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);
