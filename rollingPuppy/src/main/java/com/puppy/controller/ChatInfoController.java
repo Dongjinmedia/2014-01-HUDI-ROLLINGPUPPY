@@ -14,7 +14,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.puppy.dao.impl.MyChatInfoDaoImpl;
-import com.puppy.dto.Member;
 import com.puppy.dto.MyChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
@@ -43,26 +42,14 @@ public class ChatInfoController implements Controller {
 				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
 				List<MyChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
 
-				//myChatInfo로부터 참여자 정보 가져오기
-				Map<String, List<String>> participantsArrayList = Util.getParticipantListFromChatInfoList(chatInfoList);
-				
-				//참여자 정보에 해당하는 닉네임 등의 채팅에 필요한 정보 가져오기
-				String totalListString = Util.getTotalStringList(chatInfoList);
-				List<Member> memberList = myChatInfoDaoImpl.selectAllParticipantFromChatRoomId(totalListString); 
-				
-				for (Member member : memberList) {
-					logger.info("member nickname : "+member.getNicknameAdjective() +" "+member.getNicknameNoun());
-				}
-				
-				
 				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);
 			}
 		} catch (Exception e ) {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);
 		}
 		
-		out.println(gson.toJson(returnData));
 		logger.info(gson.toJson(returnData));
+		out.println(gson.toJson(returnData));
 	}
 
 	@Override

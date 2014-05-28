@@ -14,8 +14,9 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.puppy.controller.ChatInfoController;
+import com.puppy.dao.impl.MyChatInfoDaoImpl;
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.Member;
 import com.puppy.dto.MyChatInfo;
 
 public class Util {
@@ -133,20 +134,85 @@ public class Util {
 		return returnList;
 	}
 
-	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfo) {
+	
+	/*
+	 * 다음과 같은 데이터형태를 만들기 위한 함수이다.
+	 * 
+	 * //oInfo는 다음과 같은 형태이다.
+	 *  {
+	 *		"채팅방번호": {
+	 *			title: "",
+	 *			locationName: "", 
+	 *			max: "",
+	 *			unreadMessageNum: "", 
+	 *			oPaticipant: {
+	 *				"회원아이디": 
+	 *				{
+	 *					nickname: "",
+	 *					TODO 추가데이터
+	 *				}
+	 *			}
+	 *		}
+	 *	} 
+	 */
+	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfoList) {
+		
+		MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance(); 
+		
+		//전체 참여자아이디가 구분자,를 기준으로 구성된 
+		//String Value를 리턴한다.
+		//ex) "1,2,3,4,5"...
+		String totalListString = Util.getTotalStringList(myChatInfoList);
+		
+		//totalListString을 통해서 member데이터를 검색해온다.
+		List<Member> memberList = myChatInfoDaoImpl.selectAllParticipantData(totalListString);
+		
+		//쿼리결과로 가져오는 memberList를 손쉽게 활용하기 위해
+		//List를 "회원아이디: Member클래스"로 만들어주는 Util클래스를 호출한다.
+		//[Member, Member, Member, Member ...] -> { "아이디1": Member, "아이디2": Member, "아이디3": Member, "아이디4": Member...}
+		Map<Integer, Member> memberTotalDataFromQuery = Util.getKeyValueMemberListFromQueryResult(memberList); 
+		
+		//myChatInfo로부터 (key: 채팅방번호, value: 채팅방에 참여하고있는 참여자 아이디리스트 )를 가져온다.
+		Map<Integer, List<String>> participantsTotalData = Util.getParticipantListFromChatInfoList(myChatInfoList);
 		
 		//리턴데이터를 담는 그릇
 		Map<String, JsonChatInfo> resultMap = new HashMap<String, JsonChatInfo>(); 
 		
-		//for문을 돌면서 원하는 형태로 데이터를 담는다.
-		for (MyChatInfo chatRoom : myChatInfo) {
+		/*
+		 * for문을 돌면서 원하는 형태로 데이터를 담는다.
+		 * 
+		 */
+		for (MyChatInfo chatRoom : myChatInfoList) {
+			
+			//chatRoomId를 가져온다.
+			int chatRoomId = chatRoom.getChatRoomId();
+			
+			//채팅방 번호에 해당하는 참여자리스트를 가져온다.
+			List<String> targetParticipantList =  participantsTotalData.get(chatRoomId);
+			
+			//참여자리스트를 JsonParticipant형태로 만든다.
+			//{"회원아이디1" : JsonParticipant, "회원아이디2" : JsonParticipant, "회원아이디3" : JsonParticipant...}
+			Map<String, JsonParticipant> insertParticipantData = new HashMap<String, JsonParticipant>();
+
+			for (String targetMemberId : targetParticipantList) {
+				Member targetMember = memberTotalDataFromQuery.get(Integer.parseInt(targetMemberId.toString()));
+				//TODO if null
+				JsonParticipant insertData = new JsonParticipant
+																		(
+																			targetMember.getNicknameAdjective(),
+																			targetMember.getNicknameNoun()
+																		);
+				insertParticipantData.put(targetMemberId, insertData);
+			}
+			
 			resultMap.put(
-									"" + chatRoom.getChatRoomId(), 
+									"" + chatRoomId, 
 									new JsonChatInfo(
 																	chatRoom.getChatRoomTitle(), 
 																	chatRoom.getLocationName(), 
 																	chatRoom.getMax(), 
-																	chatRoom.getUnreadMessageNum()
+																	chatRoom.getUnreadMessageNum(),
+																	insertParticipantData
 																)
 									);
 		}
@@ -176,12 +242,12 @@ public class Util {
 	    return ch >= 'A' && ch <= 'Z';
 	}
 
-	public static Map<String, List<String>> getParticipantListFromChatInfoList(List<MyChatInfo> chatInfoList) {
+	public static Map<Integer, List<String>> getParticipantListFromChatInfoList(List<MyChatInfo> chatInfoList) {
 		
-		Map<String, List<String>> resultMap = new HashMap<String, List<String>>();
+		Map<Integer, List<String>> resultMap = new HashMap<Integer, List<String>>();
 		
 		for (MyChatInfo myChatInfo : chatInfoList) {
-			resultMap.put("" + myChatInfo.getChatRoomId(), getListFromString(myChatInfo.getParticipantList()));
+			resultMap.put(myChatInfo.getChatRoomId(), getListFromString(myChatInfo.getParticipantList()));
 		}
 		
 		return resultMap;
@@ -203,5 +269,17 @@ public class Util {
 		
 		logger.info("resultString : "+returnString);
 		return returnString;
+	}
+
+	public static Map<Integer, Member> getKeyValueMemberListFromQueryResult(List<Member> memberList) {
+		
+		Map<Integer, Member> returnData = new HashMap<Integer, Member>();
+		
+		for (Member member : memberList) {
+			returnData.put(member.getId(), member);
+			logger.info("meber id : "+member.getId());
+		}
+		
+		return returnData;
 	}
 }

@@ -800,13 +800,13 @@ var oChat = {
 				locationName: "", 
 				max: "",
 				unreadMessageNum: "", 
-				oPaticipant: [
+				oParticipant: {
 					"회원아이디": 
 					{
 						nickname: "",
 						TODO 추가데이터
 					}
-				]			
+				}
 			}
 		} 
 	    */

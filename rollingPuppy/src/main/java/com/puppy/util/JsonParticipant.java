@@ -1,13 +1,19 @@
 package com.puppy.util;
 
 public class JsonParticipant {
-	private String nickname;
-
-	public String getNickname() {
-		return nickname;
+	private String nicknameAdjective;
+	private String nicknameNoun;
+	
+	public JsonParticipant(String nicknameAdjective, String nicknameNoun) {
+		this.nicknameAdjective = nicknameAdjective;
+		this.nicknameNoun = nicknameNoun;
 	}
 
-	public void setNickname(String nickname) {
-		this.nickname = nickname;
+	public String getNicknameAdjective() {
+		return nicknameAdjective;
+	}
+
+	public String getNicknameNoun() {
+		return nicknameNoun;
 	}
 }
