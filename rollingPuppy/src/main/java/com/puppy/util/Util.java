@@ -144,6 +144,7 @@ public class Util {
 	 *			title: "",
 	 *			locationName: "", 
 	 *			max: "",
+	 *			participantNum: "",
 	 *			unreadMessageNum: "", 
 	 *			oPaticipant: {
 	 *				"회원아이디": 
@@ -225,6 +226,7 @@ public class Util {
 																	chatRoom.getChatRoomTitle(), 
 																	chatRoom.getLocationName(), 
 																	chatRoom.getMax(), 
+																	targetParticipantList.size(),
 																	chatRoom.getUnreadMessageNum(),
 																	insertParticipantData
 																)

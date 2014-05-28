@@ -60,7 +60,8 @@ public class ChatInfoController implements Controller {
 							title: "",
 							locationName: "", 
 							max: "",
-							unreadMessageNum: "", 
+							unreadMessageNum: "",
+							participantNum: "", 
 							oParticipant: {
 								"회원아이디": 
 								{
