@@ -7,28 +7,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.puppy.dao.DAO;
-import com.puppy.dao.EnteredChatRoomDao;
-import com.puppy.dto.EnteredChatRoom;
+import com.puppy.dao.MyChatInfoDao;
+import com.puppy.dto.MyChatInfo;
 
-public class EnteredChatRoomDaoImpl extends DAO implements EnteredChatRoomDao {
+public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(EnteredChatRoomDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(MyChatInfoDaoImpl.class);
 	
-	private static EnteredChatRoomDaoImpl instance = null;
+	private static MyChatInfoDaoImpl instance = null;
 	
-	private EnteredChatRoomDaoImpl() {
+	private MyChatInfoDaoImpl() {
 	}
 	
-	public static EnteredChatRoomDaoImpl getInstance() {
-		return instance == null ? new EnteredChatRoomDaoImpl() : instance;
+	public static MyChatInfoDaoImpl getInstance() {
+		return instance == null ? new MyChatInfoDaoImpl() : instance;
 	}
 
 	@Override
-	public List<EnteredChatRoom> selectEnteredChatRoomList(int userId) {
+	public List<MyChatInfo> selectMyChatInfo(int userId) {
 logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 		
 		PreparedStatement preparedStatement = null;
-		List<EnteredChatRoom> lists = null;
+		List<MyChatInfo> lists = null;
 		
 		try {
 			String query = "SELECT crm.tbl_member_id AS user_id, crm.tbl_chat_room_id AS chat_room_id, "
@@ -40,7 +40,7 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setInt(1, userId);
 			
-			lists = selectList(EnteredChatRoom.class, preparedStatement);
+			lists = selectList(MyChatInfo.class, preparedStatement);
 			
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);

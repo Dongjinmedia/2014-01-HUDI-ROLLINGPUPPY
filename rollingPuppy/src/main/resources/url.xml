@@ -50,7 +50,7 @@
 	</mapping>
 	
 	<mapping>
-		<url>/panel/enteredChattingRoomList</url>
-		<controller>com.puppy.controller.ChattingRoomListInPanelController</controller>
+		<url>/chat/getMyChatInfo</url>
+		<controller>com.puppy.controller.ChatInfoController</controller>
 	</mapping>
 </mappings>

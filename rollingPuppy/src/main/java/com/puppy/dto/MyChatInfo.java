@@ -1,7 +1,7 @@
 package com.puppy.dto;
 
 
-public class EnteredChatRoom {
+public class MyChatInfo {
 	
 	private int userId;
 	private int chatRoomId;

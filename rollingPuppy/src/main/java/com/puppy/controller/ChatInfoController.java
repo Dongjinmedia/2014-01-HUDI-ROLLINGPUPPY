@@ -12,46 +12,31 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.puppy.dao.impl.EnteredChatRoomDaoImpl;
-import com.puppy.dto.EnteredChatRoom;
+import com.puppy.dao.impl.MyChatInfoDaoImpl;
+import com.puppy.dto.MyChatInfo;
 import com.puppy.util.Constants;
 
-public class ChattingRoomListInPanelController implements Controller {
+public class ChatInfoController implements Controller {
 
-	private static final Logger logger = LoggerFactory.getLogger(ChattingRoomListInPanelController.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChatInfoController.class);
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("indo doGet of ChattingRoomListInPanelController");
-
-		String userAction = request.getParameter("userAction");
-		
-		if( userAction.equals("selectChattingRoomListPanel") ) {
-			getEnteredChattingRoomList(request, response);
-		}
-		
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	}
-	
-	public void getEnteredChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		logger.info("indo doGet of ChatInfoController");
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
-		List<EnteredChatRoom> lists = null;
-		
+		List<MyChatInfo> lists = null;
 		int userId = 0;
 		
 		try {
 			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
 
 			if ( userId != 0 ) {
-				EnteredChatRoomDaoImpl enteredChatRoomDaoImpl = EnteredChatRoomDaoImpl.getInstance();
-				lists = enteredChatRoomDaoImpl.selectEnteredChatRoomList(userId);
+				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
+				lists = myChatInfoDaoImpl.selectMyChatInfo(userId);
 			}
 		} catch (Exception e ) {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);
@@ -60,5 +45,9 @@ public class ChattingRoomListInPanelController implements Controller {
 		out.println(gson.toJson(lists));
 		logger.info(gson.toJson(lists));
 	}
-	
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		
+	}
 }
