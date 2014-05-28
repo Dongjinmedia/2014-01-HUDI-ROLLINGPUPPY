@@ -8,6 +8,7 @@ public class MyChatInfo {
 	private String chatRoomTitle;
 	private int max;
 	private String locationName;
+	private int unreadMessageNum;
 	
 	public int getUserId() {
 		return userId;
@@ -38,6 +39,12 @@ public class MyChatInfo {
 	}
 	public void setLocationName(String locationName) {
 		this.locationName = locationName;
+	}
+	public int getUnreadMessageNum() {
+		return unreadMessageNum;
+	}
+	public void setUnreadMessageNum(int unreadMessageNum) {
+		this.unreadMessageNum = unreadMessageNum;
 	}
 	
 }
