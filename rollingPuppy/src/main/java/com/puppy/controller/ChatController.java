@@ -16,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
-import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
@@ -60,8 +59,6 @@ public class ChatController implements Controller {
 		//현재 GET요청에서는 에러가 발생중이다.
 		} else if ( requestURL.contains("getlist") ) {
 			getChattingRoomList(request, response);
-		} else if (requestURL.contains("getmembers")){
-			getChattingMemberList(request, response);
 		} else if (requestURL.contains("foldcurrentchatroom")){
 			updateChattingRoomFoldTime(request, response);
 		}
@@ -90,33 +87,6 @@ public class ChatController implements Controller {
 		}
 		
 		out.println(result);
-	}
-
-	private void getChattingMemberList(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		logger.info("into getChattingMemberList");
-		
-		String currentChatRoomNumberString = (String)request.getAttribute("currentChatRoomNumber");
-		int currentChatRoomNumber = Integer.parseInt(currentChatRoomNumberString);
-		
-		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
-		List<Member> chatMemberList = chatDao.getChatMemberList(currentChatRoomNumber);
-		
-		
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		
-		/*
-		for (Member member : chatMemberList) {
-			logger.info("===================");
-			logger.info(member.toString());
-		}*/
-		
-		out.println(gson.toJson(chatMemberList));
-		logger.info(gson.toJson(chatMemberList));
-		
-		
 	}
 
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {

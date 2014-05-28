@@ -965,20 +965,6 @@ var oChat = {
 					this.eChattingMemberList.appendChild(eCopiedTemplate);
 				}
 			}
-//			for(var i = 0 ; i < aResponse.length ; ++i){
-//				var eCopiedTemplate = eTemplate.cloneNode(true);
-//				
-//				var nicknameAdjective = aResponse[i]["nicknameAdjective"];
-//				var nicknameNoun = aResponse[i]["nicknameNoun"];
-//				var nicknameFull = nicknameAdjective + " " + nicknameNoun;
-//				
-//				var eNamePlace = eCopiedTemplate.querySelector("p");
-//				eNamePlace.innerText = nicknameFull;	
-//				
-//				eTarget.appendChild(eCopiedTemplate);
-//			}
-			//TODO Controller 삭제
-			//oAjax.getObjectFromJsonPostRequest("/chat/getMembers", oParameters, callBack.bind(this));
 		},
 		
 		//working

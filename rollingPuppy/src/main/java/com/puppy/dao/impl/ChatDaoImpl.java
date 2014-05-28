@@ -1,8 +1,6 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,7 +10,6 @@ import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
-import com.puppy.dto.Member;
 import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
@@ -205,37 +202,6 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		}
 		
 		return markerId;
-	}
-
-	@Override
-	public List<Member> getChatMemberList(int currentChatRoomNumber) {
-		logger.info("ChatDaoImpl getChatMemberList");
-		
-		PreparedStatement preparedStatement = null;
-		List<Member> chatMemberList = new ArrayList<Member>();
-		
-		String query = "SELECT "
-							+ "t_member.id, t_member.nickname_noun, t_member.nickname_adjective "
-					  + "FROM "
-					  		+ "tbl_chat_room_has_tbl_member  AS t_chat_member "
-					 + "INNER JOIN "
-					 		+ "tbl_member AS t_member "
-					 + "ON "
-					 		+ "t_chat_member.tbl_chat_room_id = ? "
-					 + "AND"
-					 		+ " t_chat_member.tbl_member_id = t_member.id"; 
-		
-		try {
-			preparedStatement = ConnectionPool.getPreparedStatement(query);
-			preparedStatement.setInt(1, currentChatRoomNumber);
-		} catch (SQLException e) {
-			logger.error("getChatMemberList Error", e);
-		}
-		
-		chatMemberList = selectList(Member.class, preparedStatement);
-		
-				
-		return chatMemberList;
 	}
 
 	@Override
