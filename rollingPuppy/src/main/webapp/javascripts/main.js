@@ -1164,7 +1164,7 @@ var oCreateChattingRoom = {
 		},
 		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
-			this.eLimitNumberInput.value = "";
+			this.eRoomNameInput.value = "";
 		},
 		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
