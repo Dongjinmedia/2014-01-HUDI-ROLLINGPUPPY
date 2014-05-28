@@ -1144,6 +1144,7 @@ var oCreateChattingRoom = {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			
 			//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
 			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
