@@ -1,6 +1,6 @@
 var oPanel ={
-	ePanelButtons: document.querySelector("panelButtons"),
-	ePanelWrapper: document.querySelector("panelWrapper"),
+	ePanelButtons: document.querySelector("#panel_buttons"),
+	ePanelWrapper: document.querySelector("#panel_wrapper"),
 	
 	addEvents: function() {
 		console.log("addEvents");
@@ -41,7 +41,7 @@ var oPanel ={
 		}
 		else if (typeof document.documentElement.mozMatchesSelector === "function") {
 			this.ePanelWrapper.addEventListener(
-					"mozAnimationEnd",
+					"MozAnimationEnd",
 					this.animationEndHandler.bind(this)
 			);
 		}
@@ -138,10 +138,10 @@ var oPanel ={
 	},
 	
 	/* 윤성작업중 시작 */
-	ePanel: document.querySelector("panel"),
-	eContents: document.querySelector("contents"),
-	aSection: document.querySelectorAll("contents section"),
-	aMenu: document.querySelector("navigation menu").children,
+	ePanel: document.querySelector("#panel"),
+	ePanelContents: document.querySelector("#panel_contents"),
+	aSectionWrapper: document.querySelectorAll(".section_wrapper"),
+	aMenu: document.querySelector("#nav_menu").children,
 	
 	//현재 화면에 보이는 패널의 인덱스번호
 	nCurrentViewPanelIndex: 0,
@@ -180,7 +180,7 @@ var oPanel ={
 			 return false;
 		} else {
 			console.log(nMoveLength);
-			this.eContents.style.webkitTransform = "translate("+nMoveLength+"px)";
+			this.ePanelContents.style.webkitTransform = "translate("+nMoveLength+"px)";
 		}
 	},
 	
@@ -203,10 +203,10 @@ var oPanel ={
 		
 		
 		if (this.nCurrentViewPanelIndex >=0 && this.nCurrentViewPanelIndex <=3 ) {
-			this._setPosition();
+			this.ePanelContents.style.webkitTransform = "translate(0)";
+			this.ePanelContents.style.webkitTransition = null;
 			
-			this.eContents.style.webkitTransform = "translate(0)";
-			this.eContents.style.webkitTransition = null;
+			this._setPosition();
 		} else {
 			this.nCurrentViewPanelIndex = nTempIndex;
 		}
@@ -230,10 +230,10 @@ var oPanel ={
 			nRightEndIndex = 1;
 		}
 			
-		this.aSection[nLeftIndex].style.left = "-100%";
-		this.aSection[nCenterIndex].style.left = "0%";
-		this.aSection[nRightIndex].style.left = "100%";
-		this.aSection[nRightEndIndex].style.left = "200%";
+		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
+		this.aSectionWrapper[nCenterIndex].style.left = "0%";
+		this.aSectionWrapper[nRightIndex].style.left = "100%";
+		this.aSectionWrapper[nRightEndIndex].style.left = "200%";
 	},
 	
 	_changeCurrentMenuMarker: function(nCenterIndex) {
