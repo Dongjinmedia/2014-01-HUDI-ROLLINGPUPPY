@@ -78,16 +78,16 @@ var oAside= {
 				this.fnPanelButtonsHandler.bind(this)
 		);
 		
-		//ul#nav_list 전체에 click 이벤트 걸고 사용합니다.
-		this.eNavList.addEventListener(
-				"click",
-				this.fnNavButtonHandler.bind(this)
-		);
-		
+		//Navigation영역의 버튼에 이벤트를 할당한다.
+		this.eSearchMenu.addEventListener("click", this.clickSearchMenu.bind(this));
+		this.eChattingMenu.addEventListener("click", this.clickChattingMenu.bind(this));
 		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
 		var eSearchPanelContents = this.ePanel.querySelector("#pc_search");
 		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
+		
+		var eChattingPanelContents = this.ePanel.querySelector("#pc_chatting");
+		eChattingPanelContents.addEventListener("click", this.ChattingSelectHandler.bind(this));
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
@@ -146,23 +146,16 @@ var oAside= {
 		addClassName(this.eContainer, "fold_panel");
 	},
 	
-	fnNavButtonHandler: function(event) {
-		// 클릭된 곳이 menu가 아닌 다른 곳일 때(event listener가 ul#nav_list 전체에 할당되어 있어서 예외처리 해야함)
-		if (event.target.tagName.toLowerCase() != "a") {
-			return ;
-		}
-		event.preventDefault();
-		
-		this.unFoldByMenuElement(event.target);
-	},
-	
 	clickSearchMenu: function() {
+		event.preventDefault();
 		this.unFoldByMenuElement(this.eSearchMenu);
 	},
 	
 	clickChattingMenu: function() {
+		event.preventDefault();
 		
-		console.log("eChattingNotification : ", eChattingNotification);
+		//채팅방 Notification을 보이지 않도록 처리
+		this.eChattingNotification.style.display = "none";
 		
 		this.unFoldByMenuElement(this.eChattingMenu);
 	},
@@ -954,6 +947,18 @@ var oChat = {
 			window.oChat.oInfo =  JSON.parse(this.responseText);
 		},
 		
+		updateNotificationView: function(eChattingRoomNotification, oTarget) {
+			
+			var unreadMessageNum = oTarget["unreadMessageNum"];
+			
+			if ( unreadMessageNum === 0 ) {
+				eChattingRoomNotification.style.display = "none";
+	 		} else {
+	 			eChattingRoomNotification.innerText = unreadMessageNum;
+	 			eChattingRoomNotification.style.display = "inline-block";
+	 		}
+		},
+		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
@@ -1000,6 +1005,8 @@ var oChat = {
 							var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
 							var eChattingRoomMax = eCopiedTemplate.querySelector(".limit");
 							var eChattingRoomAddress = eCopiedTemplate.querySelector(".address");
+							var eChattingRoomNotification = eCopiedTemplate.querySelector(".notification");
+							
 //							"채팅방번호": {
 //								title: "",
 //								locationName: "", 
@@ -1020,6 +1027,9 @@ var oChat = {
 							console.log("oParticipant : ", oTarget["oParticipant"]);
 							eChattingRoomMax.innerText = oTarget["participantNum"] +"/"+ oTarget["max"]; 
 							eChattingRoomAddress.innerText = oTarget["locationName"];
+							
+							this.updateNotificationView(eChattingRoomNotification, oTarget);
+							
 							
 							//template을 원하는 위치에 삽입
 							eTarget.appendChild(eCopiedTemplate);
