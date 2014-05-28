@@ -53,7 +53,7 @@ function removeClassName(node, strClassName) {
  * 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
-var panel = {
+var oPanel = {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	eContainer: document.getElementById("container"),
 	ePanel: null,
@@ -64,8 +64,8 @@ var panel = {
 	// 기본값은 search로 되어 있습니다.
 	eLatestClickedMenu: document.querySelector("#nav_list>.on"),
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
-	eSearchMenu: document.querySelector("#nav_list>.search"),
-	eChattingMenu: document.querySelector("#nav_list>.chatting"),
+	eSearchMenu: document.querySelector("#nav_list .search"),
+	eChattingMenu: document.querySelector("#nav_list .chatting"),
 	
 	// panel및 nav 관련 이벤트 등록 함수.
 	addEvents: function() {
@@ -97,7 +97,7 @@ var panel = {
 
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
 		var strButtonClassName = event.target.className;
-
+		console.log("strButtonClassName : ",strButtonClassName );
 		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
 		// 등호가 세 개이면 type check까지 됨 (2개의 경우 "2" == 2 가 true)
@@ -108,12 +108,21 @@ var panel = {
 		// boolFold == true 면 fold_panel 실행
 		// boolFold == false 면 unfold_panel 실행
 		if (boolFold) {
-			removeClassName(this.eContainer, "unfold_panel");
-			addClassName(this.eContainer, "fold_panel");
+			this._foldPanelContents();
 		} else {
-			removeClassName(this.eContainer, "fold_panel");
-			addClassName(this.eContainer, "unfold_panel");
+			this._unFoldPanelContents();
 		}
+	},
+	
+	_unFoldPanelContents: function() {
+		// panel_button에서 발생한 click 이벤트를 받고, 해당
+		this.eContainer.className = "";
+		addClassName(this.eContainer, "unfold_panel");
+	},
+	
+	_foldPanelContents: function() {
+		this.eContainer.className = "";
+		addClassName(this.eContainer, "fold_panel");
 	},
 	
 	fnNavButtonHandler: function(event) {
@@ -126,11 +135,11 @@ var panel = {
 		this.unFoldByMenuElement(event.target);
 	},
 	
-	clickSearchMenu() {
+	clickSearchMenu: function() {
 		this.unFoldByMenuElement(this.eSearchMenu);
 	},
 	
-	clickChattingMenu() {
+	clickChattingMenu: function() {
 		this.unFoldByMenuElement(this.eChattingMenu);
 	},
 	
@@ -155,8 +164,11 @@ var panel = {
 			oNaverMap.oMap.setLevel(13);
 		}
 	},
-
+	
 	unFoldByMenuElement: function(menuElement) {
+		
+		console.log(menuElement);
+		
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.eLatestClickedMenu) {
@@ -170,6 +182,8 @@ var panel = {
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
 		addClassName(this.eLatestClickedMenu, "on");
 		addClassName(this.eLatestPanelContents, "on");
+		
+		this._unFoldPanelContents();
 	},
 	
 	initialize: function(){
@@ -1380,6 +1394,9 @@ oSearching = {
 						//template을 원하는 위치에 삽입
 						eTarget.appendChild(eCopiedTemplate);
 					}
+					
+					//검색결과 Panel을 열어준다.
+					oPanel.clickSearchMenu();
 				}
 			};
 			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
@@ -1439,7 +1456,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	panel.initialize();
+	oPanel.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
