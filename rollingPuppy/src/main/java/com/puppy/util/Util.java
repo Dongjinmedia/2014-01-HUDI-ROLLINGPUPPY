@@ -4,13 +4,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.Part;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.puppy.controller.ChatInfoController;
 import com.puppy.dto.ChatRoom;
+import com.puppy.dto.MyChatInfo;
 
 public class Util {
+	
+	private static final Logger logger = LoggerFactory.getLogger(Util.class);
+	
 	/*
 	 * getParameterValue From Javascript FormData
 	 * 바이너리데이터를 String데이터로 가져오기 위한 함수
@@ -122,6 +133,27 @@ public class Util {
 		return returnList;
 	}
 
+	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfo) {
+		
+		//리턴데이터를 담는 그릇
+		Map<String, JsonChatInfo> resultMap = new HashMap<String, JsonChatInfo>(); 
+		
+		//for문을 돌면서 원하는 형태로 데이터를 담는다.
+		for (MyChatInfo chatRoom : myChatInfo) {
+			resultMap.put(
+									"" + chatRoom.getChatRoomId(), 
+									new JsonChatInfo(
+																	chatRoom.getChatRoomTitle(), 
+																	chatRoom.getLocationName(), 
+																	chatRoom.getMax(), 
+																	chatRoom.getUnreadMessageNum()
+																)
+									);
+		}
+		
+		return resultMap;
+	}
+	
 	public static String getUnderBarlConventionString(String carmelValue) {
 		
 		StringBuilder sb = new StringBuilder();
@@ -142,5 +174,34 @@ public class Util {
 	
 	private static boolean isUpperCase(char ch) {
 	    return ch >= 'A' && ch <= 'Z';
+	}
+
+	public static Map<String, List<String>> getParticipantListFromChatInfoList(List<MyChatInfo> chatInfoList) {
+		
+		Map<String, List<String>> resultMap = new HashMap<String, List<String>>();
+		
+		for (MyChatInfo myChatInfo : chatInfoList) {
+			resultMap.put("" + myChatInfo.getChatRoomId(), getListFromString(myChatInfo.getParticipantList()));
+		}
+		
+		return resultMap;
+	}
+
+	private static List<String> getListFromString(String participantList) {
+		return new ArrayList<String>(Arrays.asList(participantList.split(",")));
+	}
+
+	public static String getTotalStringList(List<MyChatInfo> chatInfoList) {
+		
+		String returnString = "";
+		
+		for (MyChatInfo myChatInfo : chatInfoList) {
+			returnString += myChatInfo.getParticipantList() + ",";
+		}
+		
+		returnString =returnString.substring(0, returnString.length()-1);
+		
+		logger.info("resultString : "+returnString);
+		return returnString;
 	}
 }

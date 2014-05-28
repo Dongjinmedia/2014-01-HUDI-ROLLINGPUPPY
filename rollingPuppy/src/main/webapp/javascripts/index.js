@@ -118,10 +118,12 @@ oLogin = {
 			var oResult = JSON.parse(request.responseText);
 				
 			var result = oResult['ThreeWayResult'];
-			console.log(result);
+			console.log("ThreeWayResult:",result);
 				
 			if ( result === "SUCCESS" ) {
-				alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
+				//debugging의 불편함으로 일시적 주석 처리 
+				//alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
+				console.log("nickname",oResult["nickname"])
 				window.location = "/main";
 			} else if ( result === "FAIL" ) {
 				alert("아이디와 비밀번호를 다시 확인해 주세요.");

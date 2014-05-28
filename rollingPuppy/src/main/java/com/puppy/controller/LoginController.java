@@ -31,6 +31,7 @@ public class LoginController implements Controller {
 			throws ServletException, IOException {
 		logger.info("into doPost");
 		
+		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
@@ -99,12 +100,12 @@ public class LoginController implements Controller {
 			session.setAttribute(Constants.SESSION_MEMBER_EMAIL, member.getEmail());
 			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNicknameAdjective());
 			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNicknameNoun());
-			
+
 			//최종 로그인시간을 업데이트한다.
 			int successUpdateQueryNumber = memberDao.updateLastLoggedTime(member.getId());
 			if ( successUpdateQueryNumber == 0 )
 				logger.warn(email+" Update Last Logged Time Fail.");
-			
+			//logger.info("nickname"+member.getNicknameNoun());
 			//로그인 성공
 			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(

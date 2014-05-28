@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.puppy.dao.impl.EnteredChatRoomDaoImpl;
-import com.puppy.dto.EnteredChatRoom;
+import com.puppy.dao.impl.MyChatInfoDaoImpl;
+import com.puppy.dto.MyChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.UAgentInfo;
 
@@ -74,7 +74,7 @@ public class MainController implements Controller {
 	public void getEnteredChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
 
 		Gson gson = new Gson();
-		List<EnteredChatRoom> lists = null;
+		List<MyChatInfo> lists = null;
 		
 		int userId = 0;
 		
@@ -82,8 +82,8 @@ public class MainController implements Controller {
 			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
 
 			if ( userId != 0 ) {
-				EnteredChatRoomDaoImpl enteredChatRoomDaoImpl = EnteredChatRoomDaoImpl.getInstance();
-				lists = enteredChatRoomDaoImpl.selectEnteredChatRoomList(userId);
+				MyChatInfoDaoImpl enteredChatRoomDaoImpl = MyChatInfoDaoImpl.getInstance();
+				lists = enteredChatRoomDaoImpl.selectMyChatInfo(userId);
 			}
 		} catch (Exception e ) {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);

@@ -53,7 +53,7 @@ function removeClassName(node, strClassName) {
  * 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
-var oPanel = {
+var oAside= {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	eContainer: document.getElementById("container"),
 	ePanel: null,
@@ -66,6 +66,7 @@ var oPanel = {
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
 	eSearchMenu: document.querySelector("#nav_list .search"),
 	eChattingMenu: document.querySelector("#nav_list .chatting"),
+	eChattingNotification: document.querySelector("#nav_list .chatting .notification"),
 	
 	// panel및 nav 관련 이벤트 등록 함수.
 	addEvents: function() {
@@ -140,6 +141,9 @@ var oPanel = {
 	},
 	
 	clickChattingMenu: function() {
+		
+		console.log("eChattingNotification : ", eChattingNotification);
+		
 		this.unFoldByMenuElement(this.eChattingMenu);
 	},
 	
@@ -167,7 +171,7 @@ var oPanel = {
 	
 	unFoldByMenuElement: function(menuElement) {
 		
-		console.log(menuElement);
+		//console.log(menuElement);
 		
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
@@ -787,6 +791,26 @@ var oChat = {
 		eExitButton: null,
 		nickname: null,
 		currentChatRoomNumber: null,
+		//todo
+		/*
+	    //oInfo는 다음과 같은 형태이다.
+	    {
+			"채팅방번호": {
+				title: "",
+				locationName: "", 
+				max: "",
+				unreadMessageNum: "", 
+				oPaticipant: [
+					"회원아이디": 
+					{
+						nickname: "",
+						TODO 추가데이터
+					}
+				]			
+			}
+		} 
+	    */
+		oInfo: null,
 		
 		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
@@ -903,8 +927,7 @@ var oChat = {
 		
 		updateChattingPanelList: function(){
 			
-			var incompleteUrl = "/panel/enteredChattingRoomList?userAction=";
-			var queryKeyword = "selectChattingRoomListPanel"; 
+			var incompleteUrl = "/chatInfo/getMyChatInfo";
 			
 			var callback = function(request){
 				
@@ -953,7 +976,7 @@ var oChat = {
 				}
 			};
 			
-			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+			oAjax.getObjectFromJsonGetRequest(incompleteUrl, "", callback);
 		},
 		
 		initialize: function() {
@@ -1359,9 +1382,10 @@ oSearching = {
 		eSubmit: null,
 		eSearchBox: null,
 		getResultXml: function() {
-			var queryKeyword = document.getElementById("search_box").children[0].value; 
-			var incompleteUrl = "/search?searchKeyword=";
-			
+			var oParameters = {
+				"queryKeyword" : document.getElementById("search_box").children[0].value	
+			};
+			var url = "/search"
 			var callback = function(request){
 				
 				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
@@ -1394,12 +1418,11 @@ oSearching = {
 						//template을 원하는 위치에 삽입
 						eTarget.appendChild(eCopiedTemplate);
 					}
-					
 					//검색결과 Panel을 열어준다.
-					oPanel.clickSearchMenu();
+					oAside.clickSearchMenu();
 				}
 			};
-			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
+			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
 		},
 		startSearch: function(event){
 			if(event.keyCode == 13) {
@@ -1456,7 +1479,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	oPanel.initialize();
+	oAside.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
