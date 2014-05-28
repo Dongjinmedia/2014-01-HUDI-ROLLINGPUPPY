@@ -53,7 +53,7 @@ function removeClassName(node, strClassName) {
  * 네비게이션관련 소스코드 시작
  **********************************************************************************************************/
 //main.jsp의 div#aside > div#panel의 folding animation을 위한 객체
-var oPanel = {
+var oAside= {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	eContainer: document.getElementById("container"),
 	ePanel: null,
@@ -66,6 +66,7 @@ var oPanel = {
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
 	eSearchMenu: document.querySelector("#nav_list .search"),
 	eChattingMenu: document.querySelector("#nav_list .chatting"),
+	eChattingNotification: document.querySelector("#nav_list .chatting .notification"),
 	
 	// panel및 nav 관련 이벤트 등록 함수.
 	addEvents: function() {
@@ -140,6 +141,9 @@ var oPanel = {
 	},
 	
 	clickChattingMenu: function() {
+		
+		console.log("eChattingNotification : ", eChattingNotification);
+		
 		this.unFoldByMenuElement(this.eChattingMenu);
 	},
 	
@@ -787,6 +791,26 @@ var oChat = {
 		eExitButton: null,
 		nickname: null,
 		currentChatRoomNumber: null,
+		//todo
+		/*
+	    //oInfo는 다음과 같은 형태이다.
+	    {
+			"채팅방번호": {
+				title: "",
+				locationName: "", 
+				max: "",
+				unreadMessageNum: "", 
+				oPaticipant: [
+					"회원아이디": 
+					{
+						nickname: "",
+						TODO 추가데이터
+					}
+				]			
+			}
+		} 
+	    */
+		oInfo: null,
 		
 		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
@@ -1396,7 +1420,7 @@ oSearching = {
 					}
 					
 					//검색결과 Panel을 열어준다.
-					oPanel.clickSearchMenu();
+					oAside.clickSearchMenu();
 				}
 			};
 			oAjax.getObjectFromJsonGetRequest(incompleteUrl, queryKeyword, callback);
@@ -1456,7 +1480,7 @@ function initialize() {
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
-	oPanel.initialize();
+	oAside.initialize();
 	//------------------------------------------------------------------------------------//
 	
 	//------------------------------------------------------------------------------------//
