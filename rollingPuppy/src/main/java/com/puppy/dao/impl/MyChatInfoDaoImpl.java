@@ -31,11 +31,26 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 		List<MyChatInfo> lists = null;
 		
 		try {
-			String query = "SELECT crm.tbl_member_id AS user_id, crm.tbl_chat_room_id AS chat_room_id, "
-					+ "cr.title AS chat_room_title, cr.max AS max, cr.location_name AS location_name "
-					+ "FROM tbl_chat_room_has_tbl_member AS crm "
-					+ "INNER JOIN tbl_chat_room AS cr ON crm.tbl_chat_room_id = cr.id "
-					+ "WHERE crm.tbl_member_id = ?";
+//			String query = "SELECT crm.tbl_member_id AS user_id, crm.tbl_chat_room_id AS chat_room_id, "
+//					+ "cr.title AS chat_room_title, cr.max AS max, cr.location_name AS location_name "
+//					+ "FROM tbl_chat_room_has_tbl_member AS crm "
+//					+ "INNER JOIN tbl_chat_room AS cr ON crm.tbl_chat_room_id = cr.id "
+//					+ "WHERE crm.tbl_member_id = ?";
+			
+			String query = "SELECT "
+											+ "crm.tbl_member_id AS user_id, "
+											+ "crm.tbl_chat_room_id AS chat_room_id, "
+											+ "cr.title AS chat_room_title, "
+											+ "cr.max AS max, cr.location_name AS location_name, "
+											+ "crm.fold_time AS fold_time, "
+											+ "(SELECT "
+													+ "COUNT(id) "
+											+ "FROM tbl_message "
+											+ "WHERE created_time > crm.fold_time) AS unread_message "
+									+ "FROM tbl_chat_room_has_tbl_member AS crm "
+									+ "INNER JOIN tbl_chat_room AS cr "
+									+ "ON crm.tbl_chat_room_id = cr.id "
+									+ "WHERE crm.tbl_member_id = ?";
 
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setInt(1, userId);
