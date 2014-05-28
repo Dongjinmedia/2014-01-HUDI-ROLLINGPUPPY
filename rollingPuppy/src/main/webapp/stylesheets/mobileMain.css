@@ -193,7 +193,8 @@ header {
 	right: 10px;
 	bottom: 35px;
 	left: 10px;
-	overflow: scroll;
+	overflow-x: hidden;
+	overflow-y: scroll;
 }
 
 .section h1 {
@@ -205,7 +206,7 @@ header {
 
 .card {
 	width: 100%;
-	height: 80px;
+	height: 70px;
 	margin-left: -1px;
 	margin-bottom: 3px;
 	background-color: #FEFEFE;
