@@ -26,7 +26,7 @@ public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
 
 	@Override
 	public List<MyChatInfo> selectMyChatInfo(int userId) {
-logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
+		logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 		
 		PreparedStatement preparedStatement = null;
 		List<MyChatInfo> lists = null;
@@ -65,12 +65,12 @@ logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 	}
 
 	@Override
-	public List<Member> selectAllParticipantFromChatRoomId(String totalListString) {
+	public List<Member> selectAllParticipantData(String totalListString) {
 		PreparedStatement preparedStatement = null;
 		List<Member> lists = null;
 		
 		try {
-			String query = "SELECT nickname_adjective, nickname_noun FROM tbl_member WHERE id in ("+totalListString+")";
+			String query = "SELECT id, nickname_adjective, nickname_noun FROM tbl_member WHERE id in ("+totalListString+")";
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			lists = selectList(Member.class, preparedStatement);
 			

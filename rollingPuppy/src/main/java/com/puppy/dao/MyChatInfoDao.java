@@ -7,5 +7,5 @@ import com.puppy.dto.MyChatInfo;
 
 public interface MyChatInfoDao {
 	public List<MyChatInfo> selectMyChatInfo(int userId);
-	public List<Member> selectAllParticipantFromChatRoomId(String totalListString);
+	public List<Member> selectAllParticipantData(String totalListString);
 }

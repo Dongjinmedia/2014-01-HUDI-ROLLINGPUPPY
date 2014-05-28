@@ -14,12 +14,20 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.puppy.dao.impl.MyChatInfoDaoImpl;
-import com.puppy.dto.Member;
 import com.puppy.dto.MyChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
 import com.puppy.util.Util;
 
+/*
+ * main.js초기화시 회원이 참여하고 있는
+ * 채팅방리스트의 정보를 가져온다.
+ * 이때 호출하는 컨트롤러이다.
+ * 
+ * 해당컨트롤러의 이슈는 client에서는
+ * 데이터를 손쉽게 다루기 위하여
+ * List데이터를 key, value형태로 Json String을 만들어주는데 있다. 
+ */
 public class ChatInfoController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(ChatInfoController.class);
@@ -42,27 +50,34 @@ public class ChatInfoController implements Controller {
 			if ( userId != 0 ) {
 				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
 				List<MyChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
-
-				//myChatInfo로부터 참여자 정보 가져오기
-				Map<String, List<String>> participantsArrayList = Util.getParticipantListFromChatInfoList(chatInfoList);
 				
-				//참여자 정보에 해당하는 닉네임 등의 채팅에 필요한 정보 가져오기
-				String totalListString = Util.getTotalStringList(chatInfoList);
-				List<Member> memberList = myChatInfoDaoImpl.selectAllParticipantFromChatRoomId(totalListString); 
-				
-				for (Member member : memberList) {
-					logger.info("member nickname : "+member.getNicknameAdjective() +" "+member.getNicknameNoun());
-				}
-				
-				
+				/*
+				 * chatInfoList를 이용해서 
+				 * 다음과 같은 형태의 데이터를 만들 수 있도록 Util클래스에 요청한다. 
+				 * 
+				 * {
+						"채팅방번호": {
+							title: "",
+							locationName: "", 
+							max: "",
+							unreadMessageNum: "", 
+							oParticipant: {
+								"회원아이디": 
+								{
+									nickname: "",
+								}
+							}
+						}
+					} 
+				 */
 				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);
 			}
 		} catch (Exception e ) {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);
 		}
 		
+		logger.info("User Participant ChattingInfomation : "+gson.toJson(returnData));
 		out.println(gson.toJson(returnData));
-		logger.info(gson.toJson(returnData));
 	}
 
 	@Override

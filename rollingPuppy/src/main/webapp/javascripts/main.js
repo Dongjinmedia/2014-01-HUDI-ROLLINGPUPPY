@@ -566,6 +566,7 @@ var oNaverMap = {
 /*********************************************************************************************************
  * Marker Interaction 메뉴 소스코드 시작
  **********************************************************************************************************/
+//채팅방이 생성되어있는 marker를 눌렀을 때 나오는 파란색 삼분 동그라미와 관련된 객체 
 var oMarkerClicker = { 
 	
 	initialize: function() {
@@ -573,6 +574,7 @@ var oMarkerClicker = {
 		this.menu = this.controlBox.querySelector("#menu");
 		this.eChattingDivBox = this.controlBox.querySelector(".menu-chatting.content");
 		this.eChatList = this.eChattingDivBox.querySelector("ol");
+		this.eMenuInfo = this.controlBox.querySelector(".menu-info");
 		
 		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
 		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
@@ -599,7 +601,7 @@ var oMarkerClicker = {
 	
 	//사용자가 새로 클릭한 마커에 대한 정보를, 마커 인터렉션 창에 업데이트 시켜주는 함수이다.
 	//예를들어 채팅방목록, 장소 정보 등등
-	//TODO 정보창에도 데이터를 이식해야 한다.
+	//dada
 	getNewMarkerInfoWindowElement: function(markerNumber) {
 		//이전에 클릭데이터를 초기화한다.
 		this.reset();
@@ -618,6 +620,8 @@ var oMarkerClicker = {
 		var oMarkerInfo = oNaverMap.oCurrentViewPointMarkers[markerNumber];
 		//마커정보를 담고있는 Object에서 마커에 해당하는 chatRoom정보들을 담고있는 Array를 가져온다.
 		var aChatRoomInMarker = oMarkerInfo["chatRooms"]; 
+		//chatRoom의 장소 정보를 업데이트 
+		this.eMenuInfo.innerText = oMarkerInfo["location_name"]; 
 		/*
 		 * 기존 element에 존재하는 template정보
 		 */
@@ -664,6 +668,8 @@ var oMarkerClicker = {
 		
 		return this.controlBox;
 	},
+	//물음표에 hover하면 나오는 정보창을 담을 element
+	eMenuInfo: null,
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 	controlBox: null,
 	//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
@@ -800,13 +806,13 @@ var oChat = {
 				locationName: "", 
 				max: "",
 				unreadMessageNum: "", 
-				oPaticipant: [
+				oParticipant: {
 					"회원아이디": 
 					{
 						nickname: "",
 						TODO 추가데이터
 					}
-				]			
+				}
 			}
 		} 
 	    */
@@ -1138,6 +1144,8 @@ var oCreateChattingRoom = {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			
+			//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
 			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
 			
@@ -1197,7 +1205,7 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": ""+this.eRoomAddress,
+					"locationName": ""+this.eRoomAddress.innerText,
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.
@@ -1252,6 +1260,7 @@ var oCreateChattingRoom = {
 /*********************************************************************************************************
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
  **********************************************************************************************************/
+//초록색 마커 
 //TODO naverMap Object에 이식하기
 var oMapClicker = {
 	//MapClickerk 전체 Element. 
