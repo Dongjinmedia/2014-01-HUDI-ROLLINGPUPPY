@@ -1139,6 +1139,8 @@ var oCreateChattingRoom = {
 			this.oCreateChatRoom = document.getElementById('createChatRoom');
 			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
 			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
+			
+			//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
 			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
 			
@@ -1198,7 +1200,7 @@ var oCreateChattingRoom = {
 					"max": ""+limitNumValue,
 					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
 					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
-					"locationName": ""+this.eRoomAddress,
+					"locationName": ""+this.eRoomAddress.innerText,
 					"locationLatitude": oMapClicker.oClickPoint['y'],
 					"locationLongitude": oMapClicker.oClickPoint['x'],
 					//TODO 현재의 줌레벨을 넣어야 한다.
