@@ -15,9 +15,7 @@
 <body>
 	<div class="bgImg"></div>
 	<div class="interactBox">
-		<h1 class="title">
-			Welcome. Please login.
-		</h1>
+		<h1 class="title">Welcome. Please login.</h1>
 		<p>
 			<span>Welcome My Neighbor</span>
 		</p>
