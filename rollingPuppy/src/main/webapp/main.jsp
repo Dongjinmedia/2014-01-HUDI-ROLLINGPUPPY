@@ -24,29 +24,45 @@
 			<li class="cell none">
 				<div class="default">
 					<p class="icon-warning">
-					<p class="comment">추천 채팅방 리스트가 보여지는 창입니다.</p>
+					<p class="comment"></p>
 				</div>
 			</li>
 			<li class="cell search">
-				<p class="title icon-title">갈빗집</p>
-				<p class="category">한식 &gt; 소고기구이</p>
-				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+				<p class="title icon-title"></p>
+				<p class="category"></p>
+				<p class="address"></p>
 			</li>
 			<li class="cell chatRoom">
-					<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
-					<p class="limit icon-participant">1 / 300</p>
-					<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
-					<div class="notification">0</div>
+					<p class="title icon-chatting"></p>
+					<p class="limit icon-participant"></p>
+					<p class="address icon-title"></p>
+					<div class="notification"></div>
 			</li>
 			<li class="cell bookmark">
-				<p class="title">우리집</p>
-				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+				<p class="title"></p>
+				<p class="address"></p>
 			</li>
 			<li class="person chatMember">
 				<img class="profile" src="/images/person_icon.png"/>
-				<p class="nickname adjective">날아라</p>
-				<p class="nickname noun">윤성</p>
+				<p class="nickname adjective"></p>
+				<p class="nickname noun"></p>
 			</li>
+			
+			<li class="notice">
+				<span class="message"></span>
+			</li>
+								
+			<li class="user">
+				<span class="time"></span>
+				<span class="message"></span>
+			</li>
+								
+			<li class="other">
+				<span class="profile"></span>
+				<span class="nickname"></span>
+				<span class="message"></span>
+				<span class="time"></span>
+			</li> 
 		</ul>
 	</div>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
