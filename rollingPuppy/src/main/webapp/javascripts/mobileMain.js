@@ -188,9 +188,9 @@ var oPanel ={
 		
 		//TODO 변화값은 조절하도록
 		var nMoveLength = this.nTouchStartX - this.nTouchEndX;
-		if (nMoveLength > 60) {
+		if (nMoveLength > 50) {
 			this.nCurrentViewPanelIndex++;
-		} else if (nMoveLength <= -60) {
+		} else if (nMoveLength < -50) {
 			this.nCurrentViewPanelIndex--;
 		} else {
 			this.ePanelContents.style.webkitTransform = "translate(0)";
