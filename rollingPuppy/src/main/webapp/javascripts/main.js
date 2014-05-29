@@ -917,6 +917,9 @@ var oChat = {
 			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
 		},
 		
+		_updateOneMessage: function(oMessageInfo) {
+			
+		},
 		updateInitializeMessage: function(chatRoomNum) {
 			var oParameters = {
     			"chatRoomNumber": chatRoomNum,
@@ -924,8 +927,15 @@ var oChat = {
     		
     		var callback = function(request) {
     			console.log("/chat/initMessage : ",request.responseText);
-//    			var aResponse = JSON.parse(request.responseText);
-//
+    			var oResponse = JSON.parse(request.responseText);
+
+    			var aRecentMessage = oResponse["recentMessage"];
+    			var aUnreadMessage = oResponse["unreadMessage"];
+    			
+    			console.log("aRecentMessage : ",aRecentMessage);
+    			console.log("aUnreadMessage : ",aUnreadMessage);
+//    			if ( oResponse["ThreeWayResult"])
+//    			
 //	    		} else {
 //	    			alert("네트워크 상태가 불안정합니다.\n채팅방 대화목록을 불러오지 못하였습니다.");
 //	    		}
