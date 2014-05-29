@@ -851,9 +851,8 @@ var oChat = {
 		eTemplateOther: document.querySelector("#template .other"),
 		
 		//메모리에 저장하고 활용하는 데이터
-		userId: null,
-		nickname: null,
-		currentChatRoomNumber: null,
+		userId: 0,
+		currentChatRoomNumber: 0,
 		lastMessageDayNum: 0,
 		
 		//working
@@ -913,24 +912,39 @@ var oChat = {
 		},
 		
 		sendMessage: function(message) {
-			this.socket.emit('message', message);
-			this.eInputBox.value="";
+			
+			oMessageInfo = {
+				"userId": this.userId,
+				"message": message,
+				"chatRoomNum": this.currentChatRoomNumber,
+			};
+			
+			this.socket.emit('message', oMessageInfo);
 		},
 		
-		getMessage: function(message) {
-			//TODO 전용우 교수님께 질문
-			//이렇게 사용해야하는것이 좋나?
-		    var eNewMessage = document.createElement('li');
-	    	var newMessageText = document.createTextNode(message);
-	    	eNewMessage.appendChild(newMessageText);
-	    	
-			this.eChattingContents.appendChild(eNewMessage);
+		getMessage: function(oMessageInfo) {
 			
+			var flag = 0;
+			
+			console.log("oMessageInfo['tblMemberId'] : ", oMessageInfo["tblMemberId"]);
+			console.log("this.userId : ", this.userId);
+			console.log("is same : ", oMessageInfo["tblMemberId"] == this.userId);
+			
+			if ( oMessageInfo["tblMemberId"] == this.userId ) {
+				flag = 1;
+			}
+			
+			oMessageInfo["isMyMessage"] = flag;
+			
+			console.log("getMessage isMyMessage : ", oMessageInfo);
+			
+			this._updateOneMessage(oMessageInfo);
 			this.setMessageBoxScrollTop();
 		},
 		
 		setMessageBoxScrollTop: function() {
 			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
+			this.eInputBox.value="";
 		},
 		
 		isNewDay: function(dayNum) {
@@ -953,10 +967,13 @@ var oChat = {
 			
 			return eCopiedTemplate;
 		},
-		_getOtherMessageTemplateCloneElement: function(nickname, message, time, imgUrl) {
-			var eCopiedTemplate = this.eTemplateOther.cloneNode(true);
+
+		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = nickname;
+			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
+			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+			
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
 			//eCopiedTemplate.querySelector(".profile").style.backgroundURL
@@ -965,7 +982,6 @@ var oChat = {
 		},
 		
 		_updateOneMessage: function(oMessageInfo) {
-			//TODO 서버의 chatRoomId 삭제
 			var eTarget = null;
 			var day = oMessageInfo["day"];
 			var month = oMessageInfo["month"];
@@ -985,16 +1001,12 @@ var oChat = {
 										+ oMessageInfo["week"];
 				
 				eTarget = this._getNoticeTemplateCloneElement(sNotice);
+			} 
+			
+			if  (isMyMessage == 1) {
+				eTarget = this._getUserMessageTemplateCloneElement(time, message);
 			} else {
-				if  (this.isMyMessage === 1) {
-					_getUserMessageTemplateCloneElement(time, message);
-				} else {
-					
-					oMemberInfo = this.oInfo[chatRoomNum]["oParticipant"][memberId];
-					console.log("oMemberInfo :",oMemberInfo);
-					
-					eTarget = this._getOtherMessageTemplateCloneElement(oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"], message, time, null);
-				}
+				eTarget = this._getOtherMessageTemplateCloneElement(chatRoomNum, memberId, message, time, null);
 			}
 			
 			if (eTarget != undefined || eTarget != null) {
@@ -1130,7 +1142,8 @@ var oChat = {
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList").value;
+			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			console.log("chattingRoomList: ",chattingRoomList);
 			var chattingRoomListToJson = JSON.parse(chattingRoomList);
 			var chattingRoomIdList = new Array();
 			
@@ -1276,6 +1289,7 @@ var oChat = {
 			//hidden attribute. User Identifier Database id Value.
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
 			this.socket.email = document.getElementById("email").value;
+			this.userId = document.getElementById("id").value;
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {
@@ -1312,8 +1326,8 @@ var oChat = {
 				this.enterChatRoomOthers(user);
 			}.bind(this));
 			
-			this.socket.on('message', function (message) {
-				this.getMessage(message);
+			this.socket.on('message', function (oParameter) {
+				this.getMessage(oParameter);
 			}.bind(this));
 			
 			// TODO 채팅방에서 나가면 방에 남아있는 사람들이 누가 나갔는지 볼 수 있게 메시지를 띄워준다.

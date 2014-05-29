@@ -19,6 +19,8 @@ var pool = mysql.createPool({
 	connectionLimit : 30
 });
 
+var aWeek = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+
 //database 질의를 위해 사용하는 함수
 //첫번째 인자 sql은 자바의 preparedStatement에 sql인자와 같은 형태이다.
 //두번째 인자는 첫번째 인자의 sql에서 ?에 들어갈 항목들을 순차적으로 배열로 입력한다.
@@ -66,7 +68,7 @@ INSERT tbl_message
 *************************/
 
 
-//Socket Connection
+//Socket Connection	
 io.sockets.on('connection', function (socket) {
 	
 	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
@@ -179,44 +181,63 @@ io.sockets.on('connection', function (socket) {
 	});
 	
 	//Message 전송에 대해 Listening하고 있는 함수
-	socket.on('message', function(message) {
+	socket.on('message', function(oParameter) {
 		//Get Attribute
 		
+		
+		/*
+			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+		*/
+		
 		console.log("message request!!!");
-		socket.get('chatRoomNumber', function(error, chatRoomNumber) {
-			
-			if (error) {
-				console.log("error occur : "+error);
-			}
-			
-			socket.get('userId', function (error, userId){
+		
+		var userId = oParameter["userId"];
+		var message = oParameter["message"];
+		var chatRoomNum = oParameter["chatRoomNum"];
+
+		requestQuery(
+			//Param1
+			"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
+			//Param2
+			[chatRoomNum, userId, message],
+			//Param3
+			function(oResult) {
+				console.log("message request result oResult : "+oResult);
+				var affectedRows = oResult["affectedRows"];
 				
-				if (error) {
-					console.log("error occur : "+error);
-				}
-				
-				requestQuery(
-					//Param1
-					"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
-					//Param2
-					[chatRoomNumber, userId, message],
-					//Param3
-					function(oResult) {
-						console.log("message request result oResult : "+oResult);
-						var affectedRows = oResult["affectedRows"];
-						
-						//TODO 결과가 없을때를 대비한 error event를 만들자						
-						//if ( affectedRows !== 1 ) {
-						//	socket.emit('error', message);
-						// 	return;
-						//} else {
-						
-						//Room에 있는 모두에게 참여메시지를 보냅니다.
-						io.sockets.in(chatRoomNumber).emit('message', message );
+				//TODO 결과가 없을때를 대비한 error event를 만들자						
+				if ( affectedRows !== 1 ) {
+					socket.emit('error', message);
+					return;
+				} else {
+					
+					var date = new Date();
+					
+					var oMessageInfo = {
+						"tblMemberId": userId,
+						"tblChatRoomId": chatRoomNum,
+						"message": message,
+						"month": date.getMonth()+1,
+						"week": aWeek[date.getDay()],
+						"day": date.getDate(),
+						"time": date.getHours() + ":" + date.getMinutes()
 					}
-				);					
-			});
-		});
+					
+					console.log("oMessageInfo : ",oMessageInfo);
+					
+					//Room에 있는 모두에게 참여메시지를 보냅니다.
+					io.sockets.in(chatRoomNum).emit('message', oMessageInfo );	
+				}
+			}
+		);					
 	});
 	
 	// TODO 현재는 DB에서 사용자 정보를 삭제하는 작업만 된 상태. socket과의 connection을 끊는 부분의 구현이 필요하다.
