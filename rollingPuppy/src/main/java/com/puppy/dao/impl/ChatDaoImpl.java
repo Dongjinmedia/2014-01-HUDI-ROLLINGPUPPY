@@ -226,17 +226,30 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	}
 
 	@Override
-	public List<Message> selectInitMessagesFromChatRoomNumber(int chatRoomNumber) {
+	public List<Message> selectInitMessagesFromChatRoomNumber(int chatRoomNumber, int memberId) {
 		logger.info("ChatDaoImpl selectInitMessagesFromChatRoomNumber");
 		
 		PreparedStatement preparedStatement = null;
 		List<Message> list = null;
 		
 		try {
-			String query = "SELECT * FROM tbl_message WHERE tbl_chat_room_id = ? ORDER BY created_time DESC LIMIT 50";
+			String query = "SELECT "
+											+ "id, "
+											+ "tbl_chat_room_id, "
+											+ "tbl_member_id, "
+											+ "message, "
+											+ "if(tbl_member_id=?, true, false) AS is_my_message, "
+											+ "MONTH(created_time) AS month, "
+											+ "DAYOFMONTH(created_time) AS day, "
+											+ "DATE_FORMAT(created_time, '%H:%i') AS time, "
+											+ "DATE_FORMAT(created_time, '%a') AS week"
+									+ " FROM tbl_message "
+									+ "WHERE tbl_chat_room_id = ? "
+									+ "ORDER BY created_time DESC LIMIT 50";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
-			preparedStatement.setInt(1, chatRoomNumber);
+			preparedStatement.setInt(1, memberId);
+			preparedStatement.setInt(2, chatRoomNumber);
 			
 			list = selectList(Message.class, preparedStatement);
 		} catch (Exception e) {
@@ -256,14 +269,22 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		List<Message> list = null;
 		
 		try {
-			String query = "SELECT * "
+			String query = "SELECT "
+												+ "t_message.id AS id, "
+												+ "t_message.tbl_chat_room_id AS tbl_chat_room_id, "
+												+ "t_message.tbl_member_id AS tbl_member_id, "
+												+ "t_message.message AS message, "
+												+ "if(t_message.tbl_member_id=?, true, false) AS is_my_message, "
+												+ "MONTH(t_message.created_time) AS month, "
+												+ "DAYOFMONTH(t_message.created_time) AS day, "
+												+ "DATE_FORMAT(t_message.created_time, '%H:%i') AS time, "
+												+ "DATE_FORMAT(t_message.created_time, '%a') AS week "
 									+ "FROM tbl_message AS t_message "
 									+ "INNER JOIN tbl_chat_room_has_tbl_member AS t_has "
 									+ "ON t_message.tbl_member_id = t_has.tbl_member_id "
 											+ "AND t_message.tbl_chat_room_id = t_has.tbl_chat_room_id "
 											+ "AND t_message.created_time > t_has.fold_time "
-									+ "WHERE t_message.tbl_member_id = ? "
-											+ "AND t_message.tbl_chat_room_id = ?";
+									+ "WHERE t_message.tbl_chat_room_id = ?";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setInt(1, memberId);

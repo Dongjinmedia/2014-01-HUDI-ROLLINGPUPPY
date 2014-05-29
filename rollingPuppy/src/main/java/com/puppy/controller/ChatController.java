@@ -52,7 +52,7 @@ public class ChatController implements Controller {
 		int memberId = Integer.parseInt(request.getSession().getAttribute(Constants.SESSION_MEMBER_ID).toString());
 		
 		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
-		List<Message> recentMessage = chatDao.selectInitMessagesFromChatRoomNumber(chatRoomNum);
+		List<Message> recentMessage = chatDao.selectInitMessagesFromChatRoomNumber(chatRoomNum, memberId);
 		List<Message> unreadMessage = chatDao.selectUnreadMessage(chatRoomNum, memberId);
 		
 		resultData.put(Constants.JSON_RESPONSE_RECENT_MESSAGE, recentMessage);
