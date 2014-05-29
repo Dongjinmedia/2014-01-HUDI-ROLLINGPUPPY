@@ -843,9 +843,19 @@ var oChat = {
 		eChatWindowTitle: document.querySelector("#chatWindow .top .title"),
 		eChatWindowParticipant: document.querySelector("#chatWindow .top .limit"),
 		eChatWindowAddress: document.querySelector("#chatWindow .top .address"),
+		eChatWindowMessageBox: document.querySelector("#chatWindow .middle .chattingContents"),
 		
+		//Template element
+		eTemplateNotice: document.querySelector("#template .notice"),
+		eTemplateUser: document.querySelector("#template .user"),
+		eTemplateOther: document.querySelector("#template .other"),
+		
+		//메모리에 저장하고 활용하는 데이터
+		userId: null,
 		nickname: null,
 		currentChatRoomNumber: null,
+		lastMessageDayNum: 0,
+		
 		//working
 		/*
 	    //oInfo는 다음과 같은 형태이다.
@@ -916,12 +926,98 @@ var oChat = {
 	    	
 			this.eChattingContents.appendChild(eNewMessage);
 			
+			this.setMessageBoxScrollTop();
+		},
+		
+		setMessageBoxScrollTop: function() {
 			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
 		},
 		
-		_updateOneMessage: function(oMessageInfo) {
-			
+		isNewDay: function(dayNum) {
+			var isNew = this.lastMessageDayNum != dayNum; 
+			this.lastMessageDayNum = dayNum;
+			return isNew;
 		},
+		
+		_getNoticeTemplateCloneElement: function(message) {
+			var eCopiedTemplate = this.eTemplateNotice.cloneNode(true);
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			
+			return eCopiedTemplate
+		},
+		
+		_getUserMessageTemplateCloneElement: function(time, message) {
+			var eCopiedTemplate = this.eTemplateUser.cloneNode(true);
+			eCopiedTemplate.querySelector(".time").innerText = time;
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			
+			return eCopiedTemplate;
+		},
+		_getOtherMessageTemplateCloneElement: function(nickname, message, time, imgUrl) {
+			var eCopiedTemplate = this.eTemplateOther.cloneNode(true);
+			
+			eCopiedTemplate.querySelector(".nickname").innerText = nickname;
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			eCopiedTemplate.querySelector(".time").innerText = time;
+			//eCopiedTemplate.querySelector(".profile").style.backgroundURL
+			
+			return eCopiedTemplate;
+		},
+		
+		_updateOneMessage: function(oMessageInfo) {
+			//TODO 서버의 chatRoomId 삭제
+			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+			
+			if ( this.isNewDay(day) ) {
+				
+				var sNotice = oMessageInfo["month"] 
+										+ "월 "
+										+ oMessageInfo["day"] 
+										+ "일 "
+										+ oMessageInfo["week"];
+				
+				eTarget = this._getNoticeTemplateCloneElement(sNotice);
+			} else {
+				if  (this.isMyMessage === 1) {
+					_getUserMessageTemplateCloneElement(time, message);
+				} else {
+					
+					oMemberInfo = this.oInfo[chatRoomNum]["oParticipant"][memberId];
+					console.log("oMemberInfo :",oMemberInfo);
+					
+					eTarget = this._getOtherMessageTemplateCloneElement(oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"], message, time, null);
+				}
+			}
+			
+			if (eTarget != undefined || eTarget != null) {
+				this.eChatWindowMessageBox.appendChild(eTarget);
+			}
+		},
+		
+		updateLastMessageDayNum: function(nDay) {
+			this.lastMessageDayNum = nDay;
+		},
+		
+		updateUnreadMessage: function(aUnreadMessage) {
+			
+			if ( aUnreadMessage == undefined 
+					|| aUnreadMessage == null 
+					|| aUnreadMessage.length === 0 )
+				return;
+			
+			for ( var index = 0 ; index < aUnreadMessage.length ; ++ index ) {
+				this._updateOneMessage(aUnreadMessage[index]);
+			}
+		},
+		
 		updateInitializeMessage: function(chatRoomNum) {
 			var oParameters = {
     			"chatRoomNumber": chatRoomNum,
@@ -934,8 +1030,11 @@ var oChat = {
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
     			
-    			console.log("aRecentMessage : ",aRecentMessage);
-    			console.log("aUnreadMessage : ",aUnreadMessage);
+    			//console.log("aRecentMessage : ",aRecentMessage);
+    			//console.log("aUnreadMessage : ",aUnreadMessage);
+
+    			this.updateUnreadMessage(aUnreadMessage);
+    			
 //    			if ( oResponse["ThreeWayResult"])
 //    			
 //	    		} else {
@@ -1031,7 +1130,7 @@ var oChat = {
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			var chattingRoomList = document.getElementById("enteredChattingRoomList").value;
 			var chattingRoomListToJson = JSON.parse(chattingRoomList);
 			var chattingRoomIdList = new Array();
 			
@@ -1064,7 +1163,7 @@ var oChat = {
 				//oInfo에 요청데이터를 저장
 				this.saveChatInfo.apply(request, [oResult]);
 				
-				if(oResult.length === 0){
+				if(oResult === null || oResult.length === 0 ){
 					var eDefaultTemplate = document.getElementById("template").querySelector(".default");			
 					var eTarget = document.getElementById("pc_chatting").querySelector("ul");
 
