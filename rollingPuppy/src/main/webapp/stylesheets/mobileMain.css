@@ -196,7 +196,9 @@ header {
 .section {
 	position: absolute;
 	overflow-x: visible;
-	overflow-y: hidden;
+	overflow-y: scroll;
+	overflow-scroll: touch;
+	-webkit-overflow-scroll: touch;
 }
 
 .section h1 {
