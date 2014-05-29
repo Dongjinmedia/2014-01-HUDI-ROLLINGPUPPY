@@ -594,8 +594,10 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 #chatWindow {
 	display: none;
 	width: 500px;
-	height: 600px;
+	height: 500px;
 	position: relative;
+	left: 200px;
+	top: 10px;
 }
 
 #chatWindow .leftArea {

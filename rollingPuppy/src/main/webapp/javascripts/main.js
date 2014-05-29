@@ -828,6 +828,7 @@ var oMarkerClicker = {
  * TODO 모든 메뉴에 대한 처리를 구별, 각각에게 알맞게 처리하도록 수정해야 한다.
  */
 var oChat = {
+		functionTempForMoveWindow: null,
 		socket: null,
 		eChatWindow: document.getElementById("chatWindow"),
 		eChattingContents: document.querySelector("#chatWindow .chattingContents"),
@@ -838,6 +839,7 @@ var oChat = {
 		eExitButton: document.querySelector("#chatWindow .icon-exit"),
 		
 		//채팅창 안의 element
+		eChatWindowTopBar: document.querySelector("#chatWindow .top"),
 		eChatWindowTitle: document.querySelector("#chatWindow .top .title"),
 		eChatWindowParticipant: document.querySelector("#chatWindow .top .limit"),
 		eChatWindowAddress: document.querySelector("#chatWindow .top .address"),
@@ -1138,6 +1140,33 @@ var oChat = {
 			oAjax.getObjectFromJsonGetRequest(incompleteUrl, "", callback.bind(this));
 		},
 		
+		mouseDownAtChatWindowTopBar: function(e) {
+			var sideBarSize = parseInt(getStyle(document.getElementById("nav_list"), "width"));
+			var headerSize = parseInt(getStyle(document.getElementById("header"), "height"));
+			var currentChatWindowLeft = parseInt(getStyle(this.eChatWindow, "left"));
+			var currentChatWindowTop = parseInt(getStyle(this.eChatWindow, "top"));
+			var distanceX = e.clientX - (sideBarSize + currentChatWindowLeft);
+			var distanceY = e.clientY - (headerSize + currentChatWindowTop)
+			this.functionTempForMoveWindow = this.moveChattingWindow.bind(this, sideBarSize, headerSize, distanceX, distanceY);
+			window.addEventListener("mousemove", this.functionTempForMoveWindow, true);
+			window.addEventListener("mouseup", this.mouseUp.bind(this), false);
+		},
+		
+		moveChattingWindow: function(e) {
+			var sideBarSize = arguments[0];
+			var headerSize = arguments[1];
+			var distanceX = arguments[2];
+			var distanceY = arguments[3];
+			var event = arguments[4];
+			
+			this.eChatWindow.style.left = event.clientX - sideBarSize - distanceX + "px";
+			this.eChatWindow.style.top = event.clientY - headerSize - distanceY + "px";
+		},
+		
+		mouseUp: function(e) {
+			window.removeEventListener("mousemove", this.functionTempForMoveWindow, true);
+		},
+		
 		initialize: function() {
 			this.socket = io.connect('http://127.0.0.1:3080');
 			
@@ -1225,51 +1254,13 @@ var oChat = {
 //				}
 //			}
 			this.getMyChatInfoAndUpdateListInPanel();
+			
+			this.eChatWindowTopBar.addEventListener('mousedown', this.mouseDownAtChatWindowTopBar.bind(this), false);
 		}
 };
 /*********************************************************************************************************
  * Chatting에 대한 소스코드 종료
  **********************************************************************************************************/
-
-/*********************************************************************************************************
- * 채팅창 이동에 대한  소스코드 시작
- **********************************************************************************************************/
-
-document.getElementById("chatWindow").querySelector(".top").addEventListener("mousedown", mouseDown, false);
-window.addEventListener("mouseup", mouseUp, false);
-var distanceX = null;
-var distanceY = null;
-
-function mouseUp() {
-	 window.removeEventListener("mousemove", moveWindow, true);
-}
-
-function mouseDown(e) {
-	var mouseX = e.clientX - 61;
-	var mouseY = e.clientY - 52;
-	var targetWindow = document.getElementById("chatWindow");
-	var targetWindowStyle = {left: getStyle(targetWindow, "left"), top: getStyle(targetWindow, "top")};
-	var curX = targetWindowStyle.left.substring(0, targetWindowStyle.left.length-2);
-	var curY = targetWindowStyle.top.substring(0, targetWindowStyle.top.length-2);
-	distanceX = mouseX - curX;
-	distanceY = mouseY - curY;
-	
-	window.addEventListener("mousemove", moveWindow, true);
-}
-
-function moveWindow(e) {
-	var mouseX = e.clientX - 61;
-	var mouseY = e.clientY - 52;
-	var targetWindow = document.getElementById("chatWindow");
-
-	targetWindow.style.left = mouseX - distanceX + "px";
-	targetWindow.style.top = mouseY - distanceY + "px";
-}
-
-/*********************************************************************************************************
- * 채팅창 이동에 대한  소스코드 종료
- **********************************************************************************************************/
-
 
 /*********************************************************************************************************
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
