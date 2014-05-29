@@ -195,8 +195,8 @@ header {
 
 .section {
 	position: absolute;
-	overflow-x: hidden;
-	overflow-y: scroll;
+	overflow-x: visible;
+	overflow-y: hidden;
 }
 
 .section h1 {
@@ -215,6 +215,10 @@ header {
 	border-radius: 8px;
 	-webkit-border-radius: 8px;
 	-moz-border-radius: 8px;
+	
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
 }
 
 @media only screen
@@ -228,7 +232,7 @@ and (min-width: 920px) {
 	}
 	
 	.card {
-		width: 438px;
+		width: 440px;
 		height: 70px;
 		margin-left: 5px;
 		margin-bottom: 5px;
@@ -247,7 +251,7 @@ and (min-width: 650px) and (max-width: 920px) {
 	}
 	
 	.card {
-		width: 308px;
+		width: 310px;
 		height: 70px;
 		margin-left: 3px;
 		margin-bottom: 3px;
@@ -269,14 +273,7 @@ and (max-width: 650px)  {
 		width: 100%;
 		height: 70px;
 		margin-bottom: 3px;
-		margin-left: -1px;
 	}
-}
-
-/* iphone */
-@media only screen 
-and (max-width: 490px)  {
-
 }
 
 /*dada*/

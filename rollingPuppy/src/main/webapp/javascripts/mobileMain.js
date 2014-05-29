@@ -187,10 +187,14 @@ var oPanel ={
 		this.nTouchEndY = touch.pageY;
 		
 		//TODO 변화값은 조절하도록
-		if ( this.nTouchStartX - this.nTouchEndX > 10 ) {
+		var nMoveLength = this.nTouchStartX - this.nTouchEndX;
+		if (nMoveLength > 60) {
 			this.nCurrentViewPanelIndex++;
-		} else {
+		} else if (nMoveLength <= -60) {
 			this.nCurrentViewPanelIndex--;
+		} else {
+			this.ePanelContents.style.webkitTransform = "translate(0)";
+			return ;
 		}
 		
 		
