@@ -1128,7 +1128,7 @@ var oChat = {
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			var chattingRoomList = document.getElementById("enteredChattingRoomList").value;
 			var chattingRoomListToJson = JSON.parse(chattingRoomList);
 			var chattingRoomIdList = new Array();
 			
