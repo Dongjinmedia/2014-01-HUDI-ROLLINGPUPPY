@@ -67,8 +67,6 @@
 	</div>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
 	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
-	<input type="hidden" id="enteredChattingRoomList" value="${requestScope['enteredChattingRoomList']}" />
-
 	<div id="createChatRoom">
 		<div class="outer bg"></div>
 		<div class="centerArea">
@@ -114,7 +112,13 @@
 			<div class="menu-bookmark content"></div>
 		</div>
 	</div>
-	
+
+	<!-- hidden Area2 (For Entered Chatting Room List) -->
+	<div style="display: none;">
+		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
+	</div>
+
+
 	<!--페이지 전체를 감싸는 영역-->
 	<div id="wrapper">
 
