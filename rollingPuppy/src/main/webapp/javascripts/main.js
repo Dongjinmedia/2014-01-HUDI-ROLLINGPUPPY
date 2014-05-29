@@ -636,6 +636,24 @@ var oMarkerClicker = {
 		var menuChatting = controlBox.querySelector('.menu-chatting');
 		this.addListener(iconChatting, menuChatting);
 	},
+	
+	// Ajax통신을 통해 마커 안에 있는 채팅방들의 현재 채팅 인원 수를 가져와 리턴하는 메서드
+	getCurrentNumOfParticipantByAjax: function(chatRoomId) {
+		var incompleteUrl = "/markerClicker/getCurrentNumOfParticipant";
+		var oParameter = {
+				"chatRoomId": chatRoomId
+		};
+		var currentNumOfParticipants = null;
+		
+		var callback = function(request) {
+			this.currentNumOfParticipants = JSON.parse(request.responseText);
+		};
+		
+		oAjax.getObjectFromJsonGetRequest(incompleteUrl, oParameter, callback.bind(this));
+		
+		return this.currentNumOfParticipants;
+	},
+	
 	clickChatRoomList: function(e) {
 		//클릭되는 대상의 부모인 li태그 element를 가져와서, 
 		//추가될때 저장되어 있던 chatRoomNumber Attribute를 가져온후, 채팅방 입장을 요청한다.
@@ -662,8 +680,8 @@ var oMarkerClicker = {
 		//맵뷰상에 존재하는 메모리를 저장하고 있는 oCurrentViewPointMarkers 에서 가져온다.
 		var oMarkerInfo = oNaverMap.oCurrentViewPointMarkers[markerNumber];
 		//마커정보를 담고있는 Object에서 마커에 해당하는 chatRoom정보들을 담고있는 Array를 가져온다.
-		var aChatRoomInMarker = oMarkerInfo["chatRooms"]; 
-		//chatRoom의 장소 정보를 업데이트 
+		var aChatRoomInMarker = oMarkerInfo["chatRooms"];
+		//chatRoom의 장소 정보를 업데이트
 		this.eMenuInfo.innerText = oMarkerInfo["location_name"]; 
 		/*
 		 * 기존 element에 존재하는 template정보
@@ -686,17 +704,18 @@ var oMarkerClicker = {
 		for ( var index = 0 ; index < aChatRoomInMarker.length ; ++index ) {
 			newChatRoom = aChatRoomInMarker[index];
 			
+			//채팅방의 현재 참여 인원을 Ajax 통신을 통해 가져온다.
+			var currentParticipant = this.getCurrentNumOfParticipantByAjax(newChatRoom["id"]);
+
 			//템플릿 element를 복사해온다.
 			eNode = chatRoomTemplate.cloneNode(true);
-			//target Element에서 title를 나타내주는 element를 가져온다.
 			eTitle = eNode.children[0];
-			//target Element에서 인원수를 나타내주는 element를 가져온다.
 			eParticipant = eNode.children[1];
 			
 			//element Object에 id값을 Attribute로 저장, 나머지 엘리먼트에는 적절한 데이터값을 입력한다.
 			eNode.chatRoomNumber = newChatRoom["id"];
 			eTitle.innerText = newChatRoom["title"];
-			eParticipant.innerText = "1/"+newChatRoom["max"];
+			eParticipant.innerText = currentParticipant + "/" +newChatRoom["max"];
 			
 			//새로운 li 엘리먼트를 추가
 			this.eChatList.appendChild(eNode);

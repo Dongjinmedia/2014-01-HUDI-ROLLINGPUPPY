@@ -58,4 +58,9 @@
 		<url>/chatInfo/getMyChatInfo</url>
 		<controller>com.puppy.controller.ChatInfoController</controller>
 	</mapping>
+	
+	<mapping>
+		<url>/markerClicker/getCurrentNumOfParticipant</url>
+		<controller>com.puppy.controller.NumOfParticipantController</controller>
+	</mapping>
 </mappings>
