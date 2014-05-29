@@ -1239,6 +1239,7 @@ var oChat = {
 			oAjax.getObjectFromJsonGetRequest(incompleteUrl, "", callback.bind(this));
 		},
 		
+		// 채팅방의 top bar를 클릭하면 마우스 이동에 대한 이벤트를 등록한다.
 		mouseDownAtChatWindowTopBar: function(e) {
 			var sideBarSize = parseInt(getStyle(document.getElementById("nav_list"), "width"));
 			var headerSize = parseInt(getStyle(document.getElementById("header"), "height"));
@@ -1247,10 +1248,12 @@ var oChat = {
 			var distanceX = e.clientX - (sideBarSize + currentChatWindowLeft);
 			var distanceY = e.clientY - (headerSize + currentChatWindowTop)
 			this.functionTempForMoveWindow = this.moveChattingWindow.bind(this, sideBarSize, headerSize, distanceX, distanceY);
+
 			window.addEventListener("mousemove", this.functionTempForMoveWindow, true);
 			window.addEventListener("mouseup", this.mouseUp.bind(this), false);
 		},
 		
+		// 마우스가 이동하는 동안 채팅창이 마우스를 따라다닌다.
 		moveChattingWindow: function(e) {
 			var sideBarSize = arguments[0];
 			var headerSize = arguments[1];
@@ -1262,6 +1265,7 @@ var oChat = {
 			this.eChatWindow.style.top = event.clientY - headerSize - distanceY + "px";
 		},
 		
+		// 마우스를 떼면 채팅창이 마우스를 따라다니던 이벤트를 제거한다.
 		mouseUp: function(e) {
 			window.removeEventListener("mousemove", this.functionTempForMoveWindow, true);
 		},
@@ -1354,6 +1358,7 @@ var oChat = {
 //			}
 			this.getMyChatInfoAndUpdateListInPanel();
 			
+			// 채팅창 이동을 위한 이벤트 리스너 등록
 			this.eChatWindowTopBar.addEventListener('mousedown', this.mouseDownAtChatWindowTopBar.bind(this), false);
 		}
 };
