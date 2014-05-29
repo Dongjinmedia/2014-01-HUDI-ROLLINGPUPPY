@@ -293,6 +293,4 @@
 	window.onload = initialize();
 </script>
 <script type="text/javascript" src="/javascripts/search.js?20140521"></script>
-<script type="text/javascript"
-	src="/javascripts/enteredChattingRoomList.js?20140522"></script>
 </html>
