@@ -195,10 +195,6 @@ header {
 
 .section {
 	position: absolute;
-	top: 10px;
-	right: 10px;
-	bottom: 35px;
-	left: 10px;
 	overflow-x: hidden;
 	overflow-y: scroll;
 }
@@ -213,10 +209,6 @@ header {
 .card {
 	display: inline-block;
 
-	width: 400px;
-	height: 70px;
-	margin-left: -1px;
-	margin-bottom: 3px;
 	background-color: #FEFEFE;
 	border: 1px solid #ABABAB;
 	
@@ -225,29 +217,65 @@ header {
 	-moz-border-radius: 8px;
 }
 
-/* ipad */
-@media only screen 
-and (min-width : 650px)
-and (max-width : 1024px)  {
+@media only screen
+and (min-width: 920px) {
+	.section {
+		width: 900px;
+		top: 10px;
+		bottom: 30px;
+		left: 50%;
+		margin-left: -450px;
+	}
+	
 	.card {
-		margin: 6px auto;
-	}	
+		width: 438px;
+		height: 70px;
+		margin-left: 5px;
+		margin-bottom: 5px;
+	}
 }
 
-
-/* pablet */
+/* Tablet smaller than iPad */
 @media only screen 
-and (max-width : 650px)  {
+and (min-width: 650px) and (max-width: 920px) {
+	.section {
+		width: 630px;
+		top: 10px;
+		bottom: 30px;
+		left: 50%;
+		margin-left: -315px;
+	}
+	
+	.card {
+		width: 308px;
+		height: 70px;
+		margin-left: 3px;
+		margin-bottom: 3px;
+	}
+}
+
+/* phone */
+@media only screen 
+and (max-width: 650px)  {
+	.section {
+		top: 10px;
+		right: 10px;
+		bottom: 30px;
+		left: 10px;
+	}
+	
 	.card {
 		display: block;
 		width: 100%;
-		margin: 6px auto;
-	}	
+		height: 70px;
+		margin-bottom: 3px;
+		margin-left: -1px;
+	}
 }
 
 /* iphone */
 @media only screen 
-and (max-width : 490px)  {
+and (max-width: 490px)  {
 
 }
 
