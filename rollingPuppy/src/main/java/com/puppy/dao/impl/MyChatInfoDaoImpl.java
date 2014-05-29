@@ -33,27 +33,40 @@ public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
 		
 		try {
 			String query = "SELECT "
-									+ "crm.tbl_member_id AS user_id, "
-									+ "crm.tbl_chat_room_id AS chat_room_id, "
-									+ "cr.title AS chat_room_title, "
-									+ "cr.max AS max, "
-									+ "cr.location_name AS location_name, "
-									+ "(SELECT COUNT(id) "
-										+ "FROM tbl_message "
-										+ "WHERE created_time > crm.fold_time) AS unread_message_num, "
-									+ "(SELECT GROUP_CONCAT(t_member.id) "
-										+ "FROM tbl_member as t_member "
-										+ "INNER JOIN tbl_chat_room_has_tbl_member AS crm2 "
-										+ "ON t_member.id = crm2.tbl_member_id "
-										+ "WHERE crm.tbl_chat_room_id = crm2.tbl_chat_room_id) AS participant_list "
+											+ "crm.tbl_member_id AS user_id, "
+											+ "crm.tbl_chat_room_id AS chat_room_id, "
+											+ "cr.title AS chat_room_title, "
+											+ "cr.max AS max, "
+											+ "cr.location_name AS location_name, "
+												+ "("
+													+ "SELECT COUNT"
+																+ "(t_message.id) "
+													+ "FROM tbl_message AS t_message "
+													+ "INNER JOIN tbl_chat_room_has_tbl_member AS t_has "
+													+ "ON t_message.tbl_member_id = t_has.tbl_member_id "
+															+ "AND t_message.tbl_chat_room_id = t_has.tbl_chat_room_id "
+															+ "AND t_message.created_time > t_has.fold_time "
+													+ "WHERE t_message.tbl_member_id = ?"
+															+ " AND t_message.tbl_chat_room_id = crm.tbl_chat_room_id"
+												+ ") AS unread_message_num, "
+												
+												+ "("
+													+ "SELECT "
+																+ "GROUP_CONCAT(t_member.id) "
+													+ "FROM tbl_member as t_member "
+													+ "INNER JOIN tbl_chat_room_has_tbl_member AS crm2 "
+													+ "ON t_member.id = crm2.tbl_member_id "
+													+ "WHERE crm.tbl_chat_room_id = crm2.tbl_chat_room_id"
+												+ ") AS participant_list "
+													
 									+ "FROM tbl_chat_room_has_tbl_member AS crm "
-									+ "INNER JOIN tbl_chat_room AS cr "
-									+ "ON crm.tbl_chat_room_id = cr.id "
-									+ "WHERE crm.tbl_member_id = ?;";
+									+ "INNER JOIN tbl_chat_room AS cr ON crm.tbl_chat_room_id = cr.id "
+									+ "WHERE crm.tbl_member_id = ?";
 			
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setInt(1, userId);
+			preparedStatement.setInt(2, userId);
 			
 			lists = selectList(MyChatInfo.class, preparedStatement);
 			

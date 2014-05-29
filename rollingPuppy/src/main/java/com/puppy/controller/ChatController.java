@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
-import com.puppy.dto.Member;
+import com.puppy.dto.Message;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
@@ -35,11 +35,33 @@ public class ChatController implements Controller {
 		
 		//TODO 현재 Client에서 POST요청으로 처리하도록 해서
 		//이 메서드는 실행되지 않고 있다. Research 이후 GET방식으로 변경해야 한다.
-		if ( requestURL.contains("getlist") ) {
-			getChattingRoomList(request, response);
+		if ( requestURL.contains("initmessage") ) {
+			getInitMessageFromChatRoomNum(request, response);
 		}
 	}
 	
+	private void getInitMessageFromChatRoomNum(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		Map<String, Object> resultData = new HashMap<String, Object>();
+		
+		int chatRoomNum = Integer.parseInt(request.getParameter(Constants.REQUEST_CHATROOM_NUMBER).toString());
+		int memberId = Integer.parseInt(request.getSession().getAttribute(Constants.SESSION_MEMBER_ID).toString());
+		
+		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
+		List<Message> recentMessage = chatDao.selectInitMessagesFromChatRoomNumber(chatRoomNum, memberId);
+		List<Message> unreadMessage = chatDao.selectUnreadMessage(chatRoomNum, memberId);
+		
+		resultData.put(Constants.JSON_RESPONSE_RECENT_MESSAGE, recentMessage);
+		resultData.put(Constants.JSON_RESPONSE_UNREAD_MESSAGE, unreadMessage);
+		
+		out.println(gson.toJson(resultData));
+		logger.info("getInitMessageFromChatRoomNum : "+gson.toJson(resultData));
+	}
+
 	/*
 	 * if-else로 request를 비교하는 구문에서는 모두 소문자로 표기한다.
 	 * requestURL을 toLowerCase로 변환하고 있기 때문이다.
@@ -60,8 +82,6 @@ public class ChatController implements Controller {
 		//현재 GET요청에서는 에러가 발생중이다.
 		} else if ( requestURL.contains("getlist") ) {
 			getChattingRoomList(request, response);
-		} else if (requestURL.contains("getmembers")){
-			getChattingMemberList(request, response);
 		} else if (requestURL.contains("foldcurrentchatroom")){
 			updateChattingRoomFoldTime(request, response);
 		}
@@ -90,33 +110,6 @@ public class ChatController implements Controller {
 		}
 		
 		out.println(result);
-	}
-
-	private void getChattingMemberList(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		logger.info("into getChattingMemberList");
-		
-		String currentChatRoomNumberString = (String)request.getAttribute("currentChatRoomNumber");
-		int currentChatRoomNumber = Integer.parseInt(currentChatRoomNumberString);
-		
-		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
-		List<Member> chatMemberList = chatDao.getChatMemberList(currentChatRoomNumber);
-		
-		
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		
-		/*
-		for (Member member : chatMemberList) {
-			logger.info("===================");
-			logger.info(member.toString());
-		}*/
-		
-		out.println(gson.toJson(chatMemberList));
-		logger.info(gson.toJson(chatMemberList));
-		
-		
 	}
 
 	public void createChattingRoom(HttpServletRequest request, HttpServletResponse response) throws IOException {
