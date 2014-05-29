@@ -2,6 +2,12 @@ body {
 	positon: relative;
 	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "돋움", Times;
 	margin: 0;
+	
+	-webkit-user-select: NONE;
+	-khtml-user-select: NONE;
+	-moz-user-select: NONE;
+	-ms-user-select: NONE;
+	user-select: NONE;
 }
 
 a {

@@ -2,6 +2,12 @@ body, html {
 	position: relative;
 	height: 100%;
 	overflow: hidden;
+	
+	-webkit-user-select: NONE;
+	-khtml-user-select: NONE;
+	-moz-user-select: NONE;
+	-ms-user-select: NONE;
+	user-select: NONE;
 }
 
 a {
@@ -205,14 +211,44 @@ header {
 }
 
 .card {
-	width: 100%;
+	display: inline-block;
+
+	width: 400px;
 	height: 70px;
 	margin-left: -1px;
 	margin-bottom: 3px;
 	background-color: #FEFEFE;
 	border: 1px solid #ABABAB;
+	
 	border-radius: 8px;
 	-webkit-border-radius: 8px;
+	-moz-border-radius: 8px;
+}
+
+/* ipad */
+@media only screen 
+and (min-width : 650px)
+and (max-width : 1024px)  {
+	.card {
+		margin: 6px auto;
+	}	
+}
+
+
+/* pablet */
+@media only screen 
+and (max-width : 650px)  {
+	.card {
+		display: block;
+		width: 100%;
+		margin: 6px auto;
+	}	
+}
+
+/* iphone */
+@media only screen 
+and (max-width : 490px)  {
+
 }
 
 /*dada*/

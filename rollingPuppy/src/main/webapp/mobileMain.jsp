@@ -50,18 +50,18 @@
 		<div id="panel">
 			<div id="panel_contents">
 				<div class="section_wrapper">
-					<div class="section">
-						<h1>검색</h1>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
-					</div>
+					<ul class="section">
+						<li class="title"><h1>검색</h1></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+						<li class="card"></li>
+					</ul>
 				</div>
 				<div class="section_wrapper">
 					<div class="section">
