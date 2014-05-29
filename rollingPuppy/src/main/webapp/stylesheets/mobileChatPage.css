@@ -5,15 +5,14 @@
 }
 
 #chatWindow {
-	display: none;
-	width: 500px;
-	height: 600px;
+	width: 100%;
+	height: 100%;
 	position: relative;
 }
 
 #chatWindow .leftArea {
 	position:relative;
-	width: 80%;
+	width: 100%;
 	height: 100%;
 	float: left;
 	border: 0.1em solid #3a4655;
@@ -24,6 +23,7 @@
 }
 
 #chatWindow .rightArea {
+	display: none;
 	position: relative;
 	width: 20%;
 	height: 100%;
