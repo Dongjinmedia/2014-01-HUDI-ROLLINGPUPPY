@@ -2,10 +2,16 @@
 var oAjax = {
 		//Ajax GET 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (incompleteUrl, sParameters, callback) {
-			var url = incompleteUrl + sParameters;
-			var oParameters = null;
-			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
+		getObjectFromJsonGetRequest: function (incompleteUrl, oParameter, callback) {
+			
+			var url = incompleteUrl + "?";
+			for (var key in oParameter) {
+				if (oParameter.hasOwnProperty(key)) {
+					url += key + "="+oParameter[key]+"&";
+				}
+			}
+			console.log("getObjectFromJsonGetRequest : ", url);
+			this._getObjectFromJsonRequest(url, "GET", null, callback);
 		},
 		
 		//Ajax POST 요청함수

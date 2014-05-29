@@ -887,11 +887,13 @@ var oChat = {
 			
 			//채팅창을 열었으므로 unreadMessage는 0개로 바꾼다.
 			//TODO update Fold Time
+			//이것을 nodejs의 disconnection에서 처리해야하는지 리서치해야 한다.
 			this.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
 			this.updateChatWindowHeaderText(chatRoomNum);
 			this.updateNotificationView(chatRoomNum);
 			this.updateMemberList(chatRoomNum);
+			this.updateInitializeMessage(chatRoomNum);
 		},
 		
 		enterChatRoomOthers: function(user) {
@@ -913,6 +915,23 @@ var oChat = {
 			this.eChattingContents.appendChild(eNewMessage);
 			
 			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
+		},
+		
+		updateInitializeMessage: function(chatRoomNum) {
+			var oParameters = {
+    			"chatRoomNumber": chatRoomNum,
+    		};
+    		
+    		var callback = function(request) {
+    			console.log("/chat/initMessage : ",request.responseText);
+//    			var aResponse = JSON.parse(request.responseText);
+//
+//	    		} else {
+//	    			alert("네트워크 상태가 불안정합니다.\n채팅방 대화목록을 불러오지 못하였습니다.");
+//	    		}
+    		}
+    		
+    		oAjax.getObjectFromJsonGetRequest("/chat/initMessage", oParameters, callback.bind(this));
 		},
 		
 		//채팅창 상단에 보여지는 제목, 인원, 장소명 등의 데이터를 업데이트한다.

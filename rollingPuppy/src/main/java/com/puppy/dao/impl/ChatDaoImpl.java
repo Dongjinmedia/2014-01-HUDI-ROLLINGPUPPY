@@ -1,6 +1,7 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -10,6 +11,7 @@ import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
+import com.puppy.dto.Message;
 import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
@@ -222,6 +224,58 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 		
 		return successQueryNumber;
 	}
+
+	@Override
+	public List<Message> selectInitMessagesFromChatRoomNumber(int chatRoomNumber) {
+		logger.info("ChatDaoImpl selectInitMessagesFromChatRoomNumber");
+		
+		PreparedStatement preparedStatement = null;
+		List<Message> list = null;
+		
+		try {
+			String query = "SELECT * FROM tbl_message WHERE tbl_chat_room_id = ? ORDER BY created_time DESC LIMIT 50";
+			
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, chatRoomNumber);
+			
+			list = selectList(Message.class, preparedStatement);
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		
+		Collections.reverse(list);
+		
+		return list;
+	}
+
+	@Override
+	public List<Message> selectUnreadMessage(int chatRoomNumber, int memberId) {
+		logger.info("ChatDaoImpl selectUnreadMessage");
+		
+		PreparedStatement preparedStatement = null;
+		List<Message> list = null;
+		
+		try {
+			String query = "SELECT * "
+									+ "FROM tbl_message AS t_message "
+									+ "INNER JOIN tbl_chat_room_has_tbl_member AS t_has "
+									+ "ON t_message.tbl_member_id = t_has.tbl_member_id "
+											+ "AND t_message.tbl_chat_room_id = t_has.tbl_chat_room_id "
+											+ "AND t_message.created_time > t_has.fold_time "
+									+ "WHERE t_message.tbl_member_id = ? "
+											+ "AND t_message.tbl_chat_room_id = ?";
+			
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, memberId);
+			preparedStatement.setInt(2, chatRoomNumber);
+			
+			list = selectList(Message.class, preparedStatement);
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		return list;
+	}
 	
-	
+	//시간기준으로 Message Select
+	//public List<Message> selectMoreMessageBeforeParameterTime() {
 }
