@@ -34,4 +34,6 @@ public class Constants {
 	public static final String JSON_RESPONSE_MARKERLIST = "markerList";
 	public static final String JSON_RESPONSE_MARKERNUMBER = "markerNumber";
 	public static final String JSON_RESPONSE_NEWMARKER = "newMarker";
+	public static final String JSON_RESPONSE_RECENT_MESSAGE = "recentMessage";
+	public static final String JSON_RESPONSE_UNREAD_MESSAGE = "unreadMessage";
 }
