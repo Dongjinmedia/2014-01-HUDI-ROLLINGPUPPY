@@ -917,7 +917,7 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
-			this.currentChatRoomNumber = chatRoomNum; 
+			this.saveCurrentChatRoomNumber(chatRoomNum);
 			this.eChatWindow.style.display = "block";
 			
 			//채팅창을 열었으므로 unreadMessage는 0개로 바꾼다.
@@ -929,6 +929,11 @@ var oChat = {
 			this.updateNotificationView(chatRoomNum);
 			this.updateMemberList(chatRoomNum);
 			this.updateInitializeMessage(chatRoomNum);
+		},
+
+		saveCurrentChatRoomNumber: function(chatRoomNum) {
+			this.currentChatRoomNumber = chatRoomNum;
+			this.socket.emit("saveCurrentChatRoomNumber", {"currentChatRoomNumber": chatRoomNum});
 		},
 		
 		enterChatRoomOthers: function(user) {
@@ -1153,6 +1158,8 @@ var oChat = {
 			
 			oAjax.getObjectFromJsonPostRequest(url, oParameter, callback);
 			
+			//채팅서버에 창을 닫았다는 사실을 알려준다.
+			this.saveCurrentChatRoomNumber(null);
 		},
 		
 		exitChattingRoom: function(e) {

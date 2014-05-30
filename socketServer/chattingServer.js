@@ -53,7 +53,7 @@ function requestQuery(sql, aInsertValues, callbackFunction) {
 			}
 			
 			callbackFunction(queryResult);
-		});
+		})
 		
 		connection.release();
 	});
@@ -135,7 +135,7 @@ io.sockets.on('connection', function (socket) {
 		});
 		
 		return returnValue;
-	};
+	}
 	
 	function getUserNickname() {
 		var returnValue = null;
@@ -165,7 +165,7 @@ io.sockets.on('connection', function (socket) {
 		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber);
 		console.log('\u001b[1m');
 		socket.join(data.chatRoomNumber);
-	});
+	})
 
 
 
@@ -237,7 +237,7 @@ io.sockets.on('connection', function (socket) {
 
 		//데이터베이스 쿼리를 요청한다.
 		requestQuery(query, aQueryValues, callback);		
-	});
+	})
 	
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(oParameter) {
@@ -294,8 +294,8 @@ io.sockets.on('connection', function (socket) {
 					io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);	
 				}
 			}
-		);					
-	});
+		)					
+	})
 	
 	// TODO 현재는 DB에서 사용자 정보를 삭제하는 작업만 된 상태. socket과의 connection을 끊는 부분의 구현이 필요하다.
 	// 채팅방을 나가겠다는 요청을 처리한다.
@@ -306,12 +306,44 @@ io.sockets.on('connection', function (socket) {
 			function(oResult) {
 				io.sockets.in(data.chatRoomNumber).emit('exit', getUserNickname());
 			}
-		);
+		)
 	})
 
 	//Connection을 끊거나, 끊겼을경우
+	//유저가 마지막으로 보고있던 채팅방의 fold_time을 업데이트시켜준다.
+	//채팅창을 그냥 닫는경우가 발생할 수 있으므로, 창을 닫는 행위를 할경우
+	//하단의 saveCurrentChatRoomNumber로 null값을 전달하고,
+	//만약 세션에서 가져온 currentChatRoomNumber가 null일경우에는 fold_time을 업데이트 하지 않는다.
 	socket.on('disconnect', function() {
+		socket.get("currentChatRoomNumber", function(error, lastChatRoomNumber) {
+			
+			if (error) {
+				console.log("save CurrentChatRoomNumber : ",e);
+				return;
+			}
+			
+			//유저가 창을 fold했거나, 채팅창을 열지 않았을 경우 즉시탈출한다.
+			if (lastChatRoomNumber === null) {
+				return;
+			}
+			
+			var userId = getUserId();
+			
+			requestQuery(
+				"UPDATE tbl_chat_room_has_tbl_member SET fold_time=NOW() WHERE tbl_chat_room_id=? AND tbl_member_id=?",
+				[lastChatRoomNumber, userId],
+				function(oResult) {
+					console.log("Update Last Fold time, User id = ", userId);
+				}
+			)
+		})
 	});
+	
+	//현재 유저가 보고있는 채팅방의 번호를 세션에 저장해놓는다.
+	//이는 그냥 창을 닫는 등의 경우가 발생할때 fold_time을 업데이트해주기 위해서이다.
+	socket.on("saveCurrentChatRoomNumber", function(data) {
+		socket.set("currentChatRoomNumber", data.currentChatRoomNumber);
+	})
 });
 
 
