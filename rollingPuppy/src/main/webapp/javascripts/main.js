@@ -907,6 +907,11 @@ var oChat = {
 			
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.
+			
+			var callback = function() {
+				
+			}
+			
 			this.socket.emit('join', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
 		},
 		
@@ -933,12 +938,12 @@ var oChat = {
 		sendMessage: function(message) {
 			
 			oMessageInfo = {
-				"userId": this.userId,
 				"message": message,
-				"chatRoomNum": this.currentChatRoomNumber,
+				"chatRoomNumber": this.currentChatRoomNumber,
 			};
 			
 			this.socket.emit('message', oMessageInfo);
+			this.eInputBox.value="";
 		},
 		
 		getMessage: function(oMessageInfo) {
@@ -946,7 +951,6 @@ var oChat = {
 			var flag = 0;
 			
 			console.log("oMessageInfo['tblMemberId'] : ", oMessageInfo["tblMemberId"]);
-			console.log("this.userId : ", this.userId);
 			console.log("is same : ", oMessageInfo["tblMemberId"] == this.userId);
 			
 			if ( oMessageInfo["tblMemberId"] == this.userId ) {
@@ -955,15 +959,12 @@ var oChat = {
 			
 			oMessageInfo["isMyMessage"] = flag;
 			
-			console.log("getMessage isMyMessage : ", oMessageInfo);
-			
 			this._updateOneMessage(oMessageInfo);
 			this.setMessageBoxScrollTop();
 		},
 		
 		setMessageBoxScrollTop: function() {
 			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
-			this.eInputBox.value="";
 		},
 		
 		isNewDay: function(dayNum) {
@@ -1303,23 +1304,23 @@ var oChat = {
 		},
 		
 		initialize: function() {
-			this.socket = io.connect('http://127.0.0.1:3080');
-			
+			var email = document.getElementById("email").value;
 			//hidden attribute. User Identifier Database id Value.
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
-			this.socket.email = document.getElementById("email").value;
 			this.userId = document.getElementById("id").value;
 			
+			console.log(email.replace("@", "&domain="));
+			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
+			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
+			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
-			this.eInputBox.onkeydown = function(event) {
-				
-				//test code
-				//TODO delete this code
-				//alert("in : " + event.keyCode);
-				//console.log("in : " + event.keyCode);
-				
-				if ( event.keyCode == 13 ) {
+			this.eInputBox.onkeydown = function(event) {				
+				if (event.keyCode == 13 && event.shiftKey) {
+					this.eInputBox.value = this.eInputBox.value + "\n";
+					event.preventDefault();
+				} else if ( event.keyCode == 13 ) {
 					this.sendMessage( this.eInputBox.value );
+					event.preventDefault();
 				}
 			}.bind(this);
 			
@@ -1347,6 +1348,14 @@ var oChat = {
 			
 			this.socket.on('message', function (oParameter) {
 				this.getMessage(oParameter);
+			}.bind(this));
+			
+			this.socket.on("announce", function(message) {
+				alert(message);
+			});
+			
+			this.socket.on("execute", function(callback) {
+				callback();
 			}.bind(this));
 			
 			// TODO 채팅방에서 나가면 방에 남아있는 사람들이 누가 나갔는지 볼 수 있게 메시지를 띄워준다.

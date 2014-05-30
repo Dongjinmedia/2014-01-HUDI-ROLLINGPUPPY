@@ -708,9 +708,9 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 .top .menu {
 	position: absolute;
-	right: 2%;
+	right: 1%;
 	top: 70px;
-	width: 3em;
+	width: 36px;
 	height: 1em;
 	cursor: pointer;
 }
@@ -787,14 +787,13 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 .chattingContents li{
   clear: both;
   position: relative;
-  margin-bottom: 30px;
 }
 
 .chattingContents {
   float: left;
   display: inline-block;
   width: 100%;
-  padding: 5% 2.5% 0 2.5%;
+  padding: 0 2.5% 0 2.5%;
   height: 100%;
   margin: auto;
   list-style: none;
@@ -835,7 +834,6 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 .chattingContents .user .message {
   max-width: 80%;
   text-align: justify;
-  padding-left: 14px;
   color: #92a2c2;
 }
 
