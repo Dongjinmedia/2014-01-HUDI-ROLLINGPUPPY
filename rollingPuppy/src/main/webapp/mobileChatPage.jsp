@@ -14,12 +14,18 @@
 	<div id="chatWindow">
 		<div class="leftArea">
 			<div class="top">
-				<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
+				<p class="title icon-chatting">모여라 꿈동산</p>
 				<p class="limit icon-participant">1 / 300</p>
-				<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+				<!--  <p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+				-->
 				<div class="menu">
-					<i class="icon-aside" title="접어두기"></i>
-					<i class="icon-exit" title="채팅방 나가기"></i>
+					<div class = "leftMenu">
+						<i class="icon-aside" title="접어두기"></i>
+						<i class="icon-exit" title="채팅방 나가기"></i>
+					</div>
+					<div class = "rightMenu">
+						<i class ="icon-member" title="채팅멤버 보여주기"></i>
+					</div>
 			</div>
 			</div>
 			<div class="middle">
@@ -66,4 +72,19 @@
 		</div>
 	</div>
 </body>
+<script type="text/javascript" src="/javascripts/mobileChat.js?20140521"></script>
+<!--하면 채팅 내용부분만 스크롤이 됨. 원래 의도는 주소창을 없애는 것이었음
+<script type="text/javascript">
+if (navigator.userAgent.indexOf('iPhone') != -1) { 
+	addEventListener("load", function() 
+	{ 
+	setTimeout(hideURLbar, 0); 
+	}, false); 
+}
+
+function hideURLbar() { 
+	window.scrollTo(0, 1); 
+}
+</script> 
+-->
 </html>
