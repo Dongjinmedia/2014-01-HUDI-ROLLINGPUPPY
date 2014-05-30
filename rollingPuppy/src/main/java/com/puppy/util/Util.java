@@ -14,10 +14,10 @@ import javax.servlet.http.Part;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.puppy.dao.impl.MyChatInfoDaoImpl;
+import com.puppy.dao.impl.ChatInfoDaoImpl;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Member;
-import com.puppy.dto.MyChatInfo;
+import com.puppy.dto.ChatInfo;
 
 public class Util {
 	
@@ -155,13 +155,13 @@ public class Util {
 	 *		}
 	 *	} 
 	 */
-	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<MyChatInfo> myChatInfoList) {
+	public static Map<String, JsonChatInfo> getChatRoomInfoObjectFromQueryResult(List<ChatInfo> myChatInfoList) {
 		/*
 		 * Database query를 위한 선언
 		 * 채팅방리스트에 참여하고 있는 
 		 * 모든 참여자정보를 가져오기 위해 질의가 필요하다.
 		 */
-		MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance(); 
+		ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance(); 
 		
 		//전체 참여자아이디가 구분자,를 기준으로 구성된 
 		//String Value를 리턴한다.
@@ -186,7 +186,7 @@ public class Util {
 		 * for문을 돌면서 원하는 형태로 데이터를 담는다.
 		 * 
 		 */
-		for (MyChatInfo chatRoom : myChatInfoList) {
+		for (ChatInfo chatRoom : myChatInfoList) {
 			
 			//chatRoomId를 가져온다.
 			int chatRoomId = chatRoom.getChatRoomId();
@@ -273,10 +273,10 @@ public class Util {
 	 * 
 	 * {"채팅방번호1": [참여자1, 참여자2, 참여자3, 참여자4 ...], "채팅방번호2": [참여자1, 참여자2, 참여자3, 참여자4 ...] ...} 
 	 */
-	public static Map<Integer, List<String>> getParticipantListFromChatInfoList(List<MyChatInfo> chatInfoList) {
+	public static Map<Integer, List<String>> getParticipantListFromChatInfoList(List<ChatInfo> chatInfoList) {
 		Map<Integer, List<String>> resultMap = new HashMap<Integer, List<String>>();
 
-		for (MyChatInfo myChatInfo : chatInfoList) {
+		for (ChatInfo myChatInfo : chatInfoList) {
 			resultMap.put(myChatInfo.getChatRoomId(), getListFromString(myChatInfo.getParticipantList()));
 		}
 		
@@ -299,11 +299,11 @@ public class Util {
 	 * 
 	 * ex) ["a,b,c", "1,2,3", "가,나,다"] -> "a,b,c,1,2,3,가,나,다"
 	 */
-	public static String getTotalStringList(List<MyChatInfo> chatInfoList) {
+	public static String getTotalStringList(List<ChatInfo> chatInfoList) {
 		
 		String returnString = "";
 		
-		for (MyChatInfo myChatInfo : chatInfoList) {
+		for (ChatInfo myChatInfo : chatInfoList) {
 			returnString += myChatInfo.getParticipantList() + ",";
 		}
 		

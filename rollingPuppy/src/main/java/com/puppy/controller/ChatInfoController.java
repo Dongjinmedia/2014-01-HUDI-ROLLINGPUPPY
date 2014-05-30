@@ -13,8 +13,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
-import com.puppy.dao.impl.MyChatInfoDaoImpl;
-import com.puppy.dto.MyChatInfo;
+import com.puppy.dao.impl.ChatInfoDaoImpl;
+import com.puppy.dto.ChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
 import com.puppy.util.Util;
@@ -48,8 +48,8 @@ public class ChatInfoController implements Controller {
 			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
 
 			if ( userId != 0 ) {
-				MyChatInfoDaoImpl myChatInfoDaoImpl = MyChatInfoDaoImpl.getInstance();
-				List<MyChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
+				ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
+				List<ChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
 				
 				/*
 				 * chatInfoList를 이용해서 
@@ -83,6 +83,9 @@ public class ChatInfoController implements Controller {
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		int chatRoomNumber = Integer.parseInt(request.getParameter("chatRoomNumber"));
 		
+		ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
+		//MyChatInfo chatInfo = myChatInfoDaoImpl
 	}
 }

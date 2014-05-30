@@ -3,9 +3,9 @@ package com.puppy.dao;
 import java.util.List;
 
 import com.puppy.dto.Member;
-import com.puppy.dto.MyChatInfo;
+import com.puppy.dto.ChatInfo;
 
-public interface MyChatInfoDao {
-	public List<MyChatInfo> selectMyChatInfo(int userId);
+public interface ChatInfoDao {
+	public List<ChatInfo> selectMyChatInfo(int userId);
 	public List<Member> selectAllParticipantData(String totalListString);
 }

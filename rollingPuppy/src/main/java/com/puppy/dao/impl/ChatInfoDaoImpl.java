@@ -7,29 +7,29 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.puppy.dao.DAO;
-import com.puppy.dao.MyChatInfoDao;
+import com.puppy.dao.ChatInfoDao;
 import com.puppy.dto.Member;
-import com.puppy.dto.MyChatInfo;
+import com.puppy.dto.ChatInfo;
 
-public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
+public class ChatInfoDaoImpl extends DAO implements ChatInfoDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MyChatInfoDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChatInfoDaoImpl.class);
 	
-	private static MyChatInfoDaoImpl instance = null;
+	private static ChatInfoDaoImpl instance = null;
 	
-	private MyChatInfoDaoImpl() {
+	private ChatInfoDaoImpl() {
 	}
 	
-	public static MyChatInfoDaoImpl getInstance() {
-		return instance == null ? new MyChatInfoDaoImpl() : instance;
+	public static ChatInfoDaoImpl getInstance() {
+		return instance == null ? new ChatInfoDaoImpl() : instance;
 	}
 
 	@Override
-	public List<MyChatInfo> selectMyChatInfo(int userId) {
+	public List<ChatInfo> selectMyChatInfo(int userId) {
 		logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
 		
 		PreparedStatement preparedStatement = null;
-		List<MyChatInfo> lists = null;
+		List<ChatInfo> lists = null;
 		
 		try {
 			String query = "SELECT "
@@ -68,7 +68,7 @@ public class MyChatInfoDaoImpl extends DAO implements MyChatInfoDao {
 			preparedStatement.setInt(1, userId);
 			preparedStatement.setInt(2, userId);
 			
-			lists = selectList(MyChatInfo.class, preparedStatement);
+			lists = selectList(ChatInfo.class, preparedStatement);
 			
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);
