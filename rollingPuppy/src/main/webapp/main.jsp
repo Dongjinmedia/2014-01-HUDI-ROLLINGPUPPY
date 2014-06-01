@@ -300,5 +300,4 @@
 <script>
 	window.onload = initialize();
 </script>
-<script type="text/javascript" src="/javascripts/search.js?20140521"></script>
 </html>

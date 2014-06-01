@@ -235,41 +235,63 @@ io.sockets.on('connection', function (socket) {
 			// }
 			var affectedRows = oResult["affectedRows"];
 			//TODO Log console.log("affectedRows : ",affectedRows);
-			//방에 새로 입장했다는 의미
-			if ( affectedRows !== 0 ) {
-				socket.join(chatRoomNumber);
-				
-				//닉네임 전달
-				io.sockets.in(chatRoomNumber).emit('join', getUserNickname());
-				
-				//TODO callback으로 변경해야 한다.
-				getChatInfoFromWebServer(chatRoomNumber, function(sResult) {
-				
-					if (isUndefinedOrNull(sResult)) {
-						//TODO JSONP로 변경
-						announce("예기치 못한 에러가 발생했습니다. 다시확인해 주세요.");
-						return;
-					}
-				
-					var oResult = JSON.parse(sResult);
-					console.log("oResult from parsing : ", oResult );
-				
-					var oCallback = {
-						callback: function() {
-						 	//새로운데이터 추가.
-							oChat.addChatInfo(this.chatRoomNumber, this.oResult[this.chatRoomNumber]);
-							//리스트에 새로운 채팅방정보 더하기
-							oAside.addChattingList(this.chatRoomNumber, this.oResult[this.chatRoomNumber]);
-							//채팅윈도우 열기
-							oChat.showChatWindow(this.chatRoomNumber);
-						},
-						oResult: oResult,
-						chatRoomNumber: chatRoomNumber
-					};
 
-					executeInClient(oCallback);
-				});
-			}
+			getChatInfoFromWebServer(chatRoomNumber, function(sResult) {
+				
+				if (isUndefinedOrNull(sResult)) {
+					//TODO JSONP로 변경
+					announce("예기치 못한 에러가 발생했습니다. 다시확인해 주세요.");
+					return;
+				}
+				
+				var oResult = JSON.parse(sResult)[chatRoomNumber];
+				console.log("oResult from parsing : ", oResult );
+				
+				
+				oCallback= {};
+				
+				//참여인원이 꽉차있기 때문에 채팅방참여가 불가능하다.
+				if ( oResult["participantNum"] >= oResult["max"]) {
+					oCallback = {
+						callback: function() {
+							alert("채팅방 허용인원이 초과되었습니다.");
+						}
+					};
+				} else {
+					//기존에 방에 입장해있었을 경우
+					if ( affectedRows == 0 ) {
+						oCallback = {
+							callback: function() {
+								oChat.showChatWindow(this.chatRoomNumber)
+							},
+							chatRoomNumber: chatRoomNumber
+						};
+
+					//방에 새로 입장했다는 의미
+					} else {
+						socket.join(chatRoomNumber);
+					
+						oCallback = {
+							callback: function() {
+							 	//새로운데이터 추가.
+								oChat.addChatInfo(this.chatRoomNumber, this.oResult);
+								//리스트에 새로운 채팅방정보 더하기
+								oAside.addChattingList(this.chatRoomNumber, this.oResult);
+								//채팅윈도우 열기
+								oChat.showChatWindow(this.chatRoomNumber);
+							},
+							oResult: oResult,
+							chatRoomNumber: chatRoomNumber
+						};
+						
+						//채팅방 참여를 알린다.
+						//닉네임 전달
+						//TODO Message로 변경
+						io.sockets.in(chatRoomNumber).emit('join', getUserNickname());
+					}
+				}
+				executeInClient(oCallback);	
+			});				
 		};
 		/********************************************************************************************************************/
 		

@@ -103,7 +103,7 @@ var oAside= {
 		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
 		
 		var eChattingPanelContents = this.ePanel.querySelector("#pc_chatting");
-		eChattingPanelContents.addEventListener("click", this.ChattingSelectHandler.bind(this));
+		eChattingPanelContents.addEventListener("click", this.chattingSelectHandler.bind(this));
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
@@ -249,12 +249,12 @@ var oAside= {
 	
 	//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 	//working
-	ChattingSelectHandler: function(event) {
+	chattingSelectHandler: function(event) {
 		var clickedTarget = event.target;	
 		if(clickedTarget.tagName == "P"){
 			//cell을 선택했으면 
 			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
-			//그 cell의 속성으로 저장된 채팅방번호를 가져온다. 
+			//그 cell의 속성으로 저장된 채팅방번호를 가져온다.
 			var destinationTarget = clickedTarget.parentNode;
 			var chatRoomNum = destinationTarget["chatRoomNumber"];
 			
@@ -1244,6 +1244,7 @@ var oChat = {
 		
 		//새로운 chatInfo항목을 추가한다.
 		addChatInfo: function(chatRoomNumber, oResult) {
+			console.log(oChat.oInfo);
 			oChat.oInfo[chatRoomNumber] = oResult;
 		},
 		
@@ -1283,9 +1284,9 @@ var oChat = {
 							oAside.addChattingList(key, oResult[key]);
 						}
 					}
-					//확인하지 않은 메세지갯수를 업데이트한다.
-					oAside.updateTotalNotificationView();
 				}
+				//확인하지 않은 메세지갯수를 업데이트한다.
+				oAside.updateTotalNotificationView();
 			};
 			
 			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
