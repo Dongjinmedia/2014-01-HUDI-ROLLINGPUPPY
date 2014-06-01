@@ -161,6 +161,10 @@
 						<!-- pc == panel_content -->
 						<div id="pc_search" class="on">
 							<ul>
+								<div class="default">
+									<p class="icon-warning">
+									<p class="comment">상단의 검색버튼을 이용해주세요.</p>
+								</div>
 							</ul>
 							
 							<!-- 추후 여유가 될 때, 개발. scroll로 대체  

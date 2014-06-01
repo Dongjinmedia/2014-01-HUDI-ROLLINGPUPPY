@@ -172,7 +172,7 @@ var oAside= {
 		oTarget["elTarget"] = eCopiedTemplate;
 		console.log("oTarget :",oTarget);
 		//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
-		eCopiedTemplate["chatRoomNum"] = chatRoomNumber;
+		eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
 		
 		eChattingRoomTitle.innerHTML = oTarget["title"]; 
 		eChattingRoomMax.innerText = oTarget["participantNum"] +"/"+ oTarget["max"]; 
@@ -184,7 +184,16 @@ var oAside= {
 		//template을 원하는 위치에 삽입
 		eTarget.appendChild(eCopiedTemplate);
 	},
-	
+	//working2
+	deleteFromChattingList: function(chatRoomNumber) {
+		var eTarget = oChat.oInfo[chatRoomNumber]["elTarget"];
+		console.log("elTarget : ",eTarget);
+		this.eChattingListTarget.removeChild(eTarget);
+		
+		if ( this.eChattingListTarget.childNodes.length === 0 ) {
+			this.vacantChattingList();
+		}
+	},
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
 	// CSS3 animation은 CSS 속성으로 동작합니다.
 	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
@@ -247,7 +256,7 @@ var oAside= {
 			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
 			//그 cell의 속성으로 저장된 채팅방번호를 가져온다. 
 			var destinationTarget = clickedTarget.parentNode;
-			var chatRoomNum = destinationTarget["chatRoomNum"];
+			var chatRoomNum = destinationTarget["chatRoomNumber"];
 			
 			oChat.showChatWindow(chatRoomNum);
 			this._foldPanelContents();
@@ -976,19 +985,24 @@ var oChat = {
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
 			this.saveCurrentChatRoomNumber(chatRoomNum);
-			this.eChatWindow.style.display = "block";
-			
-			//채팅창을 열었으므로 unreadMessage는 0개로 바꾼다.
-			//TODO update Fold Time
-			//이것을 nodejs의 disconnection에서 처리해야하는지 리서치해야 한다.
+			console.log("chatRoomNumber :",chatRoomNum);
 			this.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
 			this.updateChatWindowHeaderText(chatRoomNum);
 			this.updateNotificationView(chatRoomNum);
 			this.updateMemberList(chatRoomNum);
 			this.updateInitializeMessage(chatRoomNum);
+			this.visibleChatWindow();
 		},
 
+		visibleChatWindow: function() {
+			this.eChatWindow.style.display = "block";
+		},
+		
+		invisibleChatWindow: function() {
+			this.eChatWindow.style.display = "none";
+		},
+		
 		saveCurrentChatRoomNumber: function(chatRoomNum) {
 			this.currentChatRoomNumber = chatRoomNum;
 			this.socket.emit("saveCurrentChatRoomNumber", {"currentChatRoomNumber": chatRoomNum});
@@ -1208,7 +1222,7 @@ var oChat = {
 				// TODO 교수님께 질문드리기
 				// ===로 비교하면 false 계속 리턴된다.. 왜그럴까? (index.js와 비교해서 볼것!)
 				if ( result.indexOf("SUCCESS") !== -1 ) {
-					this.eChatWindow.style.display = "none";
+					this.invisibleChatWindow();
 				} else {
 					alert("다시 시도해주세요.");
 				}
@@ -1218,11 +1232,6 @@ var oChat = {
 			
 			//채팅서버에 창을 닫았다는 사실을 알려준다.
 			this.saveCurrentChatRoomNumber(null);
-		},
-		
-		exitChattingRoom: function(e) {
-			this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
-			this.eChatWindow.style.display = "none"
 		},
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
@@ -1351,7 +1360,7 @@ var oChat = {
 			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
 			this.eExitButton.addEventListener("click", function(e) {
 				if ( confirm("Are you sure Exit Chatting Room?")) {
-					this.exitChattingRoom();
+					this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
 				}
 			}.bind(this), false);
 			
@@ -1747,9 +1756,9 @@ oSearching = {
 						//template을 원하는 위치에 삽입
 						eTarget.appendChild(eCopiedTemplate);
 					}
-					//검색결과 Panel을 열어준다.
-					oAside.clickSearchMenu();
 				}
+				//검색결과 Panel을 열어준다.
+				oAside.clickSearchMenu();
 			};
 			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
 		},

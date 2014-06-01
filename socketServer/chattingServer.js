@@ -76,7 +76,7 @@ io.sockets.on('connection', function (socket) {
 	//계속적으로 사용합니다. 이 아이디값은 각 소켓별로 다르게 관리됩니다.
 	//
 	//TODO 잘못된 사용을 방지하기 위해 회원의 아이디, 이메일정보를 모두 전달받아서 확인합니다.
-	console.log("query : ",socket.handshake.query);
+	//TODO Log console.log("query : ",socket.handshake.query);
 	
 	if (
 		!isUndefinedOrNull(socket.handshake.query.userId)
@@ -101,7 +101,7 @@ io.sockets.on('connection', function (socket) {
 		
 		var callback = function(aResult) {
 			//회원이 존재하지 않을경우
-			console.log("aResult : ",aResult);
+			//TODO Log console.log("aResult : ",aResult);
 			if ( aResult.length === 0 ) {
 				//TODO
 				//announce("잘못된 접근");
@@ -162,8 +162,6 @@ io.sockets.on('connection', function (socket) {
 		tempCallback = tempCallback.replace("()", "");
 		tempCallback = tempCallback.replace("{", "");
 		tempCallback = tempCallback.substring(0, tempCallback.length-1);
-		
-		console.log(tempCallback);
 
 		oCallback.callback = tempCallback;
 		socket.emit("execute", oCallback);
@@ -188,8 +186,6 @@ io.sockets.on('connection', function (socket) {
 	//사용자 접속 시 Room Join및 접속한 사용자들 Room참여 인원들에게 알립니다.
 	//'join'에 대한 요청을 받고 있는 function입니다.	
 	socket.on('join', function(data) {
-
-		console.log("Join request!!!");
 		
 		//데이터체크
 		if (isUndefinedOrNull(data)) {
@@ -214,8 +210,8 @@ io.sockets.on('connection', function (socket) {
 		var userId = getUserId();
 		var chatRoomNumber = data.chatRoomNumber;
 			
-		console.log("userId : ",userId);
-		console.log("chatRoomNumber : ", chatRoomNumber);
+		//TODO Log console.log("userId : ",userId);
+		//TODO Log console.log("chatRoomNumber : ", chatRoomNumber);
 		if ( isUndefinedOrNull(userId) || isUndefinedOrNull(chatRoomNumber)) {
 			announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
 			return;
@@ -238,7 +234,7 @@ io.sockets.on('connection', function (socket) {
 			//  changedRows: 0 
 			// }
 			var affectedRows = oResult["affectedRows"];
-			console.log("affectedRows : ",affectedRows);
+			//TODO Log console.log("affectedRows : ",affectedRows);
 			//방에 새로 입장했다는 의미
 			if ( affectedRows !== 0 ) {
 				socket.join(chatRoomNumber);
@@ -248,7 +244,6 @@ io.sockets.on('connection', function (socket) {
 				
 				//TODO callback으로 변경해야 한다.
 				getChatInfoFromWebServer(chatRoomNumber, function(sResult) {
-					console.log("sResult : ",sResult);
 				
 					if (isUndefinedOrNull(sResult)) {
 						//TODO JSONP로 변경
@@ -261,15 +256,10 @@ io.sockets.on('connection', function (socket) {
 				
 					var oCallback = {
 						callback: function() {
-						 	console.log('test');
-						 	alert(this.callbackParam);
-		
 						 	//새로운데이터 추가.
-						 	//oChat.oInfo[this.chatRoomNumber] = this.oResult[this.chatRoomNumber];
 							oChat.addChatInfo(this.chatRoomNumber, this.oResult[this.chatRoomNumber]);
 							//리스트에 새로운 채팅방정보 더하기
 							oAside.addChattingList(this.chatRoomNumber, this.oResult[this.chatRoomNumber]);
-							
 							//채팅윈도우 열기
 							oChat.showChatWindow(this.chatRoomNumber);
 						},
@@ -302,8 +292,6 @@ io.sockets.on('connection', function (socket) {
 			var memberId = oMessageInfo["tblMemberId"];
 		*/
 		
-		console.log("message request!!!");
-		
 		var userId = getUserId();
 		var message = oParameter["message"];
 		var chatRoomNumber = oParameter["chatRoomNumber"];
@@ -315,12 +303,11 @@ io.sockets.on('connection', function (socket) {
 			[chatRoomNumber, userId, message],
 			//Param3
 			function(oResult) {
-				console.log("message request result oResult : "+oResult);
 				var affectedRows = oResult["affectedRows"];
 				
 				//TODO 결과가 없을때를 대비한 error event를 만들자						
-				if ( affectedRows !== 1 ) {
-					socket.emit('error', message);																																																								qqqqqqqqqqqqqqqqqqqqqqqq
+				if ( affectedRows === 0 ) {
+					//TODO socket.emit('error', "message");
 					return;
 				} else {
 					
@@ -336,8 +323,6 @@ io.sockets.on('connection', function (socket) {
 						"time": date.getHours() + ":" + date.getMinutes()
 					}
 					
-					console.log("oMessageInfo : ",oMessageInfo);
-					
 					//Room에 있는 모두에게 참여메시지를 보냅니다.
 					io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);	
 				}
@@ -352,7 +337,26 @@ io.sockets.on('connection', function (socket) {
 			"DELETE FROM tbl_chat_room_has_tbl_member WHERE tbl_chat_room_id = ? AND tbl_member_id = ?",
 			[data.chatRoomNumber, getUserId()],
 			function(oResult) {
-				io.sockets.in(data.chatRoomNumber).emit('exit', getUserNickname());
+				var affectedRows = oResult[affectedRows];
+				console.log("oResult : ",oResult);
+				
+				if ( affectedRows === 0 ) {
+					//TODO 에러별 클라이언트 처리
+					console.log("Delete Fail");
+				} else {
+					//TODO 삭제. Message로 대체,
+					io.sockets.in(data.chatRoomNumber).emit('exit', getUserNickname());
+					
+					var oCallback = {
+						callback: function() {
+							oAside.deleteFromChattingList(this.chatRoomNumber);
+							oChat.invisibleChatWindow();
+						},
+						chatRoomNumber: data.chatRoomNumber
+					}
+					
+					executeInClient(oCallback);
+				}
 			}
 		)
 	})
@@ -399,7 +403,6 @@ io.sockets.on('connection', function (socket) {
 //***************************************************************************************
 // Webserver와의 통신을 위한 http 관련 소스코드
 //***************************************************************************************
-//현재는 테스트코드 레벨이다.
 var http = require('http');
 
 function getOption() {
@@ -431,44 +434,10 @@ function requestGet(url, oParameter, callback) {
 	
 	var option = getOption();
 	option.path = url;
-	console.log(url);
-	console.log(option);
+	
 	var req = http.request(options, callback);
 	req.end();
 }
-
-
-// var oHttpRequest= {
-// 	http: null,
-// 	options: {
-// 	  host: 'localhost',
-// 	  path: '/chatInfo/getMyChatInfo',
-// 	  port: '8080',
-// 	  method: 'GET',
-// 	  headers: {
-// 	              "accept": 'application/json'
-
-// 			   }//,
-// 	  // form: {
-// // 				chatRoomNumber: null
-// // 			}
-// 	},
-// 	callback: function(response) {
-// 	  var str = ''
-// 	  response.on('data', function (chunk) {
-// 	    str += chunk;
-// 	  });
-// 
-// 	  response.on('end', function () {
-// 	    console.log(str);
-// 	  });
-// 	},
-// 	execute: function(options, callback) {
-// 		this.http = 
-// 		var req = this.http.request(options, callback);
-// 		req.end();
-// 	}
-// };
 
 function getChatInfoFromWebServer(chatRoomNumber, pFunction) {
 	console.log("into getChatInfoFromWebServer");
