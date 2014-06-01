@@ -787,6 +787,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 .chattingContents li{
   clear: both;
   position: relative;
+  margin-top: 2em;
 }
 
 .chattingContents {
@@ -801,7 +802,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   overflow-x: hidden;
 }
 
-.chattingContents li .profile {
+.profile {
   width: 3em;
   height: 3em;
   display: inline-block;

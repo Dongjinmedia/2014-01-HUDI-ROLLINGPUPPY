@@ -1,19 +1,22 @@
 package com.puppy.util;
 
 public class JsonParticipant {
+	@SuppressWarnings("unused")
 	private String nicknameAdjective;
+	
+	@SuppressWarnings("unused")
 	private String nicknameNoun;
 	
-	public JsonParticipant(String nicknameAdjective, String nicknameNoun) {
+	@SuppressWarnings("unused")
+	private String backgroundColor;
+	
+	@SuppressWarnings("unused")
+	private String backgroundImage;
+	
+	public JsonParticipant(String nicknameAdjective, String nicknameNoun, String backgroundColor, String backgroundImage) {
 		this.nicknameAdjective = nicknameAdjective;
 		this.nicknameNoun = nicknameNoun;
-	}
-
-	public String getNicknameAdjective() {
-		return nicknameAdjective;
-	}
-
-	public String getNicknameNoun() {
-		return nicknameNoun;
+		this.backgroundColor = backgroundColor;
+		this.backgroundImage = backgroundImage;
 	}
 }

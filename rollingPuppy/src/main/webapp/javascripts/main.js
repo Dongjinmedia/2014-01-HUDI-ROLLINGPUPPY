@@ -1064,7 +1064,10 @@ var oChat = {
 			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
-			//eCopiedTemplate.querySelector(".profile").style.backgroundURL
+			
+			var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+			eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
+			eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
 			
 			return eCopiedTemplate;
 		},
@@ -1191,6 +1194,10 @@ var oChat = {
 					var aPtag = eCopiedTemplate.querySelectorAll("p");
 					aPtag[0].innerText = oParticipant["nicknameAdjective"];
 					aPtag[1].innerText = oParticipant["nicknameNoun"];
+					
+					var eTargetProfile = eCopiedTemplate.querySelector(".profile");
+					eTargetProfile.style.backgroundColor= oParticipant["backgroundColor"];
+					eTargetProfile.style.backgroundImage="url("+oParticipant["backgroundImage"]+")";
 					
 					this.eChattingMemberList.appendChild(eCopiedTemplate);
 				}

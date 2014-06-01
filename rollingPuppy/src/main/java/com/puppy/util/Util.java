@@ -201,7 +201,9 @@ public class Util {
 			//방에 참여하고 있는 채팅방참여 리스트를 돌면서 참여자아이디를 하나씩 가져온다.
 			for (String targetMemberId : targetParticipantList) {
 				//참여자 아이디와 일치하는 데이터베이스 결과데이터 DTO를 가져온다.
-				Member targetMember = memberTotalDataFromQuery.get(Integer.parseInt(targetMemberId.toString()));
+				int memberId = Integer.parseInt(targetMemberId.toString());
+				
+				Member targetMember = memberTotalDataFromQuery.get(memberId);
 				
 				if ( targetMember == null )
 					continue;
@@ -210,7 +212,9 @@ public class Util {
 				JsonParticipant insertData = new JsonParticipant
 																		(
 																			targetMember.getNicknameAdjective(),
-																			targetMember.getNicknameNoun()
+																			targetMember.getNicknameNoun(),
+																			Util.getHexBackgroundColorFromSeed(memberId),
+																			Util.getBackgroundImageUrlFromSeed(memberId)
 																		);
 				
 				insertParticipantData.put(targetMemberId, insertData);
@@ -236,6 +240,15 @@ public class Util {
 		return resultMap;
 	}
 	
+	private static String getBackgroundImageUrlFromSeed(int memberId) {
+		int imageNum = (memberId % 15)+1;
+		return "/images/userIcons/"+ imageNum  +".png";
+	}
+
+	private static String getHexBackgroundColorFromSeed(int seed) {
+		return "#"+Integer.toHexString((int) Math.floor((Math.abs(Math.sin(seed) * 16777215)) % 16777215));
+	}
+
 	/*
 	 * Camel Convention으로 이루어진 StringData를
 	 * UnderBar Convention의 String으로 변경한다.

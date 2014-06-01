@@ -43,7 +43,7 @@
 				<p class="address"></p>
 			</li>
 			<li class="person chatMember">
-				<img class="profile" src="/images/person_icon.png"/>
+				<span class="profile"></span>
 				<p class="nickname adjective"></p>
 				<p class="nickname noun"></p>
 			</li>
