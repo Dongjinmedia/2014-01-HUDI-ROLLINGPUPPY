@@ -593,13 +593,6 @@ var oNaverMap = {
 	                oMapClicker.oClickPoint = oCustomEvent.point;
 	                oMapClicker.move(clientPosX, clientPosY);
 	                
-		            //oCustomEvent.point의 x가 경도, y가 위도. 
-		            //TODO:왜 이모양인지 naver API에서 이유를 찾아낼 것 
-		            //전역으로 정의된 oMapClicker 객체에 이벤트가 시작된 (클릭된) 좌표에 대한 Point객체를 이식.
-	                //var clickedLatlng = new google.maps.LatLng(oCustomEvent.point.y, oCustomEvent.point.x);
-	                //reverseGeo(clickedLatlng);
-	                //oMapClicker.setLocationName(reverseGeo(clickedLatlng));
-
 	                //oMapClicker에 장소명을 업데이트한다.
 	                var callback = function(results, status){
 	                	if(status == google.maps.GeocoderStatus.OK) {
@@ -649,8 +642,6 @@ var oNaverMap = {
 	        this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
 	        this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
 	        
-	        //this.oGeocoder = new google.maps.Geocoder();  //reversegeo coding을 위한 객체 선언 
-
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
 	        eNmap.style.cssText = "width:100%;height:100%;";
@@ -1672,7 +1663,7 @@ var oKeyboardAction = {
 //가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
 //status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다.
 
-oReverseGeoCode = {
+var oReverseGeoCode = {
 		oGeoCoder: null,
 		getAddress: function(latitude, longitude, callback) {
 			//console.log("working");
@@ -1683,40 +1674,23 @@ oReverseGeoCode = {
 		initialize: function() {
 			this.oGeoCoder = new google.maps.Geocoder();
 		}
+		//results[0]의 types에 있는 값에 따라 ex)강남역 등만 뽑아올 수도 있음
+		//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
+		//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
+		//
+		//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
+		//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
+		//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
+		//console.log("bbb",this.clickedAddress);
 };
 
-var reverseGeo = function (clickedLatlng){
-	var oGeocoder = new google.maps.Geocoder();
-	var clickedAddress = "";
-	oGeocoder.geocode({'latLng': clickedLatlng}, function(results, status){
-    	if(status == google.maps.GeocoderStatus.OK) {
-    		if (results[0]) {
-    			//results[0]의 types에 있는 값에 따라 ex)강남역 등만 뽑아올 수도 있음
-    			//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
-    			//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
-    			//console.log(results);
-    			//console.log(results[0].formatted_address);
-     			//console.log(results[1].formatted_address);
-     			this.clickedAddress = results[0].formatted_address;
-     			//console.log("aaa",this.clickedAddress);
-     			return this.clickedAddress;
-    		}
-    	} else {
-    		alert("Geocoder failed due to: " + status);
-    	}
-    });
-	//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
-	//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
-	//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
-	//console.log("bbb",this.clickedAddress);
-}
 /*********************************************************************************************************
 * Reverse Geo code 끝 
  **********************************************************************************************************/
 /*********************************************************************************************************
  * 검색에 대한 소스코드 시작 
  **********************************************************************************************************/
-oSearching = {
+var oSearching = {
 		eSubmit: null,
 		eSearchBox: null,
 		getResultXml: function() {
@@ -1780,7 +1754,7 @@ oSearching = {
 /*********************************************************************************************************
  * template 객체화 소스코드 시작 
  **********************************************************************************************************/
-oTemplate = {
+var oTemplate = {
 		//이전에 넣었던 templates 지우기
 		deletePreviousTemplate : function(eTarget){
 			while(eTarget.firstChild) {
