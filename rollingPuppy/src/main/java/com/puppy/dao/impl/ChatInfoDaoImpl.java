@@ -93,5 +93,44 @@ public class ChatInfoDaoImpl extends DAO implements ChatInfoDao {
 		
 		return lists;
 	}
+
+	@Override
+	public ChatInfo selectChatInfo(int chatRoomNumber) {
+logger.info("EnteredChatRoomDaoImpl selectEnteredChatRoomList");
+		
+		PreparedStatement preparedStatement = null;
+		ChatInfo returnData = null;
+		
+		try {
+			String query = "SELECT "
+											+ "crm.tbl_member_id AS user_id, "
+											+ "crm.tbl_chat_room_id AS chat_room_id, "
+											+ "cr.title AS chat_room_title, "
+											+ "cr.max AS max, "
+											+ "cr.location_name AS location_name, "
+											
+												+ "("
+													+ "SELECT "
+																+ "GROUP_CONCAT(t_member.id) "
+													+ "FROM tbl_member as t_member "
+													+ "INNER JOIN tbl_chat_room_has_tbl_member AS crm2 "
+													+ "ON t_member.id = crm2.tbl_member_id "
+													+ "WHERE crm.tbl_chat_room_id = crm2.tbl_chat_room_id"
+												+ ") AS participant_list "
+													
+									+ "FROM tbl_chat_room_has_tbl_member AS crm "
+									+ "INNER JOIN tbl_chat_room AS cr ON crm.tbl_chat_room_id = cr.id "
+									+ "WHERE cr.id = ?";
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, chatRoomNumber);
+			
+			returnData = selectOne(ChatInfo.class, preparedStatement);
+			
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		
+		return returnData;
+	}
 	
 }

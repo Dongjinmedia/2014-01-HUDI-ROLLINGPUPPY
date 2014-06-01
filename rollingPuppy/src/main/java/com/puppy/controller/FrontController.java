@@ -1,10 +1,7 @@
 package com.puppy.controller;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -56,16 +53,14 @@ public class FrontController extends HttpServlet {
 		 * 일반적으로 사용하는 Parameter처럼
 		 * 간단하게 사용할 수 있도록 request객체에 setAttribute해준다. 
 		 */
-		if ( request != null && (request.getParts() != null) && !(request.getParts().isEmpty()) ) {
-			Collection<Part> partsCollection = request.getParts();
-			Iterator<Part> partsIterator = partsCollection.iterator();
-			
-			while (partsIterator.hasNext()) {
-				Part part = partsIterator.next();
+		try {
+			for (Part part: request.getParts()) {
 				request.setAttribute(part.getName(), Util.getStringValueFromPart(part));
 				logger.info("part.getName : "+part.getName());
 				logger.info("part value : "+ Util.getStringValueFromPart(part));
 			}
+		} catch (Exception e) {
+			logger.error("error occur : ", e);
 		}
 		
 		requestAnaliyzer(request, response);

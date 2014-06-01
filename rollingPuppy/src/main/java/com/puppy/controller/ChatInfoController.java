@@ -2,6 +2,7 @@ package com.puppy.controller;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,34 @@ public class ChatInfoController implements Controller {
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.info("indo doGet of ChatInfoController");
+		
+		response.setContentType("application/json");
+		response.setCharacterEncoding("UTF-8");
+		PrintWriter out = response.getWriter();
+		Gson gson = new Gson();
+		Map<String, JsonChatInfo> returnData = null;
+		
+		
+		int chatRoomNumber = Integer.parseInt(request.getParameter("chatRoomNumber"));
+		
+		ChatInfoDaoImpl chatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
+		ChatInfo chatInfo = chatInfoDaoImpl.selectChatInfo(chatRoomNumber);
+		
+		if ( chatInfo == null ) {
+			return;
+		}
+		
+		List<ChatInfo> tempList = new ArrayList<ChatInfo>();
+		tempList.add(chatInfo);
+		returnData = Util.getChatRoomInfoObjectFromQueryResult(tempList);
+		
+		logger.info("ChattingInfomation From ChatRoomNumber : "+gson.toJson(returnData));
+		out.println(gson.toJson(returnData));
+	}
+
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.info("indo doPost of ChatInfoController");
 
 		response.setContentType("application/json");
 		response.setCharacterEncoding("UTF-8");
@@ -79,13 +108,5 @@ public class ChatInfoController implements Controller {
 		
 		logger.info("User Participant ChattingInfomation : "+gson.toJson(returnData));
 		out.println(gson.toJson(returnData));
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		int chatRoomNumber = Integer.parseInt(request.getParameter("chatRoomNumber"));
-		
-		ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
-		//MyChatInfo chatInfo = myChatInfoDaoImpl
 	}
 }
