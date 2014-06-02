@@ -317,6 +317,7 @@ var oNaverMap = {
 	    oCenterPoint: null, //지도 중심으로 포커싱할 위치를 저장하는 객체 (LatLng 좌표사용)
 	    oMap: null, //맵옵션을 모두 저장하고 있는 지도의 기본이 되는 객체
 	    oIcon: null,
+	    oIcons: null,
 	    oMarkerInfoWindow: null,
 	    oLabel: null,
 	    
@@ -343,14 +344,27 @@ var oNaverMap = {
 	    eClickedAddress : null, //역지오 코딩을 위한 클릭된 곳의 주소 element
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
-	    addMarker: function(latitude, longitude, markerNumber, title) {
+	    addMarker: function(latitude, longitude, markerNumber, title, hasMultiChatRoom) {
 	    	//Point 객체를 생성한다.
 	    	 var oPoint = new nhn.api.map.LatLng(latitude, longitude);
 	    	
 	    	 //마커객체를 생성한다.
-	    	var oMarker = new nhn.api.map.Marker(this.oIcon, {
-	    	    title: '제목 : '+title
-	    	});
+	    	 var oMarker = null;
+	    	 
+	    	 if ( hasMultiChatRoom === true ) {
+	    		oMarker = new nhn.api.map.Marker(this.oIcons, {
+	    			 title: '제목 : '+title
+	    		 });
+	    		//attribute 설정
+	    		oMarker["hasMultiChatRoom"] = true;
+	    	 } else {
+	    		 oMarker = new nhn.api.map.Marker(this.oIcon, {
+	    			 title: '제목 : '+title
+	    		 });
+	    		 
+	    		 oMarker["hasMultiChatRoom"] = false;
+	    	 }
+	    	 
 	    	//마커객체에 Point를 설정한다.
 	    	oMarker.setPoint(oPoint);
 	    	//마커객체에 Attirubte를 추가한다. (markerNumber)
@@ -387,37 +401,57 @@ var oNaverMap = {
 	    	//만약 메모리에 해당 마커에 대한 정보가 없으면
 	    	if ( isAlreadyExists === false ) {
 	    		//메모리에 해당 마커에 대한 정보를 추가한다.
+	    		console.log("marker : ",oMarker);
 	    		this.oCurrentViewPointMarkers[oMarker["id"]] = oMarker;
 	    		
 	    		//그리고 마커를 생성한다.
 	    		//TODO title이 존재하지 않는다.
 	    		//이 부분은 hover액션을 마커에 주어서 사용하지 않을것인지를 먼저 결정한 후 진행하도록 한다.
-	    		this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title']);
+	    		//working4
+	    		var hasMultiChatRoom = false;
+	    		
+	    		if ( oMarker["chatRooms"] !== undefined && oMarker["chatRooms"] !== null ) {
+	    			hasMultiChatRoom = (oMarker["chatRooms"].length > 1);
+	    		}
+	    		
+	    		console.log("hasMultiChatRoom : ", hasMultiChatRoom);
+	    		this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title'], hasMultiChatRoom);
 	    		
 	    	//만약 메모리에 해당 마커에 대한 정보가 존재하면,
 	    	//새로 서버에서 받은 마커정보안의 채팅방 리스트를 찾아 메모리 객체에 저장한다.
 	    	} else {
-	    		var aChatRoomsInMemory = this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"];
-	    		var aChatRoomsToUpdate = oMarker["chatRooms"];
-
-	    		//TODO 성능개선을 위해 추가작업 필요,
-	    		//database query 시 charRoom id값을 기준으로 정렬해온다면, sorting에 cost를 줄일 수 있다.
-	    		//메모리상에 새로운 데이터를 저장합니다.
-	    		var chatId = null;
-	    		var isExists = false;
-	    		for ( oNewChatRoom in aChatRoomsToUpdate) {
-	    			charId = oNewChatRoom["id"];
-	    			for ( oMemoryChatRoom in aChatRoomsInMemory ) {
-	    				if ( oNewChatRoom["id"] === oMemoryChatRoom["id"] )
-	    					isExists = true;
-	    			}
-	    			
-	    			if ( isExists === false ) {
-	    				aChatRoomsInMemory.push(oNewChatRoom);
-	    			} else {
-	    				isExists = false;
-	    			}
+	    		this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"] = oMarker["chatRooms"]; 
+	    		
+	    		//수정되어야 하는 경우는 다음과 같다.
+	    		//1. 다수의 채팅방의 마커를 가지고 있으나, 업데이트결과 단일 채팅방이 된 경우
+	    		if ( oMarker["hasMultiChatRoom"] === true && oMarker["chatRooms"].length === 1 ) {
+	    			oMarker._elEl.src = "/images/marker_one_48.png";
+	    		//2. 단일 채팅방의 마커를 가지고 있으나, 업데이트결과 다수의 채팅방이 된 경우
+	    		} else if ( oMarker["hasMultiChatRoom"] === false && oMarker["chatRooms"].length > 1 ){
+	    			oMarker._elEl.src = "/images/marker_48.png";
 	    		}
+	    		
+//	    		var aChatRoomsInMemory = this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"];
+//	    		var aChatRoomsToUpdate = oMarker["chatRooms"];
+//
+//	    		//TODO 성능개선을 위해 추가작업 필요,
+//	    		//database query 시 charRoom id값을 기준으로 정렬해온다면, sorting에 cost를 줄일 수 있다.
+//	    		//메모리상에 새로운 데이터를 저장합니다.
+//	    		var chatId = null;
+//	    		var isExists = false;
+//	    		for ( oNewChatRoom in aChatRoomsToUpdate) {
+//	    			charId = oNewChatRoom["id"];
+//	    			for ( oMemoryChatRoom in aChatRoomsInMemory ) {
+//	    				if ( oNewChatRoom["id"] === oMemoryChatRoom["id"] )
+//	    					isExists = true;
+//	    			}
+//	    			
+//	    			if ( isExists === false ) {
+//	    				aChatRoomsInMemory.push(oNewChatRoom);
+//	    			} else {
+//	    				isExists = false;
+//	    			}
+//	    		}
 	    	}
 	    },
 	    //지도위의 Map 마커상태값을 업데이트하는 메서드.
@@ -540,14 +574,16 @@ var oNaverMap = {
 	    dragEndEvent: function(oCustomEvent) {
 	    	this.updateViewPointMarkers();
 	    },
-
+	    
+	    //working4
 	    clickEvent : function(oCustomEvent) {
 	        var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
 	        if (oTarget instanceof nhn.api.map.Marker) {
+	        	console.log(oTarget);
 	            // 겹침 마커 클릭한거면
-	            if (!oCustomEvent.clickCoveredMarker) {
+	            //if (!oCustomEvent.clickCoveredMarker) {
 	            	
 	            	//현재는 마커전체레벨로 저장하고 있다.
 	                
@@ -570,28 +606,27 @@ var oNaverMap = {
 
 	                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
 	                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
-	            }
+	            //}
 	        } else {
 	            
-	                //클라이언트에 상대적인 수평, 수직좌표 가져오기
-	                clientPosX = oCustomEvent.event._event.clientX;
-	                clientPosY = oCustomEvent.event._event.clientY;
+	        	//클라이언트에 상대적인 수평, 수직좌표 가져오기
+	        	clientPosX = oCustomEvent.event._event.clientX;
+	        	clientPosY = oCustomEvent.event._event.clientY;
 	                
-
-	                oMapClicker.oClickPoint = oCustomEvent.point;
-	                oMapClicker.move(clientPosX, clientPosY);
+	        	oMapClicker.oClickPoint = oCustomEvent.point;
+	        	oMapClicker.move(clientPosX, clientPosY);
 	                
-	                //oMapClicker에 장소명을 업데이트한다.
-	                var callback = function(results, status){
-	                	if(status == google.maps.GeocoderStatus.OK) {
-	                		if (results[0]) {
-	                			oMapClicker.setLocationName(results[0].formatted_address);
-	                		}
-	                	} else {
+	        	//oMapClicker에 장소명을 업데이트한다.
+	        	var callback = function(results, status){
+	        		if(status == google.maps.GeocoderStatus.OK) {
+	        			if (results[0]) {
+	        				oMapClicker.setLocationName(results[0].formatted_address);
+	        			} else {
 	                		console.log("reverseGeoCode status not fine ");
 	                	}
 	                };
 	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
+	        	}
 	        }
 	    },
 
@@ -620,7 +655,8 @@ var oNaverMap = {
 	        var oSize = new nhn.api.map.Size(28, 37); //px단위의 size객체.
 	        
 	        var oOffset = new nhn.api.map.Size(14, 37); //offset위치 지정
-	        this.oIcon = new nhn.api.map.Icon("/images/marker_48.png", oSize, oOffset); //마커 설정 정보
+	        this.oIcon = new nhn.api.map.Icon("/images/marker_one_48.png", oSize, oOffset); //멀티채팅방 마커 설정 정보 (채팅방 이미지가 1개)
+	        this.oIcons = new nhn.api.map.Icon("/images/marker_48.png", oSize, oOffset); //단일채팅방 마커 설정 정보 (채팅방 이미지가 2개)
 	        this.oMarkerInfoWindow = new nhn.api.map.InfoWindow(); // - 마커를 클릭했을 때 뜨는 창. html코드뿐만 아니라 객체도 삽입 가능
 	        
 	        this.oMarkerInfoWindow.setVisible(false);   // - infowindow 표시 여부 지정
@@ -712,7 +748,6 @@ var oMarkerClicker = {
 	
 	//사용자가 새로 클릭한 마커에 대한 정보를, 마커 인터렉션 창에 업데이트 시켜주는 함수이다.
 	//예를들어 채팅방목록, 장소 정보 등등
-	//dada
 	getNewMarkerInfoWindowElement: function(markerNumber) {
 		//이전에 클릭데이터를 초기화한다.
 		this.reset();
@@ -731,6 +766,14 @@ var oMarkerClicker = {
 		var oMarkerInfo = oNaverMap.oCurrentViewPointMarkers[markerNumber];
 		//마커정보를 담고있는 Object에서 마커에 해당하는 chatRoom정보들을 담고있는 Array를 가져온다.
 		var aChatRoomInMarker = oMarkerInfo["chatRooms"];
+		
+		//마커내부의 채팅방갯수에 따라 click window에 노출되는 이미지를 변경해준다.
+		if ( aChatRoomInMarker.length >= 2 ) {
+			this.eMarkerNavigationImage.style.backgroundImage = "url(/images/marker_clicked_48.png)";
+		} else {
+			this.eMarkerNavigationImage.style.backgroundImage = "url(/images/marker_one_clicked_48.png)";
+		}
+		
 		//chatRoom의 장소 정보를 업데이트
 		this.eMenuInfo.innerText = oMarkerInfo["location_name"]; 
 		/*
@@ -780,6 +823,7 @@ var oMarkerClicker = {
 		
 		return this.controlBox;
 	},
+	eMarkerNavigationImage: document.querySelector("#controlBox .hide-navigation"),
 	//물음표에 hover하면 나오는 정보창을 담을 element
 	eMenuInfo: null,
 	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
