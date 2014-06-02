@@ -13,7 +13,9 @@
 
 <body>
 <body>
-	<div class="bgImg"></div>
+	<div class="bgImg">
+		<div class="innerbg"></div>
+	</div>
 	<div class="interactBox">
 		<h1 class="title">Welcome. Please login.</h1>
 		<p>

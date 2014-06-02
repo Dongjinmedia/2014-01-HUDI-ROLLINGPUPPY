@@ -318,29 +318,30 @@ io.sockets.on('connection', function (socket) {
 				
 				
 				var oCallback= {};
-				
-				//참여인원이 꽉차있기 때문에 채팅방참여가 불가능하다.
-				if ( oResult["participantNum"] >= oResult["max"]) {
+
+				//기존에 방에 입장해있었을 경우
+				if ( affectedRows == 0 ) {
 					oCallback = {
 						callback: function() {
-							alert("채팅방 허용인원이 초과되었습니다.");
-						}
+							oChat.showChatWindow(this.chatRoomNumber)
+						},
+						chatRoomNumber: chatRoomNumber
 					};
+
+				//방에 새로 입장했다는 의미
 				} else {
-					//기존에 방에 입장해있었을 경우
-					if ( affectedRows == 0 ) {
+					
+					//참여인원이 꽉차있기 때문에 채팅방참여가 불가능하다.
+					if ( oResult["participantNum"] >= oResult["max"]) {
 						oCallback = {
 							callback: function() {
-								oChat.showChatWindow(this.chatRoomNumber)
-							},
-							chatRoomNumber: chatRoomNumber
+								alert("채팅방 허용인원이 초과되었습니다.");
+							}
 						};
-
-					//방에 새로 입장했다는 의미
 					} else {
 						//***************************for user
 						socket.join(chatRoomNumber);
-						
+					
 						oCallback = {
 							callback: function() {
 								console.log("save data oCallbackFor User!!!!!!!!!");
@@ -362,10 +363,10 @@ io.sockets.on('connection', function (socket) {
 							callback: function() {
 								//for test
 								console.log("save data oCallbackForEveryOneInChatRoom!!!!!!!");
-								
+							
 							 	//새로운데이터 추가.
 								oChat.addChatInfo(this.chatRoomNumber, this.oResult);
-								
+							
 								//현재 focus된 채팅방이 열려있을 경우,
 								if ( oChat.currentChatRoomNumber == this.chatRoomNumber ) {
 									oChat.addMemberList(oChat.oInfo[this.chatRoomNumber]["oParticipant"][this.userId]);
@@ -382,7 +383,7 @@ io.sockets.on('connection', function (socket) {
 						//***************************for everyone in SameChatRoom
 					}
 				}
-				executeInClient(oCallback);	
+			executeInClient(oCallback);	
 			});				
 		};
 		/********************************************************************************************************************/

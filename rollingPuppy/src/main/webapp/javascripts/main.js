@@ -558,12 +558,13 @@ var oNaverMap = {
 	        		if(status == google.maps.GeocoderStatus.OK) {
 	        			if (results[0]) {
 	        				oMapClicker.setLocationName(results[0].formatted_address);
+	        				console.log("fomatted_address : ",results[0].formatted_address);
 	        			} else {
 	                		console.log("reverseGeoCode status not fine ");
 	                	}
 	                };
-	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
 	        	}
+	        	oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
 	        }
 	    },
 	    //working4
@@ -975,15 +976,15 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
-			this.saveCurrentChatRoomNumber(chatRoomNum);
+			oChat.saveCurrentChatRoomNumber(chatRoomNum);
 			console.log("chatRoomNumber :",chatRoomNum);
-			this.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
+			oChat.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
-			this.updateChatWindowHeaderText(chatRoomNum);
-			this.updateNotificationView(chatRoomNum);
-			this.updateMemberList(chatRoomNum);
-			this.updateInitializeMessage(chatRoomNum);
-			this.visibleChatWindow();
+			oChat.updateChatWindowHeaderText(chatRoomNum);
+			oChat.updateNotificationView(chatRoomNum);
+			oChat.updateMemberList(chatRoomNum);
+			oChat.updateInitializeMessage(chatRoomNum);
+			oChat.visibleChatWindow();
 		},
 
 		visibleChatWindow: function() {
