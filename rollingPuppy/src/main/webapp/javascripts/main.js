@@ -319,7 +319,6 @@ var oNaverMap = {
 	    oIcon: null,
 	    oIcons: null,
 	    oMarkerInfoWindow: null,
-	    oLabel: null,
 	    
 	    
 	    /*
@@ -352,15 +351,11 @@ var oNaverMap = {
 	    	 var oMarker = null;
 	    	 
 	    	 if ( hasMultiChatRoom === true ) {
-	    		oMarker = new nhn.api.map.Marker(this.oIcons, {
-	    			 title: '제목 : '+title
-	    		 });
+	    		oMarker = new nhn.api.map.Marker(this.oIcons);
 	    		//attribute 설정
 	    		oMarker["hasMultiChatRoom"] = true;
 	    	 } else {
-	    		 oMarker = new nhn.api.map.Marker(this.oIcon, {
-	    			 title: '제목 : '+title
-	    		 });
+	    		 oMarker = new nhn.api.map.Marker(this.oIcon);
 	    		 
 	    		 oMarker["hasMultiChatRoom"] = false;
 	    	 }
@@ -401,7 +396,6 @@ var oNaverMap = {
 	    	//만약 메모리에 해당 마커에 대한 정보가 없으면
 	    	if ( isAlreadyExists === false ) {
 	    		//메모리에 해당 마커에 대한 정보를 추가한다.
-	    		console.log("marker : ",oMarker);
 	    		this.oCurrentViewPointMarkers[oMarker["id"]] = oMarker;
 	    		
 	    		//그리고 마커를 생성한다.
@@ -414,7 +408,6 @@ var oNaverMap = {
 	    			hasMultiChatRoom = (oMarker["chatRooms"].length > 1);
 	    		}
 	    		
-	    		console.log("hasMultiChatRoom : ", hasMultiChatRoom);
 	    		this.addMarker(oMarker['location_latitude'], oMarker['location_longitude'], oMarker['id'], oMarker['title'], hasMultiChatRoom);
 	    		
 	    	//만약 메모리에 해당 마커에 대한 정보가 존재하면,
@@ -530,39 +523,12 @@ var oNaverMap = {
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
-	        this.oMarkerInfoWindow.attach("changeVisible", this.changeVisibleEvent.bind(this)); 
-	        this.oMap.attach("mouseenter", this.mouseEnterEvent.bind(this)); // mouseenter: 해당 객체 위에 마우스 포인터를 올림
-	        this.oMap.attach("mouseleave", this.mouseLeaveEvent.bind(this)); //mouseleave : 마우스 포인터가 해당 객체 위를 벗어남
 	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
 	        this.oMap.attach("dragend",this.dragEndEvent.bind(this));
-	        this.oMap.attach("click",this.clickEvent.bind(this));    
+	        this.oMap.attach("mouseenter",this.mouseEnterEvent.bind(this));
+	        this.oMap.attach("click", this.clickEvent.bind(this));
 	    },
 
-	    //changeVisible : event. 정보창의 표시여부 변경
-	    //changeVisible {visible : Boolean} 요렇게 생김
-	    //oMarkerInfoWindow에다가 changeVisible이라는 이벤트를 거는데, 이 이벤트가 걸리면 뭘 하냐면, 
-	    changeVisibleEvent : function(oCustomEvent){
-	        if (oCustomEvent.visible) { //이벤트의 visible값이 true이면
-	            this.oLabel.setVisible(false); //라벨(마우스를 마커위에 클릭하지 않은채 올렸을때 나오는 창)은 가림
-	        }
-	    },
-	    
-	    mouseEnterEvent: function(oCustomEvent) { 
-	        var oTarget = oCustomEvent.target; //target : 모든 이벤트에 존재하는 프로퍼티로, 해당 이벤트를 발생시킨 객체를 의미
-	        // 마커위에 마우스 올라간거면
-	        if (oTarget instanceof nhn.api.map.Marker) {
-	            var oMarker = oTarget;
-	            this.oLabel.setVisible(true, oMarker); // - 특정 마커를 지정하여 해당 마커의 title을 보여준다.
-	        }
-	    },
-	    mouseLeaveEvent : function(oCustomEvent) { 
-	        var oTarget = oCustomEvent.target; //http://developer.naver.com/wiki/pages/JavaScript#section-JavaScript-Nhn.api.map.CustomControl의 public properties 부분 참조
-	        // 마커위에서 마우스 나간거면
-	        if (oTarget instanceof nhn.api.map.Marker) {
-	            this.oLabel.setVisible(false);
-	        }
-	    },
-	    
 	    //move event가 발생한 후 click이벤트가 발생한다.
 	    //drag 시작할 때 mapClickWithoutMarker를 화면상에서 보이지 않게끔 처리한다.
 	    dragStartEvent : function(oCustomEvent){
@@ -575,8 +541,33 @@ var oNaverMap = {
 	    	this.updateViewPointMarkers();
 	    },
 	    
+	    clickEvent: function(oCustomEvent) {
+	    	var oTarget = oCustomEvent.target;
+	        this.oMarkerInfoWindow.setVisible(false);
+	        // 마커 클릭하면
+	        if (! (oTarget instanceof nhn.api.map.Marker)) {
+	        	//클라이언트에 상대적인 수평, 수직좌표 가져오기
+	        	clientPosX = oCustomEvent.event._event.clientX;
+	        	clientPosY = oCustomEvent.event._event.clientY;
+	                
+	        	oMapClicker.oClickPoint = oCustomEvent.point;
+	        	oMapClicker.move(clientPosX, clientPosY);
+	                
+	        	//oMapClicker에 장소명을 업데이트한다.
+	        	var callback = function(results, status){
+	        		if(status == google.maps.GeocoderStatus.OK) {
+	        			if (results[0]) {
+	        				oMapClicker.setLocationName(results[0].formatted_address);
+	        			} else {
+	                		console.log("reverseGeoCode status not fine ");
+	                	}
+	                };
+	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
+	        	}
+	        }
+	    },
 	    //working4
-	    clickEvent : function(oCustomEvent) {
+	    mouseEnterEvent : function(oCustomEvent) {
 	        var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
@@ -607,26 +598,6 @@ var oNaverMap = {
 	                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
 	                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
 	            //}
-	        } else {
-	            
-	        	//클라이언트에 상대적인 수평, 수직좌표 가져오기
-	        	clientPosX = oCustomEvent.event._event.clientX;
-	        	clientPosY = oCustomEvent.event._event.clientY;
-	                
-	        	oMapClicker.oClickPoint = oCustomEvent.point;
-	        	oMapClicker.move(clientPosX, clientPosY);
-	                
-	        	//oMapClicker에 장소명을 업데이트한다.
-	        	var callback = function(results, status){
-	        		if(status == google.maps.GeocoderStatus.OK) {
-	        			if (results[0]) {
-	        				oMapClicker.setLocationName(results[0].formatted_address);
-	        			} else {
-	                		console.log("reverseGeoCode status not fine ");
-	                	}
-	                };
-	                oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
-	        	}
 	        }
 	    },
 
@@ -662,8 +633,6 @@ var oNaverMap = {
 	        this.oMarkerInfoWindow.setVisible(false);   // - infowindow 표시 여부 지정
 	                                                    //여기서는 true로 바꿔도 아무 변화가 없음  
 	        this.oMap.addOverlay(this.oMarkerInfoWindow); // - 지도에 추가
-	        this.oLabel = new nhn.api.map.MarkerLabel(); // 마커 위에 마우스 포인터를 올리면 나타나는 마커 라벨
-	        this.oMap.addOverlay(this.oLabel); // - 마커 라벨 지도에 추가. 기본은 라벨이 보이지 않는 상태로 추가됨.
 	        
 	         //네이버에서 자동으로 생성하는 지도 맵  element의 크기자동조절을 위해 %값으로 변경한다. (naver_map하위에 생긴다)
 	        var eNmap = document.getElementsByClassName("nmap")[0];
