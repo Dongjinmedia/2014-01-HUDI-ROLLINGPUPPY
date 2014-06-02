@@ -109,7 +109,6 @@ var oAside= {
 	updateTotalNotificationView: function() {
 		
 		var unreadMessageNum = 0;
-		console.log("oChat.oInfo : ", oChat.oInfo);
 		for (var key in oChat.oInfo) {
 			if (oChat.oInfo.hasOwnProperty(key)) {
 				var oTarget = oChat.oInfo[key];
@@ -117,7 +116,7 @@ var oAside= {
 				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
 			}
 		}
-		console.log("unreadMessageNum : ", unreadMessageNum);
+
 		if ( unreadMessageNum === 0 ) {
 			this.eChattingNotification.style.display = "none";
 		} else {
@@ -169,15 +168,13 @@ var oAside= {
 		
 		//어차피 oChat의 oInfo에서는 자신에 해당하는 List Element를 자주참조하게된다.
 		//그러므로 li element의 주소값을 attribute로 등록한다.
-		oTarget["elTarget"] = eCopiedTemplate;
-		console.log("oTarget :",oTarget);
+		oChat.oInfo[chatRoomNumber]["eTarget"] = eCopiedTemplate;
 		//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
 		eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
 		
 		eChattingRoomTitle.innerHTML = oTarget["title"]; 
 		eChattingRoomMax.innerText = oTarget["participantNum"] +"/"+ oTarget["max"]; 
 		eChattingRoomAddress.innerText = oTarget["locationName"];
-		console.log(oChat.oInfo[chatRoomNumber]);
 		oChat.updateNotificationView(chatRoomNumber);
 		
 		
@@ -186,8 +183,7 @@ var oAside= {
 	},
 	//working2
 	deleteFromChattingList: function(chatRoomNumber) {
-		var eTarget = oChat.oInfo[chatRoomNumber]["elTarget"];
-		console.log("elTarget : ",eTarget);
+		var eTarget = oChat.oInfo[chatRoomNumber]["eTarget"];
 		this.eChattingListTarget.removeChild(eTarget);
 		
 		if ( this.eChattingListTarget.childNodes.length === 0 ) {
@@ -202,7 +198,7 @@ var oAside= {
 
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
 		var strButtonClassName = event.target.className;
-		console.log("strButtonClassName : ",strButtonClassName );
+
 		// panel_buttons 중 어느 것이 클릭되었는지 판단해서 true / false로 저장
 		var boolFold = false;
 		// 등호가 세 개이면 type check까지 됨 (2개의 경우 "2" == 2 가 true)
@@ -285,8 +281,6 @@ var oAside= {
 	},
 	
 	unfoldByMenuElement: function(menuElement) {
-		
-		//console.log(menuElement);
 		
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
@@ -406,10 +400,6 @@ var oNaverMap = {
 	    		var aChatRoomsInMemory = this.oCurrentViewPointMarkers[oMarker["id"]]["chatRooms"];
 	    		var aChatRoomsToUpdate = oMarker["chatRooms"];
 
-	    		//검색 API적용 후 재테스트
-	    		//console.log("before aChatRoomsInMemory : ",aChatRoomsInMemory);
-	    		//console.log("before aChatRoomsToUpdate : ",aChatRoomsToUpdate);
-	    		
 	    		//TODO 성능개선을 위해 추가작업 필요,
 	    		//database query 시 charRoom id값을 기준으로 정렬해온다면, sorting에 cost를 줄일 수 있다.
 	    		//메모리상에 새로운 데이터를 저장합니다.
@@ -428,8 +418,6 @@ var oNaverMap = {
 	    				isExists = false;
 	    			}
 	    		}
-	    		//console.log("after aChatRoomsInMemory : ",aChatRoomsInMemory);
-	    		//console.log("after aChatRoomsToUpdate : ",aChatRoomsToUpdate);
 	    	}
 	    },
 	    //지도위의 Map 마커상태값을 업데이트하는 메서드.
@@ -597,7 +585,6 @@ var oNaverMap = {
 	                var callback = function(results, status){
 	                	if(status == google.maps.GeocoderStatus.OK) {
 	                		if (results[0]) {
-	                			console.log(results[0].formatted_address);
 	                			oMapClicker.setLocationName(results[0].formatted_address);
 	                		}
 	                	} else {
@@ -931,6 +918,8 @@ var oChat = {
 		eTemplateNotice: document.querySelector("#template .notice"),
 		eTemplateUser: document.querySelector("#template .user"),
 		eTemplateOther: document.querySelector("#template .other"),
+		eTemplateChatMember: document.querySelector("#template .chatMember"),
+		
 		
 		//메모리에 저장하고 활용하는 데이터
 		userId: 0,
@@ -947,7 +936,7 @@ var oChat = {
 				max: "",
 				participantNum: "",
 				unreadMessageNum: "", 
-				elTarget: "",
+				eTarget: "",
 				oParticipant: {
 					"회원아이디": 
 					{
@@ -956,7 +945,7 @@ var oChat = {
 					}
 				}
 				
-				//elTarget은 초기화시 추가해주는 동적 attribute이다.
+				//eTarget은 초기화시 추가해주는 동적 attribute이다.
 				//어차피 채팅방번호에 해당하는 element를 자주참조해야하므로 주소값을 저장하는 것이다.
 				//자세한 내용은 getMyChatInfoAndUpdateListInPanel 함수를 참조하자.
 			}
@@ -966,8 +955,6 @@ var oChat = {
 		
 		// 채팅방 입장 시
 		enterChatRoom: function(chatRoomNum) {
-			
-			
 			// 입장을 서버에 알린다.
 			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.			
 			this.socket.emit('join', {"chatRoomNumber": chatRoomNum});
@@ -999,10 +986,6 @@ var oChat = {
 			this.socket.emit("saveCurrentChatRoomNumber", {"currentChatRoomNumber": chatRoomNum});
 		},
 		
-		enterChatRoomOthers: function(user) {
-			this.eChattingContents.insertAdjacentHTML( 'beforeend', "<dd style='margin:0px;'>"+user+"님이 접속 하셨습니다.</dd>");
-		},
-		
 		sendMessage: function(message) {
 			
 			oMessageInfo = {
@@ -1015,12 +998,11 @@ var oChat = {
 		},
 		
 		getMessage: function(oMessageInfo) {
-			
+			//자신이 보낸 메세지인지, 남이 보낸 메세지인지를 판별하기 위한 flag
 			var flag = 0;
 			
-			console.log("oMessageInfo['tblMemberId'] : ", oMessageInfo["tblMemberId"]);
-			console.log("is same : ", oMessageInfo["tblMemberId"] == this.userId);
-			
+			//현재는 클라이언트에서 판별후 attribute를 생성하고 있다.
+			//TODO isMyMessage를 웹서버에서 처리할 수 있도록 변경해야 한다.
 			if ( oMessageInfo["tblMemberId"] == this.userId ) {
 				flag = 1;
 			}
@@ -1094,10 +1076,17 @@ var oChat = {
 				eTarget = this._getNoticeTemplateCloneElement(sNotice);
 			} 
 			
+			//내 메시지일경우
 			if  (isMyMessage == 1) {
 				eTarget = this._getUserMessageTemplateCloneElement(time, message);
 			} else {
-				eTarget = this._getOtherMessageTemplateCloneElement(chatRoomNum, memberId, message, time, null);
+				//관리자 메세지인 경우
+				if ( memberId === 0 ) {
+					eTarget = this._getNoticeTemplateCloneElement(message);
+				//일반 메세지일 경우
+				} else {
+					eTarget = this._getOtherMessageTemplateCloneElement(chatRoomNum, memberId, message, time, null);
+				}
 			}
 			
 			if (eTarget != undefined || eTarget != null) {
@@ -1109,15 +1098,15 @@ var oChat = {
 			this.lastMessageDayNum = nDay;
 		},
 		
-		updateUnreadMessage: function(aUnreadMessage) {
+		updateOneMessage: function(aMessage) {
 			
-			if ( aUnreadMessage == undefined 
-					|| aUnreadMessage == null 
-					|| aUnreadMessage.length === 0 )
+			if ( aMessage == undefined 
+					|| aMessage == null 
+					|| aMessage.length === 0 )
 				return;
 			
-			for ( var index = 0 ; index < aUnreadMessage.length ; ++ index ) {
-				this._updateOneMessage(aUnreadMessage[index]);
+			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
+				this._updateOneMessage(aMessage[index]);
 			}
 		},
 		
@@ -1127,22 +1116,13 @@ var oChat = {
     		};
     		
     		var callback = function(request) {
-    			console.log("/chat/initMessage : ",request.responseText);
     			var oResponse = JSON.parse(request.responseText);
 
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
     			
-    			//console.log("aRecentMessage : ",aRecentMessage);
-    			//console.log("aUnreadMessage : ",aUnreadMessage);
-
-    			this.updateUnreadMessage(aUnreadMessage);
-    			
-//    			if ( oResponse["ThreeWayResult"])
-//    			
-//	    		} else {
-//	    			alert("네트워크 상태가 불안정합니다.\n채팅방 대화목록을 불러오지 못하였습니다.");
-//	    		}
+    			this.updateOneMessage(aRecentMessage);
+    			this.updateOneMessage(aUnreadMessage);
     		}
     		
     		oAjax.getObjectFromJsonGetRequest("/chat/initMessage", oParameters, callback.bind(this));
@@ -1159,9 +1139,9 @@ var oChat = {
 		
 		//패널의 채팅리스트에 존재하는 채팅방의 Notification VIew를 업데이트한다.
 		updateNotificationView: function(chatRoomNum) {
-			console.log(oChat.oInfo[chatRoomNum]);
 			var oTarget = this.oInfo[chatRoomNum];
-			var eChattingRoomNotification = oTarget["elTarget"].querySelector(".notification");
+			console.log("updateNoti's oInfo : ", oChat.oInfo);
+			var eChattingRoomNotification = oTarget["eTarget"].querySelector(".notification");
 			
 			var unreadMessageNum = oTarget["unreadMessageNum"];
 			
@@ -1173,33 +1153,37 @@ var oChat = {
 	 		}
 		},
 		
+		//채팅방 오른편의 참여자리스트에 참가자정보를 더하는 함수
+		addMemberList: function(oParticipant) {
+			var eCopiedTemplate = this.eTemplateChatMember.cloneNode(true); 
+			oParticipant["eTarget"] = eCopiedTemplate; 
+			
+			var aPtag = eCopiedTemplate.querySelectorAll("p");
+			aPtag[0].innerText = oParticipant["nicknameAdjective"];
+			aPtag[1].innerText = oParticipant["nicknameNoun"];
+			
+			var eTargetProfile = eCopiedTemplate.querySelector(".profile");
+			eTargetProfile.style.backgroundColor= oParticipant["backgroundColor"];
+			eTargetProfile.style.backgroundImage="url("+oParticipant["backgroundImage"]+")";
+			
+			this.eChattingMemberList.appendChild(eCopiedTemplate);
+		},
+		
+		removeMemberList: function(oParticipant) {
+			this.eChattingMemberList.removeChild(oParticipant["eTarget"]);
+		},
+		
 		//채팅창 오른편의 참여자리스트를 갱신하는 함수
 		updateMemberList: function(chatRoomNum){
 			var oTarget = this.oInfo[chatRoomNum]["oParticipant"];
-			
-			var eTemplate = document.getElementById("template").querySelector(".chatMember");
 			
 			while (this.eChattingMemberList.firstChild) {
 				this.eChattingMemberList.removeChild(this.eChattingMemberList.firstChild);
 			}
 			
-			//working
-			//TODO 이미지 업데이트하기
 			for (var key in oTarget) {
 				if (oTarget.hasOwnProperty(key)) {
-					
-					var oParticipant = oTarget[key];
-					var eCopiedTemplate = eTemplate.cloneNode(true);
-					
-					var aPtag = eCopiedTemplate.querySelectorAll("p");
-					aPtag[0].innerText = oParticipant["nicknameAdjective"];
-					aPtag[1].innerText = oParticipant["nicknameNoun"];
-					
-					var eTargetProfile = eCopiedTemplate.querySelector(".profile");
-					eTargetProfile.style.backgroundColor= oParticipant["backgroundColor"];
-					eTargetProfile.style.backgroundImage="url("+oParticipant["backgroundImage"]+")";
-					
-					this.eChattingMemberList.appendChild(eCopiedTemplate);
+					this.addMemberList(oTarget[key]);
 				}
 			}
 		},
@@ -1235,7 +1219,6 @@ var oChat = {
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
 			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
-			console.log("chattingRoomList: ",chattingRoomList);
 			var chattingRoomListToJson = JSON.parse(chattingRoomList);
 			var chattingRoomIdList = new Array();
 			
@@ -1251,8 +1234,12 @@ var oChat = {
 		
 		//새로운 chatInfo항목을 추가한다.
 		addChatInfo: function(chatRoomNumber, oResult) {
-			console.log(oChat.oInfo);
+			console.log("parameter oResult : ",oResult);
+			console.log("addChatInfo ================================");
+			console.log("before : ",oChat.oInfo);
 			oChat.oInfo[chatRoomNumber] = oResult;
+			console.log("after : ",oChat.oInfo);
+			console.log("addChatInfo ================================");
 		},
 		
 		//chatInfo를 초기화한다.
@@ -1336,7 +1323,6 @@ var oChat = {
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
 			this.userId = document.getElementById("id").value;
 			
-			console.log(email.replace("@", "&domain="));
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
 			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
 			
@@ -1368,11 +1354,6 @@ var oChat = {
 			//P Tag에서는 .value가 적용되지 않아서 .innerText를 사용하였다.
 			this.nickname = document.getElementById("user_name").innerText;
 			
-			//새로 접속 한 사용자가 있을 경우 알림을 받는다.
-			this.socket.on('join', function(user) {
-				this.enterChatRoomOthers(user);
-			}.bind(this));
-			
 			this.socket.on('message', function (oParameter) {
 				this.getMessage(oParameter);
 			}.bind(this));
@@ -1386,18 +1367,10 @@ var oChat = {
 			 * 파라미터를 전달해준다.
 			 */
 			this.socket.on("execute", function(oCallback) {
-				console.log("oCallback : ",oCallback);
 				oCallback.callback = new Function(oCallback.callback);
-				console.log("oCallback : ",oCallback);
 				if ( typeof oCallback.callback == "function" )
 					oCallback.callback();	
 			}.bind(this));
-			
-			// TODO 채팅방에서 나가면 방에 남아있는 사람들이 누가 나갔는지 볼 수 있게 메시지를 띄워준다.
-			// 채팅방에서 나가면 알림을 해준다.
-			this.socket.on('exit', function (nickname) {
-				alert("채팅방에서 나가셨어요~");
-			});
 			
 			//ChatWindow에서 참여자 리스트 패널 fold, unfold 이벤트를 연결한다.
 			this.eRightArea.addEventListener('click', function(e) {

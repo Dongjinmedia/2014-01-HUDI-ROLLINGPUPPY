@@ -112,7 +112,7 @@ io.sockets.on('connection', function (socket) {
 			
 			//정보저장
 			socket.set("userId", userId);
-			socket.set("nickname", tuple.nickname_noun + " " + tuple.nickname_adjective);			
+			socket.set("nickname", tuple.nickname_adjective + " " + tuple.nickname_noun);			
 
 		}.bind(this);
 		/********************************************************************************************************************/
@@ -167,6 +167,18 @@ io.sockets.on('connection', function (socket) {
 		socket.emit("execute", oCallback);
 	}
 	
+	function executeAllClientInChattingRoom(chatRoomNumber, oCallback) {
+		var tempCallback = ""+ oCallback.callback;
+		tempCallback = tempCallback.replace("function", "");
+		tempCallback = tempCallback.replace("()", "");
+		tempCallback = tempCallback.replace("{", "");
+		tempCallback = tempCallback.substring(0, tempCallback.length-1);
+
+		oCallback.callback = tempCallback;
+
+		io.sockets.in(chatRoomNumber).emit('execute', oCallback);	
+	}
+	
 	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
 	//TODO connection시 node에서 join을 실행하도록 변경한다.
 	socket.on('autoConnectWithEnteredChattingRoom', function(data) {
@@ -175,8 +187,65 @@ io.sockets.on('connection', function (socket) {
 		socket.join(data.chatRoomNumber);
 	})
 
+	//공지글 (입장, 퇴장, 운영상에 필요한 메세지 전달) 등을 위한 함수.
+	//클라이언트에서는 메세지 생성자 id를 판별해서 0일경우 admin Message로 처리하도록 되어있다.
+	function sendAdminMessageToChatRoomMembers(chatRoomNumber, message) {
+		sendMessageToChatRoomMembers(0, chatRoomNumber, message);
+	}
 
+	function getMessageDataObject(userId, chatRoomNumber, message) {
+		var date = new Date();
+		
+		var oMessageInfo = {
+			"tblMemberId": userId,
+			"tblChatRoomId": chatRoomNumber,
+			"message": message,
+			"month": date.getMonth()+1,
+			"week": aWeek[date.getDay()],
+			"day": date.getDate(),
+			"time": date.getHours() + ":" + date.getMinutes()
+		}
+		
+		return oMessageInfo;
+	}
 
+	function sendMessageToChatRoomMembers(userId, chatRoomNumber, message) {
+			//javascript data schema.
+			/*
+				var eTarget = null;
+				var day = oMessageInfo["day"];
+				var month = oMessageInfo["month"];
+				var time = oMessageInfo["time"];
+				var week = oMessageInfo["week"];
+				var message = oMessageInfo["message"];
+				var isMyMessage = oMessageInfo["isMyMessage"];
+				var chatRoomNum = oMessageInfo["tblChatRoomId"];
+				var memberId = oMessageInfo["tblMemberId"];
+			*/
+
+			requestQuery(
+				//Param1
+				"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
+				//Param2
+				[chatRoomNumber, userId, message],
+				//Param3
+				function(oResult) {
+					var affectedRows = oResult["affectedRows"];
+				
+					//TODO 결과가 없을때를 대비한 error event를 만들자						
+					if ( affectedRows === 0 ) {
+						//TODO socket.emit('error', "message");
+						return;
+					} else {
+					
+						//client에서 사용하고있는 dataset에 맞춰서 object를 만듭니다.
+						var oMessageInfo = getMessageDataObject(userId, chatRoomNumber, message);
+						//Room에 있는 모두에게 새로운 메시지를 보냅니다.
+						io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);	
+					}
+				}
+			)					
+		}
 
 //***************************************************************************************
 // 클라이언트의 요청에 대한 Listening함수들 시작
@@ -248,7 +317,7 @@ io.sockets.on('connection', function (socket) {
 				console.log("oResult from parsing : ", oResult );
 				
 				
-				oCallback= {};
+				var oCallback= {};
 				
 				//참여인원이 꽉차있기 때문에 채팅방참여가 불가능하다.
 				if ( oResult["participantNum"] >= oResult["max"]) {
@@ -269,12 +338,12 @@ io.sockets.on('connection', function (socket) {
 
 					//방에 새로 입장했다는 의미
 					} else {
+						//***************************for user
 						socket.join(chatRoomNumber);
-					
+						
 						oCallback = {
 							callback: function() {
-							 	//새로운데이터 추가.
-								oChat.addChatInfo(this.chatRoomNumber, this.oResult);
+								console.log("save data oCallbackFor User!!!!!!!!!");
 								//리스트에 새로운 채팅방정보 더하기
 								oAside.addChattingList(this.chatRoomNumber, this.oResult);
 								//채팅윈도우 열기
@@ -283,11 +352,34 @@ io.sockets.on('connection', function (socket) {
 							oResult: oResult,
 							chatRoomNumber: chatRoomNumber
 						};
+						//실행은 for everyone in SameChatRoom 실행 후 이루어져야 한다.
+						//왜냐하면 데이터추가가 뒤에 되기 때문!!
+						//***************************for user
 						
+						
+						//***************************for everyone in SameChatRoom					
+						var oCallbackForEveryOneInChatRoom = {
+							callback: function() {
+								//for test
+								console.log("save data oCallbackForEveryOneInChatRoom!!!!!!!");
+								
+							 	//새로운데이터 추가.
+								oChat.addChatInfo(this.chatRoomNumber, this.oResult);
+								
+								//현재 focus된 채팅방이 열려있을 경우,
+								if ( oChat.currentChatRoomNumber == this.chatRoomNumber ) {
+									oChat.addMemberList(oChat.oInfo[this.chatRoomNumber]["oParticipant"][this.userId]);
+								}								
+							},
+							oResult: oResult,
+							chatRoomNumber: data.chatRoomNumber,
+							userId: getUserId()
+						};
+					
+						executeAllClientInChattingRoom(data.chatRoomNumber, oCallbackForEveryOneInChatRoom);
 						//채팅방 참여를 알린다.
-						//닉네임 전달
-						//TODO Message로 변경
-						io.sockets.in(chatRoomNumber).emit('join', getUserNickname());
+						sendAdminMessageToChatRoomMembers(chatRoomNumber, getUserNickname()+"님이 입장하였습니다.");					
+						//***************************for everyone in SameChatRoom
 					}
 				}
 				executeInClient(oCallback);	
@@ -297,60 +389,12 @@ io.sockets.on('connection', function (socket) {
 		
 		//데이터베이스 쿼리를 요청한다.
 		requestQuery(query, aQueryValues, callback);		
-	})
+	});
 	
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(oParameter) {
-		//javascript data schema.
-		/*
-			var eTarget = null;
-			var day = oMessageInfo["day"];
-			var month = oMessageInfo["month"];
-			var time = oMessageInfo["time"];
-			var week = oMessageInfo["week"];
-			var message = oMessageInfo["message"];
-			var isMyMessage = oMessageInfo["isMyMessage"];
-			var chatRoomNum = oMessageInfo["tblChatRoomId"];
-			var memberId = oMessageInfo["tblMemberId"];
-		*/
-		
-		var userId = getUserId();
-		var message = oParameter["message"];
-		var chatRoomNumber = oParameter["chatRoomNumber"];
-
-		requestQuery(
-			//Param1
-			"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
-			//Param2
-			[chatRoomNumber, userId, message],
-			//Param3
-			function(oResult) {
-				var affectedRows = oResult["affectedRows"];
-				
-				//TODO 결과가 없을때를 대비한 error event를 만들자						
-				if ( affectedRows === 0 ) {
-					//TODO socket.emit('error', "message");
-					return;
-				} else {
-					
-					var date = new Date();
-					
-					var oMessageInfo = {
-						"tblMemberId": userId,
-						"tblChatRoomId": chatRoomNumber,
-						"message": message,
-						"month": date.getMonth()+1,
-						"week": aWeek[date.getDay()],
-						"day": date.getDate(),
-						"time": date.getHours() + ":" + date.getMinutes()
-					}
-					
-					//Room에 있는 모두에게 참여메시지를 보냅니다.
-					io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);	
-				}
-			}
-		)					
-	})
+		sendMessageToChatRoomMembers( getUserId(), oParameter["chatRoomNumber"], oParameter["message"]);
+	});
 	
 	// TODO 현재는 DB에서 사용자 정보를 삭제하는 작업만 된 상태. socket과의 connection을 끊는 부분의 구현이 필요하다.
 	// 채팅방을 나가겠다는 요청을 처리한다.
@@ -365,10 +409,9 @@ io.sockets.on('connection', function (socket) {
 				if ( affectedRows === 0 ) {
 					//TODO 에러별 클라이언트 처리
 					console.log("Delete Fail");
-				} else {
-					//TODO 삭제. Message로 대체,
-					io.sockets.in(data.chatRoomNumber).emit('exit', getUserNickname());
+				} else {					
 					
+					//***************************for user
 					var oCallback = {
 						callback: function() {
 							oAside.deleteFromChattingList(this.chatRoomNumber);
@@ -378,6 +421,37 @@ io.sockets.on('connection', function (socket) {
 					}
 					
 					executeInClient(oCallback);
+					
+					//***************************for user
+
+					//***************************for everyone in SameChatRoom
+					//채팅방의 모든사람들에게 퇴장메세지를 전달					
+					sendAdminMessageToChatRoomMembers(data.chatRoomNumber, getUserNickname() + "님이 채팅방에서 퇴장하였습니다.");										
+					
+					//채팅방에서 나간 멤버를 각자의 참여자 정보리스트(oInfo)에서 제거한다.
+					var oCallbackForEveryOneInChatRoom = {
+						callback: function() {
+							var oTarget = oChat.oInfo[this.chatRoomNumber]["oParticipant"][this.userId];
+							
+							//Beware that IE8 may throw an exception when using delete in certain circumstances
+							//reference : http://stackoverflow.com/questions/1073414/deleting-a-window-property-in-ie
+							try { 
+								delete oTarget; 
+							} catch(e) { 
+								oTarget = undefined; 
+							}
+				
+							//현재 focus된 채팅방이 열려있을 경우,
+							if ( oChat.currentChatRoomNumber == this.chatRoomNumber ) {
+								oChat.removeMemberList(oTarget);
+							}
+						},
+						chatRoomNumber: data.chatRoomNumber,
+						userId: getUserId()
+					};
+					
+					executeAllClientInChattingRoom(data.chatRoomNumber, oCallbackForEveryOneInChatRoom);
+					//***************************for everyone in SameChatRoom
 				}
 			}
 		)
