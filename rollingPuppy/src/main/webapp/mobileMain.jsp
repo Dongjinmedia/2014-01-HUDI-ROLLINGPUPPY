@@ -50,41 +50,82 @@
 		<div id="panel">
 			<div id="panel_contents">
 				<div class="section_wrapper">
-					<ul class="section">
-						<li class="title"><h1>검색</h1></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-						<li class="card"></li>
-					</ul>
-				</div>
-				<div class="section_wrapper">
-					<div class="section">
-						<h1>채팅방</h1>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
+					<div id="scroll1" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="section">
+							<li class="title"><h1>검색</h1></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+						</ul>
+					</div>
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div class="section">
-						<h1>관심장소</h1>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
+					<div id="scroll2" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="section">
+							<li class="title"><h1>채팅방</h1></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+						</ul>
+					</div>
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div class="section">
-						<h1>설정</h1>
-						<div class="card"></div>
-						<div class="card"></div>
-						<div class="card"></div>
+					<div id="scroll3" class="scroll_wrapper">
+					<div class="scroll_area"> 
+						<ul class="section">
+							<li class="title"><h1>관심장소</h1></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+						</ul>
+					</div>
+					</div>
+				</div>
+				<div class="section_wrapper">
+					<div id="scroll4" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="section">
+							<li class="title"><h1>설정</h1></li>
+							<li class="card"></li>
+							<li class="card"></li>
+							<li class="card"></li>
+						</ul>
+					</div>
 					</div>
 				</div>
 			</div>
@@ -105,30 +146,20 @@
 	<footer></footer>
 	
 	<script type="text/javascript" src="/javascripts/mobileMain.js"></script>
-	<script type="text/javascript">
+	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
+	<script type="text/javascript" style="display: none;">
 		window.onload = function() {
 			oPanel.init();
+			oScrolls = {};
+
+			for (var idx = 0; idx < 4; idx++) {
+				oScrolls["scroll" + (idx + 1)]
+						= new IScroll("#scroll" + (idx + 1), { mouseWheel: true });
+			}
 			
 			document.ontouchmove = function(event) {
 				event.preventDefault();
 			}
-			
-			var content = document.querySelector(".section");
-			content.addEventListener('touchstart', function(event){
-			    this.allowUp = (this.scrollTop > 0);
-			    this.allowDown = (this.scrollTop < this.scrollHeight - this.clientHeight);
-			    this.slideBeginY = event.pageY;
-			});
-
-			content.addEventListener('touchmove', function(event){
-			    var up = (event.pageY > this.slideBeginY);
-			    var down = (event.pageY < this.slideBeginY)
-			    this.slideBeginY = event.pageY;
-			    if ((up && this.allowUp) || (down && this.allowDown)) 
-			        event.stopPropagation();
-			    else
-			        event.preventDefault();
-			    });
 		}
 	</script>
 </body>

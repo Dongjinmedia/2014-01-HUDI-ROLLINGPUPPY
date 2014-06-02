@@ -192,12 +192,22 @@ header {
 	background-color: #f16559;
 }
 
-.section {
+/* .scroll_wrapper의 크기는 아래 media query에서 적용함 */
+.scroll_wrapper {
 	position: absolute;
-	overflow-x: visible;
-	overflow-y: scroll;
-	overflow-scroll: touch;
-	-webkit-overflow-scroll: touch;
+	top: 10px;
+	bottom: 30px;
+	overflow: hidden;
+}
+
+.scroll_area {
+	position: absolute;
+	width: 100%;
+	z-index: 1;
+}
+
+.section {
+	width: 100%;
 }
 
 .section h1 {
@@ -224,10 +234,8 @@ header {
 
 @media only screen
 and (min-width: 920px) {
-	.section {
+	.scroll_wrapper {
 		width: 900px;
-		top: 10px;
-		bottom: 30px;
 		left: 50%;
 		margin-left: -450px;
 	}
@@ -243,10 +251,8 @@ and (min-width: 920px) {
 /* Tablet smaller than iPad */
 @media only screen 
 and (min-width: 650px) and (max-width: 920px) {
-	.section {
+	.scroll_wrapper {
 		width: 630px;
-		top: 10px;
-		bottom: 30px;
 		left: 50%;
 		margin-left: -315px;
 	}
@@ -262,13 +268,11 @@ and (min-width: 650px) and (max-width: 920px) {
 /* phone */
 @media only screen 
 and (max-width: 650px)  {
-	.section {
-		top: 10px;
-		right: 10px;
-		bottom: 30px;
+	.scroll_wrapper {
 		left: 10px;
+		right: 10px;
 	}
-	
+
 	.card {
 		display: block;
 		width: 100%;
@@ -278,7 +282,7 @@ and (max-width: 650px)  {
 }
 
 /*dada*/
-#panel_wrapper.foldPanel {
+.foldPanel #panel {
 	animation: fold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
@@ -308,7 +312,7 @@ and (max-width: 650px)  {
 	to { -moz-transform: translateY(0px); }
 }
 
-#panel_wrapper.unfoldPanel {
+.unfoldPanel #panel {
 	animation: unfold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
