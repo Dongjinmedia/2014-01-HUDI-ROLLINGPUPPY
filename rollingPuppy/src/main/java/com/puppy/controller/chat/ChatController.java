@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.math.BigDecimal;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -17,51 +16,17 @@ import com.google.gson.Gson;
 import com.puppy.controller.Controller;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
-import com.puppy.dto.Message;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatRoom;
 import com.puppy.util.JsonMarker;
 import com.puppy.util.ThreeWayResult;
-import com.puppy.util.Util;
 
 public class ChatController implements Controller {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 	
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		
-		String requestURL = request.getRequestURI().toLowerCase();
-		
-		logger.info("requestURL : "+ requestURL);
-		
-		//TODO 현재 Client에서 POST요청으로 처리하도록 해서
-		//이 메서드는 실행되지 않고 있다. Research 이후 GET방식으로 변경해야 한다.
-		if ( requestURL.contains("initmessage") ) {
-			getInitMessageFromChatRoomNum(request, response);
-		}
-	}
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {}
 	
-	private void getInitMessageFromChatRoomNum(HttpServletRequest request,
-			HttpServletResponse response) throws IOException {
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		Map<String, Object> resultData = new HashMap<String, Object>();
-		
-		int chatRoomNum = Integer.parseInt(request.getParameter(Constants.REQUEST_CHATROOM_NUMBER).toString());
-		int memberId = Integer.parseInt(request.getSession().getAttribute(Constants.SESSION_MEMBER_ID).toString());
-		
-		ChatDaoImpl chatDao = ChatDaoImpl.getInstance();
-		List<Message> recentMessage = chatDao.selectInitMessagesFromChatRoomNumber(chatRoomNum, memberId);
-		List<Message> unreadMessage = chatDao.selectUnreadMessage(chatRoomNum, memberId);
-		
-		resultData.put(Constants.JSON_RESPONSE_RECENT_MESSAGE, recentMessage);
-		resultData.put(Constants.JSON_RESPONSE_UNREAD_MESSAGE, unreadMessage);
-		
-		out.println(gson.toJson(resultData));
-		logger.info("getInitMessageFromChatRoomNum : "+gson.toJson(resultData));
-	}
-
 	/*
 	 * if-else로 request를 비교하는 구문에서는 모두 소문자로 표기한다.
 	 * requestURL을 toLowerCase로 변환하고 있기 때문이다.
@@ -78,10 +43,6 @@ public class ChatController implements Controller {
 		if ( requestURL.contains("create") ) {
 			createChattingRoom(request, response);
 		
-		//TODO getChattingRoomList영역을 GET방식으로 변경해야 한다.
-		//현재 GET요청에서는 에러가 발생중이다.
-		} else if ( requestURL.contains("getlist") ) {
-			getChattingRoomList(request, response);
 		} else if (requestURL.contains("foldcurrentchatroom")){
 			updateChattingRoomFoldTime(request, response);
 		}
@@ -196,72 +157,4 @@ public class ChatController implements Controller {
 		//gson을 통해서 HashMap을 JSON형태로 변경 후 response전달
 		out.println(gson.toJson(resultJsonData));
 	}
-	
-	/*
-	 * 지도상에서 dragEnd이벤트를 감지해 Server로 Ajax요청을 한다.
-	 * 이는 현재 드레그해서 이동한 새로운 지도의 VIew에 존재하는,
-	 * 모든 마커정보를 가져오기 위함이다.
-	 * 
-	 * Client에서는 
-	 * 좌상단의 latitude, longitude
-	 * 우하단의 latitude, longitude정보를 formData에 담아서 전송하고 있다.
-	 * 
-	 * 이 함수에서는 위와같이 Client에서 전달해주는 좌표 정보를 이용해서
-	 * 데이터베이스에서 좌상단, 우하단 좌표사이에 존재하는 마커를 검색한다.
-	 */
-	public void getChattingRoomList(HttpServletRequest request, HttpServletResponse response) throws IOException {
-		response.setContentType("application/json");
-		
-		//한글데이터 전달을 위해 설정. 추후 filter설정으로 변경
-		//TODO 한글 Encoding Filter설정
-		response.setCharacterEncoding("UTF-8");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		
-		//return할 JSON데이터를 담은 Map객체
-		Map<String, Object> resultJsonData = new HashMap<String, Object>();
-		boolean isSuccess = false;
-		
-		//request Parameter를 위한 변수선언
-		float leftTopX = 0;
-		float leftTopY = 0;
-		float rightBottomX = 0;
-		float rightBottomY = 0;
-		
-		try {
-			
-			//TODO Object To Float에 대한 방법이 이것밖에 없는가..?
-			leftTopX = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_LEFTTOPX).toString() );
-			leftTopY = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_LEFTTOPY).toString() );
-			rightBottomX = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX).toString() );
-			rightBottomY = Float.parseFloat( request.getAttribute( Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY).toString() );
-			
-			if ( leftTopX !=0  && leftTopY !=0
-				&& rightBottomX != 0
-				&& rightBottomY != 0 ) {
-				
-				//Client에서 전달받은 좌상, 우하 좌표를 통한 Query 검색
-				//TODO ZOOM LEVEL 별 검색
-				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
-				List<ChatRoom> lists = chatDaoImpl.selectChatRoomListFromPoints(leftTopX, leftTopY, rightBottomX, rightBottomY);
-				
-				//마커를 중심으로 리턴데이터를 정렬. 
-				//JsonMarker에 대한 자세한 설명은 Util 클래스의 getMarkerCentralListFromChatRoomList() 클래스 참조 
-				List<JsonMarker> returnJsonList = Util.getMarkerCentralListFromChatRoomList(lists);
-				
-				//MarkerList를 JSON 데이터에 담는다.
-				resultJsonData.put(Constants.JSON_RESPONSE_MARKERLIST, returnJsonList);
-				isSuccess = true;
-			}
-			
-		} catch (Exception e ) {
-			logger.error("Request Get Chatting Room List With LeftTop, RightBottom Latitude, Longitude", e);
-		}
-		
-		//성공여부를 JSON 데이터에 담는다.
-		resultJsonData.put(Constants.JSON_RESPONSE_ISSUCCESS, isSuccess);
-		out.println(gson.toJson(resultJsonData));
-	}
-	
-	
 }

@@ -30,6 +30,16 @@
 	</mapping>
 
 	<mapping>
+		<url>/chat/getList</url>
+		<controller>com.puppy.controller.chat.ChatListController</controller>
+	</mapping>
+
+	<mapping>
+		<url>/chat/initMessage</url>
+		<controller>com.puppy.controller.chat.MessageController</controller>
+	</mapping>
+
+	<mapping>
 		<url>/error</url>
 		<controller>com.puppy.controller.ErrorController</controller>
 	</mapping>
