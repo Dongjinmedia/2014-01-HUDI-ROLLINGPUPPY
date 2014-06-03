@@ -80,17 +80,16 @@ public class FrontController extends HttpServlet {
 		String requestUrl = request.getRequestURI();
 		String requestMethod = request.getMethod();
 		
+		logger.info("method : "+requestMethod);
+		logger.info("url : "+requestUrl);
+		
 		if ( requestMethod.equalsIgnoreCase("POST")) {
 			method = Method.POST;
 		} else if ( requestMethod.equalsIgnoreCase("GET")) {
 			method = Method.GET;
 		} else {
-			//throw Exception
+			response.sendRedirect("/error?type=500");
 		}
-		
-		logger.info("method : "+requestMethod);
-		logger.info("url : "+requestUrl);
-
 		
 		
 		/*
@@ -124,18 +123,12 @@ public class FrontController extends HttpServlet {
 			tempPath = tempPath.substring(0, tempPath.length()-1);
 		}
 		
-		logger.info("==================");
-		for (String string : possibleURL) {
-			logger.info("possibleURL : "+string);
-			logger.info(""+urlMappingObject.containsKey(string));
-			logger.info(""+urlMappingObject.get(string));
-		}
-		logger.info("==================");
-		
 		//possibleURL 리스트를 url-controller가 맵핑된 리스트와 비교한다.
 		for (String url : possibleURL) {
-			if ( urlMappingObject.containsKey(url) )
+			if ( urlMappingObject.containsKey(url) ) {
 				controller = urlMappingObject.get(url);
+				break;
+			}
 		}
 		
 		if ( controller != null )
