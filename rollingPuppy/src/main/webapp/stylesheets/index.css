@@ -24,7 +24,7 @@ body, html {
 .bgImg {
 	position: fixed;
 	top: 5%;
-	left: 30%;
+	margin-left: 400px;
 	width: 100%;
 	background:
 		url(/images/map.png)
@@ -33,6 +33,7 @@ body, html {
 	height: 100%;
 	z-index: 1;
 	opacity: 0.8;
+	min-width: 100%;
 }
 
 .innerbg {
@@ -40,7 +41,7 @@ body, html {
 	background: url(/images/chat.png) no-repeat;
 	width: 100%;
 	height: 100%;
-	left: 55%;
+	margin-left: 320px;
 	top: 28%;
 	opacity: 0.9;
 }
@@ -49,7 +50,7 @@ body, html {
 	position: absolute;
 	top: 50%;
 	margin-top: -250px;
-	left: 4%;
+	margin-left: 50px;
 }
 
 h1,p {
@@ -172,4 +173,23 @@ form input[type="submit"] {
 		opacity: 0.2;
 	}
 	
+	.innerbg {
+		display: none;
+	}
+	
+	.interactBox {
+		margin: auto;
+		width: 90%;
+		max-width: 280px;
+		height: 100%;
+		position: relative;
+		top: 0;
+		left: 0;
+		margin-top: 0;
+	}
+	
+	.interactBox > *{
+		width: 100%;
+		margin-left: 3px;
+	}
 }

@@ -15,9 +15,6 @@
 		<div class="leftArea">
 			<div class="top">
 				<p class="title icon-chatting">모여라 꿈동산</p>
-				<p class="limit icon-participant">1 / 300</p>
-				<!--  <p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
-				-->
 				<div class="menu">
 					<div class = "leftMenu">
 						<i class="icon-aside" title="접어두기"></i>
@@ -55,7 +52,7 @@
 				<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
 			</div>
 		</div>
-		<div class="rightArea unfold">
+		<div class="rightArea fold">
 			<div class="chattingMemberList">
 				<ul>
 					<li class="person chatMember"><img class="profile"
@@ -73,6 +70,9 @@
 	</div>
 </body>
 <script type="text/javascript" src="/javascripts/mobileChat.js?20140521"></script>
+<script>
+window.onload=oMemberPanel.init();
+</script>
 <!--하면 채팅 내용부분만 스크롤이 됨. 원래 의도는 주소창을 없애는 것이었음
 <script type="text/javascript">
 if (navigator.userAgent.indexOf('iPhone') != -1) { 

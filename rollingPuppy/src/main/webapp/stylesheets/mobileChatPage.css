@@ -21,7 +21,7 @@
 #chatWindow {
 	width: 100%;
 	height: 100%;
-	position: relative;
+	position: absolute;
 }
 
 #chatWindow .leftArea {
@@ -37,8 +37,11 @@
 }
 
 #chatWindow .rightArea {
-	display: none;
+	top:-100%;
 	position: relative;
+	z-index: 10;
+	/*오른쪽으로 밀려나있다가, 메뉴를 누르면 나온다 */
+	left:100%;
 	width: 20%;
 	height: 100%;
 	float: left;
@@ -64,28 +67,26 @@
 }
 
 .rightArea.unfold {
-	left: 0%;
+	left: 80%;
 	-webkit-transition: all 2s ease-in-out;
 	-moz-transition: all 2s ease-in-out;
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
 }
 
+/* default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 */
 .rightArea.fold {
-	right: 20%;
-}
-
-.rightArea.unfold:after {
-	content: "<";
-}
-
-.rightArea.fold:after {
-	content: ">";
-}
+	left: 100%;
+	-webkit-transition: all 2s ease-in-out;
+	-moz-transition: all 2s ease-in-out;
+	-o-transition: all 2s ease-in-out;
+	transition: all 2s ease-in-out;
+} 
 
 .leftArea .top {
+	display: relative;
 	width: 100%;
-	height: 50px;
+	height: 45px;
 	border-bottom: 0.1em solid #3a4655;
 	border-right: 0.1em solid #384652;
 	background-color: #424f5f;
@@ -93,8 +94,6 @@
 	overflow: hidden;
 	color: #fff;
 	text-align: center;
-	/*mobile에서 불필요 
-	cursor: move;*/
 	padding: 3%;
 }
 
@@ -102,73 +101,57 @@
 	display: inline;
 	margin-top: 0.7em;
 	font-size: 1.1em;
+	/*
+	white-space: nowrap;
+	width:10px;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	*/
 }
 
 .top .title:before {
 	margin-right: 5px;
 }
 
-.top .limit {
-	display: inline;
-	font-size: 0.6em;
-	margin: 0.9em 0 0 0.3em;
-	color: #7a8696;
-}
-
-.top.limit:before {
-	margin-right: 5px;
-}
-
-.top .address {
-	font-size: 0.6em;
-	margin: 0.3em 0 0 0.3em;
-	color: #7a8696;
-}
-
-.top.address:before {
-	margin-right: 5px;
-}
-
 .top .menu {
+	margin-top: 0.7em;
 	position: absolute;
-	/*right: 2%;*/
-	top: 30px;
+	top: 0px;
 	width: 100%;
 	height: 1em;
 	cursor: pointer;
+	text-align: right;
+	right: 1%;
 }
 
-.top .menu .icon-exit:before {
-	content: "\f08b";
-	font-size: 1em;
-	color: #7a8696;
-}
+.top .menu .leftMenu {
 
-.top .menu .icon-exit:hover:before {
-	color: #fff;
 }
 
 .top .menu .icon-aside:before {
 	content: "\f019";
-	font-size: 1em;
+	font-size: 1.8em;
 	color: #7a8696;
 	margin-right: 5px;
+	display: inline;
 }
 
-.top .menu .icon-aside:hover:before {
-	color: #fff;
+.top .menu .icon-exit:before {
+	content: "\f08b";
+	font-size: 1.8em;
+	color: #7a8696;
 }
 
 .top .menu .icon-member:before {
 	content: "\f0c9";
-	font-size: 1em;
+	font-size: 1.8em;
 	color: #7a8696;
 	margin-right: 5px;
 }
 
-.top .menu .icon-member:hover:before {
+/* .top .menu .icon-member:hover:before {
 	color: #fff;
-}
+} */
 
 .top .menu .leftMenu {
 	left: 2%;
@@ -206,6 +189,7 @@
 	padding: 0.5em 0.6em;
 	color: #92a2c2;
 	line-height: 1.5em;
+	border: 1px solid;
 }
 
 .chattingMemberList ul{

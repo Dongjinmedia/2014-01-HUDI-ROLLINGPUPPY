@@ -283,7 +283,6 @@ and (max-width: 650px)  {
 	}
 }
 
-/*dada*/
 .foldPanel #panel {
 	animation: fold;
 	animation-duration: 0.4s;

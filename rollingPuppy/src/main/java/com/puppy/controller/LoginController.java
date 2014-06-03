@@ -31,7 +31,6 @@ public class LoginController implements Controller {
 			throws ServletException, IOException {
 		logger.info("into doPost");
 		
-		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();

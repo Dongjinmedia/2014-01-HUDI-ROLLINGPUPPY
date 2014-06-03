@@ -40,8 +40,6 @@ var oPanel ={
 			return ;
 		}
 		
-		
-		/* 윤성작업중 시작 */
 		// panel영역에 대한 flicking이벤트 연결
 		this.ePanel.addEventListener(
 			"touchstart",
@@ -57,7 +55,6 @@ var oPanel ={
 			"touchend",
 			this.panelTouchEnd.bind(this)
 		);
-		/* 윤성작업중 종료 */
 	},
 
 	addClassName: function(node, strClassName) {
@@ -128,7 +125,6 @@ var oPanel ={
 		}
 	},
 	
-	/* 윤성작업중 시작 */
 	ePanel: document.querySelector("#panel"),
 	ePanelContents: document.querySelector("#panel_contents"),
 	aSectionWrapper: document.querySelectorAll(".section_wrapper"),
@@ -275,15 +271,9 @@ var oPanel ={
 		this.addClassName(this.aMenu[nCenterIndex], "on");
 	},
 	
-	/* 윤성작업중 종료 */	
-
 	init : function(){
 		this.addEvents();
 		console.log("init");
-		
-	/* 윤성작업중 시작 */
-			
-	/* 윤성작업중 종료 */
 	}
 };
 
@@ -296,3 +286,4 @@ var oScrolls = {
 	}
 	
 };
+

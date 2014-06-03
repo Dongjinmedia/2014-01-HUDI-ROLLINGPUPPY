@@ -38,7 +38,6 @@ public class ChatInfoController implements Controller {
 		logger.info("indo doGet of ChatInfoController");
 		
 		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 		Map<String, JsonChatInfo> returnData = null;
@@ -66,7 +65,6 @@ public class ChatInfoController implements Controller {
 		logger.info("indo doPost of ChatInfoController");
 
 		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 		Map<String, JsonChatInfo> returnData = null;
