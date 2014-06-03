@@ -43,7 +43,6 @@ public class ChatController implements Controller {
 	private void getInitMessageFromChatRoomNum(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
 		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 		Map<String, Object> resultData = new HashMap<String, Object>();
@@ -116,7 +115,6 @@ public class ChatController implements Controller {
 		
 		//response 형식을 json으로 선언
 		response.setContentType("application/json; charset=UTF-8");
-		response.setCharacterEncoding("UTF-8");
 		
 		//response데이터에 JSON출력을 위한 선언
 		PrintWriter out = response.getWriter();

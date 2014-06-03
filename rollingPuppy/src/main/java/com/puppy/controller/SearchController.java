@@ -33,8 +33,6 @@ public class SearchController implements Controller {
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.info("into doPost of SearchController");
 		
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
