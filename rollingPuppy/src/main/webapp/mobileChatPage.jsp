@@ -70,6 +70,9 @@
 	</div>
 </body>
 <script type="text/javascript" src="/javascripts/mobileChat.js?20140521"></script>
+<script>
+window.onload=oMemberPanel.init();
+</script>
 <!--하면 채팅 내용부분만 스크롤이 됨. 원래 의도는 주소창을 없애는 것이었음
 <script type="text/javascript">
 if (navigator.userAgent.indexOf('iPhone') != -1) { 

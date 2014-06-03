@@ -74,10 +74,14 @@
 	transition: all 2s ease-in-out;
 }
 
-/* default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 
+/* default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 */
 .rightArea.fold {
-	right: 20%;
-} */
+	left: 100%;
+	-webkit-transition: all 2s ease-in-out;
+	-moz-transition: all 2s ease-in-out;
+	-o-transition: all 2s ease-in-out;
+	transition: all 2s ease-in-out;
+} 
 
 .leftArea .top {
 	display: relative;
