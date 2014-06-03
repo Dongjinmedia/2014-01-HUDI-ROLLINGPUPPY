@@ -52,8 +52,8 @@
 				<div class="section_wrapper">
 					<div id="scroll1" class="scroll_wrapper">
 					<div class="scroll_area">
+						<h1>검색</h1>
 						<ul class="section">
-							<li class="title"><h1>검색</h1></li>
 							<li class="card"></li>
 							<li class="card"></li>
 							<li class="card"></li>
@@ -157,9 +157,12 @@
 						= new IScroll("#scroll" + (idx + 1), { mouseWheel: true });
 			}
 			
-			document.ontouchmove = function(event) {
-				event.preventDefault();
-			}
+			document.addEventListener(
+					"touchmove",
+					function(event) {
+						event.preventDefault();
+					}
+			);
 		}
 	</script>
 </body>

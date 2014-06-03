@@ -7,7 +7,7 @@ var oPanel ={
 
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		// window에 orientation 속성이 있다면 모바일기기로 판단한다.
-		// TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것!
+		// TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것
 		if (typeof window.orientation !== "undefined") {
 			this.ePanelButtons.addEventListener(
 					"touchend",
@@ -23,8 +23,7 @@ var oPanel ={
 		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
 		//    Chrome, Safari를 위한 webkitAnimationEnd
-		//    IE를 위한 animationend
-		//	  FireFox를 위한 mozAnimationEnd
+		//    IE, FireFox를 위한 animationend (** FireFox도 animationend를 사용한다 **)
 		if (typeof document.body.style.webkitTransition !== "undefined") {
 			this.ePanelWrapper.addEventListener(
 					"webkitAnimationEnd",
