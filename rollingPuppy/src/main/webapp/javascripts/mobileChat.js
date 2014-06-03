@@ -34,7 +34,6 @@ var oMemberPanel = {
 		eRightArea: null,
 		addEvents: function(){
 			console.log("addEvents");
-			console.log("eMemberIcon", eMemberIcon);
 			this.eMemberIcon.addEventListener("touchend",this.memberPanelHandler.bind(this));
 			this.eMemberIcon.addEventListener("click",this.memberPanelHandler.bind(this));
 		},
@@ -42,19 +41,19 @@ var oMemberPanel = {
 		//member icon을 click하거나 touch 이벤트가 발생하면 실행되는 콜백함수 
 		memberPanelHandler: function(e){
 			event.preventDefault();
-			console.log(eRightArea.className);
-			if ( eRightArea.className.indexOf("unfold") !== -1 ) {
-				removeClassName(eRightArea, "unfold");
-				addClassName(eRightArea, "fold");
+			console.log(this.eRightArea.className);
+			if ( this.eRightArea.className.indexOf("unfold") !== -1 ) {
+				removeClassName(this.eRightArea, "unfold");
+				addClassName(this.eRightArea, "fold");
 			} else {
-				removeClassName(eRightArea, "fold");						
-				addClassName(eRightArea, "unfold");
+				removeClassName(this.eRightArea, "fold");						
+				addClassName(this.eRightArea, "unfold");
 			}					
 		},
 		
 		init: function(){
-			eMemberIcon = document.querySelector(".top .menu .icon-member");
-			eRightArea = document.querySelector(".rightArea");
+			this.eMemberIcon = document.querySelector(".top .menu .icon-member");
+			this.eRightArea = document.querySelector(".rightArea");
 			console.log("init");
 			this.addEvents();
 		}
