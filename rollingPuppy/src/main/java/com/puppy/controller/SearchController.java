@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.util.Constants;
 import com.puppy.util.XMLReader;
 
 public class SearchController implements Controller {
@@ -40,7 +41,7 @@ public class SearchController implements Controller {
 		
 		String searchKeyword = null;
 		
-		Object searchKeywordObject = request.getAttribute("queryKeyword");
+		Object searchKeywordObject = request.getAttribute(Constants.REQUEST_SEARCH_QUERY);
 		logger.info("searchKeywordObject :"+ searchKeywordObject);
 		
 		if( searchKeywordObject != null)

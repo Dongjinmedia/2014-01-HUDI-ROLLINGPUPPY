@@ -1268,7 +1268,7 @@ var oChat = {
 		 */
 		getMyChatInfoAndUpdateListInPanel: function(){
 			
-			var incompleteUrl = "/chatInfo/getMyChatInfo";
+			var incompleteUrl = "/chat/getMyChatInfo";
 			
 			var callback = function(request){
 

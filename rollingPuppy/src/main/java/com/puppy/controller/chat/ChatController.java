@@ -1,4 +1,4 @@
-package com.puppy.controller;
+package com.puppy.controller.chat;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.controller.Controller;
 import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Message;

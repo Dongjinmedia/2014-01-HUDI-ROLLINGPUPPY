@@ -124,6 +124,14 @@ public class FrontController extends HttpServlet {
 			tempPath = tempPath.substring(0, tempPath.length()-1);
 		}
 		
+		logger.info("==================");
+		for (String string : possibleURL) {
+			logger.info("possibleURL : "+string);
+			logger.info(""+urlMappingObject.containsKey(string));
+			logger.info(""+urlMappingObject.get(string));
+		}
+		logger.info("==================");
+		
 		//possibleURL 리스트를 url-controller가 맵핑된 리스트와 비교한다.
 		for (String url : possibleURL) {
 			if ( urlMappingObject.containsKey(url) )

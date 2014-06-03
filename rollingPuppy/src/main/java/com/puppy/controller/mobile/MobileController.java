@@ -1,4 +1,4 @@
-package com.puppy.controller;
+package com.puppy.controller.mobile;
 
 import java.io.IOException;
 
@@ -9,6 +9,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.puppy.controller.Controller;
+import com.puppy.controller.MainController;
 
 public class MobileController implements Controller {
 	

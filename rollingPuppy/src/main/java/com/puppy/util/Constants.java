@@ -26,6 +26,8 @@ public class Constants {
 	public static final String REQUEST_ROOMLIST_RIGHTBOTTOMX = "rightBottomX";
 	public static final String REQUEST_ROOMLIST_RIGHTBOTTOMY = "rightBottomY";
 	
+	public static final String REQUEST_SEARCH_QUERY = "queryKeyword";
+	
 	public static final String JSON_RESPONSE_ISSUCCESS = "isSuccess";
 	public static final String JSON_RESPONSE_NICKNAME = "nickname";
 	public static final String JSON_RESPONSE_CHATROOMNUM = "chatRoomNumber";

@@ -114,7 +114,7 @@ var oLogin = {
 			"keepEmail": form[2].value
 		};
 
-		callback = function(request) {
+		var callback = function(request) {
 			var oResult = JSON.parse(request.responseText);
 				
 			var result = oResult['ThreeWayResult'];

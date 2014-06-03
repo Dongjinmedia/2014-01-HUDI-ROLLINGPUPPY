@@ -6,17 +6,17 @@
 
 	<mapping>
 		<url>/join</url>
-		<controller>com.puppy.controller.JoinController</controller>
+		<controller>com.puppy.controller.member.JoinController</controller>
 	</mapping>
 
 	<mapping>
 		<url>/login</url>
-		<controller>com.puppy.controller.LoginController</controller>
+		<controller>com.puppy.controller.member.LoginController</controller>
 	</mapping>
 
 	<mapping>
 		<url>/logout</url>
-		<controller>com.puppy.controller.LogoutController</controller>
+		<controller>com.puppy.controller.member.LogoutController</controller>
 	</mapping>
 
 	<mapping>
@@ -26,7 +26,7 @@
 
 	<mapping>
 		<url>/chat/*</url>
-		<controller>com.puppy.controller.ChatController</controller>
+		<controller>com.puppy.controller.chat.ChatController</controller>
 	</mapping>
 
 	<mapping>
@@ -46,17 +46,17 @@
 
 	<mapping>
 		<url>/mobile</url>
-		<controller>com.puppy.controller.MobileController</controller>
+		<controller>com.puppy.controller.mobile.MobileController</controller>
 	</mapping>
 	
 	<mapping>
 		<url>/mobile/chat</url>
-		<controller>com.puppy.controller.MobileChatController</controller>
+		<controller>com.puppy.controller.mobile.MobileChatController</controller>
 	</mapping>
 	
 	<mapping>
-		<url>/chatInfo/getMyChatInfo</url>
-		<controller>com.puppy.controller.ChatInfoController</controller>
+		<url>/chat/getMyChatInfo</url>
+		<controller>com.puppy.controller.chat.ChatInfoController</controller>
 	</mapping>
 	
 	<mapping>
