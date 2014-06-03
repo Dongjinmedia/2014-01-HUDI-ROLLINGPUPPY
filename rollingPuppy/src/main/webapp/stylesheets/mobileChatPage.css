@@ -236,7 +236,7 @@
 }
 
 .inputArea {
-	width: 100%;
+	width: 85%;
 	height: 30px;
 	font-size: 1em;
 	background: none;
@@ -249,6 +249,15 @@
 	line-height: 1.5em;
 	!border: 1px solid;
 }
+
+.leftArea .bottom input[type="button"]{
+	width:13%;
+	border: none;
+	position:relative;
+	bottom:9px;
+	height:3em;
+}
+
 
 .chattingMemberList ul{
 	display: inline-block;

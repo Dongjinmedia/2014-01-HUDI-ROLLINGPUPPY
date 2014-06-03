@@ -50,6 +50,7 @@
 			</div>
 			<div class="bottom">
 				<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
+				<input type = "button" value = "send"></input>
 			</div>
 		</div>
 		<div class="rightArea fold">
