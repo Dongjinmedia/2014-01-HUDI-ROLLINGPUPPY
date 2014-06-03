@@ -50,7 +50,7 @@
 		<div id="panel">
 			<div id="panel_contents">
 				<div class="section_wrapper">
-					<div id="scroll1" class="scroll_wrapper">
+					<div id="scroll0" class="scroll_wrapper">
 					<div class="scroll_area">
 						<h1>검색</h1>
 						<ul class="section">
@@ -86,7 +86,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll2" class="scroll_wrapper">
+					<div id="scroll1" class="scroll_wrapper">
 					<div class="scroll_area">
 						<ul class="section">
 							<li class="title"><h1>채팅방</h1></li>
@@ -99,7 +99,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll3" class="scroll_wrapper">
+					<div id="scroll2" class="scroll_wrapper">
 					<div class="scroll_area"> 
 						<ul class="section">
 							<li class="title"><h1>관심장소</h1></li>
@@ -117,7 +117,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll4" class="scroll_wrapper">
+					<div id="scroll3" class="scroll_wrapper">
 					<div class="scroll_area">
 						<ul class="section">
 							<li class="title"><h1>설정</h1></li>
@@ -149,20 +149,14 @@
 	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript" style="display: none;">
 		window.onload = function() {
-			oPanel.init();
-			oScrolls = {};
-
-			for (var idx = 0; idx < 4; idx++) {
-				oScrolls["scroll" + (idx + 1)]
-						= new IScroll("#scroll" + (idx + 1), { mouseWheel: true });
-			}
-			
 			document.addEventListener(
 					"touchmove",
 					function(event) {
 						event.preventDefault();
-					}
-			);
+					});
+			
+			oScrolls.init();
+			oPanel.init();
 		}
 	</script>
 </body>

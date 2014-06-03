@@ -146,7 +146,10 @@ var oPanel ={
 	//터치 종료지점 저장
 	nTouchEndX: 0,
 	nTouchEndY: 0,
-	
+	// scroll or swipe를 판별하기 위한 값
+	nTotalMoveX: 0,
+	nTotalMoveY: 0,
+	isScroll: null,
 	
 	//터치 이벤트 시작시 호출되는 함수
 	panelTouchStart: function(event) {
@@ -164,14 +167,34 @@ var oPanel ={
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
 		
-		var nMoveLength = this.nTouchEndX - this.nTouchStartX;
+		var nMoveLengthX = this.nTouchEndX - this.nTouchStartX;
+		var nMoveLengthY = this.nTouchEndY - this.nTouchStartY;
 		
-		if (this.nCurrentViewPanelIndex <= 0 && nMoveLength > 0
-		  ||this.nCurrentViewPanelIndex >= 3 && nMoveLength < 0) {
-			 return false;
+		if (this.nTotalMoveX + this.nTotalMoveY < 1) {
+			this.nTotalMoveX += Math.abs(nMoveLengthX) / 10;
+			this.nTotalMoveY += Math.abs(nMoveLengthY) / 10;
+			
+			return ;
+		}
+		
+		if (this.isScroll == null) {
+			if( this.nTotalMoveX > this.nTotalMoveY) {
+				this.isScroll = false; 
+			} else {
+				this.isScroll = true;
+			}
+		}
+		
+		if (this.isScroll) {
+			return;
+		}
+		
+		window.oScrolls["scroll" + this.nCurrentViewPanelIndex].disable();
+		if (this.nCurrentViewPanelIndex <= 0 && nMoveLengthX > 0
+				|| this.nCurrentViewPanelIndex >= 3 && nMoveLengthX < 0) {
+			return false;
 		} else {
-			console.log(nMoveLength);
-			this.ePanelContents.style.webkitTransform = "translate("+nMoveLength+"px)";
+			this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
 		}
 	},
 	
@@ -181,15 +204,26 @@ var oPanel ={
 		
 		var touch = event.changedTouches[0];
 		var nTempIndex = this.nCurrentViewPanelIndex;
+		var tempIsScroll = this.isScroll;
 
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
 		
+		this.nTotalMoveX = 0;
+		this.nTotalMoveY = 0;
+		this.isScroll = null;
+		
+		window.oScrolls["scroll" + this.nCurrentViewPanelIndex].enable();
+
+		if (tempIsScroll) {
+			return;
+		}
+		
 		//TODO 변화값은 조절하도록
-		var nMoveLength = this.nTouchStartX - this.nTouchEndX;
-		if (nMoveLength > 50) {
+		var nMoveLengthX = this.nTouchStartX - this.nTouchEndX;
+		if (nMoveLengthX > 70) {
 			this.nCurrentViewPanelIndex++;
-		} else if (nMoveLength < -50) {
+		} else if (nMoveLengthX < -70) {
 			this.nCurrentViewPanelIndex--;
 		} else {
 			this.ePanelContents.style.webkitTransform = "translate(0)";
@@ -210,9 +244,9 @@ var oPanel ={
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	_setPosition: function() {
 		var nCenterIndex = this.nCurrentViewPanelIndex % 4;
-		var nLeftIndex = this.nCurrentViewPanelIndex -1;
-		var nRightIndex = this.nCurrentViewPanelIndex +1;
-		var nRightEndIndex = this.nCurrentViewPanelIndex +2;
+		var nLeftIndex = this.nCurrentViewPanelIndex - 1;
+		var nRightIndex = this.nCurrentViewPanelIndex + 1;
+		var nRightEndIndex = (this.nCurrentViewPanelIndex + 2) % 4;
 		
 		this._changeCurrentMenuMarker(nCenterIndex);
 		
@@ -224,7 +258,8 @@ var oPanel ={
 			nRightIndex = 0;
 			nRightEndIndex = 1;
 		}
-			
+		
+		console.log(nLeftIndex + ", " + nCenterIndex + ", " + nRightIndex  + ", " + nRightEndIndex);
 		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
 		this.aSectionWrapper[nRightIndex].style.left = "100%";
@@ -250,4 +285,14 @@ var oPanel ={
 			
 	/* 윤성작업중 종료 */
 	}
-}
+};
+
+var oScrolls = {
+	init: function() {
+		for (var idx = 0; idx < 4; idx++) {
+			oScrolls["scroll" + idx]
+			= new IScroll("#scroll" + idx, { mouseWheel: true });
+		}
+	}
+	
+};

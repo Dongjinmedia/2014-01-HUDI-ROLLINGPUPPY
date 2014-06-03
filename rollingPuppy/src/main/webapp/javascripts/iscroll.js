@@ -255,7 +255,7 @@ function IScroll (el, options) {
 
 		resizeScrollbars: true,
 
-		mouseWheelSpeed: 20,
+		mouseWheelSpeed: 10,
 
 		snapThreshold: 0.334,
 
