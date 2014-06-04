@@ -920,7 +920,6 @@ var oChat = {
 		functionTempForMoveWindow: null,
 		socket: null,
 		eChatWindow: document.getElementById("chatWindow"),
-		eChattingContents: document.querySelector("#chatWindow .chattingContents"),
 		eRightArea: document.querySelector("#chatWindow .rightArea"),
 		eChattingMemberList: document.querySelector("#chatWindow .chattingMemberList ul"),
 		eInputBox: document.querySelector("#chatWindow .inputArea"),
@@ -982,15 +981,21 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
+			if ( oChat.isChatWindowVisible() ) {
+				oChat.foldChattingRoom();
+			}
+			
 			oChat.saveCurrentChatRoomNumber(chatRoomNum);
 			console.log("chatRoomNumber :",chatRoomNum);
 			oChat.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
 			oChat.updateChatWindowHeaderText(chatRoomNum);
-			oChat.updateNotificationView(chatRoomNum);
 			oChat.updateMemberList(chatRoomNum);
-			oChat.updateInitializeMessage(chatRoomNum);
 			oChat.visibleChatWindow();
+			
+			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
+			//때문에 가장 마지막에 실행해준다.
+			oChat.updateInitializeMessage(chatRoomNum);
 		},
 
 		visibleChatWindow: function() {
@@ -999,6 +1004,10 @@ var oChat = {
 		
 		invisibleChatWindow: function() {
 			this.eChatWindow.style.display = "none";
+		},
+		
+		isChatWindowVisible: function() {
+			return (this.eChatWindow.style.display == "block");
 		},
 		
 		saveCurrentChatRoomNumber: function(chatRoomNum) {
@@ -1020,6 +1029,7 @@ var oChat = {
 		getMessage: function(oMessageInfo) {
 			//자신이 보낸 메세지인지, 남이 보낸 메세지인지를 판별하기 위한 flag
 			var flag = 0;
+			var chatRoomNumber = oMessageInfo["tblChatRoomId"];
 			
 			//현재는 클라이언트에서 판별후 attribute를 생성하고 있다.
 			//TODO isMyMessage를 웹서버에서 처리할 수 있도록 변경해야 한다.
@@ -1029,11 +1039,28 @@ var oChat = {
 			
 			oMessageInfo["isMyMessage"] = flag;
 			
-			this._updateOneMessage(oMessageInfo);
+			if ( chatRoomNumber == oChat.currentChatRoomNumber ) {
+				this._updateOneMessage(oMessageInfo);
+				
+			} else {
+				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
+				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
+				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
+				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
+				oAside.updateTotalNotificationView();
+			}
 		},
 		
 		setMessageBoxScrollTop: function() {
-			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
+			this.eChatWindowMessageBox.scrollTop = this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		getMessageBoxScrollTop: function() {
+			return this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		updateMessageBoxScrollTop: function(height) {
+			this.eChatWindowMessageBox.scrollTop = height;
 		},
 		
 		isNewDay: function(dayNum) {
@@ -1111,6 +1138,8 @@ var oChat = {
 			if (eTarget != undefined || eTarget != null) {
 				this.eChatWindowMessageBox.appendChild(eTarget);
 			}
+			
+			this.setMessageBoxScrollTop();
 		},
 		
 		updateLastMessageDayNum: function(nDay) {
@@ -1127,7 +1156,6 @@ var oChat = {
 			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
 				this._updateOneMessage(aMessage[index]);
 			}
-			this.setMessageBoxScrollTop();
 		},
 		
 		updateInitializeMessage: function(chatRoomNum) {
@@ -1147,7 +1175,25 @@ var oChat = {
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
     			this.updateOneMessage(aRecentMessage);
-    			this.updateOneMessage(aUnreadMessage);
+    			//working5
+    			console.log("aUnreadMessage.length : ",aUnreadMessage.length);
+    			console.log("aUnreadMessage.length !==0 ", aUnreadMessage.length !==0 );
+    			if ( aUnreadMessage.length !== 0 ) {
+    				
+    				//멘트삽입
+    				oChat.eChatWindowMessageBox.appendChild(this._getNoticeTemplateCloneElement("여기까지 읽으셨습니다."));
+    				
+    				console.log("aUnreadMessage : ",aUnreadMessage);
+    				var unreadMessageScrollTop = oChat.getMessageBoxScrollTop();
+    				console.log("unreadMessageScrollTop  : ", unreadMessageScrollTop );
+    				oChat.updateOneMessage(aUnreadMessage);
+    				
+    				oChat.updateMessageBoxScrollTop(unreadMessageScrollTop-30);
+    				
+    			} else {
+    				oChat.setMessageBoxScrollTop();
+    			}
+    			
     		}
     		
     		oAjax.getObjectFromJsonGetRequest("/chat/initMessage", oParameters, callback.bind(this));
@@ -1214,7 +1260,7 @@ var oChat = {
 		},
 		
 		//working
-		foldChattingRoom: function(e) {
+		foldChattingRoom: function() {
 			//서버에 채팅방 fold에 대한 요청을 보낸다.
 			
 			var url = "/chat/foldCurrentChatRoom";

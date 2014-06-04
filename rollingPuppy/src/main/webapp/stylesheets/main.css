@@ -820,6 +820,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   position: relative;
   top: 0em;
 }
+
 .chattingContents .notice .message {
   min-width: 100%;  
   max-width: 100%;
