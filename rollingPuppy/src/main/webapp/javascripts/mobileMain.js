@@ -153,7 +153,7 @@ var oPanel ={
 
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
-		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].disable();
+		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].disable();
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -190,7 +190,7 @@ var oPanel ={
 			} else {
 				this.isScroll = true;
 				// 스크롤을 해도 되는 상황입니다! enable 해줍시다!!
-				window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
+				window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].enable();
 			}
 		}
 		
@@ -221,7 +221,7 @@ var oPanel ={
 		this.isScroll = null;
 
 		// touchStart에서 disable 했던 스크롤을 풀어둡니다.
-		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
+		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
 			return;
@@ -245,10 +245,10 @@ var oPanel ={
 	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	_setPosition: function() {
-		var nCenterIndex = mod(this.nCurrentViewPanelIndex, 4);
-		var nLeftIndex = mod(this.nCurrentViewPanelIndex - 1, 4);
-		var nRightIndex = mod(this.nCurrentViewPanelIndex + 1, 4);
-		var nRightEndIndex = mod(this.nCurrentViewPanelIndex + 2, 4);
+		var nCenterIndex = oUtil.mod(this.nCurrentViewPanelIndex, 4);
+		var nLeftIndex = oUtil.mod(this.nCurrentViewPanelIndex - 1, 4);
+		var nRightIndex = oUtil.mod(this.nCurrentViewPanelIndex + 1, 4);
+		var nRightEndIndex = oUtil.mod(this.nCurrentViewPanelIndex + 2, 4);
 		
 		this._changeCurrentMenuMarker(nCenterIndex);
 		
@@ -287,6 +287,10 @@ var oScrolls = {
 	
 };
 
-function mod(target, division) {
-	return ( (target % division) + division ) % division;
-}
+var oUtil = {
+	mod: function (target, division) {
+		return ( (target % division) + division ) % division;
+	}
+};
+
+
