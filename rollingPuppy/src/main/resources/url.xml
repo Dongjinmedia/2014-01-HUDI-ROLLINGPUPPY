@@ -71,6 +71,6 @@
 	
 	<mapping>
 		<url>/markerClicker/getCurrentNumOfParticipant</url>
-		<controller>com.puppy.controller.NumOfParticipantController</controller>
+		<controller>com.puppy.controller.chat.NumOfParticipantController</controller>
 	</mapping>
 </mappings>

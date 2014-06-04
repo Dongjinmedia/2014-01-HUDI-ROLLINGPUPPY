@@ -169,6 +169,7 @@ var oAside= {
 		//어차피 oChat의 oInfo에서는 자신에 해당하는 List Element를 자주참조하게된다.
 		//그러므로 li element의 주소값을 attribute로 등록한다.
 		oChat.oInfo[chatRoomNumber]["eTarget"] = eCopiedTemplate;
+		console.log("oChat.oInfo : ",oChat.oInfo);
 		//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
 		eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
 		
@@ -706,6 +707,7 @@ var oMarkerClicker = {
 		var currentNumOfParticipants = null;
 		
 		var callback = function(request) {
+			//if (typeof request === "object")
 			this.currentNumOfParticipants = JSON.parse(request.responseText);
 		};
 		
@@ -1028,7 +1030,6 @@ var oChat = {
 			oMessageInfo["isMyMessage"] = flag;
 			
 			this._updateOneMessage(oMessageInfo);
-			this.setMessageBoxScrollTop();
 		},
 		
 		setMessageBoxScrollTop: function() {
@@ -1126,9 +1127,16 @@ var oChat = {
 			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
 				this._updateOneMessage(aMessage[index]);
 			}
+			this.setMessageBoxScrollTop();
 		},
 		
 		updateInitializeMessage: function(chatRoomNum) {
+			//TODO 이렇게 삭제하는것과 innerHTML을 비우는것의 차이는..?
+			//Message박스 초기화
+			while (this.eChatWindowMessageBox.firstChild) {
+				this.eChatWindowMessageBox.removeChild(this.eChatWindowMessageBox.firstChild);
+			}
+			
 			var oParameters = {
     			"chatRoomNumber": chatRoomNum,
     		};
@@ -1138,7 +1146,6 @@ var oChat = {
 
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
-    			
     			this.updateOneMessage(aRecentMessage);
     			this.updateOneMessage(aUnreadMessage);
     		}

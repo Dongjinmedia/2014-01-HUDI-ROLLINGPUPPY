@@ -102,6 +102,12 @@ io.sockets.on('connection', function (socket) {
 		var callback = function(aResult) {
 			//회원이 존재하지 않을경우
 			//TODO Log console.log("aResult : ",aResult);
+			if (isUndefinedOrNull(aResult)) {
+				console.log("unexpected error occur");
+				return;
+			}
+			
+			
 			if ( aResult.length === 0 ) {
 				//TODO
 				//announce("잘못된 접근");
@@ -187,12 +193,6 @@ io.sockets.on('connection', function (socket) {
 		socket.join(data.chatRoomNumber);
 	})
 
-	//공지글 (입장, 퇴장, 운영상에 필요한 메세지 전달) 등을 위한 함수.
-	//클라이언트에서는 메세지 생성자 id를 판별해서 0일경우 admin Message로 처리하도록 되어있다.
-	function sendAdminMessageToChatRoomMembers(chatRoomNumber, message) {
-		sendMessageToChatRoomMembers(0, chatRoomNumber, message);
-	}
-
 	function getMessageDataObject(userId, chatRoomNumber, message) {
 		var date = new Date();
 		
@@ -204,48 +204,100 @@ io.sockets.on('connection', function (socket) {
 			"week": aWeek[date.getDay()],
 			"day": date.getDate(),
 			"time": date.getHours() + ":" + date.getMinutes()
-		}
+		};
 		
 		return oMessageInfo;
 	}
+		
+	function _sendMessage(userId, chatRoomNumber, message, callback) {
+		
+		//callback type
+		//function() {
+		// 1. send to current request socket client
+		// socket.emit('message', "this is a test");
 
-	function sendMessageToChatRoomMembers(userId, chatRoomNumber, message) {
-			//javascript data schema.
-			/*
-				var eTarget = null;
-				var day = oMessageInfo["day"];
-				var month = oMessageInfo["month"];
-				var time = oMessageInfo["time"];
-				var week = oMessageInfo["week"];
-				var message = oMessageInfo["message"];
-				var isMyMessage = oMessageInfo["isMyMessage"];
-				var chatRoomNum = oMessageInfo["tblChatRoomId"];
-				var memberId = oMessageInfo["tblMemberId"];
-			*/
+		// 2. sending to all clients, include sender
+		//io.sockets.emit('message', "this is a test");
 
-			requestQuery(
-				//Param1
-				"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
-				//Param2
-				[chatRoomNumber, userId, message],
-				//Param3
-				function(oResult) {
-					var affectedRows = oResult["affectedRows"];
+		// 3. sending to all clients except sender
+		//socket.broadcast.emit('message', "this is a test");
+
+		// 4. sending to all clients in 'game' room(channel) except sender
+		// socket.broadcast.to('game').emit('message', 'nice game');
+
+		// 5. sending to all clients in 'game' room(channel), include sender
+		// io.sockets.in('game').emit('message', 'cool game');
+
+		// 6. sending to individual socketid
+		//io.sockets.socket(socketid).emit('message', 'for your eyes only');	
+		//}
+		
+		
+		
+		//javascript data schema.
+		/*
+			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+		*/
+
+		requestQuery(
+			//Param1
+			"INSERT INTO tbl_message (tbl_chat_room_id, tbl_member_id, message) VALUES (?, ?, ?)",
+			//Param2
+			[chatRoomNumber, userId, message],
+			//Param3
+			function(oResult) {
+				var affectedRows = oResult["affectedRows"];
 				
-					//TODO 결과가 없을때를 대비한 error event를 만들자						
-					if ( affectedRows === 0 ) {
-						//TODO socket.emit('error', "message");
-						return;
-					} else {
+				//TODO 결과가 없을때를 대비한 error event를 만들자						
+				if ( affectedRows === 0 ) {
+					//TODO socket.emit('error', "message");
+					return;
+				} else {
 					
-						//client에서 사용하고있는 dataset에 맞춰서 object를 만듭니다.
-						var oMessageInfo = getMessageDataObject(userId, chatRoomNumber, message);
-						//Room에 있는 모두에게 새로운 메시지를 보냅니다.
-						io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);	
-					}
+					//client에서 사용하고있는 dataset에 맞춰서 object를 만듭니다.
+					var oMessageInfo = getMessageDataObject(userId, chatRoomNumber, message);
+					callback(oMessageInfo);
 				}
-			)					
-		}
+			}
+		);	
+	}
+	
+	//일반적인 메세지 전송시 사용하는 함수
+	function sendMessageToChatRoomMembers(userId, chatRoomNumber, message) {
+		var callback = function(oMessageInfo) {
+			//Room에 있는 모두에게 새로운 메시지를 보냅니다.
+			io.sockets.in(chatRoomNumber).emit('message', oMessageInfo);
+		};
+		_sendMessage(userId, chatRoomNumber, message, callback)
+	}
+	
+	//공지글 (입장, 퇴장, 운영상에 필요한 메세지 전달) 등을 위한 함수.
+	//클라이언트에서는 메세지 생성자 id를 판별해서 0일경우 admin Message로 처리하도록 되어있다.
+	function sendAdminMessageToChatRoomMembers(chatRoomNumber, message) {
+		sendMessageToChatRoomMembers(0, chatRoomNumber, message);
+	}
+
+	//sender를 제외한 Room에 있는 모두에게 새로운 공지메시지를 보냅니다.	
+	function sendAdminMessageToChatRoomMembersExceptSender(chatRoomNumber, message) {
+		sendMessageToChatRoomMembersExceptSender(0, chatRoomNumber, message);
+	}
+
+	//sender를 제외한 Room에 있는 모두에게 새로운 메시지를 보냅니다.	
+	function sendMessageToChatRoomMembersExceptSender(userId, chatRoomNumber, message) {
+		var callback = function(oMessageInfo) {
+
+		 	socket.broadcast.to(chatRoomNumber).emit('message', oMessageInfo);
+		};
+		_sendMessage(userId, chatRoomNumber, message, callback)
+	}
 
 //***************************************************************************************
 // 클라이언트의 요청에 대한 Listening함수들 시작
@@ -262,20 +314,6 @@ io.sockets.on('connection', function (socket) {
 			return;
 		}
 		
-		/********************************************************************************************************************/		
-		var query = "INSERT INTO tbl_chat_room_has_tbl_member "
-						+"(tbl_chat_room_id, tbl_member_id) "
-					+"SELECT * FROM (SELECT ?, ?) AS tmp "
-					+"WHERE NOT EXISTS "
-						+"("
-							+"SELECT "
-								+"tbl_chat_room_id "
-							+"FROM tbl_chat_room_has_tbl_member "
-							+"WHERE tbl_chat_room_id = ? AND tbl_member_id = ?"
-						+") LIMIT 1";
-		
-
-		
 		var userId = getUserId();
 		var chatRoomNumber = data.chatRoomNumber;
 			
@@ -285,112 +323,143 @@ io.sockets.on('connection', function (socket) {
 			announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
 			return;
 		}
-
-		var aQueryValues = [data.chatRoomNumber, userId, data.chatRoomNumber, userId];
 		
-		var callback = function(oResult) {
-		    //Insert Query는 반환되는 값이 Object타입이다.
-			//
-			//ex)
-			// { 
-			//  fieldCount: 0,
-			//  affectedRows: 1,
-			//  insertId: 0,
-			//  serverStatus: 2,
-			//  warningCount: 0,
-			//  message: '',
-			//  protocol41: true,
-			//  changedRows: 0 
-			// }
-			var affectedRows = oResult["affectedRows"];
-			//TODO Log console.log("affectedRows : ",affectedRows);
-
-			getChatInfoFromWebServer(chatRoomNumber, function(sResult) {
-				
-				if (isUndefinedOrNull(sResult)) {
-					//TODO JSONP로 변경
-					announce("예기치 못한 에러가 발생했습니다. 다시확인해 주세요.");
-					return;
-				}
-				
-				var oResult = JSON.parse(sResult)[chatRoomNumber];
-				console.log("oResult from parsing : ", oResult );
-				
-				
-				var oCallback= {};
-
-				//기존에 방에 입장해있었을 경우
-				if ( affectedRows == 0 ) {
-					oCallback = {
-						callback: function() {
-							oChat.showChatWindow(this.chatRoomNumber)
-						},
-						chatRoomNumber: chatRoomNumber
-					};
-
-				//방에 새로 입장했다는 의미
-				} else {
-					
-					//참여인원이 꽉차있기 때문에 채팅방참여가 불가능하다.
-					if ( oResult["participantNum"] >= oResult["max"]) {
-						oCallback = {
-							callback: function() {
-								alert("채팅방 허용인원이 초과되었습니다.");
-							}
-						};
-					} else {
-						//***************************for user
-						socket.join(chatRoomNumber);
-					
-						oCallback = {
-							callback: function() {
-								console.log("save data oCallbackFor User!!!!!!!!!");
-								//리스트에 새로운 채팅방정보 더하기
-								oAside.addChattingList(this.chatRoomNumber, this.oResult);
-								//채팅윈도우 열기
-								oChat.showChatWindow(this.chatRoomNumber);
-							},
-							oResult: oResult,
-							chatRoomNumber: chatRoomNumber
-						};
-						//실행은 for everyone in SameChatRoom 실행 후 이루어져야 한다.
-						//왜냐하면 데이터추가가 뒤에 되기 때문!!
-						//***************************for user
-						
-						
-						//***************************for everyone in SameChatRoom					
-						var oCallbackForEveryOneInChatRoom = {
-							callback: function() {
-								//for test
-								console.log("save data oCallbackForEveryOneInChatRoom!!!!!!!");
-							
-							 	//새로운데이터 추가.
-								oChat.addChatInfo(this.chatRoomNumber, this.oResult);
-							
-								//현재 focus된 채팅방이 열려있을 경우,
-								if ( oChat.currentChatRoomNumber == this.chatRoomNumber ) {
-									oChat.addMemberList(oChat.oInfo[this.chatRoomNumber]["oParticipant"][this.userId]);
-								}								
-							},
-							oResult: oResult,
-							chatRoomNumber: data.chatRoomNumber,
-							userId: getUserId()
-						};
-					
-						executeAllClientInChattingRoom(data.chatRoomNumber, oCallbackForEveryOneInChatRoom);
-						//채팅방 참여를 알린다.
-						sendAdminMessageToChatRoomMembers(chatRoomNumber, getUserNickname()+"님이 입장하였습니다.");					
-						//***************************for everyone in SameChatRoom
-					}
-				}
-			executeInClient(oCallback);	
-			});				
-		};
 		/********************************************************************************************************************/
+		var query = "SELECT " 
+						+"SUM(t_both.tbl_member_id = ?) AS is_already_join, "
+						+"(t_chat.max <= count(t_both.tbl_member_id)) AS is_full "
+					+"FROM tbl_chat_room_has_tbl_member AS t_both "
+					+"INNER JOIN tbl_chat_room AS t_chat "
+					+"ON t_chat.id = t_both.tbl_chat_room_id "
+					+"WHERE t_both.tbl_chat_room_id = ?";
+
+		var aQueryValues = [userId, data.chatRoomNumber];
 		
 		//데이터베이스 쿼리를 요청한다.
-		requestQuery(query, aQueryValues, callback);		
+		requestQuery(query, aQueryValues, function(aResult) {
+			
+			if ( isUndefinedOrNull(aResult) || isUndefinedOrNull(aResult[0])) {
+				announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
+				return;
+			}
+			
+			var oResult = aResult[0];
+			console.log("aResult : ",aResult);
+			var isAlreadyJoin = oResult["is_already_join"];
+			var isFull = oResult["is_full"];
+			
+			console.log("isAlreadyJoin : ",isAlreadyJoin);
+			console.log("isFull : ",isFull);
+			
+			//이미 방에 입장한 사람일 경우
+			if ( isAlreadyJoin === 1 ) {
+				var oCallback = {
+					callback: function() {
+						oChat.showChatWindow(this.chatRoomNumber);
+					},
+					chatRoomNumber: chatRoomNumber
+				};
+				executeInClient(oCallback);
+				
+			//방에 입장하지 않은 사람일 경우
+			} else {
+				//방 상태가 이미 Full일경우
+				if ( isFull === 1 ) {
+					announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
+					return;
+
+				//방에 입장가능한 상태이고, 처음 입장한 사람일경우
+				} else {
+					/********************************************************************************************************************/
+					var query = "INSERT INTO tbl_chat_room_has_tbl_member "
+									+"(tbl_chat_room_id, tbl_member_id) "
+								+"SELECT * FROM (SELECT ?, ?) AS tmp "
+								+"WHERE NOT EXISTS "
+									+"("
+										+"SELECT "
+											+"tbl_chat_room_id "
+										+"FROM tbl_chat_room_has_tbl_member "
+										+"WHERE tbl_chat_room_id = ? AND tbl_member_id = ?"
+									+") LIMIT 1";
+
+					var aQueryValues = [chatRoomNumber, userId, chatRoomNumber, userId];
+					
+				    //Insert Query는 반환되는 값이 Object타입이다.
+					//
+					//ex)
+					// { 
+					//  fieldCount: 0,
+					//  affectedRows: 1,
+					//  insertId: 0,
+					//  serverStatus: 2,
+					//  warningCount: 0,
+					//  message: '',
+					//  protocol41: true,
+					//  changedRows: 0 
+					// }					
+					requestQuery(query, aQueryValues, function(oResult) {
+
+						var affectedRows = oResult["affectedRows"];
+						//TODO Log console.log("affectedRows : ",affectedRows);
+
+						if ( affectedRows == 0 ) {
+							announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
+							return;
+						} else {
+							getChatInfoFromWebServer(chatRoomNumber, function(oResultFromWebServer) {
+								
+								console.log("oResult from parsing : ", oResultFromWebServer );
+							
+								//***************************for user
+								socket.join(chatRoomNumber);
+					
+								var oCallback = {
+									callback: function() {
+										console.log("save data oCallbackFor User!!!!!!!!!");
+										//리스트에 새로운 채팅방정보 더하기
+										oAside.addChattingList(this.chatRoomNumber, this.oResult);
+										//채팅윈도우 열기
+										oChat.showChatWindow(this.chatRoomNumber);
+									},
+									oResult: oResultFromWebServer,
+									chatRoomNumber: chatRoomNumber
+								};
+								//실행은 for everyone in SameChatRoom 실행 후 이루어져야 한다.
+								//왜냐하면 데이터추가가 뒤에 되기 때문!!
+								//***************************for user
+						
+						
+								//***************************for everyone in SameChatRoom					
+								var oCallbackForEveryOneInChatRoom = {
+									callback: function() {
+										//새로운데이터 추가.
+										oChat.addChatInfo(this.chatRoomNumber, this.oResult);
+							
+										//현재 focus된 채팅방이 열려있을 경우,
+										if ( oChat.currentChatRoomNumber == this.chatRoomNumber ) {
+											oChat.addMemberList(oChat.oInfo[this.chatRoomNumber]["oParticipant"][this.userId]);
+										}								
+									},
+									oResult: oResultFromWebServer,
+									chatRoomNumber: chatRoomNumber,
+									userId: getUserId()
+								};
+					
+								executeAllClientInChattingRoom(chatRoomNumber, oCallbackForEveryOneInChatRoom);
+								//채팅방 참여를 알린다.
+								sendAdminMessageToChatRoomMembersExceptSender(chatRoomNumber, getUserNickname()+"님이 입장하였습니다.");					
+								//***************************for everyone in SameChatRoom
+								
+								executeInClient(oCallback);
+							});
+						}		
+					});//insert Query
+					/********************************************************************************************************************/
+				}		
+			}
+		});//Select Query
 	});
+	/********************************************************************************************************************/
 	
 	//Message 전송에 대해 Listening하고 있는 함수
 	socket.on('message', function(oParameter) {
@@ -455,8 +524,8 @@ io.sockets.on('connection', function (socket) {
 					//***************************for everyone in SameChatRoom
 				}
 			}
-		)
-	})
+		);
+	});
 
 	//Connection을 끊거나, 끊겼을경우
 	//유저가 마지막으로 보고있던 채팅방의 fold_time을 업데이트시켜준다.
@@ -546,12 +615,12 @@ function getChatInfoFromWebServer(chatRoomNumber, pFunction) {
 	  });
 
 	  response.on('end', function () {
-	    console.log(sResult);
-		pFunction(sResult);
+	    console.log("sResult : :",sResult);
+		pFunction(JSON.parse(sResult)[chatRoomNumber]);
 	  })
 	};
 	
-	requestGet("/chatInfo/getMyChatInfo", {"chatRoomNumber": chatRoomNumber}, callback);
+	requestGet("/chat/getMyChatInfo", {"chatRoomNumber": chatRoomNumber}, callback);
 }
  
 console.log('\u001b[1m');

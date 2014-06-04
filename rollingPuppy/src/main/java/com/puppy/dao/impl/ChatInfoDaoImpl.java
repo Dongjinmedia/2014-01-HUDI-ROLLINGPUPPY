@@ -82,11 +82,13 @@ public class ChatInfoDaoImpl extends DAO implements ChatInfoDao {
 		PreparedStatement preparedStatement = null;
 		List<Member> lists = null;
 		
-		try {
-			String query = "SELECT id, nickname_adjective, nickname_noun FROM tbl_member WHERE id in ("+totalListString+")";
-			preparedStatement = ConnectionPool.getPreparedStatement(query);
-			lists = selectList(Member.class, preparedStatement);
+		if ( totalListString.length() == 0 )
+			return null;
 			
+		try {
+				String query = "SELECT id, nickname_adjective, nickname_noun FROM tbl_member WHERE id in ("+totalListString+")";
+				preparedStatement = ConnectionPool.getPreparedStatement(query);
+				lists = selectList(Member.class, preparedStatement);
 		} catch (Exception e) {
 			logger.error("Request Create ChattingRoom Error", e);
 		}

@@ -485,7 +485,7 @@ div#content {
 #createChatRoom .centerArea {
 	position: absolute;
 	width: 500px;
-	height: 340px;
+	height: 380px;
 	margin-top: -250px;
 	margin-left: -250px;
 	left: 50%;
@@ -537,6 +537,7 @@ div#content {
 .createAddress {
 	font-size: 200%;
 	font-weight: 700;
+	line-height: 150%;
 }
 
 .icon-title:before {

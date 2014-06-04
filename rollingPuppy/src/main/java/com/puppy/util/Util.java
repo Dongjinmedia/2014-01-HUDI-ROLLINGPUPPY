@@ -186,8 +186,9 @@ public class Util {
 		 * for문을 돌면서 원하는 형태로 데이터를 담는다.
 		 * 
 		 */
+		logger.info("thisthis?!!!!!");
 		for (ChatInfo chatRoom : myChatInfoList) {
-			
+			logger.info("yesyes?!!!!!");	
 			//chatRoomId를 가져온다.
 			int chatRoomId = chatRoom.getChatRoomId();
 			
@@ -320,7 +321,9 @@ public class Util {
 			returnString += myChatInfo.getParticipantList() + ",";
 		}
 		
-		returnString =returnString.substring(0, returnString.length()-1);
+		if ( returnString.length() !=0 ) {
+			returnString =returnString.substring(0, returnString.length()-1);
+		}
 		
 		logger.info("resultString : "+returnString);
 		return returnString;
@@ -335,9 +338,11 @@ public class Util {
 		
 		Map<Integer, Member> returnData = new HashMap<Integer, Member>();
 		
-		for (Member member : memberList) {
-			returnData.put(member.getId(), member);
-			logger.info("meber id : "+member.getId());
+		if ( memberList != null ) {
+			for (Member member : memberList) {
+				returnData.put(member.getId(), member);
+				logger.info("meber id : "+member.getId());
+			}
 		}
 		
 		return returnData;

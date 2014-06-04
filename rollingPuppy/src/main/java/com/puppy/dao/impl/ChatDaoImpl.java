@@ -154,11 +154,11 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			TempMarkerIdClass idInstance = selectOne(TempMarkerIdClass.class, preparedStatement);
 			
 			//지역명이 일치하는 마커데이터가 있을경우
-			if ( idInstance.getSame_name_id() != 0 ) {
+			if ( idInstance != null && idInstance.getSame_name_id() != 0 ) {
 				markerId = (int) idInstance.getSame_name_id();
 				
 			//위도, 경도상에 인접마커에 해당하는 데이터가 있을경우
-			} else if ( idInstance.getNear_distance_id() != 0 ) {
+			} else if ( idInstance != null && idInstance.getNear_distance_id() != 0 ) {
 				markerId = (int) idInstance.getNear_distance_id();
 				
 			//위의 두가지 경우를 모두 만족하지 않을경우, 새로운 marker데이터를 데이터베이스에 생성하고, 새로추가된 Marker아이디값을 리턴한다.
