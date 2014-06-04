@@ -151,7 +151,7 @@ var oPanel ={
 	panelTouchStart: function(event) {
 		//IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.	
 		console.log("panelTouchStart Event : ", event);
-		//
+
 		var touch = event.touches[0];
 		this.nTouchStartX = touch.pageX;
 		this.nTouchStartY = touch.pageY;
@@ -163,16 +163,22 @@ var oPanel ={
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
 		
+		// 터치 시작시점부터 이동된 점들의 총 합을 저장하는 변수
 		var nMoveLengthX = this.nTouchEndX - this.nTouchStartX;
 		var nMoveLengthY = this.nTouchEndY - this.nTouchStartY;
 		
-		if (this.nTotalMoveX + this.nTotalMoveY < 3) {
-			this.nTotalMoveX += Math.abs(nMoveLengthX) / 10;
-			this.nTotalMoveY += Math.abs(nMoveLengthY) / 10;
+		// nTotalMoveX와 nTotalMoveY를 일정 수준까지 구합니다.
+		//    (합이 30보다 작을 때까지)
+		//    (더 정확하게 하려면 30보다 크게 하면 됩니다. 하지만 커지는 만큼 판별에 걸리는 시간이 길어지죠)
+		if (this.nTotalMoveX + this.nTotalMoveY < 30) {
+			this.nTotalMoveX += Math.abs(nMoveLengthX);
+			this.nTotalMoveY += Math.abs(nMoveLengthY);
 			
 			return ;
 		}
 		
+		// nTotalMoveX와 nTotalMoveY를 비교합니다.
+		// nTotalMoveX가 크다면 isScroll에 false를, 아니라면 true를 대입합니다.
 		if (this.isScroll == null) {
 			if( this.nTotalMoveX > this.nTotalMoveY) {
 				this.isScroll = false; 
@@ -181,30 +187,35 @@ var oPanel ={
 			}
 		}
 		
+		// 스크롤을 해야 한다면 플리킹 로직을 실행하지 않고 종료합니다.
 		if (this.isScroll) {
 			return;
 		}
-		
+
+		/* 플리킹 로직 */
+		// 스크롤을 disable 시킵니다.
 		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].disable();
-		
+		// nMoveLengthX 만큼 좌 우로 이동시킵니다.
 		this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
 	},
 	
 	//터치가 종료될때 호출되는 함수
 	panelTouchEnd: function(event) {
 		console.log("panelTouchEnd Event : ", event);
-		
-		var touch = event.changedTouches[0];
-		var nTempIndex = this.nCurrentViewPanelIndex;
-		var tempIsScroll = this.isScroll;
 
+		var touch = event.changedTouches[0];
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
 		
+		// 초기화 전에 뒤에서 한 번 더 써야 하는 isScroll은 임시변수에 기억합니다
+		var tempIsScroll = this.isScroll;
+		
+		// 변경했던 클래스 변수들을 초기화 합니다.
 		this.nTotalMoveX = 0;
 		this.nTotalMoveY = 0;
 		this.isScroll = null;
-		
+
+		// 플리킹 로직에서 disable 했던 스크롤을 풀어둡니다.
 		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
@@ -236,6 +247,7 @@ var oPanel ={
 		
 		this._changeCurrentMenuMarker(nCenterIndex);
 		
+		console.log("current: " + this.nCurrentViewPanelIndex);
 		console.log(nLeftIndex + ", " + nCenterIndex + ", " + nRightIndex  + ", " + nRightEndIndex);
 		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
@@ -254,6 +266,7 @@ var oPanel ={
 	
 	init : function(){
 		this.addEvents();
+		// 초기화 시점에 _setPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
 		this._setPosition();
 		console.log("init");
 	}
