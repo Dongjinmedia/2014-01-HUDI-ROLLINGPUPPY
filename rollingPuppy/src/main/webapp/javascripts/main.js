@@ -107,7 +107,6 @@ var oAside= {
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
-		
 		var unreadMessageNum = 0;
 		for (var key in oChat.oInfo) {
 			if (oChat.oInfo.hasOwnProperty(key)) {
@@ -116,8 +115,8 @@ var oAside= {
 				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
 			}
 		}
-
-		if ( unreadMessageNum === 0 ) {
+		
+		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
 			this.eChattingNotification.style.display = "none";
 		} else {
 			this.eChattingNotification.innerText = unreadMessageNum;
@@ -991,6 +990,7 @@ var oChat = {
 			
 			oChat.updateChatWindowHeaderText(chatRoomNum);
 			oChat.updateMemberList(chatRoomNum);
+			oChat.updateNotificationView(chatRoomNum);
 			oChat.visibleChatWindow();
 			
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 

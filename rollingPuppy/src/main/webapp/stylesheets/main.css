@@ -717,7 +717,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	position: absolute;
 	right: 1%;
 	top: 70px;
-	width: 36px;
+	width: 40px;
 	height: 1em;
 	cursor: pointer;
 }
