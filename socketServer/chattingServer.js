@@ -1,6 +1,6 @@
-console.log('\u001b[1m');
+console.log('\u001b[0m');
 console.log('\u001b[32m', '=============Server Start=============');
-console.log('\u001b[1m');
+console.log('\u001b[0m');
 
 //socket.io Module load
 var socketio = require('socket.io');
@@ -188,8 +188,7 @@ io.sockets.on('connection', function (socket) {
 	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
 	//TODO connection시 node에서 join을 실행하도록 변경한다.
 	socket.on('autoConnectWithEnteredChattingRoom', function(data) {
-		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber);
-		console.log('\u001b[1m');
+		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber + '\u001b[0m');
 		socket.join(data.chatRoomNumber);
 	})
 
@@ -623,4 +622,4 @@ function getChatInfoFromWebServer(chatRoomNumber, pFunction) {
 	requestGet("/chat/getMyChatInfo", {"chatRoomNumber": chatRoomNumber}, callback);
 }
  
-console.log('\u001b[1m');
+console.log('\u001b[0m');
