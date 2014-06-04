@@ -261,7 +261,11 @@ var oAside= {
 	
 	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
 	searchResultSelectHandler: function(event){
-		var clickedTarget = event.target;	
+		if (this.ePanel.querySelector("#pc_search .comment")) {
+			return;
+		}
+		
+		var clickedTarget = event.target;
 		//현재 하나의 cell은 세개의 p태그로 이루어져있다.
 		//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
 		if(clickedTarget.tagName == "P"){
