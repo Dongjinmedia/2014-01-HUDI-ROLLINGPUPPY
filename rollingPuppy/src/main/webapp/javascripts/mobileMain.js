@@ -173,7 +173,7 @@ var oPanel ={
 		
 		// nTotalMoveX와 nTotalMoveY를 일정 수준까지 구합니다.
 		//    (더 크게 할 수록 정확해지지만, 판별하는 시간동안 로직 수행을 멈춰두기 때문에 시간이 길어집니다)
-		if (this.nTotalMoveX + this.nTotalMoveY < 1) {
+		if (this.nTotalMoveX + this.nTotalMoveY < 10) {
 			this.nTotalMoveX += Math.abs(nMoveLengthX);
 			this.nTotalMoveY += Math.abs(nMoveLengthY);
 			
