@@ -149,7 +149,11 @@ var oPanel ={
 	
 	//터치 이벤트 시작시 호출되는 함수
 	panelTouchStart: function(event) {
-		//IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.	
+		//IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.
+
+		// 일단 스크롤은 disable 시킵니다. 
+		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
+		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].disable();
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -168,9 +172,8 @@ var oPanel ={
 		var nMoveLengthY = this.nTouchEndY - this.nTouchStartY;
 		
 		// nTotalMoveX와 nTotalMoveY를 일정 수준까지 구합니다.
-		//    (합이 30보다 작을 때까지)
-		//    (더 정확하게 하려면 30보다 크게 하면 됩니다. 하지만 커지는 만큼 판별에 걸리는 시간이 길어지죠)
-		if (this.nTotalMoveX + this.nTotalMoveY < 30) {
+		//    (더 크게 할 수록 정확해지지만, 판별하는 시간동안 로직 수행을 멈춰두기 때문에 시간이 길어집니다)
+		if (this.nTotalMoveX + this.nTotalMoveY < 1) {
 			this.nTotalMoveX += Math.abs(nMoveLengthX);
 			this.nTotalMoveY += Math.abs(nMoveLengthY);
 			
@@ -179,11 +182,15 @@ var oPanel ={
 		
 		// nTotalMoveX와 nTotalMoveY를 비교합니다.
 		// nTotalMoveX가 크다면 isScroll에 false를, 아니라면 true를 대입합니다.
+		//   ** isScroll은 기본값이 null이고, touchEnd 시점에도 null로 초기화 합니다.
+		//   ** 따라서 아래 if문은 한 번만 수행되게 되어있습니다.
 		if (this.isScroll == null) {
 			if( this.nTotalMoveX > this.nTotalMoveY) {
 				this.isScroll = false; 
 			} else {
 				this.isScroll = true;
+				// 스크롤을 해도 되는 상황입니다! enable 해줍시다!!
+				window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
 			}
 		}
 		
@@ -193,8 +200,6 @@ var oPanel ={
 		}
 
 		/* 플리킹 로직 */
-		// 스크롤을 disable 시킵니다.
-		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].disable();
 		// nMoveLengthX 만큼 좌 우로 이동시킵니다.
 		this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
 	},
@@ -215,7 +220,7 @@ var oPanel ={
 		this.nTotalMoveY = 0;
 		this.isScroll = null;
 
-		// 플리킹 로직에서 disable 했던 스크롤을 풀어둡니다.
+		// touchStart에서 disable 했던 스크롤을 풀어둡니다.
 		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
