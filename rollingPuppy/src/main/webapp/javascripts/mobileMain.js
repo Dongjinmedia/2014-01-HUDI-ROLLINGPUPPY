@@ -166,7 +166,7 @@ var oPanel ={
 		var nMoveLengthX = this.nTouchEndX - this.nTouchStartX;
 		var nMoveLengthY = this.nTouchEndY - this.nTouchStartY;
 		
-		if (this.nTotalMoveX + this.nTotalMoveY < 1) {
+		if (this.nTotalMoveX + this.nTotalMoveY < 3) {
 			this.nTotalMoveX += Math.abs(nMoveLengthX) / 10;
 			this.nTotalMoveY += Math.abs(nMoveLengthY) / 10;
 			
@@ -185,13 +185,9 @@ var oPanel ={
 			return;
 		}
 		
-		window.oScrolls["scroll" + this.nCurrentViewPanelIndex].disable();
-		if (this.nCurrentViewPanelIndex <= 0 && nMoveLengthX > 0
-				|| this.nCurrentViewPanelIndex >= 3 && nMoveLengthX < 0) {
-			return false;
-		} else {
-			this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
-		}
+		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].disable();
+		
+		this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
 	},
 	
 	//터치가 종료될때 호출되는 함수
@@ -209,7 +205,7 @@ var oPanel ={
 		this.nTotalMoveY = 0;
 		this.isScroll = null;
 		
-		window.oScrolls["scroll" + this.nCurrentViewPanelIndex].enable();
+		window.oScrolls["scroll" + mod(this.nCurrentViewPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
 			return;
@@ -226,34 +222,19 @@ var oPanel ={
 			return ;
 		}
 		
-		
-		if (this.nCurrentViewPanelIndex >=0 && this.nCurrentViewPanelIndex <=3 ) {
-			this.ePanelContents.style.webkitTransform = "translate(0)";
-			this.ePanelContents.style.webkitTransition = null;
-			
-			this._setPosition();
-		} else {
-			this.nCurrentViewPanelIndex = nTempIndex;
-		}
+		this.ePanelContents.style.webkitTransform = "translate(0)";
+		this.ePanelContents.style.webkitTransition = null;
+		this._setPosition();
 	},
 	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	_setPosition: function() {
-		var nCenterIndex = this.nCurrentViewPanelIndex % 4;
-		var nLeftIndex = this.nCurrentViewPanelIndex - 1;
-		var nRightIndex = this.nCurrentViewPanelIndex + 1;
-		var nRightEndIndex = (this.nCurrentViewPanelIndex + 2) % 4;
+		var nCenterIndex = mod(this.nCurrentViewPanelIndex, 4);
+		var nLeftIndex = mod(this.nCurrentViewPanelIndex - 1, 4);
+		var nRightIndex = mod(this.nCurrentViewPanelIndex + 1, 4);
+		var nRightEndIndex = mod(this.nCurrentViewPanelIndex + 2, 4);
 		
 		this._changeCurrentMenuMarker(nCenterIndex);
-		
-		if ( nCenterIndex - 1 < 0 ) {
-			nLeftIndex = 3;
-		}
-		
-		if ( nCenterIndex + 1 > 3 ) {
-			nRightIndex = 0;
-			nRightEndIndex = 1;
-		}
 		
 		console.log(nLeftIndex + ", " + nCenterIndex + ", " + nRightIndex  + ", " + nRightEndIndex);
 		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
@@ -273,6 +254,7 @@ var oPanel ={
 	
 	init : function(){
 		this.addEvents();
+		this._setPosition();
 		console.log("init");
 	}
 };
@@ -287,3 +269,6 @@ var oScrolls = {
 	
 };
 
+function mod(target, division) {
+	return ( (target % division) + division ) % division;
+}
