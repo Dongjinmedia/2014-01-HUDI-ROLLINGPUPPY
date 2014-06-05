@@ -717,7 +717,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	position: absolute;
 	right: 1%;
 	top: 70px;
-	width: 36px;
+	width: 40px;
 	height: 1em;
 	cursor: pointer;
 }
@@ -820,6 +820,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   position: relative;
   top: 0em;
 }
+
 .chattingContents .notice .message {
   min-width: 100%;  
   max-width: 100%;
@@ -1191,6 +1192,20 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	margin: 0 -5px;
 }
 
+.createChattingRoomButtonInMarkerClicker {
+	display: block;
+	position: relative;
+	color: black;
+	margin: 0;
+	width: 100%;
+	height: 25px;
+	line-height: 25px;
+	text-align: center;
+	font-size: 13px;
+	font-weight: bold;
+	background-color: #EEE;
+}
+
 	/*
 	** 마커에서 info 아이콘을 클릭, hover시 나타나는 Contents영역
 	*/
@@ -1371,21 +1386,17 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 ** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 종료
 */
 
-
 /*
-** 채팅을 하는 영역에 대한 CSS 시작
+**새로운 메세지가 올때 생성되는 newMessage 영역 시
 */
-#chat {
+#wrapper #newMessage {
 	position: absolute;
-	display: block;
-	background: #fff;
-}
-
-#textarea {
-	width: 300px;
-	height: 300px;
-	border: solid 1px;
+	right:20px;
+	bottom:20px;
+	width: 240px;
+	height: 110px;
+	background-color: #000;
 }
 /*
-** 채팅을 하는 영역에 대한 CSS 종료
+**새로운 메세지가 올때 생성되는 newMessage 영역 종 
 */

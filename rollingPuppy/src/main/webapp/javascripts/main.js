@@ -6,7 +6,7 @@
  * 모두에게 공통되는 유틸함수 영역
 *********************************************************************************************************/
 //temp key variable.
-var mapAPIkeyRealServe = "5c935084c09a23e331aee090a0f2270c";
+var mapAPIkeyRealServer = "5c935084c09a23e331aee090a0f2270c";
 
 //TODO Util함수 모듈화
 //특정 node의 style을 반환하는 함수
@@ -107,7 +107,6 @@ var oAside= {
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
-		
 		var unreadMessageNum = 0;
 		for (var key in oChat.oInfo) {
 			if (oChat.oInfo.hasOwnProperty(key)) {
@@ -116,8 +115,8 @@ var oAside= {
 				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
 			}
 		}
-
-		if ( unreadMessageNum === 0 ) {
+		
+		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
 			this.eChattingNotification.style.display = "none";
 		} else {
 			this.eChattingNotification.innerText = unreadMessageNum;
@@ -484,6 +483,7 @@ var oNaverMap = {
 		    			}
 		    		} else {
 		    			alert("네트워크 상태가 불안정합니다.\n갱신데이터를 불러오지 못하였습니다.");
+		    			//location.reload(true);
 		    		}
 	    		}
 	    		
@@ -590,7 +590,7 @@ var oNaverMap = {
 	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
 	                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
 	                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
-	            	
+	            		
 	            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
 	            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
 	                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
@@ -717,6 +717,10 @@ var oMarkerClicker = {
 	},
 	
 	clickChatRoomList: function(e) {
+		//클릭된 지점이 채팅방 생성 버튼 지점이면 채팅방 입장 요청을 하지 않는다.
+		if(e.target.className === "createChattingRoomButtonInMarkerClicker") {
+			return;
+		}
 		//클릭되는 대상의 부모인 li태그 element를 가져와서, 
 		//추가될때 저장되어 있던 chatRoomNumber Attribute를 가져온후, 채팅방 입장을 요청한다.
 		oChat.enterChatRoom(e.target.parentNode.chatRoomNumber);
@@ -790,12 +794,23 @@ var oMarkerClicker = {
 			this.eChatList.appendChild(eNode);
 		}
 		
+		//채팅리스트 안에 있는 채팅방 생성 버튼을 만드는 부분
+		var createChattingRoomButtonInMarkerClicker = document.querySelector(".createChattingRoomButtonInMarkerClicker");
+		var oLocationPoint = {
+				"y": oMarkerInfo["location_latitude"],
+				"x": oMarkerInfo["location_longitude"]
+		};
+		this.eChattingDivBox.appendChild(createChattingRoomButtonInMarkerClicker);
+		createChattingRoomButtonInMarkerClicker.addEventListener('click', function(e) {
+			oCreateChattingRoom.visible(this.eMenuInfo.innerText, oLocationPoint);
+		}.bind(this), false);
+		
 		//템플릿 element 삭제
 		chatRoomTemplate.remove();
 		
 		//높이값을 채팅방 영역에 맞게 조절
 		//TODO 하드코딩되어 있는 px 수정 (26)
-		this.eChattingDivBox.style.cssText = "height:" + 26*aChatRoomInMarker.length + "px;";
+		this.eChattingDivBox.style.cssText = "height:" + 26*(aChatRoomInMarker.length+1) + "px;";
 		
 		return this.controlBox;
 	},
@@ -814,13 +829,15 @@ var oMarkerClicker = {
 	aIcons: [],
 	//메뉴 내용을 담는 Content 객체를 담을 Array
 	aMenues: [],
+	
 	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
 	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
 	reset: function() {
 		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
-	},	
+	},
+	
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	isClickedComponentExists: function() {
 		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
@@ -920,7 +937,6 @@ var oChat = {
 		functionTempForMoveWindow: null,
 		socket: null,
 		eChatWindow: document.getElementById("chatWindow"),
-		eChattingContents: document.querySelector("#chatWindow .chattingContents"),
 		eRightArea: document.querySelector("#chatWindow .rightArea"),
 		eChattingMemberList: document.querySelector("#chatWindow .chattingMemberList ul"),
 		eInputBox: document.querySelector("#chatWindow .inputArea"),
@@ -982,15 +998,22 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
+			if ( oChat.isChatWindowVisible() ) {
+				oChat.foldChattingRoom();
+			}
+			
 			oChat.saveCurrentChatRoomNumber(chatRoomNum);
 			console.log("chatRoomNumber :",chatRoomNum);
 			oChat.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
 			oChat.updateChatWindowHeaderText(chatRoomNum);
-			oChat.updateNotificationView(chatRoomNum);
 			oChat.updateMemberList(chatRoomNum);
-			oChat.updateInitializeMessage(chatRoomNum);
+			oChat.updateNotificationView(chatRoomNum);
 			oChat.visibleChatWindow();
+			
+			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
+			//때문에 가장 마지막에 실행해준다.
+			oChat.updateInitializeMessage(chatRoomNum);
 		},
 
 		visibleChatWindow: function() {
@@ -999,6 +1022,10 @@ var oChat = {
 		
 		invisibleChatWindow: function() {
 			this.eChatWindow.style.display = "none";
+		},
+		
+		isChatWindowVisible: function() {
+			return (this.eChatWindow.style.display == "block");
 		},
 		
 		saveCurrentChatRoomNumber: function(chatRoomNum) {
@@ -1020,6 +1047,7 @@ var oChat = {
 		getMessage: function(oMessageInfo) {
 			//자신이 보낸 메세지인지, 남이 보낸 메세지인지를 판별하기 위한 flag
 			var flag = 0;
+			var chatRoomNumber = oMessageInfo["tblChatRoomId"];
 			
 			//현재는 클라이언트에서 판별후 attribute를 생성하고 있다.
 			//TODO isMyMessage를 웹서버에서 처리할 수 있도록 변경해야 한다.
@@ -1029,11 +1057,28 @@ var oChat = {
 			
 			oMessageInfo["isMyMessage"] = flag;
 			
-			this._updateOneMessage(oMessageInfo);
+			if ( chatRoomNumber == oChat.currentChatRoomNumber ) {
+				this._updateOneMessage(oMessageInfo);
+				
+			} else {
+				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
+				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
+				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
+				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
+				oAside.updateTotalNotificationView();
+			}
 		},
 		
 		setMessageBoxScrollTop: function() {
-			this.eChattingContents.scrollTop = this.eChattingContents.scrollHeight;
+			this.eChatWindowMessageBox.scrollTop = this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		getMessageBoxScrollTop: function() {
+			return this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		updateMessageBoxScrollTop: function(height) {
+			this.eChatWindowMessageBox.scrollTop = height;
 		},
 		
 		isNewDay: function(dayNum) {
@@ -1111,6 +1156,8 @@ var oChat = {
 			if (eTarget != undefined || eTarget != null) {
 				this.eChatWindowMessageBox.appendChild(eTarget);
 			}
+			
+			this.setMessageBoxScrollTop();
 		},
 		
 		updateLastMessageDayNum: function(nDay) {
@@ -1127,7 +1174,6 @@ var oChat = {
 			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
 				this._updateOneMessage(aMessage[index]);
 			}
-			this.setMessageBoxScrollTop();
 		},
 		
 		updateInitializeMessage: function(chatRoomNum) {
@@ -1147,7 +1193,25 @@ var oChat = {
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
     			this.updateOneMessage(aRecentMessage);
-    			this.updateOneMessage(aUnreadMessage);
+    			//working5
+    			console.log("aUnreadMessage.length : ",aUnreadMessage.length);
+    			console.log("aUnreadMessage.length !==0 ", aUnreadMessage.length !==0 );
+    			if ( aUnreadMessage.length !== 0 ) {
+    				
+    				//멘트삽입
+    				oChat.eChatWindowMessageBox.appendChild(this._getNoticeTemplateCloneElement("여기까지 읽으셨습니다."));
+    				
+    				console.log("aUnreadMessage : ",aUnreadMessage);
+    				var unreadMessageScrollTop = oChat.getMessageBoxScrollTop();
+    				console.log("unreadMessageScrollTop  : ", unreadMessageScrollTop );
+    				oChat.updateOneMessage(aUnreadMessage);
+    				
+    				oChat.updateMessageBoxScrollTop(unreadMessageScrollTop-30);
+    				
+    			} else {
+    				oChat.setMessageBoxScrollTop();
+    			}
+    			
     		}
     		
     		oAjax.getObjectFromJsonGetRequest("/chat/initMessage", oParameters, callback.bind(this));
@@ -1214,7 +1278,7 @@ var oChat = {
 		},
 		
 		//working
-		foldChattingRoom: function(e) {
+		foldChattingRoom: function() {
 			//서버에 채팅방 fold에 대한 요청을 보낸다.
 			
 			var url = "/chat/foldCurrentChatRoom";
@@ -1454,16 +1518,22 @@ var oCreateChattingRoom = {
 		eLimitNumberInput: null,
 		//채팅방을 생성하려고 하는 곳의 주소 
 		eRoomAddress: null,
-		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
-		visible: function(locationName) {
+		//채팅방 생성 위치 좌표
+		oLocationPoint: null,
+		
+		//채팅방 생성창을 열고, 다른메뉴와의 인터렉션을 막는 함수
+		visible: function(locationName, oClickPoint) {
 			this.oCreateChatRoom.style.display = "block";
 			//console.log(this.eRoomAddress);
 			this.eRoomAddress.innerText = locationName;
+			this.oLocationPoint = oClickPoint;
 		},
+		
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.style.display = "none";
 		},
+		
 		initialize: function() {
 			
 			//element초기화
@@ -1484,20 +1554,27 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		
 		//제한숫자 인풋값 초기화
 		clearLimitNumValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		
 		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
 			this.eRoomNameInput.value = "";
 		},
+		
 		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
 			e.preventDefault();
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
+			
+			// WORKING SEHUN
+			console.log(this.oLocationPoint);
+			oMapClicker.oClickPoint = this.oLocationPoint;
 			
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
@@ -1630,7 +1707,7 @@ var oMapClicker = {
 
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		this.clickAdd.addEventListener('click', function(e) {
-			oCreateChattingRoom.visible(this.eLocationName.innerText);
+			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
@@ -1789,6 +1866,18 @@ var oTemplate = {
 /*********************************************************************************************************
  * template 객체화 소스코드 종료 
  **********************************************************************************************************/
+
+/*********************************************************************************************************
+ * Message 객체에 대한 소스코드 시작
+ **********************************************************************************************************/
+//working
+var Message = function() {
+	
+};
+/*********************************************************************************************************
+ * Message 객체에 대한 소스코드 종료
+ **********************************************************************************************************/
+
 
 /*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
