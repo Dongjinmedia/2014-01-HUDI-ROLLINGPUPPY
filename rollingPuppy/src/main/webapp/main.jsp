@@ -108,7 +108,7 @@
 							블라블라블라블라블라블라블라블라</span> <span class="icon-participant">3/10</span></li>
 				</ol>
 			</div>
-			<div class="createChattingRoomButtonInMarkerClicker">채팅방만들기</div>
+			<a class="createChattingRoomButtonInMarkerClicker" href="#">채팅방만들기</a>
 			<div class="menu-info content"></div>
 			<div class="menu-bookmark content"></div>
 		</div>
