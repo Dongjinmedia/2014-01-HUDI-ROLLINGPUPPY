@@ -1,4 +1,26 @@
-var oPanel ={
+var oHeader = {
+	eHeader: document.querySelector("header"),
+	eSearchBox: document.querySelector("#searchBox"),
+	
+	addEvents: function() {
+		this.eSearchBox.addEventListener(
+				"focus",
+				this.expandSearchBox.bind(this)
+		);
+	},
+	
+	// TODO expandSearchBox()에 대응되는 CSS 속성 만들 것 
+	expandSearchBox: function() {
+		oUtil.removeClassName(this.eHeader, "")
+		oUtil.addClassName(this.eHeader, "");
+	}
+	
+	// TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
+	//    ** 터치된 네비게이션 메뉴에 .on 추가하기
+	//    ** 터치된 메뉴의 section을 띄워줄 것
+};
+
+var oPanel = {
 	ePanelButtons: document.querySelector("#panel_buttons"),
 	ePanelWrapper: document.querySelector("#panel_wrapper"),
 	
@@ -57,35 +79,6 @@ var oPanel ={
 		);
 	},
 
-	addClassName: function(node, strClassName) {
-		// 기존에 className가 없던 경우
-		if (node.className === "") {
-			node.className = strClassName;
-			return;
-		}
-
-	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
-		node.className += " " + strClassName;
-	},
-
-	//Node에 특정 className을 제거하는 함수
-	removeClassName : function(node, strClassName) {
-	// 기존에 className가 없는 경우 함수를 종료합니다
-		if (node.className === "") {
-			return ;
-		}
-	
-		// node에 className이 존재하고, target className 하나만 있는 경우
-		if (node.className.length === strClassName.length) {
-			node.className = "";
-			return ;
-		}
-		
-		// node에 className가 다수 존재하는 경우의 target className 삭제
-		// node.className에 replace 결과물을 대입합니다.
-		node.className = node.className.replace(" " + strClassName, "").toString();
-	},
-
 	// paenlButton에 click 혹은 touch 이벤트가 발생하면 실행되는 콜백함수 입니다.
 	// panelWrapper의 className를 변경하여 animation 효과를 발생시킵니다.
 	panelButtonsHandler : function(event) {
@@ -103,22 +96,22 @@ var oPanel ={
 		}
 
 		if (boolFold) {
-			this.removeClassName(this.ePanelWrapper, "unfoldedPanel");
-			this.addClassName(this.ePanelWrapper, "foldPanel");
+			oUtil.removeClassName(this.ePanelWrapper, "unfoldedPanel");
+			oUtil.addClassName(this.ePanelWrapper, "foldPanel");
 		} else {
-			this.removeClassName(this.ePanelWrapper, "foldedPanel");
-			this.addClassName(this.ePanelWrapper, "unfoldPanel");
+			oUtil.removeClassName(this.ePanelWrapper, "foldedPanel");
+			oUtil.addClassName(this.ePanelWrapper, "unfoldPanel");
 		}
 	},
 	
 	animationEndHandler: function(event) {
 		if (this.ePanelWrapper.className === "unfoldPanel") {
-			this.removeClassName(this.ePanelWrapper, "unfoldPanel");
-			this.addClassName(this.ePanelWrapper, "unfoldedPanel");
+			oUtil.removeClassName(this.ePanelWrapper, "unfoldPanel");
+			oUtil.addClassName(this.ePanelWrapper, "unfoldedPanel");
 		}
 		else if (this.ePanelWrapper.className === "foldPanel") {
-			this.removeClassName(this.ePanelWrapper, "foldPanel");
-			this.addClassName(this.ePanelWrapper, "foldedPanel");
+			oUtil.removeClassName(this.ePanelWrapper, "foldPanel");
+			oUtil.addClassName(this.ePanelWrapper, "foldedPanel");
 		}
 		else {
 			return ;
@@ -263,10 +256,10 @@ var oPanel ={
 	_changeCurrentMenuMarker: function(nCenterIndex) {
 		
 		for ( var index = 0 ; index < this.aMenu.length ; ++index ) {
-			this.removeClassName(this.aMenu[index], "on");
+			oUtil.removeClassName(this.aMenu[index], "on");
 		};
 		
-		this.addClassName(this.aMenu[nCenterIndex], "on");
+		oUtil.addClassName(this.aMenu[nCenterIndex], "on");
 	},
 	
 	init : function(){
@@ -290,7 +283,34 @@ var oScrolls = {
 var oUtil = {
 	mod: function (target, division) {
 		return ( (target % division) + division ) % division;
+	},
+	
+	addClassName: function(node, strClassName) {
+		// 기존에 className가 없던 경우
+		if (node.className === "") {
+			node.className = strClassName;
+			return;
+		}
+	
+	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+		node.className += " " + strClassName;
+	},
+	
+	//Node에 특정 className을 제거하는 함수
+	removeClassName : function(node, strClassName) {
+	// 기존에 className가 없는 경우 함수를 종료합니다
+		if (node.className === "") {
+			return ;
+		}
+	
+		// node에 className이 존재하고, target className 하나만 있는 경우
+		if (node.className.length === strClassName.length) {
+			node.className = "";
+			return ;
+		}
+		
+		// node에 className가 다수 존재하는 경우의 target className 삭제
+		// node.className에 replace 결과물을 대입합니다.
+		node.className = node.className.replace(" " + strClassName, "").toString();
 	}
 };
-
-

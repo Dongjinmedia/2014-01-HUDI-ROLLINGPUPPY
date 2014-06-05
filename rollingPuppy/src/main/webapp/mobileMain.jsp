@@ -20,7 +20,7 @@
 				<!-- sb = searchBox(검색창) -->
 				<div id="sb_wrapper">
 					<div id="sb_positioner">
-						<input type="text">
+						<input id="searchBox" type="text">
 					</div>
 				</div>
 				<input type="submit" value="검색">
