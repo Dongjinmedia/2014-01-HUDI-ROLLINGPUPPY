@@ -2,10 +2,16 @@
 var oAjax = {
 		//Ajax GET 요청함수
 		//내부적으로 _getObjectFromJsonRequest 호출
-		getObjectFromJsonGetRequest: function (incompleteUrl, sParameters, callback) {
-			var url = incompleteUrl + sParameters;
-			var oParameters = null;
-			this._getObjectFromJsonRequest(url, "GET", oParameters, callback);
+		getObjectFromJsonGetRequest: function (incompleteUrl, oParameter, callback) {
+			
+			var url = incompleteUrl + "?";
+			for (var key in oParameter) {
+				if (oParameter.hasOwnProperty(key)) {
+					url += key + "="+oParameter[key]+"&";
+				}
+			}
+			console.log("getObjectFromJsonGetRequest : ", url);
+			this._getObjectFromJsonRequest(url, "GET", null, callback);
 		},
 		
 		//Ajax POST 요청함수
@@ -55,54 +61,5 @@ var oAjax = {
 				request.send();
 			}
 		}
-}
-
-//template을 담당하는 객체
-oTemplate = {
-		//template element 
-		eDefaultTemplate : null,
-		//삽입할 위치의 기준이 되는 element
-		eTarget : null, 
-		//삽입할 컨텐츠 tag 
-		aInnerContents : null,
-		//컨텐츠를 삽입하는 element
-		aInnerContentsElement: null,
-		//이전에 넣었던 templates 지우기
-		deletePreviousTemplate : function(eTarget){
-			while(eTarget.firstChild) {
-				eTarget.removeChild(eTarget.firstChild);
-			}
-		},
-		specifyTemplate : function(oResponse, eDefaultTemplate, eTarget,  ){
-			//여기안에 for 문 이하 다 넣을 것 
-		},
-		//쓸데없이 세분화 한듯
-		//copy template node
-		copyTemplate : function(eDefaultTemplate){
-			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
-			return eCopiedDefaultTemplate;
-		},
-		matchElement : function(eCopiedDefaultTemplate, nodeSelector) {
-			return eCopiedDefaultTemplate.querySelector(nodeSelector);
-		},
-
-		//aInnerContents = [".title", ".category", ".address"];
-		//aInnerContents = ["title", "category", "address"];
-		//var aInnerContentsElement[i] = aInnerContents[i];
-		//aInnerContentsElement[i] = this.matchElement(eCopiedDefaultTemplate, aInnerContents[i]);
-
-		//template에 내용 넣기
-		fillTemplateContents: function( aResponse, aInnerContents, aInnerContentsElement){
-			for ( var i = 0 ; i < aInnerContents.length < ++i ){
-				aInnerContentsElement[i].innerHTML =aResponse[i][aInnerContents[i]];
-			}
-		},
-		//template을 원하는 위치에 삽입
-		insertTemplate : function(eTarget, eCopiedDefaultTemplate){
-			eTarget.appendChild(eCopiedDefaultTemplate);
-		},
-
-		//이거 필요 없을 듯 
-		initialize: function(){ 
-		}
 };
+

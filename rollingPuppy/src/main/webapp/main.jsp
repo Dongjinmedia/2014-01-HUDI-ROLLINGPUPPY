@@ -24,26 +24,49 @@
 			<li class="cell none">
 				<div class="default">
 					<p class="icon-warning">
-					<p class="comment">추천 채팅방 리스트가 보여지는 창입니다.</p>
+					<p class="comment"></p>
 				</div>
 			</li>
-			<li class="cell chatRoom"></li>
 			<li class="cell search">
-				<p class="title icon-title">갈빗집</p>
-				<p class="category">한식 &gt; 소고기구이</p>
-				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+				<p class="title icon-title"></p>
+				<p class="category"></p>
+				<p class="address"></p>
+			</li>
+			<li class="cell chatRoom">
+					<p class="title icon-chatting"></p>
+					<p class="limit icon-participant"></p>
+					<p class="address icon-title"></p>
+					<div class="notification"></div>
 			</li>
 			<li class="cell bookmark">
-				<p class="title">우리집</p>
-				<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
+				<p class="title"></p>
+				<p class="address"></p>
 			</li>
 			<li class="person chatMember">
-				<img src="/images/person_icon.png"></img>
-				<p class="personName"></p>
+				<span class="profile"></span>
+				<p class="nickname adjective"></p>
+				<p class="nickname noun"></p>
 			</li>
+			
+			<li class="notice">
+				<span class="message"></span>
+			</li>
+								
+			<li class="user">
+				<span class="time"></span>
+				<span class="message"></span>
+			</li>
+								
+			<li class="other">
+				<span class="profile"></span>
+				<span class="nickname"></span>
+				<span class="message"></span>
+				<span class="time"></span>
+			</li> 
 		</ul>
 	</div>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
+	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
 	<div id="createChatRoom">
 		<div class="outer bg"></div>
 		<div class="centerArea">
@@ -85,10 +108,18 @@
 							블라블라블라블라블라블라블라블라</span> <span class="icon-participant">3/10</span></li>
 				</ol>
 			</div>
+			<a class="createChattingRoomButtonInMarkerClicker" href="#">채팅방만들기</a>
 			<div class="menu-info content"></div>
 			<div class="menu-bookmark content"></div>
 		</div>
 	</div>
+
+	<!-- hidden Area2 (For Entered Chatting Room List) -->
+	<div style="display: none;">
+		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
+	</div>
+
+
 	<!--페이지 전체를 감싸는 영역-->
 	<div id="wrapper">
 
@@ -131,7 +162,13 @@
 						<!-- pc == panel_content -->
 						<div id="pc_search" class="on">
 							<ul>
+								<div class="default">
+									<p class="icon-warning">
+									<p class="comment">상단의 검색버튼을 이용해주세요.</p>
+								</div>
 							</ul>
+							
+							<!-- 추후 여유가 될 때, 개발. scroll로 대체  
 							<ul class="pcFooter">
 								<li><i class="paging icon-left"></i></li>
 								<li>1</li>
@@ -139,6 +176,7 @@
 								<li>3</li>
 								<li><i class="paging icon-right"></i></li>
 							</ul>
+							-->
 
 						</div>
 						<div id="pc_recommendation">
@@ -149,12 +187,6 @@
 						</div>
 						<div id="pc_chatting">
 							<ul>
-								<li class="cell chatting">
-									<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
-									<p class="limit icon-participant">1 / 300</p>
-									<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
-									<div class="notification">0</div>
-								</li>
 							</ul>
 						</div>
 						<div id="pc_bookmark">
@@ -198,24 +230,30 @@
 				</div>
 
 				<!-- 채팅방 영역 -->
-				<div class="chattingRoom">
-					<div class="chattingRoomTopBar">
-						<div class="chattingRoomTitle">방 제목</div>
-						<div>
-							<button class="foldChattingRoomButton">_</button>
+				<div id="chatWindow">
+					<div class="leftArea">
+						<div class="top">
+							<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
+							<p class="limit icon-participant">1 / 300</p>
+							<p class="address icon-title">삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+							<div class="menu">
+								<i class="icon-aside" title="접어두기"></i>
+								<i class="icon-exit" title="채팅방 나가기"></i>
 						</div>
-						<div>
-							<button class="exitChattingRoomButton">X</button>
+						</div>
+						<div class="middle">
+							<ul class="chattingContents"> 
+							</ul>
+						</div>
+						<div class="bottom">
+							<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
 						</div>
 					</div>
-					<div class="chattingContents"></div>
-					<div class="chattingMemberList">
-						<ul>
-						</ul>
-					</div>
-					<div class="chattingRoomFooter">
-						<textarea class="chattingInputBox"></textarea>
-						<div class="chattingSendButton">SEND</div>
+					<div class="rightArea unfold">
+						<div class="chattingMemberList">
+							<ul>
+							</ul>
+						</div>
 					</div>
 				</div>
 
@@ -226,6 +264,8 @@
 				</div>
 			</div>
 		</div>
+		
+		<ul id="newMessage"></ul>
 	</div>
 </body>
 <<<<<<< HEAD
@@ -234,11 +274,10 @@
 =======
 <script type="text/javascript"
 	src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/javascripts/util.js?20140522"></script>
+<script type="text/javascript" src="/javascripts/ajax.js?20140522"></script>
 <script type="text/javascript" src="/javascripts/main.js?20140501"></script>
 >>>>>>> develop
 <script>
 	window.onload = initialize();
 </script>
-<script type="text/javascript" src="/javascripts/search.js?20140521"></script>
 </html>

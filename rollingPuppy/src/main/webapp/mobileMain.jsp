@@ -1,87 +1,215 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0">
-	<title>Neighbor</title>
-	<link rel="stylesheet" type="text/stylesheet" href="/stylesheets/reset.css">
-	<link rel="stylesheet" type="text/stylesheet" href="/stylesheets/mobileMain.css">
+<meta charset="utf-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport"
+	content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no">
+<title>Neighbor</title>
+<link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
+<link rel="stylesheet" type="text/css"
+	href="/stylesheets/mobileMain.css">
 </head>
 
-<!-- Custom tag는 IE에서 정상적으로 동작하지 않는다 -->
-<!-- IE는 Custom tag를 하나하나 등록시켜줘야 한다 -->
 <body>
+<<<<<<< Upstream, based on branch 'develop' of https://github.com/NHNNEXT/2014-01-HUDI-ROLLINGPUPPY.git
+	<!-- 검색창과 로고를 포함한 header -->
 	<header>
-		<logo><a href="./m.main.html"></a></logo>
-		<searchBox>
-			<form name="search">
-				<inputTextWrapper>
-					<inputTextPositioner>
-						<input type="text">
-					</inputTextPositioner>
-				</inputTextWrapper>
-				<input type="submit" value="검색">
-			</form>
-		</searchBox>
+		<div id="logo"><a href="/mobile"></a></div>
+		<!-- sf = searchForm  -->
+		<div id="sf_wrapper">
+			<form id="sf" name="search">
+				<!-- sb = searchBox(검색창) -->
+				<div id="sb_wrapper">
+					<div id="sb_positioner">
+						<input id="searchBox" type="text">
+					</div>
+=======
+	<div id="template" class="hidden" style="display: none;">
+		<ul>
+			<li class="card cell none">
+				<div class="default">
+					<p class="icon-warning">
+					<p class="comment"></p>
+>>>>>>> 2199e80 #314 Merge From main.css
+				</div>
+			</li>
+			<li class="card cell search">
+				<p class="title icon-title"></p>
+				<p class="category"></p>
+				<p class="address"></p>
+			</li>
+			<li class="card cell chatRoom">
+				<p class="title icon-chatting"></p>
+				<p class="limit icon-participant"></p>
+				<p class="address icon-title"></p>
+				<div class="notification"></div>
+			</li>
+			<li class="card cell bookmark">
+				<p class="title"></p>
+				<p class="address"></p>
+			</li>
+
+		</ul>
+	</div>
+
+	<!-- 검색창과 로고를 포함한 header -->
+	<h eader>
+	<div id="logo">
+		<a href="/mobile"></a>
+	</div>
+	<!-- sf = searchForm  -->
+	<div id="sf_wrapper">
+		<form id="sf" name="search">
+			<!-- sb = searchBox(검색창) -->
+			<div id="sb_wrapper">
+				<div id="sb_positioner">
+					<input type="text">
+				</div>
+			</div>
+			<input type="submit" value="검색">
+		</form>
+	</div>
 	</header>
-	<navigation>
-		<account></account>
-		<menu>
-			<search class="on">
+
+	<div id="nav">
+		<div id="account"></div>
+		<div id="nav_menu">
+			<div class="on">
 				<a href="#">검색</a>
-			</search>
-			<chatting>
+			</div>
+			<div>
 				<a href="#">채팅방</a>
-			</chatting>
-			<bookmark>
+			</div>
+			<div>
 				<a href="#">관심장소</a>
-			</bookmark>
-			<setting>
+			</div>
+			<div>
 				<a href="#">설정</a>
-			</setting>
-		</menu>
-		<panelController>
-			<a class="panelButtonFold" href="#">fold</a>
-			<a class="panelButtonUnfold" href="#">unfold</a>
-		</panelController>
-	</navigation>
-	<panel>
-		<sectionContainer>
-			<section>
-				<h1 style="color:white;font-size:3em;">검색</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">채팅방</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">관심장소</h1>
-				<card></card>
-				<card></card>
-				<card></card>					
-			</section>
-			<section>
-				<h1 style="color:white;font-size:3em;">설정</h1>
-				<card></card>
-				<card></card>
-				<card></card>
-			</section>
-		<panelContainer>
-	</panel>
+			</div>
+		</div>
+	</div>
 
-	<map></map>
+	<div id="panel_wrapper">
+		<div id="panel">
+			<div id="panel_contents">
+				<div class="section_wrapper">
+					<div id="scroll0" class="scroll_wrapper">
+						<div class="scroll_area">
+							<h1>검색</h1>
+							<ul class="section">
+								<li class="card cell search">
+									<p class="title icon-title">제목입니당</p>
+									<p class="category">카테고리고리</p>
+									<p class="address">주소주소주</p>
+								</li>
+								<li class="card cell search">
+									<p class="title icon-title">제목입니당</p>
+									<p class="category">카테고리고리</p>
+									<p class="address">주소주소주</p>
+								</li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="section_wrapper">
+					<div id="scroll1" class="scroll_wrapper">
+						<div class="scroll_area">
+							<ul class="section">
+								<li class="title"><h1>채팅방</h1></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="section_wrapper">
+					<div id="scroll2" class="scroll_wrapper">
+						<div class="scroll_area">
+							<ul class="section">
+								<li class="title"><h1>관심장소</h1></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="section_wrapper">
+					<div id="scroll3" class="scroll_wrapper">
+						<div class="scroll_area">
+							<ul class="section">
+								<li class="title"><h1>설정</h1></li>
+								<li class="card"></li>
+								<li class="card"></li>
+								<li class="card"></li>
+							</ul>
+						</div>
+					</div>
+				</div>
+			</div>
 
-	<footer></footer>	
-	<script type="text/javascript" src="/javascripts/mobileMain.js"></script>
-	<script type="text/javascript" style="display:none">
-		window.onload = oPanel.init();
-	</script>
+			<div id="panel_buttons">
+				<div id="fold">
+					<div class="panelFold"></div>
+				</div>
+				<div id="unfold">
+					<div class="panelUnfold"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div id="map"></div>
+
+	<footer></footer> <script type="text/javascript"
+		src="/javascripts/mobileMain.js"></script> <script
+		type="text/javascript" src="/javascripts/iscroll.js"></script> <script
+		type="text/javascript" style="display: none;">
+			window.onload = function() {
+				document.addEventListener("touchmove", function(event) {
+					event.preventDefault();
+				});
+
+				oScrolls.init();
+				oPanel.init();
+			}
+		</script>
 </body>
 </html>

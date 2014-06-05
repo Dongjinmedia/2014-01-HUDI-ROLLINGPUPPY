@@ -1,8 +1,7 @@
 package com.puppy.dao.impl;
 
 import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.slf4j.Logger;
@@ -12,7 +11,7 @@ import com.puppy.dao.ChatDao;
 import com.puppy.dao.DAO;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Marker;
-import com.puppy.dto.Member;
+import com.puppy.dto.Message;
 import com.puppy.util.TempMarkerIdClass;
 import com.puppy.util.Util;
 
@@ -155,11 +154,11 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 			TempMarkerIdClass idInstance = selectOne(TempMarkerIdClass.class, preparedStatement);
 			
 			//지역명이 일치하는 마커데이터가 있을경우
-			if ( idInstance.getSame_name_id() != 0 ) {
+			if ( idInstance != null && idInstance.getSame_name_id() != 0 ) {
 				markerId = (int) idInstance.getSame_name_id();
 				
 			//위도, 경도상에 인접마커에 해당하는 데이터가 있을경우
-			} else if ( idInstance.getNear_distance_id() != 0 ) {
+			} else if ( idInstance != null && idInstance.getNear_distance_id() != 0 ) {
 				markerId = (int) idInstance.getNear_distance_id();
 				
 			//위의 두가지 경우를 모두 만족하지 않을경우, 새로운 marker데이터를 데이터베이스에 생성하고, 새로추가된 Marker아이디값을 리턴한다.
@@ -208,35 +207,97 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 	}
 
 	@Override
-	public List<Member> getChatMemberList(int currentChatRoomNumber) {
-		logger.info("ChatDaoImpl getChatMemberList");
+	public int updateCurrentChatRoomFoldTime(int userId, int currentChatRoomNumber) {
+		logger.info("ChatDaoImpl updateCurrentChatRoomFoldTime");
 		
-		PreparedStatement preparedStatement = null;
-		List<Member> chatMemberList = new ArrayList<Member>();
-		
-		String query = "SELECT "
-							+ "t_member.id, t_member.nickname_noun, t_member.nickname_adjective "
-					  + "FROM "
-					  		+ "tbl_chat_room_has_tbl_member  AS t_chat_member "
-					 + "INNER JOIN "
-					 		+ "tbl_member AS t_member "
-					 + "ON "
-					 		+ "t_chat_member.tbl_chat_room_id = ? "
-					 + "AND"
-					 		+ " t_chat_member.tbl_member_id = t_member.id"; 
-		
+		int successQueryNumber = 0;
 		try {
-			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			String sql = "UPDATE tbl_chat_room_has_tbl_member SET fold_time = NOW() WHERE tbl_chat_room_id = ? AND tbl_member_id = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
 			preparedStatement.setInt(1, currentChatRoomNumber);
-		} catch (SQLException e) {
-			logger.error("getChatMemberList Error", e);
+			preparedStatement.setInt(2, userId);
+
+			successQueryNumber = updateQuery(preparedStatement);
+		} catch (Exception e) {
+			logger.error("in updateCurrentChatRoomFoldTime", e);
 		}
 		
-		chatMemberList = selectList(Member.class, preparedStatement);
+		return successQueryNumber;
+	}
+
+	@Override
+	public List<Message> selectInitMessagesFromChatRoomNumber(int chatRoomNumber, int memberId) {
+		logger.info("ChatDaoImpl selectInitMessagesFromChatRoomNumber");
 		
-				
-		return chatMemberList;
+		PreparedStatement preparedStatement = null;
+		List<Message> list = null;
+		
+		try {
+			String query = "SELECT "
+											+ "id, "
+											+ "tbl_chat_room_id, "
+											+ "tbl_member_id, "
+											+ "message, "
+											+ "if(tbl_member_id=?, true, false) AS is_my_message, "
+											+ "MONTH(created_time) AS month, "
+											+ "DAYOFMONTH(created_time) AS day, "
+											+ "DATE_FORMAT(created_time, '%H:%i') AS time, "
+											+ "DATE_FORMAT(created_time, '%a') AS week"
+									+ " FROM tbl_message "
+									+ "WHERE tbl_chat_room_id = ? "
+									+ "ORDER BY created_time DESC LIMIT 50";
+			
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, memberId);
+			preparedStatement.setInt(2, chatRoomNumber);
+			
+			list = selectList(Message.class, preparedStatement);
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		
+		Collections.reverse(list);
+		
+		return list;
+	}
+
+	@Override
+	public List<Message> selectUnreadMessage(int chatRoomNumber, int memberId) {
+		logger.info("ChatDaoImpl selectUnreadMessage");
+		
+		PreparedStatement preparedStatement = null;
+		List<Message> list = null;
+		
+		try {
+			String query = "SELECT "
+												+ "t_message.id AS id, "
+												+ "t_message.tbl_chat_room_id AS tbl_chat_room_id, "
+												+ "t_message.tbl_member_id AS tbl_member_id, "
+												+ "t_message.message AS message, "
+												+ "if(t_message.tbl_member_id=?, true, false) AS is_my_message, "
+												+ "MONTH(t_message.created_time) AS month, "
+												+ "DAYOFMONTH(t_message.created_time) AS day, "
+												+ "DATE_FORMAT(t_message.created_time, '%H:%i') AS time, "
+												+ "DATE_FORMAT(t_message.created_time, '%a') AS week "
+									+ "FROM tbl_message AS t_message "
+									+ "INNER JOIN tbl_chat_room_has_tbl_member AS t_has "
+									+ "ON t_message.tbl_member_id = t_has.tbl_member_id "
+											+ "AND t_message.tbl_chat_room_id = t_has.tbl_chat_room_id "
+											+ "AND t_message.created_time > t_has.fold_time "
+									+ "WHERE t_message.tbl_chat_room_id = ? "
+									+ "ORDER BY created_time ASC";
+			
+			preparedStatement = ConnectionPool.getPreparedStatement(query);
+			preparedStatement.setInt(1, memberId);
+			preparedStatement.setInt(2, chatRoomNumber);
+			
+			list = selectList(Message.class, preparedStatement);
+		} catch (Exception e) {
+			logger.error("Request Create ChattingRoom Error", e);
+		}
+		return list;
 	}
 	
-	
+	//시간기준으로 Message Select
+	//public List<Message> selectMoreMessageBeforeParameterTime() {
 }

@@ -15,38 +15,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.util.Constants;
 import com.puppy.util.XMLReader;
 
 public class SearchController implements Controller {
 
 	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	private static final String REQUEST_URL_FRONT = "http://openapi.naver.com/search?key=513cd098517cce82ec819f7862fb362f";
-	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=10";
+	private static final String REQUEST_URL_TAIL = "&target=local&start=1&display=20";
 	private static final String SEARCH_EXPRESSION ="/rss/channel/item";
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		logger.info("indo doGet of Search Controller");
+	}
 
-		request.setCharacterEncoding("utf-8");
-		response.setCharacterEncoding("utf-8");
+	@Override
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		logger.info("into doPost of SearchController");
+		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 		Gson gson = new Gson();
-
-		String searchKeyword = request.getParameter("searchKeyword");
+		
+		String searchKeyword = null;
+		
+		Object searchKeywordObject = request.getAttribute(Constants.REQUEST_SEARCH_QUERY);
+		logger.info("searchKeywordObject :"+ searchKeywordObject);
+		
+		if( searchKeywordObject != null)
+			searchKeyword = searchKeywordObject.toString();			
+		logger.info(searchKeyword);
 		String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword + REQUEST_URL_TAIL;
 		logger.info("requestURLString :" + requestURLString);
+		
 		URL requestURL = new URL(requestURLString);	
 		XMLReader xmlReader = new XMLReader(requestURL);
 		resultList = xmlReader.getListFromXPath(SEARCH_EXPRESSION);
 
 		out.println(gson.toJson(resultList));
 		logger.info(gson.toJson(resultList));
-	}
-
-	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 	}
 }

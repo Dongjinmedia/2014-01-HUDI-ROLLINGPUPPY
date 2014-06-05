@@ -13,28 +13,44 @@ a {
 	text-decoration:none
 }
 
-body {
+body, html {
+	position: relative;
+	height: 100%;
+	min-height: 560px;
 	padding: 0 auto;
+	margin: 0 auto;
 }
 
 .bgImg {
 	position: fixed;
 	top: 5%;
-	left: 40%;
+	margin-left: 400px;
 	width: 100%;
 	background:
-		url(/images/neighbors.jpg)
+		url(/images/map.png)
 		no-repeat;
 	!background-size: cover;
 	height: 100%;
 	z-index: 1;
-	opacity: 0.6;
+	opacity: 0.8;
+	min-width: 100%;
+}
+
+.innerbg {
+	position: fixed;
+	background: url(/images/chat.png) no-repeat;
+	width: 100%;
+	height: 100%;
+	margin-left: 320px;
+	top: 28%;
+	opacity: 0.9;
 }
 
 .interactBox {
 	position: absolute;
-	top: 110px;
-	left: 7%;
+	top: 50%;
+	margin-top: -250px;
+	margin-left: 50px;
 }
 
 h1,p {
@@ -42,7 +58,7 @@ h1,p {
 }
 
 .loginArea {
-	display:none;
+	display: block;
 }
 
 .joinArea {
@@ -73,11 +89,11 @@ form input[type="submit"] {
 }
 
 .choiceBlock {
+	width: 300px;
 	font-size: 150%;
 	font-weight: 700;
-	margin-top: 60px;
-	width: 300px;
-	margin-bottom: 30px;
+	margin-top: 20px;
+	margin-bottom: 10px;
 }
 
 .choice {
@@ -157,4 +173,23 @@ form input[type="submit"] {
 		opacity: 0.2;
 	}
 	
+	.innerbg {
+		display: none;
+	}
+	
+	.interactBox {
+		margin: auto;
+		width: 90%;
+		max-width: 280px;
+		height: 100%;
+		position: relative;
+		top: 0;
+		left: 0;
+		margin-top: 0;
+	}
+	
+	.interactBox > *{
+		width: 100%;
+		margin-left: 3px;
+	}
 }

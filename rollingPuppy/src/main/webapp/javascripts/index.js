@@ -1,4 +1,4 @@
-oUtil = {
+var oUtil = {
 	//input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함수 
 	isValidateEmailFormat: function(email) {
 		var emailFormat = /^[\w\-]+(\.[\w\-]+)*@[a-z\d]+(\-[a-z\d]+)*(\.[a-z\d]+(\-[a-z\d]+)*)*\.[a-z]{2,4}$/;
@@ -14,7 +14,7 @@ oUtil = {
 	}
 }
 
-oSelectBox = {
+var oSelectBox = {
 	eLoginSelector: null,
 	eLoginEntireArea: null,
 	eJoinSelector: null,
@@ -69,7 +69,7 @@ oSelectBox = {
 	}	
 };
 
-oLogin = {
+var oLogin = {
 	eInputEmail: null,
 	eInputPassword: null,
 	eCheckboxKeepLogin: null,
@@ -114,14 +114,16 @@ oLogin = {
 			"keepEmail": form[2].value
 		};
 
-		callback = function(request) {
+		var callback = function(request) {
 			var oResult = JSON.parse(request.responseText);
 				
 			var result = oResult['ThreeWayResult'];
-			console.log(result);
+			console.log("ThreeWayResult:",result);
 				
 			if ( result === "SUCCESS" ) {
-				alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
+				//debugging의 불편함으로 일시적 주석 처리 
+				//alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
+				console.log("nickname",oResult["nickname"])
 				window.location = "/main";
 			} else if ( result === "FAIL" ) {
 				alert("아이디와 비밀번호를 다시 확인해 주세요.");
@@ -141,7 +143,7 @@ oLogin = {
 	}
 };
 
-oJoin = {
+var oJoin = {
 	eInputEmail: null,
 	eInputPassword: null,
 	eInputPasswordConfirm: null,
@@ -228,7 +230,7 @@ oJoin = {
 	}
 };
 
-oCookie = {
+var oCookie = {
 	/**
 	 * 인자로 넘겨받은 이름으로 쿠키를 찾아서 value를 반환니다. 
 	 * @param name

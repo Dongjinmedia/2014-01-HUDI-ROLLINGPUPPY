@@ -1,10 +1,7 @@
 package com.puppy.controller;
 
 import java.io.IOException;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.ServletContext;
@@ -56,16 +53,14 @@ public class FrontController extends HttpServlet {
 		 * 일반적으로 사용하는 Parameter처럼
 		 * 간단하게 사용할 수 있도록 request객체에 setAttribute해준다. 
 		 */
-		if ( request != null && (request.getParts() != null) && !(request.getParts().isEmpty()) ) {
-			Collection<Part> partsCollection = request.getParts();
-			Iterator<Part> partsIterator = partsCollection.iterator();
-			
-			while (partsIterator.hasNext()) {
-				Part part = partsIterator.next();
+		try {
+			for (Part part: request.getParts()) {
 				request.setAttribute(part.getName(), Util.getStringValueFromPart(part));
 				logger.info("part.getName : "+part.getName());
 				logger.info("part value : "+ Util.getStringValueFromPart(part));
 			}
+		} catch (Exception e) {
+			logger.error("error occur : ", e);
 		}
 		
 		requestAnaliyzer(request, response);
@@ -85,17 +80,16 @@ public class FrontController extends HttpServlet {
 		String requestUrl = request.getRequestURI();
 		String requestMethod = request.getMethod();
 		
+		logger.info("method : "+requestMethod);
+		logger.info("url : "+requestUrl);
+		
 		if ( requestMethod.equalsIgnoreCase("POST")) {
 			method = Method.POST;
 		} else if ( requestMethod.equalsIgnoreCase("GET")) {
 			method = Method.GET;
 		} else {
-			//throw Exception
+			response.sendRedirect("/error?type=500");
 		}
-		
-		logger.info("method : "+requestMethod);
-		logger.info("url : "+requestUrl);
-
 		
 		
 		/*
@@ -131,8 +125,10 @@ public class FrontController extends HttpServlet {
 		
 		//possibleURL 리스트를 url-controller가 맵핑된 리스트와 비교한다.
 		for (String url : possibleURL) {
-			if ( urlMappingObject.containsKey(url) )
+			if ( urlMappingObject.containsKey(url) ) {
 				controller = urlMappingObject.get(url);
+				break;
+			}
 		}
 		
 		if ( controller != null )

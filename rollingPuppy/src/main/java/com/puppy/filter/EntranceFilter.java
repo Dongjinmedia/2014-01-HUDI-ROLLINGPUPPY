@@ -8,6 +8,8 @@ import javax.servlet.FilterConfig;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class EntranceFilter implements Filter{
 
@@ -15,15 +17,23 @@ public class EntranceFilter implements Filter{
 	public void init(FilterConfig filterConfig) throws ServletException {
 	}
 
+	
+	//TODO 하단링크방식으로 구현해보자
+	//http://slipp.net/wiki/pages/viewpage.action?pageId=19530191
 	@Override
-	public void doFilter(ServletRequest request, ServletResponse response,
+	public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse,
 			FilterChain chain) throws IOException, ServletException {
 		
-		//HttpServletRequest req = (HttpServletRequest) request;
+		HttpServletResponse response= (HttpServletResponse) servletResponse;
+		HttpServletRequest request = (HttpServletRequest) servletRequest;
+		
+		if ( request.getCharacterEncoding() == null )
+			response.setCharacterEncoding("UTF-8");
+		
 		//String path = req.getRequestURI().substring(req.getContextPath().length());
 
 		// 다음 필터로 이동
-	    chain.doFilter(request, response); 
+	    chain.doFilter(servletRequest, servletResponse); 
 	    //request.getRequestDispatcher(req.getRequestURI()).forward(request, response); // Goes to controller servlet.
 	}
 

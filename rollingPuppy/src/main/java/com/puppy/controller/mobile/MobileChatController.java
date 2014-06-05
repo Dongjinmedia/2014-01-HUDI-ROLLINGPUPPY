@@ -1,31 +1,28 @@
-package com.puppy.controller;
+package com.puppy.controller.mobile;
 
 import java.io.IOException;
 
+import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/*
- * 로그아웃 요청에 대한 컨트롤러
- */
-public class LogoutController implements Controller {
+import com.puppy.controller.Controller;
+import com.puppy.controller.SearchController;
 
-	private static final Logger logger = LoggerFactory.getLogger(LogoutController.class);
+public class MobileChatController implements Controller {
+
+	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
 	
+	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.info("into doGet");
-		
-		HttpSession session = request.getSession();
-		
-		// 세션을 없애면 로그아웃이 됩니다.
-		session.invalidate();
-		response.sendRedirect("/");
+		logger.info("into doGet of MobileChatController");
+		RequestDispatcher view = request.getRequestDispatcher("/mobileChatPage.jsp");
+		view.forward(request, response);
 	}
 
 	@Override
@@ -34,4 +31,5 @@ public class LogoutController implements Controller {
 		// TODO Auto-generated method stub
 		
 	}
+	
 }

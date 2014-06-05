@@ -1,4 +1,4 @@
-package com.puppy.controller;
+package com.puppy.controller.member;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -15,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
+import com.puppy.controller.Controller;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
@@ -99,12 +100,12 @@ public class LoginController implements Controller {
 			session.setAttribute(Constants.SESSION_MEMBER_EMAIL, member.getEmail());
 			session.setAttribute(Constants.SESSION_NICKNAME_ADJECTIVE, member.getNicknameAdjective());
 			session.setAttribute(Constants.SESSION_NICKNAME_NOUN, member.getNicknameNoun());
-			
+
 			//최종 로그인시간을 업데이트한다.
 			int successUpdateQueryNumber = memberDao.updateLastLoggedTime(member.getId());
 			if ( successUpdateQueryNumber == 0 )
 				logger.warn(email+" Update Last Logged Time Fail.");
-			
+			//logger.info("nickname"+member.getNicknameNoun());
 			//로그인 성공
 			loginResult = ThreeWayResult.SUCCESS;
 			resultJsonData.put(
