@@ -264,6 +264,8 @@
 				</div>
 			</div>
 		</div>
+		
+		<ul id="newMessage"></ul>
 	</div>
 </body>
 <script type="text/javascript"

@@ -1380,21 +1380,17 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 ** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 종료
 */
 
-
 /*
-** 채팅을 하는 영역에 대한 CSS 시작
+**새로운 메세지가 올때 생성되는 newMessage 영역 시
 */
-#chat {
+#wrapper #newMessage {
 	position: absolute;
-	display: block;
-	background: #fff;
-}
-
-#textarea {
-	width: 300px;
-	height: 300px;
-	border: solid 1px;
+	right:20px;
+	bottom:20px;
+	width: 240px;
+	height: 110px;
+	background-color: #000;
 }
 /*
-** 채팅을 하는 영역에 대한 CSS 종료
+**새로운 메세지가 올때 생성되는 newMessage 영역 종 
 */
