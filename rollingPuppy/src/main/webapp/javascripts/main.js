@@ -589,7 +589,7 @@ var oNaverMap = {
 	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
 	                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
 	                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
-	            	
+	            		
 	            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
 	            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
 	                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
@@ -716,6 +716,10 @@ var oMarkerClicker = {
 	},
 	
 	clickChatRoomList: function(e) {
+		//클릭된 지점이 채팅방 생성 버튼 지점이면 채팅방 입장 요청을 하지 않는다.
+		if(e.target.className === "createChattingRoomButtonInMarkerClicker") {
+			return;
+		}
 		//클릭되는 대상의 부모인 li태그 element를 가져와서, 
 		//추가될때 저장되어 있던 chatRoomNumber Attribute를 가져온후, 채팅방 입장을 요청한다.
 		oChat.enterChatRoom(e.target.parentNode.chatRoomNumber);
@@ -789,12 +793,23 @@ var oMarkerClicker = {
 			this.eChatList.appendChild(eNode);
 		}
 		
+		//채팅리스트 안에 있는 채팅방 생성 버튼을 만드는 부분
+		var createChattingRoomButtonInMarkerClicker = document.querySelector(".createChattingRoomButtonInMarkerClicker");
+		var oLocationPoint = {
+				"y": oMarkerInfo["location_latitude"],
+				"x": oMarkerInfo["location_longitude"]
+		};
+		this.eChattingDivBox.appendChild(createChattingRoomButtonInMarkerClicker);
+		createChattingRoomButtonInMarkerClicker.addEventListener('click', function(e) {
+			oCreateChattingRoom.visible(this.eMenuInfo.innerText, oLocationPoint);
+		}.bind(this), false);
+		
 		//템플릿 element 삭제
 		chatRoomTemplate.remove();
 		
 		//높이값을 채팅방 영역에 맞게 조절
 		//TODO 하드코딩되어 있는 px 수정 (26)
-		this.eChattingDivBox.style.cssText = "height:" + 26*aChatRoomInMarker.length + "px;";
+		this.eChattingDivBox.style.cssText = "height:" + 26*(aChatRoomInMarker.length+1) + "px;";
 		
 		return this.controlBox;
 	},
@@ -813,13 +828,15 @@ var oMarkerClicker = {
 	aIcons: [],
 	//메뉴 내용을 담는 Content 객체를 담을 Array
 	aMenues: [],
+	
 	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
 	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
 	reset: function() {
 		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
-	},	
+	},
+	
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	isClickedComponentExists: function() {
 		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
@@ -1500,16 +1517,22 @@ var oCreateChattingRoom = {
 		eLimitNumberInput: null,
 		//채팅방을 생성하려고 하는 곳의 주소 
 		eRoomAddress: null,
-		//채팅방 생성창을 보일고, 다른메뉴와의 인터렉션을 막는 함수
-		visible: function(locationName) {
+		//채팅방 생성 위치 좌표
+		oLocationPoint: null,
+		
+		//채팅방 생성창을 열고, 다른메뉴와의 인터렉션을 막는 함수
+		visible: function(locationName, oClickPoint) {
 			this.oCreateChatRoom.style.display = "block";
 			//console.log(this.eRoomAddress);
 			this.eRoomAddress.innerText = locationName;
+			this.oLocationPoint = oClickPoint;
 		},
+		
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.style.display = "none";
 		},
+		
 		initialize: function() {
 			
 			//element초기화
@@ -1530,20 +1553,27 @@ var oCreateChattingRoom = {
 			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
 			eSubmit.addEventListener('click', this.requestCreate.bind(this), false);
 		},
+		
 		//제한숫자 인풋값 초기화
 		clearLimitNumValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
+		
 		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
 			this.eRoomNameInput.value = "";
 		},
+		
 		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
 			e.preventDefault();
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value
 			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
+			
+			// WORKING SEHUN
+			console.log(this.oLocationPoint);
+			oMapClicker.oClickPoint = this.oLocationPoint;
 			
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
@@ -1676,7 +1706,7 @@ var oMapClicker = {
 
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
 		this.clickAdd.addEventListener('click', function(e) {
-			oCreateChattingRoom.visible(this.eLocationName.innerText);
+			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
