@@ -1396,6 +1396,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	width: 240px;
 	height: 110px;
 	background-color: #000;
+	display: none;
 }
 /*
 **새로운 메세지가 올때 생성되는 newMessage 영역 종 

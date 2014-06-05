@@ -414,3 +414,154 @@ div.panelUnfold {
 	background-color: #888;
 	z-index: 1;
 }
+
+/*
+** Template Style
+*/
+@font-face {
+	font-family: FontAwesome;
+	src:
+		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font//fontawesome-webfont.ttf)
+}
+
+[class^=icon-]:before,[class*=" icon-"]:before {
+	font-family: FontAwesome;
+	font-weight: 400;
+	font-style: normal;
+	display: inline-block;
+	text-decoration: inherit;
+}
+
+.icon-title:before {
+	content: "\f173";
+}
+
+.icon-people:before {
+	content: "\f0c0";
+}
+
+#panel_contents .default {
+	position: absolute;
+	color: #F2F0F0;
+	text-align: center;
+	width: 100%;
+	height: 100%;
+	border: 20px solid #F2F0F0;
+	box-sizing: border-box;  
+}
+
+#panel_contents .icon-warning:before {
+	margin-top: 30%;
+	margin-bottom: 10%;
+	color: #F2F0F0;
+	font-size: 10em;
+	content: "\f05b";
+}
+
+/* #panel_contents .cell {
+	position: relative;
+	width: 94%;
+	border-top: 1px solid #5F6263;
+	border-bottom: 1px solid #5F6263;
+	padding: 3%;
+	line-height: 20px;
+} */
+
+#panel_contents .title {
+	!width: 100%;
+	font-weight: bold;
+}
+#panel_contents .title:before {
+	margin-right: 5px;
+}
+
+#panel_contents .address {
+	line-height: 20px;
+	font-size : 0.8em;
+	/* white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden; */
+}
+
+#panel_contents > * {
+	width: 100%;
+}
+
+li.search .title:before {
+	content: "\f041";
+}
+
+#panel_contents li:hover{
+	background-color: #FAFAFA;
+	cursor: pointer;
+}
+
+li.search .category {
+	font-size: 0.8em;
+	color: #B9BBBD;
+}
+
+li.bookmark .title:before {
+	content: "\f005";
+	margin-right: 5px;
+}
+
+li.bookmark .icon-delete:before {
+	color: #F0F0F0;
+	content: "\f056";
+	position: absolute;
+	font-size: 20px;
+	top: 10px;
+	right: 10px;
+}
+
+li.bookmark .icon-delete:hover:before {
+	color: #000;
+	top: 10px;
+	right: 10px;
+}
+
+li.chatRoom .icon-chatting:before {
+	content: "\f0e6";
+	margin-right: 5px;
+}
+
+li.chatRoom .title {
+	font-size: 1.3em;
+	margin-bottom: 0.5em;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+li.chatRoom .limit {
+	font-size: 0.8em;
+}
+
+.icon-participant:before {
+	content: "\f007";
+	margin-right: 5px;
+}
+
+.address.icon-title:before {
+	content: "\f041";
+	margin-right: 5px;	
+}
+
+.notification {
+	position: absolute;
+	padding: 4px 10px;
+	border-radius: 20px;
+	background-color: #FF3B3B;
+	color: #fff;
+	font-size: 13px;
+	display: inline-block;
+	top: -5px;
+	right: -20px;
+}
+
+li.chatRoom .notification {
+	top: 5px;
+	left: 5px;
+	right: auto;
+}
