@@ -438,17 +438,16 @@ div.panelUnfold {
 }
 
 #panel_contents .default {
-	position: absolute;
 	color: #F2F0F0;
 	text-align: center;
 	width: 100%;
 	height: 100%;
-	border: 20px solid #F2F0F0;
-	box-sizing: border-box;  
+	border: none;
+	background-color:transparent;
 }
 
 #panel_contents .icon-warning:before {
-	margin-top: 30%;
+	margin-top: 20%;
 	margin-bottom: 10%;
 	color: #F2F0F0;
 	font-size: 10em;
@@ -464,6 +463,7 @@ div.panelUnfold {
 	font-weight: bold;
 	font-size: 1.5em !important;
 }
+
 #panel_contents .title:before {
 	margin-right: 5px;
 }
@@ -516,6 +516,12 @@ li.chatRoom .icon-chatting:before {
 	margin-right: 5px;
 }
 
+li.chatRoom {
+	position: relative;
+	left: 0;
+	right: 0;
+}
+
 li.chatRoom .title {
 	font-size: 1.3em;
 	margin-bottom: 0.5em;
@@ -540,7 +546,7 @@ li.chatRoom .limit {
 
 .notification {
 	position: absolute;
-	padding: 4px 10px;
+	padding: 7px 10px;
 	border-radius: 20px;
 	background-color: #FF3B3B;
 	color: #fff;

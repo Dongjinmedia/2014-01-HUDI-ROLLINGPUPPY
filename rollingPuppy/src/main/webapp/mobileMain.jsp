@@ -16,45 +16,41 @@
 <body>
 	<div id="template" class="hidden" style="display: none;">
 		<ul>
-			<li class="card none">
-				<div class="default">
-					<p class="icon-warning">
-					<p class="comment"></p>
-				</div>
+			<li class="card default">
+				<p class="icon-warning"></p>
+				<p class="comment">현재 리스트가 없습니다.</p>
 			</li>
-			
-			<li class="card search">
-				<p class="title icon-title"></p>
-				<p class="category"></p>
-				<p class="address"></p>
-			</li>
-			
 			<li class="card chatRoom">
-				<p class="title icon-chatting"></p>
-				<p class="limit icon-participant"></p>
-				<p class="address icon-title"></p>
-				<div class="notification"></div>
+				<p class="title icon-chatting">강남역 지하상가안내</p>
+				<p class="limit icon-participant">4 / 30</p>
+				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
+				<div class="notification" style="display: inline-block;">5</div>
+			</li>
+			<li class="card cell search">
+				<p class="title icon-title">카페 에이에이 삼청동점</p>
+				<p class="category">카페, 디저트>카페]</p>
+				<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가 우리우</p>
 			</li>
 		</ul>
 	</div>
 
 	<!-- 검색창과 로고를 포함한 header -->
 	<header>
-	<div id="logo">
-		<a href="/mobile"></a>
-	</div>
-	<!-- sf = searchForm  -->
-	<div id="sf_wrapper">
-		<form id="sf" name="search">
-			<!-- sb = searchBox(검색창) -->
-			<div id="sb_wrapper">
-				<div id="sb_positioner">
-					<input type="text">
+		<div id="logo">
+			<a href="/mobile"></a>
+		</div>
+		<!-- sf = searchForm  -->
+		<div id="sf_wrapper">
+			<form id="sf" name="search">
+				<!-- sb = searchBox(검색창) -->
+				<div id="sb_wrapper">
+					<div id="sb_positioner">
+						<input type="text">
+					</div>
 				</div>
-			</div>
-			<input type="submit" value="검색">
-		</form>
-	</div>
+				<input type="submit" value="검색">
+			</form>
+		</div>
 	</header>
 
 	<div id="nav">
@@ -86,7 +82,8 @@
 								<li class="card cell search">
 									<p class="title icon-title">카페 에이에이 삼청동점</p>
 									<p class="category">카페, 디저트>카페]</p>
-									<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가 우리우</p>
+									<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가
+										우리우</p>
 								</li>
 								<li class="card cell search">
 									<p class="title icon-title">제목입니당</p>
@@ -128,7 +125,12 @@
 						<div class="scroll_area">
 							<ul class="section">
 								<li class="title"><h1>채팅방</h1></li>
-								<li class="card"></li>
+								<li class="card chatRoom">
+									<p class="title icon-chatting">강남역 지하상가안내</p>
+									<p class="limit icon-participant">4 / 30</p>
+									<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
+									<div class="notification" style="display: inline-block;">5</div>
+								</li>
 								<li class="card"></li>
 								<li class="card"></li>
 								<li class="card"></li>
@@ -141,15 +143,10 @@
 						<div class="scroll_area">
 							<ul class="section">
 								<li class="title"><h1>관심장소</h1></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
+								<li class="card default">
+									<p class="icon-warning"></p>
+									<p class="comment">현재 리스트가 없습니다.</p>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -159,9 +156,10 @@
 						<div class="scroll_area">
 							<ul class="section">
 								<li class="title"><h1>설정</h1></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
+								<li class="card default">
+									<p class="icon-warning"></p>
+									<p class="comment">현재 리스트가 없습니다.</p>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -181,18 +179,18 @@
 
 	<div id="map"></div>
 
-	<footer></footer> <script type="text/javascript"
-		src="/javascripts/mobileMain.js"></script> <script
-		type="text/javascript" src="/javascripts/iscroll.js"></script> <script
-		type="text/javascript" style="display: none;">
-			window.onload = function() {
-				document.addEventListener("touchmove", function(event) {
-					event.preventDefault();
-				});
+	<footer></footer>
+	<script type="text/javascript" src="/javascripts/mobileMain.js"></script>
+	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
+	<script type="text/javascript" style="display: none;">
+		window.onload = function() {
+			document.addEventListener("touchmove", function(event) {
+				event.preventDefault();
+			});
 
-				oScrolls.init();
-				oPanel.init();
-			}
-		</script>
+			oScrolls.init();
+			oPanel.init();
+		}
+	</script>
 </body>
 </html>
