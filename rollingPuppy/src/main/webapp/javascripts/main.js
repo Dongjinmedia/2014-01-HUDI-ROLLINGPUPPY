@@ -10,43 +10,46 @@ var mapAPIkeyRealServer = "5c935084c09a23e331aee090a0f2270c";
 
 //TODO Util함수 모듈화
 //특정 node의 style을 반환하는 함수
-function getStyle(node, style) {
-    return window.getComputedStyle(node, null).getPropertyValue(style);
-}
 
-//document의 특정 노드를 가져오는 함수
-function getNode(node) {
-    return document.getElementById(node);
-}
+var oUtil = {
+		oUtil.getStyle: function (node, style) {
+		    return window.getComputedStyle(node, null).getPropertyValue(style);
+		},
 
-//Node에 className를 추가하는 함수
-function addClassName(node, strClassName) {
-	// 기존에 className가 없던 경우
-	if (node.className === "") {
-		node.className = strClassName;
-		return ;
-	}
-	
-	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
-	node.className += " " + strClassName;
-}
+		//document의 특정 노드를 가져오는 함수
+		getNode: function (node) {
+		    return document.getElementById(node);
+		},
 
-//Node에 특정 className을 제거하는 함수
-function removeClassName(node, strClassName) {
-	// 기존에 className가 없는 경우 함수를 종료합니다
-	if (node.className === "") {
-		return ;
-	}
-	
-	// node에 className이 존재하고, target className 하나만 있는 경우
-	if (node.className.length === strClassName.length) {
-		node.className = "";
-		return ;
-	}
-	
-	// node에 className가 다수 존재하는 경우의 target className 삭제
-	// node.className에 replace 결과물을 대입합니다.
-	node.className = node.className.replace(" " + strClassName, "").toString();
+		//Node에 className를 추가하는 함수
+		addClassName: function (node, strClassName) {
+			// 기존에 className가 없던 경우
+			if (node.className === "") {
+				node.className = strClassName;
+				return ;
+			}
+			
+			// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+			node.className += " " + strClassName;
+		},
+
+		//Node에 특정 className을 제거하는 함수
+		removeClassName: function (node, strClassName) {
+			// 기존에 className가 없는 경우 함수를 종료합니다
+			if (node.className === "") {
+				return ;
+			}
+			
+			// node에 className이 존재하고, target className 하나만 있는 경우
+			if (node.className.length === strClassName.length) {
+				node.className = "";
+				return ;
+			}
+			
+			// node에 className가 다수 존재하는 경우의 target className 삭제
+			// node.className에 replace 결과물을 대입합니다.
+			node.className = node.className.replace(" " + strClassName, "").toString();
+		}	
 }
 
 /*********************************************************************************************************
@@ -168,7 +171,6 @@ var oAside= {
 		//어차피 oChat의 oInfo에서는 자신에 해당하는 List Element를 자주참조하게된다.
 		//그러므로 li element의 주소값을 attribute로 등록한다.
 		oChat.oInfo[chatRoomNumber]["eTarget"] = eCopiedTemplate;
-		console.log("oChat.oInfo : ",oChat.oInfo);
 		//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
 		eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
 		
@@ -181,7 +183,6 @@ var oAside= {
 		//template을 원하는 위치에 삽입
 		eTarget.appendChild(eCopiedTemplate);
 	},
-	//working2
 	deleteFromChattingList: function(chatRoomNumber) {
 		var eTarget = oChat.oInfo[chatRoomNumber]["eTarget"];
 		this.eChattingListTarget.removeChild(eTarget);
@@ -218,12 +219,12 @@ var oAside= {
 	_unfoldPanelContents: function() {
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
 		this.eContainer.className = "";
-		addClassName(this.eContainer, "unfold_panel");
+		oUtil.addClassName(this.eContainer, "unfold_panel");
 	},
 	
 	_foldPanelContents: function() {
 		this.eContainer.className = "";
-		addClassName(this.eContainer, "fold_panel");
+		oUtil.addClassName(this.eContainer, "fold_panel");
 	},
 	
 	clickSearchMenu: function(event) {
@@ -244,7 +245,6 @@ var oAside= {
 	},
 	
 	//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
-	//working
 	chattingSelectHandler: function(event) {
 		var clickedTarget = event.target;	
 		if(clickedTarget.tagName == "P"){
@@ -289,16 +289,16 @@ var oAside= {
 		// 메뉴가 클릭되어 정상적으로 실행되었습니다.
 		// 우선 마지막 클릭되었던 element의 className를 비워줍니다.
 		if (this.eLatestClickedMenu) {
-			removeClassName(this.eLatestClickedMenu, "on");
-			removeClassName(this.eLatestPanelContents, "on");
+			oUtil.removeClassName(this.eLatestClickedMenu, "on");
+			oUtil.removeClassName(this.eLatestPanelContents, "on");
 		}
 		// 마지막 클릭된 element를 현재 클릭된 element로 갱신합니다.
 		this.eLatestClickedMenu = menuElement.parentNode;
 		this.eLatestPanelContents = document.getElementById("pc_" + menuElement.className);
 		
 		// .on을 달아 메뉴 색상과 panel_content를 변경합니다.
-		addClassName(this.eLatestClickedMenu, "on");
-		addClassName(this.eLatestPanelContents, "on");
+		oUtil.addClassName(this.eLatestClickedMenu, "on");
+		oUtil.addClassName(this.eLatestPanelContents, "on");
 		
 		this._unfoldPanelContents();
 	},
@@ -405,7 +405,6 @@ var oNaverMap = {
 	    		//그리고 마커를 생성한다.
 	    		//TODO title이 존재하지 않는다.
 	    		//이 부분은 hover액션을 마커에 주어서 사용하지 않을것인지를 먼저 결정한 후 진행하도록 한다.
-	    		//working4
 	    		var hasMultiChatRoom = false;
 	    		
 	    		if ( oMarker["chatRooms"] !== undefined && oMarker["chatRooms"] !== null ) {
@@ -563,7 +562,6 @@ var oNaverMap = {
 	        		if(status == google.maps.GeocoderStatus.OK) {
 	        			if (results[0]) {
 	        				oMapClicker.setLocationName(results[0].formatted_address);
-	        				console.log("fomatted_address : ",results[0].formatted_address);
 	        			} else {
 	                		console.log("reverseGeoCode status not fine ");
 	                	}
@@ -572,13 +570,11 @@ var oNaverMap = {
 	        	oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
 	        }
 	    },
-	    //working4
 	    mouseEnterEvent : function(oCustomEvent) {
 	        var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
 	        if (oTarget instanceof nhn.api.map.Marker) {
-	        	console.log(oTarget);
 	            // 겹침 마커 클릭한거면
 	            //if (!oCustomEvent.clickCoveredMarker) {
 	            	
@@ -608,9 +604,9 @@ var oNaverMap = {
 	    },
 
 	    initialize: function() {
-	        this.naverMap = getNode("naver_map");
-	        var mapDivWidth = getStyle(this.naverMap, "width");
-	        var mapDivHeight = getStyle(this.naverMap, "height");
+	        this.naverMap = oUtil.getNode("naver_map");
+	        var mapDivWidth = oUtil.getStyle(this.naverMap, "width");
+	        var mapDivHeight = oUtil.getStyle(this.naverMap, "height");
 	        this.oCenterPoint = new nhn.api.map.LatLng(37.5010226, 127.0396037);
 
 	        nhn.api.map.setDefaultPoint("LatLng"); //지도의 설정 값을 조회하는 메서드나 이벤트가 사용하는 좌표 객체의 디폴트 클래스를 설정
@@ -962,7 +958,6 @@ var oChat = {
 		currentChatRoomNumber: 0,
 		lastMessageDayNum: 0,
 		
-		//working
 		/*
 	    //oInfo는 다음과 같은 형태이다.
 	    {
@@ -1003,7 +998,6 @@ var oChat = {
 			}
 			
 			oChat.saveCurrentChatRoomNumber(chatRoomNum);
-			console.log("chatRoomNumber :",chatRoomNum);
 			oChat.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
 			
 			oChat.updateChatWindowHeaderText(chatRoomNum);
@@ -1199,21 +1193,13 @@ var oChat = {
     			var aRecentMessage = oResponse["recentMessage"];
     			var aUnreadMessage = oResponse["unreadMessage"];
     			this.updateOneMessage(aRecentMessage);
-    			//working5
-    			console.log("aUnreadMessage.length : ",aUnreadMessage.length);
-    			console.log("aUnreadMessage.length !==0 ", aUnreadMessage.length !==0 );
     			if ( aUnreadMessage.length !== 0 ) {
     				
     				//멘트삽입
     				oChat.eChatWindowMessageBox.appendChild(this._getNoticeTemplateCloneElement("여기까지 읽으셨습니다."));
-    				
-    				console.log("aUnreadMessage : ",aUnreadMessage);
     				var unreadMessageScrollTop = oChat.getMessageBoxScrollTop();
-    				console.log("unreadMessageScrollTop  : ", unreadMessageScrollTop );
     				oChat.updateOneMessage(aUnreadMessage);
-    				
     				oChat.updateMessageBoxScrollTop(unreadMessageScrollTop-30);
-    				
     			} else {
     				oChat.setMessageBoxScrollTop();
     			}
@@ -1235,7 +1221,6 @@ var oChat = {
 		//패널의 채팅리스트에 존재하는 채팅방의 Notification VIew를 업데이트한다.
 		updateNotificationView: function(chatRoomNum) {
 			var oTarget = this.oInfo[chatRoomNum];
-			console.log("updateNoti's oInfo : ", oChat.oInfo);
 			var eChattingRoomNotification = oTarget["eTarget"].querySelector(".notification");
 			
 			var unreadMessageNum = oTarget["unreadMessageNum"];
@@ -1283,7 +1268,6 @@ var oChat = {
 			}
 		},
 		
-		//working
 		foldChattingRoom: function() {
 			//서버에 채팅방 fold에 대한 요청을 보낸다.
 			
@@ -1329,12 +1313,7 @@ var oChat = {
 		
 		//새로운 chatInfo항목을 추가한다.
 		addChatInfo: function(chatRoomNumber, oResult) {
-			console.log("parameter oResult : ",oResult);
-			console.log("addChatInfo ================================");
-			console.log("before : ",oChat.oInfo);
 			oChat.oInfo[chatRoomNumber] = oResult;
-			console.log("after : ",oChat.oInfo);
-			console.log("addChatInfo ================================");
 		},
 		
 		//chatInfo를 초기화한다.
@@ -1383,10 +1362,10 @@ var oChat = {
 		
 		// 채팅방의 top bar를 클릭하면 마우스 이동에 대한 이벤트를 등록한다.
 		mouseDownAtChatWindowTopBar: function(e) {
-			var sideBarSize = parseInt(getStyle(document.getElementById("nav_list"), "width"));
-			var headerSize = parseInt(getStyle(document.getElementById("header"), "height"));
-			var currentChatWindowLeft = parseInt(getStyle(this.eChatWindow, "left"));
-			var currentChatWindowTop = parseInt(getStyle(this.eChatWindow, "top"));
+			var sideBarSize = parseInt(oUtil.getStyle(document.getElementById("nav_list"), "width"));
+			var headerSize = parseInt(oUtil.getStyle(document.getElementById("header"), "height"));
+			var currentChatWindowLeft = parseInt(oUtil.getStyle(this.eChatWindow, "left"));
+			var currentChatWindowTop = parseInt(oUtil.getStyle(this.eChatWindow, "top"));
 			var distanceX = e.clientX - (sideBarSize + currentChatWindowLeft);
 			var distanceY = e.clientY - (headerSize + currentChatWindowTop)
 			this.functionTempForMoveWindow = this.moveChattingWindow.bind(this, sideBarSize, headerSize, distanceX, distanceY);
@@ -1474,11 +1453,11 @@ var oChat = {
 				if ( e.offsetX > this.offsetWidth) {
 					
 					if ( e.target.className.indexOf("unfold") !== -1 ) {
-						removeClassName(this, "unfold");
-						addClassName(this, "fold");
+						oUtil.removeClassName(this, "unfold");
+						oUtil.addClassName(this, "fold");
 					} else {
-						removeClassName(this, "fold");						
-						addClassName(this, "unfold");
+						oUtil.removeClassName(this, "fold");						
+						oUtil.addClassName(this, "unfold");
 					}					
 				}
 			}, false);
@@ -1530,7 +1509,6 @@ var oCreateChattingRoom = {
 		//채팅방 생성창을 열고, 다른메뉴와의 인터렉션을 막는 함수
 		visible: function(locationName, oClickPoint) {
 			this.oCreateChatRoom.style.display = "block";
-			//console.log(this.eRoomAddress);
 			this.eRoomAddress.innerText = locationName;
 			this.oLocationPoint = oClickPoint;
 		},
@@ -1627,8 +1605,6 @@ var oCreateChattingRoom = {
     			var isSuccess = oResponse['isSuccess'];
     			var newMarker = oResponse["newMarker"];
     			var markerNumber = newMarker["id"];
-    			
-    			console.log("markerNumber : ",markerNumber);
     			
     			if ( isSuccess === true 
     					&& markerNumber !== null 
@@ -1728,7 +1704,7 @@ var oMapClicker = {
 var oKeyboardAction = {
 	escPress: function() {
 		//채팅방 생성페이지가 열려있을경우, 보이지 않게 처리
-		if ( getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
+		if ( oUtil.getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
 			oCreateChattingRoom.invisible();
 	},
 	initialize: function() {
@@ -1755,7 +1731,6 @@ var oKeyboardAction = {
 var oReverseGeoCode = {
 		oGeoCoder: null,
 		getAddress: function(latitude, longitude, callback) {
-			//console.log("working");
 			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
 			//callback function get Parameter -> results, status
 			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
@@ -1770,7 +1745,6 @@ var oReverseGeoCode = {
 		//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
 		//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
 		//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
-		//console.log("bbb",this.clickedAddress);
 };
 
 /*********************************************************************************************************
@@ -1790,7 +1764,6 @@ var oSearching = {
 			var callback = function(request){
 				
 				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
-				console.log(aResult);
 				if(aResult.length == 0){
 					oTemplate.showDefaultTemplate("pc_search", ".comment", "검색 결과가 존재하지 않습니다.")
 				} else {
@@ -1892,7 +1865,6 @@ var Message = function(oMessageInfo) {
 	} else {
 		//새로운 element를 생성해서 리스트에 담는다.
 		this.element = this.getElement();
-		console.log("this.element : ",this.element);
 		document.querySelector("#noticeBox").appendChild(this.element);
 		this.moveListAward();
 		this.aList.push(this.element);
@@ -2002,7 +1974,6 @@ function initialize() {
 	button.addEventListener("click", function(event) {
 		var targetUL = document.getElementById("noticeBox");
 		var target = new Message("아", "불타는 까치", "잘지내여?", "http://localhost:8080/images/userIcons/15.png");
-		console.log(target);
 	});
 	//test
 	
