@@ -19,6 +19,7 @@ import com.puppy.controller.Controller;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
+import com.puppy.util.ServletRequestUtils;
 import com.puppy.util.ThreeWayResult;
 
 /*
@@ -30,8 +31,6 @@ public class LoginController implements Controller {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.info("into doPost");
-		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		Map<String, Object> resultJsonData = new HashMap<String, Object>();
@@ -41,23 +40,9 @@ public class LoginController implements Controller {
 		ThreeWayResult loginResult = ThreeWayResult.UNEXPECTED_ERROR;
 		
 		// POST 정보를 저장합니다.
-		String email = null;
-		String password = null;
-		String keepEmail = null;
-		
-		
-		Object emailObject = request.getAttribute(Constants.REQUEST_EMAIL);
-		Object passwordObject = request.getAttribute(Constants.REQUEST_PASSWORD);
-		Object keepEmailObject = request.getAttribute(Constants.REQUEST_KEEP_EMAIL);
-		
-		if ( emailObject !=null 
-				&& passwordObject != null
-				&& keepEmailObject != null ) {
-			email = emailObject.toString();
-			password = passwordObject.toString();
-			keepEmail = keepEmailObject.toString();
-		}
-			
+		String email = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_EMAIL);
+		String password = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_PASSWORD);;
+		String keepEmail = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_KEEP_EMAIL);;
 		
 		//TODO 이건 왜 있는거지?? <윤성>
 		if (keepEmail == null) {
@@ -120,8 +105,5 @@ public class LoginController implements Controller {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-	}
+	public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
 }

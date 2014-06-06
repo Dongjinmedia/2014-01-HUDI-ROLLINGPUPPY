@@ -19,6 +19,8 @@ import com.puppy.dao.impl.ChatInfoDaoImpl;
 import com.puppy.dto.ChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
+import com.puppy.util.ServletRequestUtils;
+import com.puppy.util.ServletSessionUtils;
 import com.puppy.util.Util;
 
 /*
@@ -44,20 +46,20 @@ public class ChatInfoController implements Controller {
 		Map<String, JsonChatInfo> returnData = null;
 		
 		
-		int chatRoomNumber = Integer.parseInt(request.getParameter("chatRoomNumber"));
-		
-		ChatInfoDaoImpl chatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
-		ChatInfo chatInfo = chatInfoDaoImpl.selectChatInfo(chatRoomNumber);
-		
-		if ( chatInfo == null ) {
-			return;
+		try {
+			int chatRoomNumber = ServletRequestUtils.getIntParameter(request, (Constants.REQUEST_CHATROOM_NUMBER));
+			ChatInfoDaoImpl chatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
+			ChatInfo chatInfo = chatInfoDaoImpl.selectChatInfo(chatRoomNumber);
+			
+			if ( chatInfo != null ) {
+				List<ChatInfo> tempList = new ArrayList<ChatInfo>();
+				tempList.add(chatInfo);
+				returnData = Util.getChatRoomInfoObjectFromQueryResult(tempList);			
+			}
+			
+		} catch (Exception e) {
+			
 		}
-		
-		List<ChatInfo> tempList = new ArrayList<ChatInfo>();
-		tempList.add(chatInfo);
-		returnData = Util.getChatRoomInfoObjectFromQueryResult(tempList);
-		
-		logger.info("ChattingInfomation From ChatRoomNumber : "+gson.toJson(returnData));
 		out.println(gson.toJson(returnData));
 	}
 
@@ -73,7 +75,7 @@ public class ChatInfoController implements Controller {
 		int userId = 0;
 		
 		try {
-			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
+			userId = ServletSessionUtils.getIntParameter(request, Constants.SESSION_MEMBER_ID); 
 
 			if ( userId != 0 ) {
 				ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
@@ -105,7 +107,6 @@ public class ChatInfoController implements Controller {
 			logger.error("Request Get Entered Chatting Room List With User ID", e);
 		}
 		
-		logger.info("User Participant ChattingInfomation : "+gson.toJson(returnData));
 		out.println(gson.toJson(returnData));
 	}
 }

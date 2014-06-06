@@ -699,10 +699,10 @@ var oMarkerClicker = {
 	},
 	
 	// Ajax통신을 통해 마커 안에 있는 채팅방들의 현재 채팅 인원 수를 가져와 리턴하는 메서드
-	getCurrentNumOfParticipantByAjax: function(chatRoomId) {
+	getCurrentNumOfParticipantByAjax: function(chatRoomNumber) {
 		var incompleteUrl = "/markerClicker/getCurrentNumOfParticipant";
 		var oParameter = {
-				"chatRoomId": chatRoomId
+			"chatRoomNumber": chatRoomNumber
 		};
 		var currentNumOfParticipants = null;
 		

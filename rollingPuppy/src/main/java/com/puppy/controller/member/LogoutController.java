@@ -31,9 +31,5 @@ public class LogoutController implements Controller {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-	}
+	public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
 }

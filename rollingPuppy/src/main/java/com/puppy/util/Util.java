@@ -1,42 +1,23 @@
 package com.puppy.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Part;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.puppy.dao.impl.ChatInfoDaoImpl;
+import com.puppy.dto.ChatInfo;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Member;
-import com.puppy.dto.ChatInfo;
 
 public class Util {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Util.class);
 	
-	/*
-	 * getParameterValue From Javascript FormData
-	 * 바이너리데이터를 String데이터로 가져오기 위한 함수
-	 */
-	public static String getStringValueFromPart(Part part) throws IOException {
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
-	    StringBuilder value = new StringBuilder();
-	    char[] buffer = new char[1024];
-	    for (int length = 0; (length = reader.read(buffer)) > 0;) {
-	        value.append(buffer, 0, length);
-	    }
-	    return value.toString();
-	}
-
 	/*
 	 * zoomLevel별 어느거리까지의 마커로 합칠것인지를 위해 존재하는 함수
 	 * TODO 알맞은 거리 리서치 (위,경도)

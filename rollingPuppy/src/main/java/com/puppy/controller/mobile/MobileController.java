@@ -7,20 +7,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.puppy.controller.Controller;
-import com.puppy.controller.MainController;
 
 public class MobileController implements Controller {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
-
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.info("into MobileController");
 		
 		/* 개발을 위해 일단은 주석처리
 		HttpSession session = request.getSession();
