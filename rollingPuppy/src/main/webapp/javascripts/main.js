@@ -1743,8 +1743,9 @@ var oSearching = {
 		eSubmit: document.querySelector("#search_box button"),
 		getResultXml: function() {
 			var oParameters = {
-				"queryKeyword" : document.getElementById("search_box").children[0].value	
+				"queryKeyword" : this.eSearchBox.children[0].value	
 			};
+			
 			var url = "/search"
 			var callback = function(request){
 				
@@ -1752,7 +1753,7 @@ var oSearching = {
 				if(aResult.length == 0){
 					oTemplate.showDefaultTemplate("pc_search", ".comment", "검색 결과가 존재하지 않습니다.")
 				} else {
-					
+
 					//template element가져오기
 					var eTemplate = document.getElementById("template").querySelector(".search");			
 					//aResult를 for문을 돌며 template element를 복사한 변수를 가져와서 데이터 삽입 

@@ -62,8 +62,6 @@ public class ServletRequestUtils {
 	
 	public static String getStringParameterFromPart(HttpServletRequest request, String key) throws IOException, ServletException {
 		Part part = request.getPart(key);
-		logger.info("part : ", part.toString());
-		
 		return getStringValueFromPart(part);
 	}
 

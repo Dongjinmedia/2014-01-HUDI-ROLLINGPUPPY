@@ -16,7 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.puppy.util.Constants;
-import com.puppy.util.ServletSessionUtils;
+import com.puppy.util.ServletRequestUtils;
 import com.puppy.util.XMLReader;
 
 public class SearchController implements Controller {
@@ -36,7 +36,7 @@ public class SearchController implements Controller {
 		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 		Gson gson = new Gson();
 		
-		String searchKeyword = ServletSessionUtils.getStringParameter(request, Constants.REQUEST_SEARCH_QUERY);
+		String searchKeyword = ServletRequestUtils.getParameter(request, Constants.REQUEST_SEARCH_QUERY);
 		
 		if ( searchKeyword == null ) {
 			out.println(gson.toJson(null));
@@ -47,7 +47,7 @@ public class SearchController implements Controller {
 			URL requestURL = new URL(requestURLString);	
 			XMLReader xmlReader = new XMLReader(requestURL);
 			resultList = xmlReader.getListFromXPath(SEARCH_EXPRESSION);
-			
+			logger.info(gson.toJson(resultList));
 			out.println(gson.toJson(resultList));
 		}
 	}
