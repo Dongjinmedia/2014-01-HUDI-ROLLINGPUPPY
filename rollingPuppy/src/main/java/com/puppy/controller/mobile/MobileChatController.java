@@ -15,21 +15,13 @@ import com.puppy.controller.SearchController;
 
 public class MobileChatController implements Controller {
 
-	private static final Logger logger = LoggerFactory.getLogger(SearchController.class);
-	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.info("into doGet of MobileChatController");
 		RequestDispatcher view = request.getRequestDispatcher("/mobileChatPage.jsp");
 		view.forward(request, response);
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		
-	}
-	
+	public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
 }

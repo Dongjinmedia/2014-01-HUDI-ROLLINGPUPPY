@@ -19,6 +19,7 @@ import com.puppy.dao.impl.ChatDaoImpl;
 import com.puppy.dto.ChatRoom;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonMarker;
+import com.puppy.util.ServletRequestUtils;
 import com.puppy.util.Util;
 
 public class ChatListController implements Controller{
@@ -47,9 +48,6 @@ public class ChatListController implements Controller{
 			throws ServletException, IOException {
 		response.setContentType("application/json");
 
-		// 한글데이터 전달을 위해 설정. 추후 filter설정으로 변경
-		// TODO 한글 Encoding Filter설정
-		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 
@@ -65,42 +63,28 @@ public class ChatListController implements Controller{
 
 		try {
 
-			// TODO Object To Float에 대한 방법이 이것밖에 없는가..?
-			leftTopX = Float.parseFloat(request.getAttribute(
-					Constants.REQUEST_ROOMLIST_LEFTTOPX).toString());
-			leftTopY = Float.parseFloat(request.getAttribute(
-					Constants.REQUEST_ROOMLIST_LEFTTOPY).toString());
-			rightBottomX = Float.parseFloat(request.getAttribute(
-					Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX).toString());
-			rightBottomY = Float.parseFloat(request.getAttribute(
-					Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY).toString());
+			leftTopX = ServletRequestUtils.getFloatParameterFromPart(request, Constants.REQUEST_ROOMLIST_LEFTTOPX);
+			leftTopY = ServletRequestUtils.getFloatParameterFromPart(request, Constants.REQUEST_ROOMLIST_LEFTTOPY); 
 
-			if (leftTopX != 0 && leftTopY != 0 && rightBottomX != 0
-					&& rightBottomY != 0) {
+			rightBottomX = ServletRequestUtils.getFloatParameterFromPart(request, Constants.REQUEST_ROOMLIST_RIGHTBOTTOMX); 
+			rightBottomY = ServletRequestUtils.getFloatParameterFromPart(request, Constants.REQUEST_ROOMLIST_RIGHTBOTTOMY);
 
-				// Client에서 전달받은 좌상, 우하 좌표를 통한 Query 검색
-				// TODO ZOOM LEVEL 별 검색
-				ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
-				List<ChatRoom> lists = chatDaoImpl
-						.selectChatRoomListFromPoints(leftTopX, leftTopY,
-								rightBottomX, rightBottomY);
+			// Client에서 전달받은 좌상, 우하 좌표를 통한 Query 검색
+			// TODO ZOOM LEVEL 별 검색
+			ChatDaoImpl chatDaoImpl = ChatDaoImpl.getInstance();
+			List<ChatRoom> lists = chatDaoImpl.selectChatRoomListFromPoints(leftTopX, leftTopY, rightBottomX, rightBottomY);
 
-				// 마커를 중심으로 리턴데이터를 정렬.
-				// JsonMarker에 대한 자세한 설명은 Util 클래스의
-				// getMarkerCentralListFromChatRoomList() 클래스 참조
-				List<JsonMarker> returnJsonList = Util
-						.getMarkerCentralListFromChatRoomList(lists);
+			// 마커를 중심으로 리턴데이터를 정렬.
+			// JsonMarker에 대한 자세한 설명은 Util 클래스의
+			// getMarkerCentralListFromChatRoomList() 클래스 참조
+			List<JsonMarker> returnJsonList = Util.getMarkerCentralListFromChatRoomList(lists);
 
-				// MarkerList를 JSON 데이터에 담는다.
-				resultJsonData.put(Constants.JSON_RESPONSE_MARKERLIST,
-						returnJsonList);
-				isSuccess = true;
-			}
+			// MarkerList를 JSON 데이터에 담는다.
+			resultJsonData.put(Constants.JSON_RESPONSE_MARKERLIST, returnJsonList);
+			isSuccess = true;
 
 		} catch (Exception e) {
-			logger.error(
-					"Request Get Chatting Room List With LeftTop, RightBottom Latitude, Longitude",
-					e);
+			logger.error("Request Get Chatting Room List With LeftTop, RightBottom Latitude, Longitude", e);
 		}
 
 		// 성공여부를 JSON 데이터에 담는다.

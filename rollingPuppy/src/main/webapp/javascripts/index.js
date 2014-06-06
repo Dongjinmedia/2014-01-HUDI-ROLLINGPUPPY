@@ -8,7 +8,7 @@ var oUtil = {
 			return false;
 		}
 	},
-	getStyleValue: function (node, style) {
+	getStyleValue: function(node, style) {
 		var totalStyle= window.getComputedStyle(node , null);
 		return totalStyle.getPropertyValue(style);
 	}

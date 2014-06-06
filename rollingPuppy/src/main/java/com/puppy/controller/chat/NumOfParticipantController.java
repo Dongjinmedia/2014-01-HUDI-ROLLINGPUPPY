@@ -13,6 +13,7 @@ import org.slf4j.LoggerFactory;
 import com.google.gson.Gson;
 import com.puppy.controller.Controller;
 import com.puppy.dao.impl.NumOfParticipantDaoImpl;
+import com.puppy.util.Constants;
 
 public class NumOfParticipantController implements Controller {
 	
@@ -20,14 +21,11 @@ public class NumOfParticipantController implements Controller {
 
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("indo doGet of NumOfParticipantController");
-		
 		response.setContentType("application/json");
-		response.setCharacterEncoding("UTF-8");
 		PrintWriter out = response.getWriter();
 		Gson gson = new Gson();
 
-		int chatRoomId = Integer.parseInt(request.getParameter("chatRoomId"));
+		int chatRoomId = Integer.parseInt(request.getParameter(Constants.REQUEST_CHATROOM_NUMBER));
 		int numberOfParticipant = 0;
 		
 		try {
@@ -38,12 +36,9 @@ public class NumOfParticipantController implements Controller {
 			logger.error("Request Get Current Number Of Participant With Chat Room ID", e);
 		}
 		
-		logger.info("This Chatting Room's Current Number Of Participant : "+ gson.toJson(numberOfParticipant));
 		out.println(gson.toJson(numberOfParticipant));
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		
-	}
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 }

@@ -265,14 +265,7 @@
 			</div>
 		</div>
 		
-		<ul id="noticeBox">
-			<li>
-				<button class="test">테스트 버튼</button>
-			</li>
-			
-			<li class="notice">
-			</li>
-		</ul>
+		<ul id="noticeBox"></ul>
 	</div>
 </body>
 <script type="text/javascript"

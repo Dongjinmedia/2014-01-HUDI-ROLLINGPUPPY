@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.gson.Gson;
 import com.puppy.util.Constants;
+import com.puppy.util.ServletRequestUtils;
 import com.puppy.util.XMLReader;
 
 public class SearchController implements Controller {
@@ -26,35 +27,28 @@ public class SearchController implements Controller {
 	private static final String SEARCH_EXPRESSION ="/rss/channel/item";
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("indo doGet of Search Controller");
-	}
+	public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {}
 
 	@Override
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("into doPost of SearchController");
-		
 		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
 		List<Map<String, String>> resultList = new ArrayList<Map<String, String>>();
 		Gson gson = new Gson();
 		
-		String searchKeyword = null;
+		String searchKeyword = ServletRequestUtils.getParameter(request, Constants.REQUEST_SEARCH_QUERY);
 		
-		Object searchKeywordObject = request.getAttribute(Constants.REQUEST_SEARCH_QUERY);
-		logger.info("searchKeywordObject :"+ searchKeywordObject);
-		
-		if( searchKeywordObject != null)
-			searchKeyword = searchKeywordObject.toString();			
-		logger.info(searchKeyword);
-		String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword + REQUEST_URL_TAIL;
-		logger.info("requestURLString :" + requestURLString);
-		
-		URL requestURL = new URL(requestURLString);	
-		XMLReader xmlReader = new XMLReader(requestURL);
-		resultList = xmlReader.getListFromXPath(SEARCH_EXPRESSION);
-
-		out.println(gson.toJson(resultList));
-		logger.info(gson.toJson(resultList));
+		if ( searchKeyword == null ) {
+			out.println(gson.toJson(null));
+		} else {
+			String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword + REQUEST_URL_TAIL;
+			logger.info("searchKeyword : " + searchKeyword);
+			
+			URL requestURL = new URL(requestURLString);	
+			XMLReader xmlReader = new XMLReader(requestURL);
+			resultList = xmlReader.getListFromXPath(SEARCH_EXPRESSION);
+			logger.info(gson.toJson(resultList));
+			out.println(gson.toJson(resultList));
+		}
 	}
 }

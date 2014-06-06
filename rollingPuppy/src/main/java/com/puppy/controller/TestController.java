@@ -17,8 +17,5 @@ public class TestController implements Controller{
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-	}
-
+	public void doPost(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
 }
