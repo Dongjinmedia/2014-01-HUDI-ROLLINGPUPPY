@@ -9,13 +9,13 @@ var oHeader = {
 		);
 	},
 	
-	// TODO expandSearchBox()에 대응되는 CSS 속성 만들 것 
+	//TODO expandSearchBox()에 대응되는 CSS 속성 만들 것 
 	expandSearchBox: function() {
 		oUtil.removeClassName(this.eHeader, "")
 		oUtil.addClassName(this.eHeader, "");
 	}
 	
-	// TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
+	//TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
 	//    ** 터치된 네비게이션 메뉴에 .on 추가하기
 	//    ** 터치된 메뉴의 section을 띄워줄 것
 };
@@ -29,7 +29,7 @@ var oPanel = {
 
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		// window에 orientation 속성이 있다면 모바일기기로 판단한다.
-		// TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것
+		//TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것
 		if (typeof window.orientation !== "undefined") {
 			this.ePanelButtons.addEventListener(
 					"touchend",
@@ -44,23 +44,13 @@ var oPanel = {
 		
 		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
-		//    Chrome, Safari를 위한 webkitAnimationEnd
-		//    IE, FireFox를 위한 animationend (** FireFox도 animationend를 사용한다 **)
-		if (typeof document.body.style.webkitTransition !== "undefined") {
-			this.ePanelWrapper.addEventListener(
-					"webkitAnimationEnd",
-					this.animationEndHandler.bind(this)
-			);
-		} else if (typeof document.body.style.msTransition !== "undefined"
-				|| typeof document.body.style.MozTransition !== "undefined") {
-			this.ePanelWrapper.addEventListener(
-					"animationend",
-					this.animationEndHandler.bind(this)
-			);
-		} else {
-			console.log("도대체 어떤 브라우저를 쓰시길래....");
-			return ;
-		}
+		var sAnimationEnd = "AnimationEnd";
+		var sBrowserPrefix = oUtil.getBrowserPrefix();
+		this.ePanelWrapper.addEventListener(
+				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
+						sAnimationEnd.toLower() : sBrowserPrefix + sAnimationEnd,
+				this.animationEndHandler.bind(this)
+		);
 		
 		// panel영역에 대한 flicking이벤트 연결
 		this.ePanel.addEventListener(
@@ -135,15 +125,14 @@ var oPanel = {
 	//터치 종료지점 저장
 	nTouchEndX: 0,
 	nTouchEndY: 0,
-	// scroll or swipe를 판별하기 위한 값
+	//scroll or swipe를 판별하기 위한 값
 	nTotalMoveX: 0,
 	nTotalMoveY: 0,
 	isScroll: null,
 	
 	//터치 이벤트 시작시 호출되는 함수
 	panelTouchStart: function(event) {
-		//IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.
-
+		//TODO IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
 		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].disable();
@@ -194,7 +183,8 @@ var oPanel = {
 
 		/* 플리킹 로직 */
 		// nMoveLengthX 만큼 좌 우로 이동시킵니다.
-		this.ePanelContents.style.webkitTransform = "translate(" + nMoveLengthX + "px)";
+		this.ePanelContents.style[oUtil.getBrowserPrefix() + "Transform"] =
+				"translate(" + nMoveLengthX + "px)";
 	},
 	
 	//터치가 종료될때 호출되는 함수
@@ -222,9 +212,9 @@ var oPanel = {
 		
 		//TODO 변화값은 조절하도록
 		var nMoveLengthX = this.nTouchStartX - this.nTouchEndX;
-		if (nMoveLengthX > 70) {
+		if (nMoveLengthX > 50) {
 			this.nCurrentViewPanelIndex++;
-		} else if (nMoveLengthX < -70) {
+		} else if (nMoveLengthX < -50) {
 			this.nCurrentViewPanelIndex--;
 		} else {
 			this.ePanelContents.style.webkitTransform = "translate(0)";
@@ -312,5 +302,23 @@ var oUtil = {
 		// node에 className가 다수 존재하는 경우의 target className 삭제
 		// node.className에 replace 결과물을 대입합니다.
 		node.className = node.className.replace(" " + strClassName, "").toString();
+	},
+	
+	// 브라우저별 prefix를 return해주는 함수
+	//    webkitTransition이 있다면 Chrome, Safari
+	//    msTransition이 있다면 IE
+	//    mozTransition이 있다면 FireFox
+	getBrowserPrefix: function() {
+		if (typeof document.body.style.webkitTransition !== "undefined") {
+			return "webkit";
+		} else if (typeof document.body.style.msTransition !== "undefined") {
+			return "ms";
+		} else if (typeof document.body.style.MozTransition !== "undefined") {
+			return "moz";
+		} else if (typeof document.body.style.oTransition !== "undefined") {
+			return "o";
+		} else {
+			return "";
+		}
 	}
 };
