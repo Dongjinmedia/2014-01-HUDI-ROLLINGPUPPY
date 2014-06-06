@@ -1009,6 +1009,7 @@ var oChat = {
 			oChat.updateChatWindowHeaderText(chatRoomNum);
 			oChat.updateMemberList(chatRoomNum);
 			oChat.updateNotificationView(chatRoomNum);
+			oAside.updateTotalNotificationView();
 			oChat.visibleChatWindow();
 			
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
@@ -1061,14 +1062,19 @@ var oChat = {
 				this._updateOneMessage(oMessageInfo);
 				
 			} else {
-				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
+				
+				oChat.alertNewMessage(oMessageInfo);
 				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
 				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
-				console.log("before add UnreadMessgae : ", oChat.oInfo[chatRoomNumber]["unreadMessageNum"]);
 				oAside.updateTotalNotificationView();
 			}
 		},
 		
+		alertNewMessage: function(oMessageInfo) {
+			if ( oMessageInfo["tblMemberId"] !== 0 ) {
+				new Message(oMessageInfo);
+			}
+		},
 		setMessageBoxScrollTop: function() {
 			this.eChatWindowMessageBox.scrollTop = this.eChatWindowMessageBox.scrollHeight;
 		},
@@ -1871,7 +1877,7 @@ var oTemplate = {
  * Message 객체에 대한 소스코드 시작
  **********************************************************************************************************/
 var Message = function(oMessageInfo) {
-	this.maxLength = 5;
+	this.maxLength = 6;
 	
 	//최초 객체 생성자가 Message전체 element가 담기는 list를 생성한다.
 	if ( this.aList === undefined )
@@ -1898,15 +1904,21 @@ var Message = function(oMessageInfo) {
 	
 };
 
+Message.prototype.onClick = function(event) {
+	oChat.enterChatRoom(this.chatRoomNumber);
+};
+
 Message.prototype.setElementData = function(oMessageInfo) {
 	
-	console.log("this.element in setElementData : ",this.element);
+	this.chatRoomNumber = oMessageInfo["tblChatRoomId"];
+	var oTarget = oChat.oInfo[this.chatRoomNumber];
+	var oParticipant = oTarget["oParticipant"][oMessageInfo["tblMemberId"]];
 	
-	this.element.querySelector(".title").innerText = "채팅방 제목";
-	this.element.querySelector(".nickname").innerText = "별칭";
-	this.element.querySelector(".message").innerText = "메세지테스트입니다";
-	this.element.querySelector(".profile").style.backgroundImage = "url(/images/userIcons/15.png)";
-	this.element.querySelector(".profile").style.backgroundColor = "#000";
+	this.element.querySelector(".title").innerText = oTarget["title"];
+	this.element.querySelector(".nickname").innerText = oParticipant["nicknameAdjective"] + oParticipant["nicknameNoun"];
+	this.element.querySelector(".message").innerText = oMessageInfo["message"];
+	this.element.querySelector(".profile").style.backgroundImage = "url("+oParticipant["backgroundImage"] +")";
+	this.element.querySelector(".profile").style.backgroundColor = oParticipant["backgroundColor"];
 	//this.element.querySelector(".profile").style.backgroundImage = "url("+imageURL+")";
 	
 };
@@ -1931,6 +1943,8 @@ Message.prototype.getElement = function() {
 	entireElement.appendChild(profileElement);
 	entireElement.appendChild(nicknameElement);
 	entireElement.appendChild(messageElement);
+	
+	entireElement.addEventListener("click", this.onClick.bind(this));
 	
 	return entireElement;
 };
@@ -1957,7 +1971,7 @@ Message.prototype.setInvisible = function() {
 		this.aList.splice(position, 1);
 		
 		this.element.style.bottom = "0";
-	}.bind(this), 500);
+	}.bind(this), 800);
 };
 
 Message.prototype.setVisible = function() {
@@ -1968,7 +1982,7 @@ Message.prototype.setVisible = function() {
 	this.element.offsetHeight;
 	
 	setTimeout(function() {
-		//this.setInvisible();
+		this.setInvisible();
 	}.bind(this), 1000);
 	
 };
