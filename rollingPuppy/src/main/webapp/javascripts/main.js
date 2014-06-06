@@ -8,11 +8,8 @@
 //temp key variable.
 var mapAPIkeyRealServer = "5c935084c09a23e331aee090a0f2270c";
 
-//TODO Util함수 모듈화
-//특정 node의 style을 반환하는 함수
-
 var oUtil = {
-		oUtil.getStyle: function (node, style) {
+		getStyle: function (node, style) {
 		    return window.getComputedStyle(node, null).getPropertyValue(style);
 		},
 
@@ -59,7 +56,7 @@ var oUtil = {
 var oAside= {
 	// div#container와 div#panel를 찾아서 기억합니다.
 	eContainer: document.getElementById("container"),
-	ePanel: null,
+	ePanel: document.getElementById("panel"),
 	
 	//nav_list 관련 기능들을 모아둔 변수
 	eNavList: document.getElementById("nav_list"),
@@ -171,6 +168,7 @@ var oAside= {
 		//어차피 oChat의 oInfo에서는 자신에 해당하는 List Element를 자주참조하게된다.
 		//그러므로 li element의 주소값을 attribute로 등록한다.
 		oChat.oInfo[chatRoomNumber]["eTarget"] = eCopiedTemplate;
+		
 		//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
 		eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
 		
@@ -304,7 +302,6 @@ var oAside= {
 	},
 	
 	initialize: function(){
-		this.ePanel = document.getElementById("panel");	
 		this.addEvents();
 	}
 }
@@ -668,13 +665,30 @@ var oNaverMap = {
  **********************************************************************************************************/
 //채팅방이 생성되어있는 marker를 눌렀을 때 나오는 파란색 삼분 동그라미와 관련된 객체 
 var oMarkerClicker = { 
-	
+		eMarkerNavigationImage: document.querySelector("#controlBox .hide-navigation"),
+		
+		//물음표에 hover하면 나오는 정보창을 담을 element
+		eMenuInfo: document.querySelector("#controlBox .menu-info"),
+		
+		//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
+		controlBox: document.getElementById("controlBox"),
+		
+		//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
+		eChatList: document.querySelector("#controlBox ol"),
+		
+		//채팅방 내용을 담고있는 division <div> element
+		eChattingDivBox : document.querySelector("#controlBox .menu-chatting.content"),
+		
+		//사용자와 인터렉션하는 원형 메뉴바
+		menu: document.querySelector("#controlBox #menu"),
+		
+		//메뉴버튼 객체를 담을 Array
+		aIcons: [],
+		
+		//메뉴 내용을 담는 Content 객체를 담을 Array
+		aMenues: [],
+		
 	initialize: function() {
-		this.controlBox = document.getElementById("controlBox");
-		this.menu = this.controlBox.querySelector("#menu");
-		this.eChattingDivBox = this.controlBox.querySelector(".menu-chatting.content");
-		this.eChatList = this.eChattingDivBox.querySelector("ol");
-		this.eMenuInfo = this.controlBox.querySelector(".menu-info");
 		
 		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
 		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
@@ -810,21 +824,6 @@ var oMarkerClicker = {
 		
 		return this.controlBox;
 	},
-	eMarkerNavigationImage: document.querySelector("#controlBox .hide-navigation"),
-	//물음표에 hover하면 나오는 정보창을 담을 element
-	eMenuInfo: null,
-	//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
-	controlBox: null,
-	//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
-	eChatList: null,
-	//채팅방 내용을 담고있는 division <div> element
-	eChattingDivBox : null,
-	//사용자와 인터렉션하는 원형 메뉴바
-	menu: null,
-	//메뉴버튼 객체를 담을 Array
-	aIcons: [],
-	//메뉴 내용을 담는 Content 객체를 담을 Array
-	aMenues: [],
 	
 	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
 	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
@@ -1423,8 +1422,6 @@ var oChat = {
 				}
 			}.bind(this), false);
 			
-			//TODO NICK NAME 정보를 클라이언트에서 제공하고 있으며, 그 정보는 변조될 수 있다.
-			//Nodejs에서 웹서버에 요청하는 형태, 혹은 그 반대가 되어야 한다.
 			//P Tag에서는 .value가 적용되지 않아서 .innerText를 사용하였다.
 			this.nickname = document.getElementById("user_name").innerText;
 			
@@ -1496,13 +1493,18 @@ var oChat = {
 //TODO oChat안으로 들어가야 한다.
 var oCreateChattingRoom = {
 		//채팅방 생성에 해당하는 중앙창에 대한 element
-		oCreateChatRoom: null,
+		oCreateChatRoom: document.getElementById('createChatRoom'),
+		
 		//채팅방명을 입력하는 input box element
-		eRoomNameInput: null,
+		eRoomNameInput: document.querySelector('#createChatRoom .roomName'),
+		
 		//채팅방 참여인원 제한 수를 입력하는 input box element
-		eLimitNumberInput: null,
+		eLimitNumberInput: document.querySelector('#createChatRoom .limitNum'),
+		
 		//채팅방을 생성하려고 하는 곳의 주소 
-		eRoomAddress: null,
+		//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
+		eRoomAddress: document.querySelector('#createChatRoom .createAddress'),
+		
 		//채팅방 생성 위치 좌표
 		oLocationPoint: null,
 		
@@ -1520,13 +1522,6 @@ var oCreateChattingRoom = {
 		
 		initialize: function() {
 			
-			//element초기화
-			this.oCreateChatRoom = document.getElementById('createChatRoom');
-			this.eRoomNameInput = this.oCreateChatRoom.querySelector('.roomName');
-			this.eLimitNumberInput = this.oCreateChatRoom.querySelector('.limitNum');
-			
-			//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
-			this.eRoomAddress = this.oCreateChatRoom.querySelector('.createAddress');
 			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
 			
 			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
@@ -1613,12 +1608,6 @@ var oCreateChattingRoom = {
     				
     				oNaverMap.updateViewPointMarker(newMarker);
     				
-    				//TODO 위의 메소드를 통해 해결하도록, 삭제요망
-    				//마커를 생성
-    				//oNaverMap.addMarker(oMapClicker.oClickPoint['y'], oMapClicker.oClickPoint['x'], markerNumber, roomNameValue);
-    				
-    				//TODO oMarker의 타이틀(라벨)을 지역이름으로 저장한다.
-    		    	
     		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
     		    	oMapClicker.invisible();
     		    	
@@ -1646,43 +1635,39 @@ var oCreateChattingRoom = {
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
  **********************************************************************************************************/
 //초록색 마커 
-//TODO naverMap Object에 이식하기
 var oMapClicker = {
 	//MapClickerk 전체 Element. 
-	//TODO 변수명 변경
-	oMapClicker: null,
+	eMapClicker: document.getElementById('mapClicker'),
+	
 	//Add버튼에 해당하는 Element.
 	//TODO 변수명 변경
-	clickAdd: null,
+	clickAdd: document.querySelector('#mapClicker .icon-add'),
+	
 	//즐겨찾기 버튼에 해당하는 Element.
 	//TODO 변수명 변경
-	clickBookMark: null,
+	clickBookMark: document.querySelector('#mapClicker .icon-star'),
+	
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
 	
 	//위치정보를 보여주는 Element
-	eLocationName: null,
+	eLocationName: document.querySelector("#mapClicker .locationName div"),
+	
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
 		this.eLocationName.innerText = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
-		this.oMapClicker.style.left = clientPosX+'px';
-		this.oMapClicker.style.top = clientPosY +'px';
+		this.eMapClicker.style.left = clientPosX+'px';
+		this.eMapClicker.style.top = clientPosY +'px';
 	},
 	//click element가 보이지 않도록 하는 함수
 	invisible: function() {
-		this.oMapClicker.style.top = "-2000px";
+		this.eMapClicker.style.top = "-2000px";
 	},
 	//click element 초기화 함수
 	initialize: function() {
-		//마커가 없는 메뉴지역을 클릭했을때 인터렉션을 위한 이벤트초기화
-		this.oMapClicker = document.getElementById('mapClicker');
-		this.clickAdd = this.oMapClicker.querySelector('.icon-add');
-		this.clickBookMark = this.oMapClicker.querySelector('.icon-star');
-		this.eLocationName = this.oMapClicker.querySelector(".locationName div");
-		
 		
 		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
 		this.invisible();
@@ -1754,8 +1739,8 @@ var oReverseGeoCode = {
  * 검색에 대한 소스코드 시작 
  **********************************************************************************************************/
 var oSearching = {
-		eSubmit: null,
-		eSearchBox: null,
+		eSearchBox: document.getElementById("search_box"),
+		eSubmit: document.querySelector("#search_box button"),
 		getResultXml: function() {
 			var oParameters = {
 				"queryKeyword" : document.getElementById("search_box").children[0].value	
@@ -1804,8 +1789,6 @@ var oSearching = {
 			}
 		},
 		initialize: function() {
-			this.eSearchBox = document.getElementById("search_box");
-			this.eSubmit = this.eSearchBox.children[1]; 
 			this.eSubmit.addEventListener('click', this.getResultXml.bind(this), false);
 			this.eSearchBox.addEventListener('keydown', this.startSearch.bind(this), false);
 		}
@@ -1816,6 +1799,7 @@ var oSearching = {
 /*********************************************************************************************************
  * template 객체화 소스코드 시작 
  **********************************************************************************************************/
+//TODO 추후 학습 후 구현예정. 현재는 프로젝트 진행을 위해 멈추둔 상태
 var oTemplate = {
 		//이전에 넣었던 templates 지우기
 		deletePreviousTemplate : function(eTarget){
@@ -1891,8 +1875,6 @@ Message.prototype.setElementData = function(oMessageInfo) {
 	this.element.querySelector(".message").innerText = oMessageInfo["message"];
 	this.element.querySelector(".profile").style.backgroundImage = "url("+oParticipant["backgroundImage"] +")";
 	this.element.querySelector(".profile").style.backgroundColor = oParticipant["backgroundColor"];
-	//this.element.querySelector(".profile").style.backgroundImage = "url("+imageURL+")";
-	
 };
 
 Message.prototype.getElement = function() {
@@ -1968,14 +1950,6 @@ Message.prototype.setVisible = function() {
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
-	
-	//test
-	var button =  document.querySelector("#noticeBox .test");  
-	button.addEventListener("click", function(event) {
-		var targetUL = document.getElementById("noticeBox");
-		var target = new Message("아", "불타는 까치", "잘지내여?", "http://localhost:8080/images/userIcons/15.png");
-	});
-	//test
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역
