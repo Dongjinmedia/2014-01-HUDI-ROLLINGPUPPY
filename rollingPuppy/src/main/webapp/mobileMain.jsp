@@ -14,26 +14,12 @@
 </head>
 
 <body>
-<<<<<<< Upstream, based on branch 'develop' of https://github.com/NHNNEXT/2014-01-HUDI-ROLLINGPUPPY.git
-	<!-- 검색창과 로고를 포함한 header -->
-	<header>
-		<div id="logo"><a href="/mobile"></a></div>
-		<!-- sf = searchForm  -->
-		<div id="sf_wrapper">
-			<form id="sf" name="search">
-				<!-- sb = searchBox(검색창) -->
-				<div id="sb_wrapper">
-					<div id="sb_positioner">
-						<input id="searchBox" type="text">
-					</div>
-=======
 	<div id="template" class="hidden" style="display: none;">
 		<ul>
 			<li class="card cell none">
 				<div class="default">
 					<p class="icon-warning">
 					<p class="comment"></p>
->>>>>>> 2199e80 #314 Merge From main.css
 				</div>
 			</li>
 			<li class="card cell search">
@@ -56,7 +42,7 @@
 	</div>
 
 	<!-- 검색창과 로고를 포함한 header -->
-	<h eader>
+	<header>
 	<div id="logo">
 		<a href="/mobile"></a>
 	</div>
