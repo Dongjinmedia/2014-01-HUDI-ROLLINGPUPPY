@@ -10,12 +10,9 @@ import javax.servlet.ServletRequest;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.Part;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 public class ServletRequestUtils {
 
-	private static final Logger logger = LoggerFactory.getLogger(ServletRequestUtils.class);
+//	private static final Logger logger = LoggerFactory.getLogger(ServletRequestUtils.class);
 	
 	/*
 	 * getParameterValue From Javascript FormData

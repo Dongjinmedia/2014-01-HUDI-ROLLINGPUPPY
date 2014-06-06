@@ -219,8 +219,8 @@ header {
 }
 
 .card {
+	padding: 10px;
 	display: inline-block;
-
 	background-color: #FEFEFE;
 	border: 1px solid #ABABAB;
 	
@@ -243,7 +243,6 @@ and (min-width: 920px) {
 	
 	.card {
 		width: 440px;
-		height: 70px;
 		margin-left: 5px;
 		margin-bottom: 5px;
 	}
@@ -260,7 +259,6 @@ and (min-width: 650px) and (max-width: 920px) {
 	
 	.card {
 		width: 310px;
-		height: 70px;
 		margin-left: 3px;
 		margin-bottom: 5px;
 	}
@@ -278,7 +276,6 @@ and (max-width: 650px)  {
 		display: block;
 		left: 10px;
 		right: 10px;
-		height: 70px;
 		margin-bottom: 5px;
 	}
 }
@@ -458,18 +455,14 @@ div.panelUnfold {
 	content: "\f05b";
 }
 
-/* #panel_contents .cell {
-	position: relative;
-	width: 94%;
-	border-top: 1px solid #5F6263;
-	border-bottom: 1px solid #5F6263;
-	padding: 3%;
-	line-height: 20px;
-} */
+#panel_contents > * {
+	width: 100%;
+}
 
 #panel_contents .title {
-	!width: 100%;
+	width: 100%;
 	font-weight: bold;
+	font-size: 1.5em !important;
 }
 #panel_contents .title:before {
 	margin-right: 5px;
@@ -478,17 +471,9 @@ div.panelUnfold {
 #panel_contents .address {
 	line-height: 20px;
 	font-size : 0.8em;
-	/* white-space: nowrap;
-  	text-overflow: ellipsis;
-  	overflow: hidden; */
-}
-
-#panel_contents > * {
-	width: 100%;
-}
-
-li.search .title:before {
-	content: "\f041";
+	margin-top: 5px;
+	font-size: 14px;
+	color: #666;
 }
 
 #panel_contents li:hover{
@@ -496,9 +481,14 @@ li.search .title:before {
 	cursor: pointer;
 }
 
+li.search .title:before {
+	content: "\f041";
+}
+
 li.search .category {
-	font-size: 0.8em;
+	font-size: 1.0em;
 	color: #B9BBBD;
+	margin-top: 10px;
 }
 
 li.bookmark .title:before {

@@ -16,28 +16,25 @@
 <body>
 	<div id="template" class="hidden" style="display: none;">
 		<ul>
-			<li class="card cell none">
+			<li class="card none">
 				<div class="default">
 					<p class="icon-warning">
 					<p class="comment"></p>
 				</div>
 			</li>
-			<li class="card cell search">
+			
+			<li class="card search">
 				<p class="title icon-title"></p>
 				<p class="category"></p>
 				<p class="address"></p>
 			</li>
-			<li class="card cell chatRoom">
+			
+			<li class="card chatRoom">
 				<p class="title icon-chatting"></p>
 				<p class="limit icon-participant"></p>
 				<p class="address icon-title"></p>
 				<div class="notification"></div>
 			</li>
-			<li class="card cell bookmark">
-				<p class="title"></p>
-				<p class="address"></p>
-			</li>
-
 		</ul>
 	</div>
 
@@ -87,9 +84,9 @@
 							<h1>검색</h1>
 							<ul class="section">
 								<li class="card cell search">
-									<p class="title icon-title">제목입니당</p>
-									<p class="category">카테고리고리</p>
-									<p class="address">주소주소주</p>
+									<p class="title icon-title">카페 에이에이 삼청동점</p>
+									<p class="category">카페, 디저트>카페]</p>
+									<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가 우리우</p>
 								</li>
 								<li class="card cell search">
 									<p class="title icon-title">제목입니당</p>
