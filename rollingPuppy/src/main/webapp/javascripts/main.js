@@ -1870,10 +1870,109 @@ var oTemplate = {
 /*********************************************************************************************************
  * Message 객체에 대한 소스코드 시작
  **********************************************************************************************************/
-//working
-var Message = function() {
+var Message = function(oMessageInfo) {
+	this.maxLength = 5;
+	
+	//최초 객체 생성자가 Message전체 element가 담기는 list를 생성한다.
+	if ( this.aList === undefined )
+		Message.prototype.aList = [];
+	
+	//만약 최대 생성갯수를 초과하면, 가장 처음에 생성한 element를 리스트에서 가져온다.
+	if ( this.maxLength <= this.aList.length ) {
+		this.element = this.aList.shift();
+		this.aList.push(this.element);
+		
+		this.moveListAward();
+	} else {
+		//새로운 element를 생성해서 리스트에 담는다.
+		this.element = this.getElement();
+		console.log("this.element : ",this.element);
+		document.querySelector("#noticeBox").appendChild(this.element);
+		this.moveListAward();
+		this.aList.push(this.element);
+	}
+	
+	//생성자 Parameter 데이터를 element에 저장.
+	this.setElementData(oMessageInfo);
+	this.moveBottomest();
 	
 };
+
+Message.prototype.setElementData = function(oMessageInfo) {
+	
+	console.log("this.element in setElementData : ",this.element);
+	
+	this.element.querySelector(".title").innerText = "채팅방 제목";
+	this.element.querySelector(".nickname").innerText = "별칭";
+	this.element.querySelector(".message").innerText = "메세지테스트입니다";
+	this.element.querySelector(".profile").style.backgroundImage = "url(/images/userIcons/15.png)";
+	this.element.querySelector(".profile").style.backgroundColor = "#000";
+	//this.element.querySelector(".profile").style.backgroundImage = "url("+imageURL+")";
+	
+};
+
+Message.prototype.getElement = function() {
+	var entireElement = document.createElement("li");
+	entireElement.className = "notice";
+	
+	var titleElement = document.createElement("span");
+	titleElement.className = "title";
+	
+	var profileElement = document.createElement("span");
+	profileElement.className = "profile";
+	
+	var nicknameElement = document.createElement("span");
+	nicknameElement.className = "nickname";
+	
+	var messageElement = document.createElement("span");
+	messageElement.className = "message";
+	
+	entireElement.appendChild(titleElement);
+	entireElement.appendChild(profileElement);
+	entireElement.appendChild(nicknameElement);
+	entireElement.appendChild(messageElement);
+	
+	return entireElement;
+};
+
+Message.prototype.moveListAward = function() {
+	for (var i = 0 ; i < this.aList.length ; ++i ) {
+		this.aList[i].style.bottom = (parseInt(this.aList[i].style.bottom) +100 )+"px"; 
+	}
+};
+
+Message.prototype.moveBottomest = function() {
+	this.element.style.bottom = "0";
+	this.element.offsetHeight;	
+	this.setVisible();
+};
+
+Message.prototype.setInvisible = function() {
+	this.element.style.opacity = "0";
+	
+	setTimeout(function() {
+		this.element.style.display = "none";
+		
+		var position = this.aList.indexOf(this.element);
+		this.aList.splice(position, 1);
+		
+		this.element.style.bottom = "0";
+	}.bind(this), 500);
+};
+
+Message.prototype.setVisible = function() {
+	this.element.style.display = "inline-block";
+	this.element.offsetHeight;
+	this.element.style.opacity = "1";
+	
+	this.element.offsetHeight;
+	
+	setTimeout(function() {
+		//this.setInvisible();
+	}.bind(this), 1000);
+	
+};
+
 /*********************************************************************************************************
  * Message 객체에 대한 소스코드 종료
  **********************************************************************************************************/
@@ -1883,6 +1982,15 @@ var Message = function() {
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
+	
+	//test
+	var button =  document.querySelector("#noticeBox .test");  
+	button.addEventListener("click", function(event) {
+		var targetUL = document.getElementById("noticeBox");
+		var target = new Message("아", "불타는 까치", "잘지내여?", "http://localhost:8080/images/userIcons/15.png");
+		console.log(target);
+	});
+	//test
 	
 	//------------------------------------------------------------------------------------//
 	//네비게이션 초기화영역

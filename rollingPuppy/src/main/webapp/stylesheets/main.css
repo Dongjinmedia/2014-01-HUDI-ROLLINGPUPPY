@@ -1389,15 +1389,71 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 /*
 **새로운 메세지가 올때 생성되는 newMessage 영역 시
 */
-#wrapper #newMessage {
+#wrapper #noticeBox {
 	position: absolute;
-	right:20px;
-	bottom:20px;
-	width: 240px;
-	height: 110px;
-	background-color: #000;
-	display: none;
+	right:180px;
+	bottom: 0;
+	display: block;
 }
+
+#noticeBox .notice {
+	display: none;
+	position: absolute;
+	width: 210px;
+	height: 80px;
+	list-style: none;
+	background-color: #FAFAFA;
+	border-radius: 8px;
+	box-shadow: inset -1px -1px 1px 1px #333;
+	margin: 20px;
+	webkit-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+	opacity: 0;
+	bottom: 0;
+	z-index: 300;
+	font-family: 'Nanum Gothic', 'Apple SD Gothic Neo', 돋움, Times;
+	overflow: hidden;
+}
+
+#noticeBox .notice * {
+	position: absolute;
+}
+
+#noticeBox .title {
+	top: 10%;
+	width: 95%;
+	left: 5%;
+	font-size: 15px;
+	white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden;
+}
+
+#noticeBox .nickname {
+	top: 40%;
+	left: 25%;
+	font-size: 11px;
+	color: #A6A5A4;
+}
+
+#noticeBox .message {
+	top: 60%;
+	left: 25%;
+	width: 75%;
+	font-size: 13px;
+	font-weight: bold;
+	white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden;
+}
+
+#noticeBox .profile {
+	top: 40%;
+	left: 5%;
+	width: 32px;
+	height: 32px;
+}
+
 /*
-**새로운 메세지가 올때 생성되는 newMessage 영역 종 
+**새로운 메세지가 올때 생성되는 newMessage 영역 종료 
 */

@@ -265,7 +265,14 @@
 			</div>
 		</div>
 		
-		<ul id="newMessage"></ul>
+		<ul id="noticeBox">
+			<li>
+				<button class="test">테스트 버튼</button>
+			</li>
+			
+			<li class="notice">
+			</li>
+		</ul>
 	</div>
 </body>
 <script type="text/javascript"
