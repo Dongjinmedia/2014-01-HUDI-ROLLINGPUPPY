@@ -91,7 +91,8 @@ header {
 }
 
 #sf input[type=submit] {
-	display: none;
+	display: block;
+	position: relative;
 }
 
 #nav {

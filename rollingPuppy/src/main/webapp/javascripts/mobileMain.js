@@ -19,6 +19,9 @@ var oHeader = {
 	//    ** 터치된 네비게이션 메뉴에 .on 추가하기
 	//    ** 터치된 메뉴의 section을 띄워줄 것
 };
+/*********************************************************************************************************
+ *  
+ **********************************************************************************************************/
 
 var oPanel = {
 	ePanelButtons: document.querySelector("#panel_buttons"),
@@ -298,7 +301,9 @@ var oPanel = {
 		console.log("init");
 	}
 };
-
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 종료 
+ **********************************************************************************************************/
 var oScrolls = {
 	init: function() {
 		for (var idx = 0; idx < 4; idx++) {
@@ -308,7 +313,65 @@ var oScrolls = {
 	}
 	
 };
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 종료 
+ **********************************************************************************************************/
 
+var oSearching = {
+		eSearchBox: document.getElementById("sb_positioner"),
+		eSubmit: document.querySelector("input[type=submit]"),
+		getResultXml: function() {
+			var oParameters = {
+				"queryKeyword" : this.eSearchBox.children[0].value	
+			};
+			
+			var url = "/search"
+			var callback = function(request){
+				
+				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
+				if(aResult.length == 0){
+					oTemplate.showDefaultTemplate("pc_search", ".comment", "검색 결과가 존재하지 않습니다.")
+				} else {
+
+					//template element가져오기
+					var eTemplate = document.getElementById("template").querySelector(".search");			
+					//aResult를 for문을 돌며 template element를 복사한 변수를 가져와서 데이터 삽입 
+					var eTarget = document.getElementById("scroll0").querySelector("ul");
+					//이미 존재하는 검색 결과가 있다면 지운다.
+					while (eTarget.firstChild) {
+						eTarget.removeChild(eTarget.firstChild);
+					}
+					
+					for( var i = 0 ; i < aResult.length ; ++i){
+						var eCopiedTemplate = eTemplate.cloneNode(true);
+						var eSearchedTitle = eCopiedTemplate.querySelector(".title");
+						var eSearchedCategory = eCopiedTemplate.querySelector(".category");
+						var eSearchedAddress = eCopiedTemplate.querySelector(".address");
+						
+						eSearchedTitle.innerHTML = aResult[i]["title"]; 
+						eSearchedCategory.innerText = aResult[i]["category"]; 
+						eSearchedAddress.innerText = aResult[i]["address"];
+						eCopiedTemplate["cartesianX"] = aResult[i]["mapx"];
+						eCopiedTemplate["cartesianY"] = aResult[i]["mapy"];
+						
+						//template을 원하는 위치에 삽입
+						eTarget.appendChild(eCopiedTemplate);
+					}
+				}
+				//검색결과 Panel을 열어준다.
+				//oAside.clickSearchMenu();
+			};
+			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
+		},
+
+		initialize: function() {
+			this.eSubmit.addEventListener('touchend', this.getResultXml.bind(this), false);
+		}
+}
+
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 종료 
+ **********************************************************************************************************/
 var oUtil = {
 	mod: function (target, division) {
 		return ( (target % division) + division ) % division;

@@ -41,15 +41,16 @@
 		</div>
 		<!-- sf = searchForm  -->
 		<div id="sf_wrapper">
-			<form id="sf" name="search">
+			
+			<div id="sf" name="search"> 
 				<!-- sb = searchBox(검색창) -->
 				<div id="sb_wrapper">
 					<div id="sb_positioner">
-						<input type="text">
+						<input type="text"></input>
 					</div>
 				</div>
-				<input type="submit" value="검색">
-			</form>
+				<input type="submit" value="검색"></input>
+			</div>
 		</div>
 	</header>
 
@@ -180,7 +181,8 @@
 	<div id="map"></div>
 
 	<footer></footer>
-	<script type="text/javascript" src="/javascripts/mobileMain.js"></script>
+	<script type="text/javascript" src="/javascripts/ajax.js?20140607"></script>
+	<script type="text/javascript" src="/javascripts/mobileMain.js?20140607"></script>
 	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript" style="display: none;">
 		window.onload = function() {
@@ -190,6 +192,7 @@
 
 			oScrolls.init();
 			oPanel.init();
+			oSearching.initialize();
 		}
 	</script>
 </body>
