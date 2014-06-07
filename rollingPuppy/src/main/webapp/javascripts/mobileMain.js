@@ -24,6 +24,10 @@ var oPanel = {
 	ePanelButtons: document.querySelector("#panel_buttons"),
 	ePanelWrapper: document.querySelector("#panel_wrapper"),
 	
+	fnPanelTouchStart: null,
+	fnPanelTouchMove: null,
+	fnPanelTouchEnd: null,
+	
 	addEvents: function() {
 		console.log("addEvents");
 
@@ -46,6 +50,7 @@ var oPanel = {
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
 		var sAnimationEnd = "AnimationEnd";
 		var sBrowserPrefix = oUtil.getBrowserPrefix();
+		
 		this.ePanelWrapper.addEventListener(
 				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
 						sAnimationEnd.toLower() : sBrowserPrefix + sAnimationEnd,
@@ -53,19 +58,32 @@ var oPanel = {
 		);
 		
 		// panel영역에 대한 flicking이벤트 연결
+		this.fnPanelTouchStart = this.panelTouchStart.bind(this);
+		this.fnPanelTouchMove = this.panelTouchMove.bind(this);
+		this.fnPanelTouchEnd = this.panelTouchEnd.bind(this);
+		
 		this.ePanel.addEventListener(
 			"touchstart",
-			 this.panelTouchStart.bind(this)
+			 this.fnPanelTouchStart
 		);
 		
 		this.ePanel.addEventListener(
 			"touchmove",
+			//this.fnPanelTouchMove
 			this.panelTouchMove.bind(this)
 		);
 		
 		this.ePanel.addEventListener(
 			"touchend",
+			//this.fnPanelTouchEnd
 			this.panelTouchEnd.bind(this)
+		);
+		
+		var sTransitionEnd = "TransitionEnd";
+		this.ePanel.addEventListener(
+				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
+						sTransitionEnd.toLower() : sBrowserPrefix + sTransitionEnd,
+				this.setPanelPosition.bind(this)
 		);
 	},
 
@@ -119,6 +137,9 @@ var oPanel = {
 	//setTimeout에 사용되는 시간값
 	nAnimateTime: 0,
 	
+	//isPanelMove로 터치 이벤트 받을지 말지 판별.
+	isPanelMove: false,
+	
 	//터치시작점 저장
 	nTouchStartX: 0,
 	nTouchStartY: 0,
@@ -133,6 +154,11 @@ var oPanel = {
 	//터치 이벤트 시작시 호출되는 함수
 	panelTouchStart: function(event) {
 		//TODO IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.
+		if (this.isPanelMove) {
+			return;
+		}
+		this.isPanelMove = true;
+		
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
 		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].disable();
@@ -141,6 +167,7 @@ var oPanel = {
 		var touch = event.touches[0];
 		this.nTouchStartX = touch.pageX;
 		this.nTouchStartY = touch.pageY;
+		oUtil.removeClassName(this.ePanelContents, "translate");
 	},
 	
 	//터치 이벤트 도중에 호출되는 함수
@@ -189,9 +216,17 @@ var oPanel = {
 	
 	//터치가 종료될때 호출되는 함수
 	panelTouchEnd: function(event) {
+		if (this.isPanelMove === false) {
+			return;
+		}
+		this.isPanelMove = false;
+		
+		oUtil.addClassName(this.ePanelContents, "translate");
 		console.log("panelTouchEnd Event : ", event);
 
 		var touch = event.changedTouches[0];
+		var prefix = oUtil.getBrowserPrefix();
+		
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
 		
@@ -213,21 +248,25 @@ var oPanel = {
 		//TODO 변화값은 조절하도록
 		var nMoveLengthX = this.nTouchStartX - this.nTouchEndX;
 		if (nMoveLengthX > 50) {
+			this.ePanelContents.style[prefix + "Transform"] = "translate(-100%)";
 			this.nCurrentViewPanelIndex++;
 		} else if (nMoveLengthX < -50) {
+			this.ePanelContents.style[prefix + "Transform"] = "translate(100%)";
 			this.nCurrentViewPanelIndex--;
 		} else {
-			this.ePanelContents.style.webkitTransform = "translate(0)";
-			return ;
+			this.ePanelContents.style[prefix + "Transform"] = "translate(0)";
 		}
 		
-		this.ePanelContents.style.webkitTransform = "translate(0)";
 		this.ePanelContents.style.webkitTransition = null;
-		this._setPosition();
 	},
 	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
-	_setPosition: function() {
+	setPanelPosition: function() {
+		var prefix = oUtil.getBrowserPrefix();
+		oUtil.removeClassName(this.ePanelContents, "translate");
+		this.ePanelContents.style[prefix + "Transform"] = "translate(0)";
+
+
 		var nCenterIndex = oUtil.mod(this.nCurrentViewPanelIndex, 4);
 		var nLeftIndex = oUtil.mod(this.nCurrentViewPanelIndex - 1, 4);
 		var nRightIndex = oUtil.mod(this.nCurrentViewPanelIndex + 1, 4);
@@ -254,8 +293,8 @@ var oPanel = {
 	
 	init : function(){
 		this.addEvents();
-		// 초기화 시점에 _setPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
-		this._setPosition();
+		// 초기화 시점에 setPanelPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
+		this.setPanelPosition();
 		console.log("init");
 	}
 };
