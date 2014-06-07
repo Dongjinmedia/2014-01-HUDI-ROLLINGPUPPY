@@ -1538,7 +1538,6 @@ var oCreateChattingRoom = {
 		clearLimitNumValue: function() {
 			this.eLimitNumberInput.value = "";
 		},
-		
 		//채팅방명 인풋값 초기화
 		clearRoomNameValue: function() {
 			this.eRoomNameInput.value = "";
@@ -1564,6 +1563,11 @@ var oCreateChattingRoom = {
 				return;
 			} else if ( roomNameValue.length <= 4 ) {
 				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
+				this.clearRoomNameValue();
+				return;
+			} else if ( roomNameValue.length > 15 ) {
+				alert("채팅방 제목은 15글자 이상을 넘을 수 없습니다.");
+				this.clearRoomNameValue();
 				return;
 			};
 			
@@ -1579,7 +1583,11 @@ var oCreateChattingRoom = {
 				alert("인원수는 1 이상으로 설정해야 합니다.");
 				this.clearLimitNumValue();
 				return;
-			}
+			} else if (limitNumValue >= 100 ){
+				alert("채팅 인원은 100을 넘을 수 없습니다.");
+				this.clearLimitNumValue();
+				return;
+			};
 			
 			//서버와 통신하는 코드
 			var oRequest = {

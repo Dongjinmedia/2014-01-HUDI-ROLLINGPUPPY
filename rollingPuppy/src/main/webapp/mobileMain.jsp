@@ -27,9 +27,9 @@
 				<div class="notification" style="display: inline-block;">5</div>
 			</li>
 			<li class="card cell search">
-				<p class="title icon-title">카페 에이에이 삼청동점</p>
-				<p class="category">카페, 디저트>카페]</p>
-				<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가 우리우</p>
+				<p class="title icon-title"></p>
+				<p class="category"></p>
+				<p class="address"></p>
 			</li>
 		</ul>
 	</div>
