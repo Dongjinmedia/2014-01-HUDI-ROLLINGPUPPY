@@ -11,15 +11,10 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.puppy.controller.chat.ChatController;
-
 public class EntranceFilter implements Filter{
 
 	
-	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+//	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
 	
 	@Override
 	public void init(FilterConfig filterConfig) throws ServletException {}
