@@ -292,10 +292,9 @@ var oPanel = {
 		} else if (nMoveLengthX === 0) {
 			this.isPanelMove = false;
 		} else {
+			this.isPanelMove = false;
 			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
 		}
-		
-		this.ePanelContents.style.webkitTransition = null;
 	},
 	
 	setCurrentPanelIndex: function(idx) {
@@ -304,8 +303,6 @@ var oPanel = {
 	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	setPanelPosition: function() {
-		this.isPanelMove = false;
-
 		oUtil.removeClassName(this.ePanelContents, "translate");
 		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
 
@@ -320,6 +317,8 @@ var oPanel = {
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
 		this.aSectionWrapper[nRightIndex].style.left = "100%";
 		this.aSectionWrapper[nRightEndIndex].style.left = "200%";
+
+		this.isPanelMove = false;
 	},
 	
 	init : function(){
