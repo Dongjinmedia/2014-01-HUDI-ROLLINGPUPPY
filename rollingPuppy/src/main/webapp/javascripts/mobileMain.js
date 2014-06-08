@@ -97,11 +97,6 @@ var oPanel = {
 				this.animationEndHandler.bind(this)
 		);
 		
-		// panel영역에 대한 flicking이벤트 연결
-		this.fnPanelTouchStart = this.panelTouchStart.bind(this);
-		this.fnPanelTouchMove = this.panelTouchMove.bind(this);
-		this.fnPanelTouchEnd = this.panelTouchEnd.bind(this);
-		
 		this.ePanel.addEventListener(
 			"touchstart",
 			this.panelTouchStart.bind(this)
@@ -521,10 +516,6 @@ var oUtil = {
 		}
 	},
 
-	getStyle: function (node, style) {
-	    return window.getComputedStyle(node, null).getPropertyValue(style);
-	},
-	
 	isMobile: function() {
 		if (typeof window.orientation !== "undefined") {
 			return false;
@@ -532,9 +523,8 @@ var oUtil = {
 		return true;
 	},
 	
-	init: function() {
-		sBrowserPrefix = this.getBrowserPrefix();
-		boolIsMobil = this.isMobile();
+	getStyle: function (node, style) {
+	    return window.getComputedStyle(node, null).getPropertyValue(style);
 	}
 };
 /*********************************************************************************************************
@@ -1113,11 +1103,13 @@ var oChat = {
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
+	sBrowserPrefix = oUtil.getBrowserPrefix();
+	boolIsMobile = oUtil.isMobile();
+
 	oScrolls.init();
 	oHeader.init();
 	oNav.init();
 	oPanel.init();
-	oUtil.init();
 	oSearching.initialize();
 	
 	oChat.init();
