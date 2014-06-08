@@ -49,7 +49,6 @@ var oNav = {
 	
 	changePanelPosition: function(event) {
 		var nClickedPanelIndex = parseInt(event.target.parentNode.id.match(/\d/g)[0]);
-		console.log(nClickedPanelIndex);
 		oPanel.setCurrentPanelIndex(nClickedPanelIndex);
 		oPanel.setPanelPosition();
 	},
@@ -75,6 +74,8 @@ var oNav = {
 var oPanel = {
 	ePanelButtons: document.querySelector("#panel_buttons"),
 	ePanelWrapper: document.querySelector("#panel_wrapper"),
+	
+	eChattingNotification: document.querySelector("#nav_menu .notification"),
 	
 	addEvents: function() {
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
@@ -320,8 +321,6 @@ var oPanel = {
 		
 		oNav.setCurrentMenuMarker(nCenterIndex);
 		
-		console.log(this.nCurrentPanelIndex);
-		console.log(nCenterIndex, nLeftIndex, nRightIndex, nRightEndIndex);
 		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
 		this.aSectionWrapper[nRightIndex].style.left = "100%";
@@ -335,7 +334,7 @@ var oPanel = {
 	}
 };
 /*********************************************************************************************************
- * 검색에 대한 소스코드 종료 
+ * 스크롤에 대한 소스코드 시작 
  **********************************************************************************************************/
 var oScrolls = {
 	init: function() {
@@ -347,9 +346,70 @@ var oScrolls = {
 	
 };
 /*********************************************************************************************************
- * 검색에 대한 소스코드 종료 
+ * 스크롤에 대한 소스코드 종료 
  **********************************************************************************************************/
 
+
+/*********************************************************************************************************
+* oPanel안에 Contents영역(리스트)에 대한 소스코드 시작  
+**********************************************************************************************************/
+var oPanelContents = {
+		
+		//panel contents 영역
+		eChattingListTarget: document.querySelector("#scroll1 ul"),
+		eChattingTemplate: document.querySelector("#template .chatRoom"),
+		
+		addChattingList: function(chatRoomNumber, oTarget) {
+			//TODO 변수삭제. 하단부 참조항목들 변경
+			var eTemplate = this.eChattingTemplate;
+			var eTarget = this.eChattingListTarget;
+			
+			var eCopiedTemplate = eTemplate.cloneNode(true);
+			var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
+			var eChattingRoomMax = eCopiedTemplate.querySelector(".limit");
+			var eChattingRoomAddress = eCopiedTemplate.querySelector(".address");
+			var eChattingRoomNotification = eCopiedTemplate.querySelector(".notification");
+			
+		//			"채팅방번호": {
+		//				title: "",
+		//				locationName: "", 
+		//				max: "",
+		//				participantNum: "",
+		//				unreadMessageNum: "", 
+		//				oParticipant: {
+		//					"회원아이디": 
+		//					{
+		//						nickname: "",
+		//						TODO 추가데이터
+		//					}
+		//				}
+		//			}
+			
+			//어차피 oChat의 oInfo에서는 자신에 해당하는 List Element를 자주참조하게된다.
+			//그러므로 li element의 주소값을 attribute로 등록한다.
+			oChat.oInfo[chatRoomNumber]["eTarget"] = eCopiedTemplate;
+			
+			//클릭시 이벤트를 처리할 수 있도록 chatRoomNum을 Attribute로 등록한다.
+			eCopiedTemplate["chatRoomNumber"] = chatRoomNumber;
+			
+			eChattingRoomTitle.innerHTML = oTarget["title"]; 
+			eChattingRoomMax.innerText = oTarget["participantNum"] +"/"+ oTarget["max"]; 
+			eChattingRoomAddress.innerText = oTarget["locationName"];
+			oChat.updateNotificationView(chatRoomNumber);
+			
+			
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedTemplate);
+		},	
+};
+/*********************************************************************************************************
+ * oPanel안에 Contents영역(리스트)에 대한 소스코드 종료  
+ **********************************************************************************************************/
+
+
+/*********************************************************************************************************
+ * 검색에 대한 소스코드 시작 
+ **********************************************************************************************************/
 var oSearching = {
 		eSearchBox: document.getElementById("sb_positioner"),
 		eSubmit: document.querySelector(".submit"),
@@ -405,6 +465,10 @@ var oSearching = {
 /*********************************************************************************************************
  * 검색에 대한 소스코드 종료 
  **********************************************************************************************************/
+
+/*********************************************************************************************************
+ * 유틸함수 Object 소스코드 시작 
+ **********************************************************************************************************/
 var oUtil = {
 	mod: function (target, division) {
 		return ( (target % division) + division ) % division;
@@ -456,6 +520,10 @@ var oUtil = {
 			return "";
 		}
 	},
+
+	getStyle: function (node, style) {
+	    return window.getComputedStyle(node, null).getPropertyValue(style);
+	},
 	
 	isMobile: function() {
 		if (typeof window.orientation !== "undefined") {
@@ -469,3 +537,598 @@ var oUtil = {
 		boolIsMobil = this.isMobile();
 	}
 };
+/*********************************************************************************************************
+ * 유틸함수 Object 소스코드 종료 
+ **********************************************************************************************************/
+
+
+/*********************************************************************************************************
+ * Chatting에 대한 소스코드 시작
+ **********************************************************************************************************/
+//TODO ChattingRoom 에 대한 항목도 Merge해야한다.
+/*
+ * TODO 모든 메뉴에 대한 처리를 구별, 각각에게 알맞게 처리하도록 수정해야 한다.
+ */
+var oChat = {
+		functionTempForMoveWindow: null,
+		socket: null,
+		eChatWindow: document.getElementById("chatWindow"),
+		eRightArea: document.querySelector("#chatWindow .rightArea"),
+		eChattingMemberList: document.querySelector("#chatWindow .chattingMemberList ul"),
+		eInputBox: document.querySelector("#chatWindow .inputArea"),
+		eFoldButton: document.querySelector("#chatWindow .icon-aside"),
+		eExitButton: document.querySelector("#chatWindow .icon-exit"),
+		
+		//채팅창 안의 element
+		eChatWindowTopBar: document.querySelector("#chatWindow .top"),
+		eChatWindowTitle: document.querySelector("#chatWindow .top .title"),
+		eChatWindowParticipant: document.querySelector("#chatWindow .top .limit"),
+		eChatWindowAddress: document.querySelector("#chatWindow .top .address"),
+		eChatWindowMessageBox: document.querySelector("#chatWindow .middle .chattingContents"),
+		
+		//Template element
+		eTemplateNotice: document.querySelector("#template .notice"),
+		eTemplateUser: document.querySelector("#template .user"),
+		eTemplateOther: document.querySelector("#template .other"),
+		eTemplateChatMember: document.querySelector("#template .chatMember"),
+		
+		
+		//메모리에 저장하고 활용하는 데이터
+		userId: 0,
+		currentChatRoomNumber: 0,
+		lastMessageDayNum: 0,
+		
+		/*
+	    //oInfo는 다음과 같은 형태이다.
+	    {
+			"채팅방번호": {
+				title: "",
+				locationName: "", 
+				max: "",
+				participantNum: "",
+				unreadMessageNum: "", 
+				eTarget: "",
+				oParticipant: {
+					"회원아이디": 
+					{
+						nickname: "",
+						TODO 추가데이터
+					}
+				}
+				
+				//eTarget은 초기화시 추가해주는 동적 attribute이다.
+				//어차피 채팅방번호에 해당하는 element를 자주참조해야하므로 주소값을 저장하는 것이다.
+				//자세한 내용은 getMyChatInfoAndUpdateListInPanel 함수를 참조하자.
+			}
+		} 
+	    */
+		oInfo: null,
+		
+		// 채팅방 입장 시
+		enterChatRoom: function(chatRoomNum) {
+			// 입장을 서버에 알린다.
+			// 이메일 정보와 참여하는 채팅방 번호를 같이 전달한다.			
+			this.socket.emit('join', {"chatRoomNumber": chatRoomNum});
+		},
+		
+		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
+		showChatWindow: function(chatRoomNum) {
+			if ( oChat.isChatWindowVisible() ) {
+				oChat.foldChattingRoom();
+			}
+			
+			oChat.saveCurrentChatRoomNumber(chatRoomNum);
+			oChat.oInfo[chatRoomNum]["unreadMessageNum"] = 0;
+			
+			oChat.updateChatWindowHeaderText(chatRoomNum);
+			oChat.updateMemberList(chatRoomNum);
+			oChat.updateNotificationView(chatRoomNum);
+			oAside.updateTotalNotificationView();
+			oChat.visibleChatWindow();
+			
+			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
+			//때문에 가장 마지막에 실행해준다.
+			oChat.updateInitializeMessage(chatRoomNum);
+		},
+
+		visibleChatWindow: function() {
+			this.eChatWindow.style.display = "block";
+		},
+		
+		invisibleChatWindow: function() {
+			this.eChatWindow.style.display = "none";
+		},
+		
+		isChatWindowVisible: function() {
+			return (this.eChatWindow.style.display == "block");
+		},
+		
+		saveCurrentChatRoomNumber: function(chatRoomNum) {
+			this.currentChatRoomNumber = chatRoomNum;
+			this.socket.emit("saveCurrentChatRoomNumber", {"currentChatRoomNumber": chatRoomNum});
+		},
+		
+		sendMessage: function(message) {
+			
+			oMessageInfo = {
+				"message": message,
+				"chatRoomNumber": this.currentChatRoomNumber,
+			};
+			
+			this.socket.emit('message', oMessageInfo);
+			this.eInputBox.value="";
+		},
+		
+		getMessage: function(oMessageInfo) {
+			//자신이 보낸 메세지인지, 남이 보낸 메세지인지를 판별하기 위한 flag
+			var flag = 0;
+			var chatRoomNumber = oMessageInfo["tblChatRoomId"];
+			
+			//현재는 클라이언트에서 판별후 attribute를 생성하고 있다.
+			//TODO isMyMessage를 웹서버에서 처리할 수 있도록 변경해야 한다.
+			if ( oMessageInfo["tblMemberId"] == this.userId ) {
+				flag = 1;
+			}
+			
+			oMessageInfo["isMyMessage"] = flag;
+			
+			if ( chatRoomNumber == oChat.currentChatRoomNumber ) {
+				this._updateOneMessage(oMessageInfo);
+				
+			} else {
+				
+				oChat.alertNewMessage(oMessageInfo);
+				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
+				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
+				oAside.updateTotalNotificationView();
+			}
+		},
+		
+		alertNewMessage: function(oMessageInfo) {
+			if ( oMessageInfo["tblMemberId"] !== 0 ) {
+				new Message(oMessageInfo);
+			}
+		},
+		setMessageBoxScrollTop: function() {
+			this.eChatWindowMessageBox.scrollTop = this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		getMessageBoxScrollTop: function() {
+			return this.eChatWindowMessageBox.scrollHeight;
+		},
+		
+		updateMessageBoxScrollTop: function(height) {
+			this.eChatWindowMessageBox.scrollTop = height;
+		},
+		
+		isNewDay: function(dayNum) {
+			var isNew = this.lastMessageDayNum != dayNum; 
+			this.lastMessageDayNum = dayNum;
+			return isNew;
+		},
+		
+		_getNoticeTemplateCloneElement: function(message) {
+			var eCopiedTemplate = this.eTemplateNotice.cloneNode(true);
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			
+			return eCopiedTemplate
+		},
+		
+		_getUserMessageTemplateCloneElement: function(time, message) {
+			var eCopiedTemplate = this.eTemplateUser.cloneNode(true);
+			eCopiedTemplate.querySelector(".time").innerText = time;
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			
+			return eCopiedTemplate;
+		},
+
+		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
+			
+			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
+			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+			
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
+			eCopiedTemplate.querySelector(".message").innerText = message;
+			eCopiedTemplate.querySelector(".time").innerText = time;
+			
+			var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+			eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
+			eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
+			
+			return eCopiedTemplate;
+		},
+		
+		_updateOneMessage: function(oMessageInfo) {
+			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+			
+			if ( this.isNewDay(day) ) {
+				
+				var sNotice = oMessageInfo["month"] 
+										+ "월 "
+										+ oMessageInfo["day"] 
+										+ "일 "
+										+ oMessageInfo["week"];
+				
+				eTarget = this._getNoticeTemplateCloneElement(sNotice);
+			} 
+			
+			//내 메시지일경우
+			if  (isMyMessage == 1) {
+				eTarget = this._getUserMessageTemplateCloneElement(time, message);
+			} else {
+				//관리자 메세지인 경우
+				if ( memberId === 0 ) {
+					eTarget = this._getNoticeTemplateCloneElement(message);
+				//일반 메세지일 경우
+				} else {
+					eTarget = this._getOtherMessageTemplateCloneElement(chatRoomNum, memberId, message, time, null);
+				}
+			}
+			
+			if (eTarget != undefined || eTarget != null) {
+				this.eChatWindowMessageBox.appendChild(eTarget);
+			}
+			
+			this.setMessageBoxScrollTop();
+		},
+		
+		updateLastMessageDayNum: function(nDay) {
+			this.lastMessageDayNum = nDay;
+		},
+		
+		updateOneMessage: function(aMessage) {
+			
+			if ( aMessage == undefined 
+					|| aMessage == null 
+					|| aMessage.length === 0 )
+				return;
+			
+			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
+				this._updateOneMessage(aMessage[index]);
+			}
+		},
+		
+		updateInitializeMessage: function(chatRoomNum) {
+			//TODO 이렇게 삭제하는것과 innerHTML을 비우는것의 차이는..?
+			//Message박스 초기화
+			while (this.eChatWindowMessageBox.firstChild) {
+				this.eChatWindowMessageBox.removeChild(this.eChatWindowMessageBox.firstChild);
+			}
+			
+			var oParameters = {
+    			"chatRoomNumber": chatRoomNum,
+    		};
+    		
+    		var callback = function(request) {
+    			var oResponse = JSON.parse(request.responseText);
+
+    			var aRecentMessage = oResponse["recentMessage"];
+    			var aUnreadMessage = oResponse["unreadMessage"];
+    			this.updateOneMessage(aRecentMessage);
+    			if ( aUnreadMessage.length !== 0 ) {
+    				
+    				//멘트삽입
+    				oChat.eChatWindowMessageBox.appendChild(this._getNoticeTemplateCloneElement("여기까지 읽으셨습니다."));
+    				var unreadMessageScrollTop = oChat.getMessageBoxScrollTop();
+    				oChat.updateOneMessage(aUnreadMessage);
+    				oChat.updateMessageBoxScrollTop(unreadMessageScrollTop-30);
+    			} else {
+    				oChat.setMessageBoxScrollTop();
+    			}
+    			
+    		}
+    		
+    		oAjax.getObjectFromJsonGetRequest("/chat/initMessage", oParameters, callback.bind(this));
+		},
+		
+		//채팅창 상단에 보여지는 제목, 인원, 장소명 등의 데이터를 업데이트한다.
+		updateChatWindowHeaderText: function(chatRoomNum) {
+			var oTarget = this.oInfo[chatRoomNum];
+			
+			this.eChatWindowTitle.innerText = oTarget["title"];
+			this.eChatWindowAddress.innerText = oTarget["locationName"];
+			this.eChatWindowParticipant.innerText = oTarget["participantNum"] + " / " + oTarget["max"];
+		},
+		
+		//패널의 채팅리스트에 존재하는 채팅방의 Notification VIew를 업데이트한다.
+		updateNotificationView: function(chatRoomNum) {
+			var oTarget = this.oInfo[chatRoomNum];
+			var eChattingRoomNotification = oTarget["eTarget"].querySelector(".notification");
+			
+			var unreadMessageNum = oTarget["unreadMessageNum"];
+			
+			if ( unreadMessageNum === 0 ) {
+				eChattingRoomNotification.style.display = "none";
+	 		} else {
+	 			eChattingRoomNotification.innerText = unreadMessageNum;
+	 			eChattingRoomNotification.style.display = "inline-block";
+	 		}
+		},
+		
+		//채팅방 오른편의 참여자리스트에 참가자정보를 더하는 함수
+		addMemberList: function(oParticipant) {
+			var eCopiedTemplate = this.eTemplateChatMember.cloneNode(true); 
+			oParticipant["eTarget"] = eCopiedTemplate; 
+			
+			var aPtag = eCopiedTemplate.querySelectorAll("p");
+			aPtag[0].innerText = oParticipant["nicknameAdjective"];
+			aPtag[1].innerText = oParticipant["nicknameNoun"];
+			
+			var eTargetProfile = eCopiedTemplate.querySelector(".profile");
+			eTargetProfile.style.backgroundColor= oParticipant["backgroundColor"];
+			eTargetProfile.style.backgroundImage="url("+oParticipant["backgroundImage"]+")";
+			
+			this.eChattingMemberList.appendChild(eCopiedTemplate);
+		},
+		
+		removeMemberList: function(oParticipant) {
+			this.eChattingMemberList.removeChild(oParticipant["eTarget"]);
+		},
+		
+		//채팅창 오른편의 참여자리스트를 갱신하는 함수
+		updateMemberList: function(chatRoomNum){
+			var oTarget = this.oInfo[chatRoomNum]["oParticipant"];
+			
+			while (this.eChattingMemberList.firstChild) {
+				this.eChattingMemberList.removeChild(this.eChattingMemberList.firstChild);
+			}
+			
+			for (var key in oTarget) {
+				if (oTarget.hasOwnProperty(key)) {
+					this.addMemberList(oTarget[key]);
+				}
+			}
+		},
+		
+		foldChattingRoom: function() {
+			//서버에 채팅방 fold에 대한 요청을 보낸다.
+			
+			var url = "/chat/foldCurrentChatRoom";
+			
+			oParameter = {
+				"chatRoomNumber": this.currentChatRoomNumber 	
+			};
+			
+			var callback = function(request) {
+				var result = request.responseText;
+
+				// TODO 교수님께 질문드리기
+				// ===로 비교하면 false 계속 리턴된다.. 왜그럴까? (index.js와 비교해서 볼것!)
+				if ( result.indexOf("SUCCESS") !== -1 ) {
+					this.invisibleChatWindow();
+				} else {
+					alert("다시 시도해주세요.");
+				}
+			}.bind(this);
+			
+			oAjax.getObjectFromJsonPostRequest(url, oParameter, callback);
+			
+			//채팅서버에 창을 닫았다는 사실을 알려준다.
+			this.saveCurrentChatRoomNumber(null);
+		},
+		
+		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
+		connectSocketWithEnteredChattingRoom: function() {
+			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			console.log("chattingRoomList :",chattingRoomList);
+			var chattingRoomListToJson = JSON.parse(chattingRoomList);
+			var chattingRoomIdList = new Array();
+			
+			for ( var i = 0; i < chattingRoomListToJson.length ; i++ ) {
+				chattingRoomIdList.push(chattingRoomListToJson[i].chatRoomId);
+			}
+			
+			for ( var i = 0; i < chattingRoomIdList.length ; i++ ) {
+				var chatRoomNum = chattingRoomIdList[i];
+				this.socket.emit('autoConnectWithEnteredChattingRoom', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
+			}
+		},
+		
+		//새로운 chatInfo항목을 추가한다.
+		addChatInfo: function(chatRoomNumber, oResult) {
+			oChat.oInfo[chatRoomNumber] = oResult;
+		},
+		
+		//chatInfo를 초기화한다.
+		saveChatInfo: function(aParameter) {
+			window.oChat.oInfo =  aParameter
+		},
+		/*
+		 * 초기화때 1번 수행되는 함수입니다.
+		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
+		 * 
+		 * TODO jsp에서 내려주는 형태로 리팩토링 되어야 합니다.
+		 */
+		getMyChatInfoAndUpdateListInPanel: function(){
+			
+			var incompleteUrl = "/chat/getMyChatInfo";
+			
+			var callback = function(request){
+
+				var oResult = JSON.parse(request.responseText);
+				
+				//oInfo에 요청데이터를 저장
+				this.saveChatInfo.apply(request, [oResult]);
+				
+				if(oResult === null || oResult.length === 0 ){
+					oAside.vacantChattingList();
+				} else {
+					//이미 존재하는 채팅방 목록이 있면 지운다.
+					var eTarget = oPanelContents.eChattingListTarget;
+					while (eTarget.firstChild) {
+						eTarget.removeChild(eTarget.firstChild);
+					}
+					
+					//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
+					for (var key in oResult) {
+						if (oResult.hasOwnProperty(key)) {
+							oPanelContents.addChattingList(key, oResult[key]);
+						}
+					}
+				}
+				//확인하지 않은 메세지갯수를 업데이트한다.
+				oPanel.updateTotalNotificationView();
+			};
+			
+			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
+		},
+		
+		// 채팅방의 top bar를 클릭하면 마우스 이동에 대한 이벤트를 등록한다.
+		mouseDownAtChatWindowTopBar: function(e) {
+			var sideBarSize = parseInt(oUtil.getStyle(document.getElementById("nav_list"), "width"));
+			var headerSize = parseInt(oUtil.getStyle(document.getElementById("header"), "height"));
+			var currentChatWindowLeft = parseInt(oUtil.getStyle(this.eChatWindow, "left"));
+			var currentChatWindowTop = parseInt(oUtil.getStyle(this.eChatWindow, "top"));
+			var distanceX = e.clientX - (sideBarSize + currentChatWindowLeft);
+			var distanceY = e.clientY - (headerSize + currentChatWindowTop)
+			this.functionTempForMoveWindow = this.moveChattingWindow.bind(this, sideBarSize, headerSize, distanceX, distanceY);
+
+			window.addEventListener("mousemove", this.functionTempForMoveWindow, true);
+			window.addEventListener("mouseup", this.mouseUp.bind(this), false);
+		},
+		
+		// 마우스가 이동하는 동안 채팅창이 마우스를 따라다닌다.
+		moveChattingWindow: function(e) {
+			var sideBarSize = arguments[0];
+			var headerSize = arguments[1];
+			var distanceX = arguments[2];
+			var distanceY = arguments[3];
+			var event = arguments[4];
+			
+			this.eChatWindow.style.left = event.clientX - sideBarSize - distanceX + "px";
+			this.eChatWindow.style.top = event.clientY - headerSize - distanceY + "px";
+		},
+		
+		// 마우스를 떼면 채팅창이 마우스를 따라다니던 이벤트를 제거한다.
+		mouseUp: function(e) {
+			window.removeEventListener("mousemove", this.functionTempForMoveWindow, true);
+		},
+		
+		init: function() {
+			var email = document.getElementById("email").value;
+			//hidden attribute. User Identifier Database id Value.
+			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
+			this.userId = document.getElementById("id").value;
+			
+			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
+			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
+			
+			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
+			this.eInputBox.onkeydown = function(event) {				
+				if (event.keyCode == 13 && event.shiftKey) {
+					this.eInputBox.value = this.eInputBox.value + "\n";
+					event.preventDefault();
+				} else if ( event.keyCode == 13 ) {
+					this.sendMessage( this.eInputBox.value );
+					event.preventDefault();
+				}
+			}.bind(this);
+			
+			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
+			this.eFoldButton.addEventListener("click", function(e) {
+				this.foldChattingRoom();
+			}.bind(this), false);
+			
+			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
+			this.eExitButton.addEventListener("click", function(e) {
+				if ( confirm("Are you sure Exit Chatting Room?")) {
+					this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
+				}
+			}.bind(this), false);
+			
+			
+			this.socket.on('message', function (oParameter) {
+				this.getMessage(oParameter);
+			}.bind(this));
+			
+			this.socket.on("announce", function(message) {
+				alert(message);
+			});
+			
+			/*
+			 * chatting Server에서 {callback: function() {...}} 형태로
+			 * 파라미터를 전달해준다.
+			 */
+			this.socket.on("execute", function(oCallback) {
+				oCallback.callback = new Function(oCallback.callback);
+				if ( typeof oCallback.callback == "function" )
+					oCallback.callback();	
+			}.bind(this));
+			
+			//ChatWindow에서 참여자 리스트 패널 fold, unfold 이벤트를 연결한다.
+			this.eRightArea.addEventListener('click', function(e) {
+				
+				//element 외의 영역을 클릭하는것이기 떄문에 before, after항목을 클릭한 경우이다.
+				if ( e.offsetX > this.offsetWidth) {
+					
+					if ( e.target.className.indexOf("unfold") !== -1 ) {
+						oUtil.removeClassName(this, "unfold");
+						oUtil.addClassName(this, "fold");
+					} else {
+						oUtil.removeClassName(this, "fold");						
+						oUtil.addClassName(this, "unfold");
+					}					
+				}
+			}, false);
+			
+			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
+			this.connectSocketWithEnteredChattingRoom();
+			
+			//사용자가 참여하고있는 채팅방의 데이터를 oInfo객체에 저장한다.
+			
+//			"채팅방번호": {
+//				title: "",
+//				locationName: "", 
+//				max: "",
+//				unreadMessageNum: "", 
+//				oParticipant: {
+//					"회원아이디": 
+//					{
+//						nickname: "",
+//						TODO 추가데이터
+//					}
+//				}
+//			}
+			this.getMyChatInfoAndUpdateListInPanel();
+			
+			// 채팅창 이동을 위한 이벤트 리스너 등록
+			this.eChatWindowTopBar.addEventListener('mousedown', this.mouseDownAtChatWindowTopBar.bind(this), false);
+		}
+};
+/*********************************************************************************************************
+ * Chatting에 대한 소스코드 종료
+ **********************************************************************************************************/
+
+
+
+/*********************************************************************************************************
+ * 모두에게 공통되는 초기화 함수영역
+ **********************************************************************************************************/
+function initialize() {
+	oScrolls.init();
+	oHeader.init();
+	oNav.init();
+	oPanel.init();
+	oUtil.init();
+	oSearching.initialize();
+	
+	oChat.init();
+	
+	/*
+	 * 모든 초기화 작업이후, hidden element를 삭제한다.
+	 */
+	//------------------------------------------------------------------------------------//
+	var aHiddenElement = document.querySelectorAll("input[type=hidden]");
+	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+		aHiddenElement[index].remove();
+	}
+	//------------------------------------------------------------------------------------//
+}
