@@ -124,8 +124,8 @@
 				<div class="section_wrapper">
 					<div id="scroll1" class="scroll_wrapper">
 						<div class="scroll_area">
+							<h1>채팅방</h1>
 							<ul class="section">
-								<li class="title"><h1>채팅방</h1></li>
 								<li class="card chatRoom">
 									<p class="title icon-chatting">강남역 지하상가안내</p>
 									<p class="limit icon-participant">4 / 30</p>
@@ -142,8 +142,8 @@
 				<div class="section_wrapper">
 					<div id="scroll2" class="scroll_wrapper">
 						<div class="scroll_area">
+							<h1>관심장소</h1>
 							<ul class="section">
-								<li class="title"><h1>관심장소</h1></li>
 								<li class="card default">
 									<p class="icon-warning"></p>
 									<p class="comment">현재 리스트가 없습니다.</p>
@@ -155,8 +155,8 @@
 				<div class="section_wrapper">
 					<div id="scroll3" class="scroll_wrapper">
 						<div class="scroll_area">
+							<h1>설정</h1>
 							<ul class="section">
-								<li class="title"><h1>설정</h1></li>
 								<li class="card default">
 									<p class="icon-warning"></p>
 									<p class="comment">현재 리스트가 없습니다.</p>
