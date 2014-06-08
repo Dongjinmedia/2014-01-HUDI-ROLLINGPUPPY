@@ -517,9 +517,9 @@ var oUtil = {
 
 	isMobile: function() {
 		if (typeof window.orientation !== "undefined") {
-			return false;
+			return true;
 		}
-		return true;
+		return false;
 	},
 	
 	getStyle: function (node, style) {
