@@ -42,14 +42,14 @@
 		<!-- sf = searchForm  -->
 		<div id="sf_wrapper">
 			
-			<div id="sf" name="search"> 
+			<div id="sf"> 
 				<!-- sb = searchBox(검색창) -->
 				<div id="sb_wrapper">
 					<div id="sb_positioner">
-						<input type="text"></input>
+						<input id="searchBox" type="text"></input>
 					</div>
 				</div>
-				<input type="submit" value="검색"></input>
+				<div class="submit">검색</div>
 			</div>
 		</div>
 	</header>
@@ -184,7 +184,7 @@
 	<script type="text/javascript" src="/javascripts/ajax.js?20140607"></script>
 	<script type="text/javascript" src="/javascripts/mobileMain.js?20140607"></script>
 	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
-	<script type="text/javascript" style="display: none;">
+	<script type="text/javascript">
 		window.onload = function() {
 			document.addEventListener("touchmove", function(event) {
 				event.preventDefault();
@@ -193,6 +193,7 @@
 			oScrolls.init();
 			oPanel.init();
 			oSearching.initialize();
+			oHeader.init();
 		}
 	</script>
 </body>

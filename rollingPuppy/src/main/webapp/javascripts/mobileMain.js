@@ -1,23 +1,35 @@
 var oHeader = {
-	eHeader: document.querySelector("header"),
+	eSFWrapper: document.querySelector("#sf_wrapper"),
 	eSearchBox: document.querySelector("#searchBox"),
 	
 	addEvents: function() {
 		this.eSearchBox.addEventListener(
 				"focus",
-				this.expandSearchBox.bind(this)
+				this.focusSearchBox.bind(this)
+		);
+		
+		this.eSearchBox.addEventListener(
+				"blur",
+				this.blurSearchBox.bind(this)
 		);
 	},
 	
 	//TODO expandSearchBox()에 대응되는 CSS 속성 만들 것 
-	expandSearchBox: function() {
-		oUtil.removeClassName(this.eHeader, "")
-		oUtil.addClassName(this.eHeader, "");
-	}
+	focusSearchBox: function() {
+		oUtil.addClassName(this.eSFWrapper, "onFocus");
+	},
+	
+	blurSearchBox: function() {
+		oUtil.removeClassName(this.eSFWrapper, "onFoucs");
+	},
 	
 	//TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
 	//    ** 터치된 네비게이션 메뉴에 .on 추가하기
 	//    ** 터치된 메뉴의 section을 띄워줄 것
+	
+	init: function() {
+		this.addEvents();
+	}
 };
 /*********************************************************************************************************
  *  
@@ -319,7 +331,7 @@ var oScrolls = {
 
 var oSearching = {
 		eSearchBox: document.getElementById("sb_positioner"),
-		eSubmit: document.querySelector("input[type=submit]"),
+		eSubmit: document.querySelector(".submit"),
 		getResultXml: function() {
 			var oParameters = {
 				"queryKeyword" : this.eSearchBox.children[0].value	

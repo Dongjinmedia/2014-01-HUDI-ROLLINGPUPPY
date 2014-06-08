@@ -15,7 +15,6 @@ a {
 }
 
 body * {
-	display: block;
 	font-size: 15px;
 	font-family: Helvetica;
 }
@@ -48,7 +47,11 @@ header {
 	height: 50px;
 }
 
-#sf {
+#sf_wrapper.onFocus {
+	left: 5px;
+}
+
+div#sf {
 	position: relative;
 	width: 100%;
 	height: 100%;
@@ -71,6 +74,10 @@ header {
 	border: 1px solid #ABABAB;
 }
 
+.onFocus #sb_wrapper {
+	right: 55px;
+}
+
 #sb_positioner {
 	position: absolute;
 	top: 0px;
@@ -90,9 +97,30 @@ header {
 	padding: 0px;
 }
 
-#sf input[type=submit] {
+#sf .submit {
+	display: none;
+	position: absolute;
+	top: 5px;
+	right: 4px;
+	width: 45px;
+	height: 38px;
+	border: 1px solid #0077FF;
+	
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+
+	color: #FFFFFF;
+	background-color: #0077FF;
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
+	line-height: 38px;
+}
+
+.onFocus #sf .submit {
 	display: block;
-	position: relative;
 }
 
 #nav {
@@ -229,6 +257,7 @@ header {
 .card {
 	padding: 10px;
 	display: inline-block;
+	min-height: 60px;
 	background-color: #FEFEFE;
 	border: 1px solid #ABABAB;
 	
