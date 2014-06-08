@@ -1,3 +1,7 @@
+//전역변수 초기화는 oUtil의 init()에서 한다.
+var sBrowserPrefix = null;
+var boolIsMobile = false;
+
 var oHeader = {
 	eSFWrapper: document.querySelector("#sf_wrapper"),
 	eSearchBox: document.querySelector("#searchBox"),
@@ -22,15 +26,48 @@ var oHeader = {
 	blurSearchBox: function() {
 		oUtil.removeClassName(this.eSFWrapper, "onFoucs");
 	},
-	
-	//TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
-	//    ** 터치된 네비게이션 메뉴에 .on 추가하기
-	//    ** 터치된 메뉴의 section을 띄워줄 것
-	
 	init: function() {
 		this.addEvents();
 	}
 };
+
+//TODO 네비게이션 메뉴 터치에 대응하는 이벤트 핸들러를 만들 것.
+//    ** 터치된 네비게이션 메뉴에 .on 추가하기
+//    ** 터치된 메뉴의 section을 띄워줄 것
+var oNav = {
+	aMenu: document.querySelector("#nav_menu").children,
+	
+	addEvents: function() {
+		for (var idx = 0; idx < this.aMenu.length; idx++) {
+			this.aMenu[idx].id = "menu" + idx;
+			this.aMenu[idx].addEventListener(
+					boolIsMobile ? "touchend" : "click",
+					this.changePanelPosition.bind(this)
+			);
+		}
+	},
+	
+	changePanelPosition: function(event) {
+		var nClickedPanelIndex = parseInt(event.target.parentNode.id.match(/\d/g)[0]);
+		console.log(nClickedPanelIndex);
+		oPanel.setCurrentPanelIndex(nClickedPanelIndex);
+		oPanel.setPanelPosition();
+	},
+	
+	setCurrentMenuMarker: function(nCenterIndex) {
+		for ( var index = 0 ; index < this.aMenu.length ; ++index ) {
+			oUtil.removeClassName(this.aMenu[index], "on");
+		};
+		
+		oUtil.addClassName(this.aMenu[nCenterIndex], "on");
+	},
+	
+	init: function() {
+		this.addEvents();
+	}
+}
+
+
 /*********************************************************************************************************
  *  
  **********************************************************************************************************/
@@ -39,27 +76,14 @@ var oPanel = {
 	ePanelButtons: document.querySelector("#panel_buttons"),
 	ePanelWrapper: document.querySelector("#panel_wrapper"),
 	
-	fnPanelTouchStart: null,
-	fnPanelTouchMove: null,
-	fnPanelTouchEnd: null,
-	
 	addEvents: function() {
-		console.log("addEvents");
-
 		// panel_buttons 아래 있는 두 개의 button에 대한 클릭 이벤트를 받는다.
 		// window에 orientation 속성이 있다면 모바일기기로 판단한다.
 		//TODO window.orientation이 모바일 기기의 대표성을 띄는 지 확인해볼 것
-		if (typeof window.orientation !== "undefined") {
-			this.ePanelButtons.addEventListener(
-					"touchend",
-					this.panelButtonsHandler.bind(this)
-			);
-		} else {
-			this.ePanelButtons.addEventListener(
-					"click",
-					this.panelButtonsHandler.bind(this)
-			);
-		}
+		this.ePanelButtons.addEventListener(
+				boolIsMobile ? "touchend" : "click",
+				this.panelButtonsHandler.bind(this)
+		);
 		
 		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
@@ -79,7 +103,7 @@ var oPanel = {
 		
 		this.ePanel.addEventListener(
 			"touchstart",
-			 this.fnPanelTouchStart
+			this.panelTouchStart.bind(this)
 		);
 		
 		this.ePanel.addEventListener(
@@ -144,10 +168,9 @@ var oPanel = {
 	ePanel: document.querySelector("#panel"),
 	ePanelContents: document.querySelector("#panel_contents"),
 	aSectionWrapper: document.querySelectorAll(".section_wrapper"),
-	aMenu: document.querySelector("#nav_menu").children,
 	
 	//현재 화면에 보이는 패널의 인덱스번호
-	nCurrentViewPanelIndex: 0,
+	nCurrentPanelIndex: 0,
 	
 	//setTimeout에 사용되는 시간값
 	nAnimateTime: 0,
@@ -172,11 +195,10 @@ var oPanel = {
 		if (this.isPanelMove) {
 			return;
 		}
-		this.isPanelMove = true;
 		
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
-		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].disable();
+		window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].disable();
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -187,6 +209,10 @@ var oPanel = {
 	
 	//터치 이벤트 도중에 호출되는 함수
 	panelTouchMove: function(event) {
+		if (this.isPanelMove) {
+			return;
+		}
+		
 		var touch = event.touches[0];
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
@@ -214,7 +240,7 @@ var oPanel = {
 			} else {
 				this.isScroll = true;
 				// 스크롤을 해도 되는 상황입니다! enable 해줍시다!!
-				window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].enable();
+				window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
 			}
 		}
 		
@@ -231,16 +257,15 @@ var oPanel = {
 	
 	//터치가 종료될때 호출되는 함수
 	panelTouchEnd: function(event) {
-		if (this.isPanelMove === false) {
+		if (this.isPanelMove) {
 			return;
 		}
-		this.isPanelMove = false;
+		this.isPanelMove = true;
 		
 		oUtil.addClassName(this.ePanelContents, "translate");
 		console.log("panelTouchEnd Event : ", event);
 
 		var touch = event.changedTouches[0];
-		var prefix = oUtil.getBrowserPrefix();
 		
 		this.nTouchEndX = touch.pageX;
 		this.nTouchEndY = touch.pageY;
@@ -254,7 +279,7 @@ var oPanel = {
 		this.isScroll = null;
 
 		// touchStart에서 disable 했던 스크롤을 풀어둡니다.
-		window.oScrolls["scroll" + oUtil.mod(this.nCurrentViewPanelIndex, 4)].enable();
+		window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
 			return;
@@ -263,54 +288,50 @@ var oPanel = {
 		//TODO 변화값은 조절하도록
 		var nMoveLengthX = this.nTouchStartX - this.nTouchEndX;
 		if (nMoveLengthX > 50) {
-			this.ePanelContents.style[prefix + "Transform"] = "translate(-100%)";
-			this.nCurrentViewPanelIndex++;
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(-100%)";
+			this.nCurrentPanelIndex++;
 		} else if (nMoveLengthX < -50) {
-			this.ePanelContents.style[prefix + "Transform"] = "translate(100%)";
-			this.nCurrentViewPanelIndex--;
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(100%)";
+			this.nCurrentPanelIndex--;
+		} else if (nMoveLengthX === 0) {
+			this.isPanelMove = false;
 		} else {
-			this.ePanelContents.style[prefix + "Transform"] = "translate(0)";
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
 		}
 		
 		this.ePanelContents.style.webkitTransition = null;
 	},
 	
+	setCurrentPanelIndex: function(idx) {
+		this.nCurrentPanelIndex = idx;
+	},
+	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	setPanelPosition: function() {
-		var prefix = oUtil.getBrowserPrefix();
+		this.isPanelMove = false;
+
 		oUtil.removeClassName(this.ePanelContents, "translate");
-		this.ePanelContents.style[prefix + "Transform"] = "translate(0)";
+		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
 
-
-		var nCenterIndex = oUtil.mod(this.nCurrentViewPanelIndex, 4);
-		var nLeftIndex = oUtil.mod(this.nCurrentViewPanelIndex - 1, 4);
-		var nRightIndex = oUtil.mod(this.nCurrentViewPanelIndex + 1, 4);
-		var nRightEndIndex = oUtil.mod(this.nCurrentViewPanelIndex + 2, 4);
+		var nLeftIndex = oUtil.mod(this.nCurrentPanelIndex - 1, 4);
+		var nCenterIndex = oUtil.mod(this.nCurrentPanelIndex, 4);
+		var nRightIndex = oUtil.mod(this.nCurrentPanelIndex + 1, 4);
+		var nRightEndIndex = oUtil.mod(this.nCurrentPanelIndex + 2, 4);
 		
-		this._changeCurrentMenuMarker(nCenterIndex);
+		oNav.setCurrentMenuMarker(nCenterIndex);
 		
-		console.log("current: " + this.nCurrentViewPanelIndex);
-		console.log(nLeftIndex + ", " + nCenterIndex + ", " + nRightIndex  + ", " + nRightEndIndex);
+		console.log(this.nCurrentPanelIndex);
+		console.log(nCenterIndex, nLeftIndex, nRightIndex, nRightEndIndex);
 		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
 		this.aSectionWrapper[nRightIndex].style.left = "100%";
 		this.aSectionWrapper[nRightEndIndex].style.left = "200%";
 	},
 	
-	_changeCurrentMenuMarker: function(nCenterIndex) {
-		
-		for ( var index = 0 ; index < this.aMenu.length ; ++index ) {
-			oUtil.removeClassName(this.aMenu[index], "on");
-		};
-		
-		oUtil.addClassName(this.aMenu[nCenterIndex], "on");
-	},
-	
 	init : function(){
 		this.addEvents();
 		// 초기화 시점에 setPanelPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
 		this.setPanelPosition();
-		console.log("init");
 	}
 };
 /*********************************************************************************************************
@@ -320,7 +341,7 @@ var oScrolls = {
 	init: function() {
 		for (var idx = 0; idx < 4; idx++) {
 			oScrolls["scroll" + idx]
-			= new IScroll("#scroll" + idx, { mouseWheel: true });
+					= new IScroll("#scroll" + idx, { mouseWheel: true });
 		}
 	}
 	
@@ -434,5 +455,17 @@ var oUtil = {
 		} else {
 			return "";
 		}
+	},
+	
+	isMobile: function() {
+		if (typeof window.orientation !== "undefined") {
+			return false;
+		}
+		return true;
+	},
+	
+	init: function() {
+		sBrowserPrefix = this.getBrowserPrefix();
+		boolIsMobil = this.isMobile();
 	}
 };

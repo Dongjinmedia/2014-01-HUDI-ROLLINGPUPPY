@@ -191,9 +191,11 @@
 			});
 
 			oScrolls.init();
+			oHeader.init();
+			oNav.init();
 			oPanel.init();
 			oSearching.initialize();
-			oHeader.init();
+			oUtil.init();
 		}
 	</script>
 </body>
