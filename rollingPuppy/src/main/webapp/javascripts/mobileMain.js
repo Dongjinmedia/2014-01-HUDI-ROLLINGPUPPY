@@ -278,6 +278,7 @@ var oPanel = {
 		window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
+			this.isPanelMove = false;
 			return;
 		}
 		
