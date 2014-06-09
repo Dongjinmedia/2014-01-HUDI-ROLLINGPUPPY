@@ -1019,6 +1019,8 @@ var oChat = {
 			};
 			
 			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
+			
+			oScrolls["scroll1"].refresh();
 		},
 		
 		init: function() {
@@ -1028,8 +1030,8 @@ var oChat = {
 			this.userId = document.getElementById("id").value;
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
-			//this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
-			this.socket = io.connect("http://10.73.43.102:3080"+sParameters);
+			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
+			//this.socket = io.connect("http://10.73.43.102:3080"+sParameters);
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {				
