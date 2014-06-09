@@ -60,11 +60,6 @@
 	</mapping>
 	
 	<mapping>
-		<url>/mobile/chat</url>
-		<controller>com.puppy.controller.mobile.MobileChatController</controller>
-	</mapping>
-	
-	<mapping>
 		<url>/chat/getMyChatInfo</url>
 		<controller>com.puppy.controller.chat.ChatInfoController</controller>
 	</mapping>

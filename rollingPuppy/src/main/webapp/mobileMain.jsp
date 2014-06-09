@@ -80,44 +80,16 @@
 			</div>
 			<div class="middle">
 				<ul class="chattingContents">
-					<!--<li>안녕하니?</li>
-					<li>웅 안녕못해</li>
-					<li>싸울래?</li>
-					<li>미안 잘못했어ㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠㅠ</li>-->
-					 <li class="notice">
-						<span class="message">날으는 정윤성님이 참여하였습니다.</span>
-					</li>
-					
-					<li class="user">
-						<span class="time">AM 11:07</span>
-						<span class="message">안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?안녕하니?</span>
-					</li>
-					
-					<li class="other">
-						<span class="profile"></span>
-						<span class="nickname">날으는 정윤성</span>
-						<span class="message">웅 안녕못해</span>
-						<span class="time">AM 1:07</span>
-					</li> 
 				</ul>
 			</div>
 			<div class="bottom">
 				<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
-				<input type = "button" value = "send"></input>
+				<div class="send">전송</div>
 			</div>
 		</div>
-		<div class="rightArea fold">
+		<div class="rightArea">
 			<div class="chattingMemberList">
 				<ul>
-					<li class="person chatMember"><img class="profile"
-						src="https://cdn1.iconfinder.com/data/icons/gnomeicontheme/32x32/stock/generic/stock_person.png">
-						<p class="nickname adjective">날아라</p>
-						<p class="nickname noun">윤성</p></li>
-
-					<li class="person chatMember"><img class="profile"
-						src="https://cdn1.iconfinder.com/data/icons/gnomeicontheme/32x32/stock/generic/stock_person.png">
-						<p class="nickname adjective">꿀렁꿀렁</p>
-						<p class="nickname noun">윤성</p></li>
 				</ul>
 			</div>
 		</div>

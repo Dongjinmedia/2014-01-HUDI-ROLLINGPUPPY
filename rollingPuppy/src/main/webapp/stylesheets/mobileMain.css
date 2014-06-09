@@ -666,76 +666,77 @@ li.chatRoom .notification {
 }
 
 .rightArea.fold {
-	animation: fold;
+	animation: memberListFold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	
-	-webkit-animation: fold;
+	-webkit-animation: memberListFold;
 	-webkit-animation-duration: 0.4s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 	
-	-moz-animation: fold;
+	-moz-animation: memberListFold;
 	-moz-animation-duration: 0.4s;
 	-moz-animation-timing-function: ease;
 	-moz-animation-fill-mode: forwards;
 }
 
 /* mobileMain.css와 mobileChat.css merge하는 과정에서 아래소스가
-충돌되어 주석처리 했습니다. -윤성
-@keyframes fold {
+충돌되어 주석처리 했습니다. -윤성 */
+/* 채팅방 참여리스트 스타일*/
+@keyframes memberListFold {
 	from { transform: translateX(-100%); }
 	to { transform: translateX(0px); }
 }
-@-webkit-keyframes fold {
+@-webkit-keyframes memberListFold {
 	from { -webkit-transform: translateX(-100%); }
 	to { -webkit-transform: translateX(0px); }
 }
-@-moz-keyframes fold {
+@-moz-keyframes memberListFold {
 	from { -moz-transform: translateX(-100%); }
 	to { -moz-transform: translateX(0px); }
 }
 
 .rightArea.unfold {
-	animation: unfold;
+	animation: memberListUnfold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	
-	-webkit-animation: unfold;
+	-webkit-animation: memberListUnfold;
 	-webkit-animation-duration: 0.4s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 	
-	-moz-animation: unfold;
+	-moz-animation: memberListUnfold;
 	-moz-animation-duration: 0.4s;
 	-moz-animation-timing-function: ease;
 	-moz-animation-fill-mode: forwards;
 }
-@keyframes unfold {
+@keyframes memberListUnfold {
 	from { transform: translateX(0px); }
 	to { transform: translateX(-100%); }
 }
-@-webkit-keyframes unfold {
+@-webkit-keyframes memberListUnfold {
 	from { -webkit-transform: translateX(0px); }
 	to { -webkit-transform: translateX(-100%); }
 }
-@-moz-keyframes unfold {
+@-moz-keyframes memberListUnfold {
 	from { -moz-transform: translateX(0px); }
 	to { -moz-transform: translateX(-100%); }
 }
 */
 
-/* .rightArea.unfold {
+ .rightArea.unfold {
 	left: 80%;
 	-webkit-transition: all 2s ease-in-out;
 	-moz-transition: all 2s ease-in-out;
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
-} */
+}
 
-/* default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 
+ default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 
 .rightArea.fold {
 	left: 100%;
 	-webkit-transition: all 2s ease-in-out;
@@ -743,10 +744,10 @@ li.chatRoom .notification {
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
 } 
-*/
+/* 채팅방 참여리스트 스타일*/
 
 .leftArea .top {
-	display: relative;
+	position: relative;
 	width: 100%;
 	border-bottom: 0.1em solid #3a4655;
 	border-right: 0.1em solid #384652;
@@ -766,10 +767,7 @@ li.chatRoom .notification {
 	width:150px;
 	text-overflow: ellipsis;
 	overflow: hidden;
-}
-
-.top .title:before {
-	margin-right: 5px;
+	margin-left: 20px;
 }
 
 .top .menu {
@@ -800,7 +798,6 @@ li.chatRoom .notification {
 	content: "\f0c9";
 	font-size: 1.8em;
 	color: #7a8696;
-	margin-right: 5px;
 }
 
 /* .top .menu .icon-member:hover:before {
@@ -808,13 +805,18 @@ li.chatRoom .notification {
 } */
 
 .top .menu .leftMenu {
-	left: 2%;
-	text-align: left;
+	position: relative;
+	left: 5%;
+	top: 40%;
+	float: left;
 	display: inline-block;
 }
 
 .top .menu .rightMenu {
-	right: 2%;
+	position: relative;
+	right: 5%;
+	top: 40%;
+	float: right;
 	text-align: right;
 	display: inline-block;
 }
@@ -823,20 +825,18 @@ li.chatRoom .notification {
 .leftArea .middle {
 	display: inline-block;
 	width: 100%;
-	!height: 60%;
 	height: 85%;
 }
 
 .leftArea .bottom {
 	display: inline-block;
 	width: 100%;
-	!height: 25%;
 	border-top: 0.1em solid #C7C7C7;
 }
 
 .inputArea {
 	width: 85%;
-	height: 30px;
+	height: 40px;
 	font-size: 1em;
 	background: none;
 	color: #000;
@@ -845,18 +845,34 @@ li.chatRoom .notification {
 	border: 0;
 	padding: 0.5em 0.6em;
 	color: #92a2c2;
-	line-height: 1.5em;
-	!border: 1px solid;
+	line-height: 35px;
 }
 
-.leftArea .bottom input[type="button"]{
+.leftArea .bottom .send {
+	float: right;
 	width:13%;
+	height: 40px !important;
+	line-height: 35px;
 	border: none;
 	position:relative;
-	bottom:9px;
-	height:3em;
+	height: 100%;
+	
+	border: 1px solid #C7C7C7;
+	
+	border-radius: 4px;	
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+
+	color: #C7C7C7;
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: bold;
+	text-align: center;
 }
 
+.leftArea .bottom .send:hover {
+	color: #424f5f;
+}
 
 .chattingMemberList ul{
 	display: inline-block;
@@ -897,7 +913,7 @@ li.chatRoom .notification {
   overflow-x: hidden;
 }
 
-.chattingContents li .profile {
+.profile {
   width: 3em;
   height: 3em;
   display: inline-block;
