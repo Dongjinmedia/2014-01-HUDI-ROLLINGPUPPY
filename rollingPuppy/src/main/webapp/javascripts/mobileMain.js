@@ -21,6 +21,12 @@ var oHeader = {
 	//TODO expandSearchBox()에 대응되는 CSS 속성 만들 것 
 	focusSearchBox: function() {
 		oUtil.addClassName(this.eSFWrapper, "onFocus");
+		oPanel.setCurrentPanelIndex(0);
+		oPanel.setPanelPosition();
+		
+		if (oPanel.isPanelWrapperFolded()) {
+			oPanel.unfoldPanelWrapper();
+		}
 	},
 	
 	blurSearchBox: function() {
@@ -468,6 +474,8 @@ var oSearching = {
 						
 						//스크롤 영역 크기 조절
 						oScrolls["scroll0"].refresh();
+						oPanel.setCurrentPanelIndex(0);
+						oPanel.setPanelPosition();
 					}
 				}
 				//검색결과 Panel을 열어준다.
