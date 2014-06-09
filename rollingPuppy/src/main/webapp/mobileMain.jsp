@@ -38,6 +38,28 @@
 				<p class="category"></p>
 				<p class="address"></p>
 			</li>
+			
+			<li class="person chatMember">
+				<span class="profile"></span>
+				<p class="nickname adjective"></p>
+				<p class="nickname noun"></p>
+			</li>
+			
+			<li class="notice">
+				<span class="message"></span>
+			</li>
+								
+			<li class="user">
+				<span class="time"></span>
+				<span class="message"></span>
+			</li>
+								
+			<li class="other">
+				<span class="profile"></span>
+				<span class="nickname"></span>
+				<span class="message"></span>
+				<span class="time"></span>
+			</li> 
 		</ul>
 	</div>
 
@@ -45,7 +67,7 @@
 	<div id="chatWindow">
 		<div class="leftArea">
 			<div class="top">
-				<p class="title icon-chatting">모여라 꿈동산</p>
+				<p class="title icon-chatting">모여라 꿈동산 여기는 판교판교</p>
 				<div class="menu">
 					<div class = "leftMenu">
 						<i class="icon-aside" title="접어두기"></i>
@@ -260,6 +282,7 @@
 			initialize();
 		}
 	</script>
-	<script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
+	<!-- <script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script> -->
+	<script type="text/javascript" src="http://10.73.43.102:3080/socket.io/socket.io.js"></script>
 </body>
 </html>
