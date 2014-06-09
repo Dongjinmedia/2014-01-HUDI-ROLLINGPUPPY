@@ -240,7 +240,7 @@ div#sf {
 	background-color: #f16559;
 }
 
-/* .scroll_wrapper��� ��ш린��� ������ media query������ �����⑺�� */
+/* .scroll_wrapper의 크기는 아래 media query에서 적용함 */
 .scroll_wrapper {
 	position: absolute;
 	top: 0px;
@@ -388,9 +388,9 @@ and (max-width: 650px)  {
 	to { -moz-transform: translateY(100%); }
 }
 
-/* #panel_buttons��� ������ 踰���쇰�ㅼ�� #fold / #unfold��� ���移� �����깆�� ��ㅼ�� 愿대�����寃� �����⑸�����������,
-   ��대�� iOS������ unfold ������硫���댁�� ������ 以� #fold媛� 蹂댁�댁�� ������ 踰�洹� ���臾몄��������. */
-/* iScroll��� �����⑸��硫댁�� 臾몄��媛� 諛���������듬�����. 釉���쇱�곗�� 蹂� z-index ������留���� ��щ�쇱�� 諛������� 臾몄��濡� ���媛���⑸�����. */
+/* #panel_buttons와 하위 버튼들인 #fold / #unfold의 위치 속성이 다소 괴랄하게 적용되었는데,
+   이는 iOS에서 unfold 애니메이션 동작 중 #fold가 보이지 않는 버그 때문입니다. */
+/* iScroll을 적용되면서 문제가 발생했습니다. 브라우저 별 z-index 랜더링이 달라서 발생한 문제로 생각됩니다. */
 #panel_buttons {
 	position: absolute;
 	width: 52px;
@@ -607,7 +607,7 @@ li.chatRoom .notification {
 }
 
 /*
-** 梨����李� (ChatWindow) ��ㅽ����� ������
+** 채팅창 (ChatWindow) 스타일 시작
 */
 #chatWindow *{
 	-webkit-box-sizing: border-box;
@@ -639,7 +639,7 @@ li.chatRoom .notification {
 	top:-92%;
 	position: relative;
 	z-index: 10;
-	/*��ㅻⅨ履쎌�쇰�� 諛���ㅻ�������ㅺ��, 硫���대�� ���瑜대㈃ �����⑤�� */
+	/*오른쪽으로 밀려나있다가, 메뉴를 누르면 나온다 */
 	left:100%;
 	width: 30%;
 	height: 92%;
@@ -666,76 +666,77 @@ li.chatRoom .notification {
 }
 
 .rightArea.fold {
-	animation: fold;
+	animation: memberListFold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	
-	-webkit-animation: fold;
+	-webkit-animation: memberListFold;
 	-webkit-animation-duration: 0.4s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 	
-	-moz-animation: fold;
+	-moz-animation: memberListFold;
 	-moz-animation-duration: 0.4s;
 	-moz-animation-timing-function: ease;
 	-moz-animation-fill-mode: forwards;
 }
 
-/* mobileMain.css��� mobileChat.css merge������ 怨쇱�������� �����������ㅺ��
-異⑸�������� 二쇱��泥�由� �����듬�����. -��ㅼ��
-@keyframes fold {
+/* mobileMain.css와 mobileChat.css merge하는 과정에서 아래소스가
+충돌되어 주석처리 했습니다. -윤성 */
+/* 채팅방 참여리스트 스타일*/
+@keyframes memberListFold {
 	from { transform: translateX(-100%); }
 	to { transform: translateX(0px); }
 }
-@-webkit-keyframes fold {
+@-webkit-keyframes memberListFold {
 	from { -webkit-transform: translateX(-100%); }
 	to { -webkit-transform: translateX(0px); }
 }
-@-moz-keyframes fold {
+@-moz-keyframes memberListFold {
 	from { -moz-transform: translateX(-100%); }
 	to { -moz-transform: translateX(0px); }
 }
 
 .rightArea.unfold {
-	animation: unfold;
+	animation: memberListUnfold;
 	animation-duration: 0.4s;
 	animation-timing-function: ease;
 	animation-fill-mode: forwards;
 	
-	-webkit-animation: unfold;
+	-webkit-animation: memberListUnfold;
 	-webkit-animation-duration: 0.4s;
 	-webkit-animation-timing-function: ease;
 	-webkit-animation-fill-mode: forwards;
 	
-	-moz-animation: unfold;
+	-moz-animation: memberListUnfold;
 	-moz-animation-duration: 0.4s;
 	-moz-animation-timing-function: ease;
 	-moz-animation-fill-mode: forwards;
 }
-@keyframes unfold {
+@keyframes memberListUnfold {
 	from { transform: translateX(0px); }
 	to { transform: translateX(-100%); }
 }
-@-webkit-keyframes unfold {
+@-webkit-keyframes memberListUnfold {
 	from { -webkit-transform: translateX(0px); }
 	to { -webkit-transform: translateX(-100%); }
 }
-@-moz-keyframes unfold {
+@-moz-keyframes memberListUnfold {
 	from { -moz-transform: translateX(0px); }
 	to { -moz-transform: translateX(-100%); }
 }
 */
 
-/* .rightArea.unfold {
+ .rightArea.unfold {
 	left: 80%;
 	-webkit-transition: all 2s ease-in-out;
 	-moz-transition: all 2s ease-in-out;
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
-} */
+}
 
-/* default媛� fold������濡�,  #chatWindow .rightArea ��� ������������ ������ ������ 
+ default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 
 .rightArea.fold {
 	left: 100%;
 	-webkit-transition: all 2s ease-in-out;
@@ -743,7 +744,7 @@ li.chatRoom .notification {
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
 } 
-*/
+/* 채팅방 참여리스트 스타일*/
 
 .leftArea .top {
 	position: relative;
@@ -869,6 +870,9 @@ li.chatRoom .notification {
 	text-align: center;
 }
 
+.leftArea .bottom .send:hover {
+	color: #424f5f;
+}
 
 .chattingMemberList ul{
 	display: inline-block;
@@ -909,7 +913,7 @@ li.chatRoom .notification {
   overflow-x: hidden;
 }
 
-.chattingContents li .profile {
+.profile {
   width: 3em;
   height: 3em;
   display: inline-block;
@@ -1001,5 +1005,5 @@ li.chatRoom .notification {
   opacity: 0.3;
 }
 /*
-** 梨����李� (ChatWindow) ��ㅽ����� 醫�猷�
+** 채팅창 (ChatWindow) 스타일 종료
 */

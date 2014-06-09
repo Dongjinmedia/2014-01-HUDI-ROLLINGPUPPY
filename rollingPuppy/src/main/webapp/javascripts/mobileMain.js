@@ -629,6 +629,10 @@ var oChat = {
 		eChatWindowTitle: document.querySelector("#chatWindow .top .title"),
 		eChatWindowMessageBox: document.querySelector("#chatWindow .middle .chattingContents"),
 		
+		//채팅방 참여자 리스트
+		eMemberIcon : document.querySelector("#chatWindow .top .menu .icon-member"),
+		eRightArea: document.querySelector("#chatWindow .rightArea"),
+		
 		//Template element
 		eTemplateNotice: document.querySelector("#template .notice"),
 		eTemplateUser: document.querySelector("#template .user"),
@@ -704,6 +708,25 @@ var oChat = {
 		
 		isChatWindowVisible: function() {
 			return (this.eChatWindow.style.display == "block");
+		},
+		
+		//채팅방 참여자 리스트보기 메뉴를 클릭할때 실행되는 함수
+		memberPanelHandler: function() {
+			if ( this.eRightArea.className.indexOf("unfold") !== -1 ) {
+				this.foldMemberPanel();
+			} else {
+				this.unfoldMemberPanel();
+			}					
+		},
+		
+		foldMemberPanel: function() {
+			oUtil.removeClassName(this.eRightArea, "unfold");
+			oUtil.addClassName(this.eRightArea, "fold");
+		},
+		
+		unfoldMemberPanel: function() {
+			oUtil.removeClassName(this.eRightArea, "fold");						
+			oUtil.addClassName(this.eRightArea, "unfold");
 		},
 		
 		saveCurrentChatRoomNumber: function(chatRoomNum) {
@@ -1066,7 +1089,7 @@ var oChat = {
 			}.bind(this);
 			
 			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
-			this.eFoldButton.addEventListener("click", function(e) {
+			this.eFoldButton.addEventListener("touchend", function(e) {
 				this.foldChattingRoom();
 			}.bind(this), false);
 			
@@ -1131,6 +1154,10 @@ var oChat = {
 //				}
 //			}
 			this.getMyChatInfoAndUpdateListInPanel();
+			
+			//채팅방 참여자리스트에서 보기메뉴를 클릭할때 발생하는 이벤트
+			//working
+			this.eMemberIcon.addEventListener("click",this.memberPanelHandler.bind(this));
 		}
 };
 /*********************************************************************************************************
