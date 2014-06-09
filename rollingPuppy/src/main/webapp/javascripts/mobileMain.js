@@ -1128,12 +1128,8 @@ function initialize() {
 	oNav.init();
 	oPanel.init();
 	oSearching.initialize();
-<<<<<<< HEAD
-	oHeader.init();
 	oPanelContents.init();
-=======
 	
->>>>>>> branch 'develop' of https://github.com/NHNNEXT/2014-01-HUDI-ROLLINGPUPPY.git
 	oChat.init();
 	
 	/*
