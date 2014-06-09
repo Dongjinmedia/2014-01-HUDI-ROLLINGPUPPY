@@ -1,91 +1,56 @@
-@CHARSET "UTF-8";
-
-* {
-	font-family: 'NanumGothic';
+body, html {
 	position: relative;
+	display: block;
+	height: 100%;
+	
+	-webkit-user-select: NONE;
+	-khtml-user-select: NONE;
+	-moz-user-select: NONE;
+	-ms-user-select: NONE;
+	user-select: NONE;
+}
+
+body * {
+	font-family: "NanumGothic", "Apple SD Gothic Neo", "돋움", Times;
+
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
 	box-sizing: border-box;
-	z-index: 2;
 }
 
 a { 
 	text-decoration:none
 }
 
-body, html {
+.header {
+	position: absolute;
+	height: 70px;
+	
+	top: 50%;
+	left: 40px;
+	margin-top: -210px;
+}
+
+.header .title {
+	font-size: 35px;
+	font-weight: bold;
+}
+
+.header p {
 	position: relative;
-	height: 100%;
-	min-height: 560px;
-	padding: 0 auto;
-	margin: 0 auto;
-}
-
-.bgImg {
-	position: fixed;
-	top: 5%;
-	margin-left: 400px;
-	width: 100%;
-	background:
-		url(/images/map.png)
-		no-repeat;
-	!background-size: cover;
-	height: 100%;
-	z-index: 1;
-	opacity: 0.8;
-	min-width: 100%;
-}
-
-.innerbg {
-	position: fixed;
-	background: url(/images/chat.png) no-repeat;
-	width: 100%;
-	height: 100%;
-	margin-left: 320px;
-	top: 28%;
-	opacity: 0.9;
+	left: 10px;
+	margin-top: 10px;
 }
 
 .interactBox {
 	position: absolute;
+	
+	width: 300px;
+	height: 350px;
+	
 	top: 50%;
-	margin-top: -250px;
-	margin-left: 50px;
-}
-
-h1,p {
-	margin-bottom: 10px;
-}
-
-.loginArea {
-	display: block;
-}
-
-.joinArea {
-	display:none;
-}
-
-form input[type="text"],input[type="password"] {
-	background: #e5e5e5;
-	border: none;
-	border-radius: 3px;
-	color: #5a5656;
-	font-size: 14px;
-	height: 50px;
-	outline: none;
-	padding: 0px 10px;
-	width: 280px;
-}
-
-form input[type="submit"] {
-	background-color: #008dde;
-	border: none;
-	border-radius: 3px;
-	color: #f4f4f4;
-	cursor: pointer;
-	height: 50px;
-	text-transform: uppercase;
-	width: 280px;
+	left: 40px;
+	margin-top: -140px;
 }
 
 .choiceBlock {
@@ -96,9 +61,13 @@ form input[type="submit"] {
 	margin-bottom: 10px;
 }
 
+.choiceBlock > * {
+	margin-left: 5px;
+}
+
 .choice {
 	display:inline-block;
-	width:130px;
+	width:135px;
 	text-align:center;
 	padding:20px;
 	border-radius: 0.3em;
@@ -158,38 +127,162 @@ form input[type="submit"] {
 	background: #fff;
 }
 
+
+.loginArea {
+	position: absolute;
+	display: block;
+	
+	top: 105px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+.joinArea {
+	position: absolute;
+	display:none;
+	
+	top: 105px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
+form {
+	position: absolute;
+	whidth: 100%;
+	height: 100%;
+}
+
+form input[type=text],input[type=password] {
+	width: 100%;
+	padding: 0px 10px;
+	background: #e5e5e5;
+	color: #5a5656;
+	font-size: 14px;
+	border: none;
+	border-radius: 3px;
+	outline: none;
+}
+
+.loginArea input[type=text], .loginArea input[type=password] {
+	height: 60px;
+	margin-bottom: 15px;
+}
+
+.joinArea input[type=text], .joinArea input[type=password] {
+	height: 45px;
+	margin-bottom: 8px;
+}
+
+form input[type="submit"] {
+	position: absolute;
+	width: 100%;
+	height: 50px;
+	bottom: 0px;
+	left: 0px;
+
+	background-color: #008dde;
+	color: #f4f4f4;
+
+	border: none;
+	border-radius: 10px;
+
+	cursor: pointer;
+	text-transform: uppercase;
+	
+		
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
+}
+
+
+
+.bgImg {
+	position: fixed;
+	top: 5%;
+	margin-left: 400px;
+	width: 100%;
+	background:
+		url(/images/map.png)
+		no-repeat;
+	!background-size: cover;
+	height: 100%;
+	z-index: 1;
+	opacity: 0.8;
+	min-width: 100%;
+}
+
+.innerbg {
+	position: fixed;
+	background: url(/images/chat.png) no-repeat;
+	width: 100%;
+	height: 100%;
+	margin-left: 320px;
+	top: 28%;
+	opacity: 0.9;
+}
+
+
 @media only all and (max-device-width: 767px) { 
 	.bgImg {
-		top: 0px;
-		left:0px;
-		width: 100%;
-		height: 100%;
-
-		background:
-			url(/images/neighbors.jpg)
-			no-repeat;
-		background-size: cover;			
-		z-index: 1;
-		opacity: 0.2;
-	}
-	
-	.innerbg {
 		display: none;
 	}
 	
+	.header {
+		position: absolute;
+		height: 70px;
+		
+		top: 50%;
+		left: 15px;
+		margin-top: -200px;
+	}
+	
 	.interactBox {
-		margin: auto;
-		width: 90%;
-		max-width: 280px;
-		height: 100%;
-		position: relative;
-		top: 0;
-		left: 0;
-		margin-top: 0;
+		position: absolute;
+		display: block;
+		
+		width: 280px;
+		height: 350px;
+		
+		top: 50%;
+		left: 50%;
+		margin-top: -140px;
+		margin-left: -140px;
 	}
 	
 	.interactBox > *{
 		width: 100%;
-		margin-left: 3px;
+	}
+	
+	.choiceBlock {
+		position: absolute;
+		width: 280px;
+		
+		left: 50%;
+		margin-top: 20px;
+		margin-bottom: 10px;
+		margin-left: -140px;
+				
+		font-size: 150%;
+		font-weight: 700;
+	}
+	
+	.choiceBlock > * {
+		margin-left: 5px;
+	}
+	
+	.choice {
+		display:inline-block;
+		width:130px;
+		text-align:center;
+		padding:20px;
+		border-radius: 0.3em;
+		box-shadow: 0 2px 1px rgba(black, .4);
+	}
+	
+	.choiceBlock>.devider {
+		display: none;
 	}
 }

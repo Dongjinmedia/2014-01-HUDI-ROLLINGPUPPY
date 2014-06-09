@@ -1,4 +1,4 @@
-//전역변수 초기화는 oUtil의 init()에서 한다.
+//전역변수의 초기화는 window.initialize()에서 한다.
 var sBrowserPrefix = null;
 var boolIsMobile = false;
 

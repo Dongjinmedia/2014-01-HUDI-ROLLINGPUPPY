@@ -1,3 +1,5 @@
+var boolIsMobile = typeof window.orientation !== "undefined" ? true : false;
+
 var oUtil = {
 	//input tag의 name 이 email인 곳에 email형식에 맞게 input이 들어왔는지 정규 표현식을 이용해 확인하는 함수 
 	isValidateEmailFormat: function(email) {
@@ -49,23 +51,27 @@ var oSelectBox = {
 		this.eComment = this.eTitle.nextElementSibling;
 		
 		
-		this.eLoginSelector.addEventListener('click', function() {
-			this.changeView(
-										this.eLoginEntireArea,
-										this.eJoinEntireArea,
-										"Welcome. Please login.",
-										"Welcome My Neighbor"
-										);
-		}.bind(this), false);
+		this.eLoginSelector.addEventListener(
+				boolIsMobile ? "touchend" : "click",
+				function() {
+					this.changeView(
+							this.eLoginEntireArea,
+							this.eJoinEntireArea,
+							"Welcome!",
+							"Welcome My Neighbor"
+					);
+				}.bind(this), false);
 		
-		this.eJoinSelector.addEventListener('click', function() {
-			this.changeView(
-										this.eJoinEntireArea,
-										this.eLoginEntireArea,
-										"Be My Neighbor",
-										"And Chat On The Map"
-										);
-		}.bind(this), false);
+		this.eJoinSelector.addEventListener(
+				boolIsMobile ? "touchend" : "click",
+				function() {
+					this.changeView(
+							this.eJoinEntireArea,
+							this.eLoginEntireArea,
+							"Be My Neighbor",
+							"And Chat On The Map"
+					);
+				}.bind(this), false);
 	}	
 };
 
@@ -85,6 +91,7 @@ var oLogin = {
 		var checkboxKeepEmail = loginForm.querySelector("input[name=keepEmail]");
 		
 		inputEmail.value = email;
+		console.log(email);
 		checkboxKeepEmail.checked = true;
 	},
 	
@@ -139,7 +146,8 @@ var oLogin = {
 	initialize: function() {
 		var lastLoggedEmail = oCookie.getEmailCoockieValue();
 		this.inputLastLoggedEmail(lastLoggedEmail);
-		document.querySelector(".loginArea input[type=submit]").addEventListener('click', this.login, false);
+		document.querySelector("#login_button").addEventListener(
+				boolIsMobile ? "touchend" : "click", this.login, false);
 	}
 };
 
@@ -223,7 +231,8 @@ var oJoin = {
 		
 	},
 	initialize: function() {
-		document.querySelector(".joinArea input[type=submit]").addEventListener('click', this.join, false);
+		document.querySelector("#join_button").addEventListener(
+				boolIsMobile ? "touchend" : "click", this.join, false);
 		
 		//duplicate Email check
 		document.getElementById("joinEmail").addEventListener('keyup',this.checkEmailExsitsAndNoticeUser, false);
@@ -261,5 +270,3 @@ function initialize() {
 	oLogin.initialize();
 	oJoin.initialize();
 }
-
-window.onload = initialize;
