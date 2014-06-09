@@ -748,7 +748,6 @@ li.chatRoom .notification {
 .leftArea .top {
 	display: relative;
 	width: 100%;
-	height: 45px;
 	border-bottom: 0.1em solid #3a4655;
 	border-right: 0.1em solid #384652;
 	background-color: #424f5f;
@@ -760,15 +759,13 @@ li.chatRoom .notification {
 }
 
 .top .title {
-	display: inline;
+	display: inline-block;
 	margin-top: 0.7em;
 	font-size: 1.1em;
-	/*
 	white-space: nowrap;
-	width:10px;
+	width:150px;
 	text-overflow: ellipsis;
 	overflow: hidden;
-	*/
 }
 
 .top .title:before {
@@ -782,7 +779,6 @@ li.chatRoom .notification {
 	width: 100%;
 	height: 1em;
 	cursor: pointer;
-	text-align: right;
 	right: 1%;
 }
 
@@ -813,11 +809,13 @@ li.chatRoom .notification {
 
 .top .menu .leftMenu {
 	left: 2%;
+	text-align: left;
 	display: inline-block;
 }
 
 .top .menu .rightMenu {
 	right: 2%;
+	text-align: right;
 	display: inline-block;
 }
 

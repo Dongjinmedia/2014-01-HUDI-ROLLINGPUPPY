@@ -422,7 +422,29 @@ var oPanelContents = {
 			
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
-		},	
+		},
+		
+		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
+		chattingSelectHandler: function(event) {
+			console.log("into chattingSelectHandler");
+			var clickedTarget = event.target;	
+			if(clickedTarget.tagName == "P"){
+				//cell을 선택했으면 
+				//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+				//그 cell의 속성으로 저장된 채팅방번호를 가져온다.
+				var destinationTarget = clickedTarget.parentNode;
+				var chatRoomNum = destinationTarget["chatRoomNumber"];
+				
+				oChat.showChatWindow(chatRoomNum);
+				//this._foldPanelContents();
+			}
+		},
+
+		
+		init: function() {
+			//working
+			this.eChattingListTarget.addEventListener("touchend", this.chattingSelectHandler.bind(this));
+		}
 };
 /*********************************************************************************************************
  * oPanel안에 Contents영역(리스트)에 대한 소스코드 종료  
@@ -584,8 +606,6 @@ var oChat = {
 		//채팅창 안의 element
 		eChatWindowTopBar: document.querySelector("#chatWindow .top"),
 		eChatWindowTitle: document.querySelector("#chatWindow .top .title"),
-		eChatWindowParticipant: document.querySelector("#chatWindow .top .limit"),
-		eChatWindowAddress: document.querySelector("#chatWindow .top .address"),
 		eChatWindowMessageBox: document.querySelector("#chatWindow .middle .chattingContents"),
 		
 		//Template element
@@ -645,7 +665,7 @@ var oChat = {
 			oChat.updateChatWindowHeaderText(chatRoomNum);
 			oChat.updateMemberList(chatRoomNum);
 			oChat.updateNotificationView(chatRoomNum);
-			oAside.updateTotalNotificationView();
+			oPanel.updateTotalNotificationView();
 			oChat.visibleChatWindow();
 			
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
@@ -854,10 +874,7 @@ var oChat = {
 		//채팅창 상단에 보여지는 제목, 인원, 장소명 등의 데이터를 업데이트한다.
 		updateChatWindowHeaderText: function(chatRoomNum) {
 			var oTarget = this.oInfo[chatRoomNum];
-			
 			this.eChatWindowTitle.innerText = oTarget["title"];
-			this.eChatWindowAddress.innerText = oTarget["locationName"];
-			this.eChatWindowParticipant.innerText = oTarget["participantNum"] + " / " + oTarget["max"];
 		},
 		
 		//패널의 채팅리스트에 존재하는 채팅방의 Notification VIew를 업데이트한다.
@@ -963,6 +980,7 @@ var oChat = {
 		saveChatInfo: function(aParameter) {
 			window.oChat.oInfo =  aParameter
 		},
+		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
@@ -1003,37 +1021,6 @@ var oChat = {
 			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
 		},
 		
-		// 채팅방의 top bar를 클릭하면 마우스 이동에 대한 이벤트를 등록한다.
-		mouseDownAtChatWindowTopBar: function(e) {
-			var sideBarSize = parseInt(oUtil.getStyle(document.getElementById("nav_list"), "width"));
-			var headerSize = parseInt(oUtil.getStyle(document.getElementById("header"), "height"));
-			var currentChatWindowLeft = parseInt(oUtil.getStyle(this.eChatWindow, "left"));
-			var currentChatWindowTop = parseInt(oUtil.getStyle(this.eChatWindow, "top"));
-			var distanceX = e.clientX - (sideBarSize + currentChatWindowLeft);
-			var distanceY = e.clientY - (headerSize + currentChatWindowTop)
-			this.functionTempForMoveWindow = this.moveChattingWindow.bind(this, sideBarSize, headerSize, distanceX, distanceY);
-
-			window.addEventListener("mousemove", this.functionTempForMoveWindow, true);
-			window.addEventListener("mouseup", this.mouseUp.bind(this), false);
-		},
-		
-		// 마우스가 이동하는 동안 채팅창이 마우스를 따라다닌다.
-		moveChattingWindow: function(e) {
-			var sideBarSize = arguments[0];
-			var headerSize = arguments[1];
-			var distanceX = arguments[2];
-			var distanceY = arguments[3];
-			var event = arguments[4];
-			
-			this.eChatWindow.style.left = event.clientX - sideBarSize - distanceX + "px";
-			this.eChatWindow.style.top = event.clientY - headerSize - distanceY + "px";
-		},
-		
-		// 마우스를 떼면 채팅창이 마우스를 따라다니던 이벤트를 제거한다.
-		mouseUp: function(e) {
-			window.removeEventListener("mousemove", this.functionTempForMoveWindow, true);
-		},
-		
 		init: function() {
 			var email = document.getElementById("email").value;
 			//hidden attribute. User Identifier Database id Value.
@@ -1041,7 +1028,8 @@ var oChat = {
 			this.userId = document.getElementById("id").value;
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
-			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
+			//this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
+			this.socket = io.connect("http://10.73.43.102:3080"+sParameters);
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {				
@@ -1086,20 +1074,20 @@ var oChat = {
 			}.bind(this));
 			
 			//ChatWindow에서 참여자 리스트 패널 fold, unfold 이벤트를 연결한다.
-			this.eRightArea.addEventListener('click', function(e) {
-				
-				//element 외의 영역을 클릭하는것이기 떄문에 before, after항목을 클릭한 경우이다.
-				if ( e.offsetX > this.offsetWidth) {
-					
-					if ( e.target.className.indexOf("unfold") !== -1 ) {
-						oUtil.removeClassName(this, "unfold");
-						oUtil.addClassName(this, "fold");
-					} else {
-						oUtil.removeClassName(this, "fold");						
-						oUtil.addClassName(this, "unfold");
-					}					
-				}
-			}, false);
+//			this.eRightArea.addEventListener('click', function(e) {
+//				
+//				//element 외의 영역을 클릭하는것이기 떄문에 before, after항목을 클릭한 경우이다.
+//				if ( e.offsetX > this.offsetWidth) {
+//					
+//					if ( e.target.className.indexOf("unfold") !== -1 ) {
+//						oUtil.removeClassName(this, "unfold");
+//						oUtil.addClassName(this, "fold");
+//					} else {
+//						oUtil.removeClassName(this, "fold");						
+//						oUtil.addClassName(this, "unfold");
+//					}					
+//				}
+//			}, false);
 			
 			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
 			this.connectSocketWithEnteredChattingRoom();
@@ -1120,9 +1108,6 @@ var oChat = {
 //				}
 //			}
 			this.getMyChatInfoAndUpdateListInPanel();
-			
-			// 채팅창 이동을 위한 이벤트 리스너 등록
-			this.eChatWindowTopBar.addEventListener('mousedown', this.mouseDownAtChatWindowTopBar.bind(this), false);
 		}
 };
 /*********************************************************************************************************
@@ -1143,7 +1128,12 @@ function initialize() {
 	oNav.init();
 	oPanel.init();
 	oSearching.initialize();
+<<<<<<< HEAD
+	oHeader.init();
+	oPanelContents.init();
+=======
 	
+>>>>>>> branch 'develop' of https://github.com/NHNNEXT/2014-01-HUDI-ROLLINGPUPPY.git
 	oChat.init();
 	
 	/*
