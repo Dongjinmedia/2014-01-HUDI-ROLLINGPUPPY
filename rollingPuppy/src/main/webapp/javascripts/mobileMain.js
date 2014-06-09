@@ -348,6 +348,25 @@ var oPanel = {
 		this.isPanelMove = false;
 	},
 	
+	//읽지 않은 메세지갯수 뷰를 업데이트한다.
+	 updateTotalNotificationView: function() {
+		 var unreadMessageNum = 0;
+		 for (var key in oChat.oInfo) {
+			 if (oChat.oInfo.hasOwnProperty(key)) {
+				 var oTarget = oChat.oInfo[key];
+ 	
+				 unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
+			 }
+		 }
+ 		
+		 if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
+			 this.eChattingNotification.style.display = "none";
+		 } else {
+			 this.eChattingNotification.innerText = unreadMessageNum;
+			 this.eChattingNotification.style.display = "inline-block";
+		 }
+	 },
+	
 	init : function(){
 		this.addEvents();
 		// 초기화 시점에 setPanelPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
