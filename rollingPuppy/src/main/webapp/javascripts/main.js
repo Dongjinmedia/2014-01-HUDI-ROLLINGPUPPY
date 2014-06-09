@@ -526,7 +526,6 @@ var oNaverMap = {
 	    attachEvents : function(){
 	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
 	        this.oMap.attach("dragend",this.dragEndEvent.bind(this));
-	        this.oMap.attach("mouseenter",this.mouseEnterEvent.bind(this));
 	        this.oMap.attach("click", this.clickEvent.bind(this));
 	    },
 
@@ -546,7 +545,32 @@ var oNaverMap = {
 	    	var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
-	        if (! (oTarget instanceof nhn.api.map.Marker)) {
+	        if (oTarget instanceof nhn.api.map.Marker) {
+	        	// 겹침 마커 클릭한거면
+	            //if (!oCustomEvent.clickCoveredMarker) {
+	            	
+            	//현재는 마커전체레벨로 저장하고 있다.
+                
+                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
+                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
+                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
+                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
+                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
+                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
+            		
+            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
+            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
+                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
+                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
+                this.oMarkerInfoWindow.setVisible(true);
+                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+                    right: 0,
+                    top: -19
+                });
+
+                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
+                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동
+	        } else {
 	        	//클라이언트에 상대적인 수평, 수직좌표 가져오기
 	        	clientPosX = oCustomEvent.event._event.clientX;
 	        	clientPosY = oCustomEvent.event._event.clientY;
@@ -565,38 +589,6 @@ var oNaverMap = {
 	                };
 	        	}
 	        	oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
-	        }
-	    },
-	    mouseEnterEvent : function(oCustomEvent) {
-	        var oTarget = oCustomEvent.target;
-	        this.oMarkerInfoWindow.setVisible(false);
-	        // 마커 클릭하면
-	        if (oTarget instanceof nhn.api.map.Marker) {
-	            // 겹침 마커 클릭한거면
-	            //if (!oCustomEvent.clickCoveredMarker) {
-	            	
-	            	//현재는 마커전체레벨로 저장하고 있다.
-	                
-	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
-	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
-	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
-	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-	                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
-	                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
-	            		
-	            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
-	            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
-	                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
-	                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
-	                this.oMarkerInfoWindow.setVisible(true);
-	                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
-	                    right: 0,
-	                    top: -19
-	                });
-
-	                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
-	                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
-	            //}
 	        }
 	    },
 

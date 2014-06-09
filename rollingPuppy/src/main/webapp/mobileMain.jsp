@@ -13,11 +13,39 @@
 	href="/stylesheets/mobileMain.css">
 <script type="text/javascript"
 	src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
+<script type="text/javascript"
+	src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
 </head>
 
 <body>
 	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
 	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
+	
+	<!-- hidden Area (For Menu Control Box) -->
+	<div style="display: none;">
+		<div id="controlBox">
+			<ul id='menu'>
+				<a class='menu-button navigation'></a>
+				<a class='menu-button hide-navigation'></a>
+				<li class='menu-item icon-info' status='none'><a
+					class='menu-item-back'></a></li>
+				<li class='menu-item icon-bookmark' status='none'><a
+					class='menu-item-back'></a></li>
+				<li class='menu-item icon-chatting' status='none'><a
+					class='menu-item-back'></a></li>
+			</ul>
+			<div class="menu-chatting content">
+				<ol>
+					<li class="chatRoom"><span class="icon-title">채팅방 테스트
+							블라블라블라블라블라블라블라블라</span> <span class="icon-participant">3/10</span></li>
+				</ol>
+			</div>
+			<a class="createChattingRoomButtonInMarkerClicker" href="#">채팅방만들기</a>
+			<div class="menu-info content"></div>
+			<div class="menu-bookmark content"></div>
+		</div>
+	</div>
+	
 	<!-- hidden Area2 (For Entered Chatting Room List) -->
 	<div style="display: none;">
 		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
@@ -207,6 +235,17 @@
 				</div>
 			</div>
 		</div>
+		<!-- 컨텐츠 영역에서 네비게이션과 패널 영역을 제외한, 지도를 포함한 영역-->
+			<div id='mapClicker'>
+				<div class="locationName">
+					<div></div>
+				</div>
+				<div class='marker'></div>
+				<div class='pulse'></div>
+				<div class='clickerMenu'>
+					<i class="clicker icon-add"></i> <i class="clicker icon-star"></i>
+				</div>
+			</div>
 		<div id="map">
 			<!-- 지도 영역 -->
 			<div id="naver_map" class="naver_map"></div>
@@ -226,10 +265,10 @@
 	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript">
 		window.onload = function() {
-			document.addEventListener("touchmove", function(event) {
+/* 			document.addEventListener("touchmove", function(event) {
 				//event.preventDefault();
 				console.log("test");
-			});
+			}); */
 
 			initialize();
 		}

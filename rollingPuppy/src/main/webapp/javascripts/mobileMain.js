@@ -822,29 +822,57 @@ var oNaverMap = {
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
-	        this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
+	    	//working
+	    	this.oMap.attach("dragstart",this.dragStartEvent.bind(this));
 	        this.oMap.attach("dragend",this.dragEndEvent.bind(this));
-	        this.oMap.attach("mouseenter",this.mouseEnterEvent.bind(this));
 	        this.oMap.attach("click", this.clickEvent.bind(this));
 	    },
 
 	    //move event가 발생한 후 click이벤트가 발생한다.
 	    //drag 시작할 때 mapClickWithoutMarker를 화면상에서 보이지 않게끔 처리한다.
 	    dragStartEvent : function(oCustomEvent){
+	    	console.log("clickstart");
 	        oMapClicker.invisible();
 	    },
 
 	    //TODO 네트워크 비용을 낮추기위해 내부적으로 현재 좌표이동을 체크하는 로직이 필요하다. (현재는 클릭만해도 동작)
 	    //TODO Drag를 위한 최소단위 설정을 고려해보자.
 	    dragEndEvent: function(oCustomEvent) {
+	    	console.log("dragEnd");
 	    	this.updateViewPointMarkers();
 	    },
 	    
 	    clickEvent: function(oCustomEvent) {
+	    	console.log("clickEvent");
 	    	var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
-	        if (! (oTarget instanceof nhn.api.map.Marker)) {
+	        if (oTarget instanceof nhn.api.map.Marker) {
+	        	// 겹침 마커 클릭한거면
+	            //if (!oCustomEvent.clickCoveredMarker) {
+	            	
+            	//현재는 마커전체레벨로 저장하고 있다.
+                
+                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
+                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
+                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
+                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
+                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
+                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
+            		
+            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
+            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
+                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
+                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
+                this.oMarkerInfoWindow.setVisible(true);
+                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
+                    right: 0,
+                    top: -19
+                });
+
+                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
+                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동
+	        } else {
 	        	//클라이언트에 상대적인 수평, 수직좌표 가져오기
 	        	clientPosX = oCustomEvent.event._event.clientX;
 	        	clientPosY = oCustomEvent.event._event.clientY;
@@ -863,38 +891,6 @@ var oNaverMap = {
 	                };
 	        	}
 	        	oReverseGeoCode.getAddress(oCustomEvent.point.y, oCustomEvent.point.x, callback);
-	        }
-	    },
-	    mouseEnterEvent : function(oCustomEvent) {
-	        var oTarget = oCustomEvent.target;
-	        this.oMarkerInfoWindow.setVisible(false);
-	        // 마커 클릭하면
-	        if (oTarget instanceof nhn.api.map.Marker) {
-	            // 겹침 마커 클릭한거면
-	            //if (!oCustomEvent.clickCoveredMarker) {
-	            	
-	            	//현재는 마커전체레벨로 저장하고 있다.
-	                
-	                // - InfoWindow 에 들어갈 내용은 setContent 로 자유롭게 넣을 수 있습니다. 외부 css를 이용할 수 있으며, 
-	                // - 외부 css에 선언된 class를 이용하면 해당 class의 스타일을 바로 적용할 수 있습니다.
-	                // - 단, DIV 의 position style 은 absolute 가 되면 안되며, 
-	                // - absolute 의 경우 autoPosition 이 동작하지 않습니다. 
-	                // - html코드 뿐만 아니라, element를 삽입할 수 있습니다. 
-	                // - 현재 우리 프로젝트에서는 하나의 엘리먼트를 각각 클릭마다 업데이트하여 사용하고 있습니다.
-	            		
-	            	//새로 클릭한 마커는, 고유 마커의 정보를 담고 있어야 합니다.
-	            	//새로운 마커정보를 담은 윈도우 객체를 oMarkerClicker로부터 가져옵니다.
-	                this.oMarkerInfoWindow.setContent(oMarkerClicker.getNewMarkerInfoWindowElement(oTarget.markerNumber)); //
-	                this.oMarkerInfoWindow.setPoint(oTarget.getPoint());
-	                this.oMarkerInfoWindow.setVisible(true);
-	                this.oMarkerInfoWindow.setPosition({ //지도 상에서 정보창을 표시할 위치를 설정 
-	                    right: 0,
-	                    top: -19
-	                });
-
-	                //TODO getPosition 결과값을 읽어서 적절히 autoPosition(value값)으로 이동시키도록 한다.
-	                //oMarkerInfoWindow.autoPosition(); //정보 창의 일부 또는 전체가 지도 밖에 있으면, 정보 창 전체가 보이도록 자동으로 지도를 이동 
-	            //}
 	        }
 	    },
 
@@ -950,6 +946,8 @@ var oNaverMap = {
 	        		zoomOutButton: document.getElementById("zoomOutButton")
 	        }
 	        this.addEventForZoom();
+	        
+	        this.attachEvents();
 	    }
 };
 
@@ -986,13 +984,13 @@ var oMarkerClicker = {
 		//메뉴 내용을 담는 Content 객체를 담을 Array
 		aMenues: [],
 		
-	initialize: function() {
+	init: function() {
 		
-		menu.addEventListener("mouseover", this.mouseOver.bind(this), false);
-		menu.addEventListener('mouseout', this.mouseOut.bind(this), false);
+		this.menu.addEventListener("touchstart", this.mouseOver.bind(this), false);
+		this.menu.addEventListener('touchstart', this.mouseOut.bind(this), false);
 		
 		//채팅리스트가 속해있는 영역을 클릭할 경우, 이벤트가 발생하도록 등록
-		this.eChattingDivBox.addEventListener('click', this.clickChatRoomList, false);
+		this.eChattingDivBox.addEventListener('touchend', this.clickChatRoomList, false);
 		
 		//첫째줄, 마커클릭시 나타나는 3개의 메뉴중, 12시 방향에 나타나는 info에 해당하는 버튼
 		//둘째줄, iconInfo버튼 상위에 미리 만들어 놓은 div, 내용을 보여주기 위한 영역
@@ -1109,7 +1107,7 @@ var oMarkerClicker = {
 				"x": oMarkerInfo["location_longitude"]
 		};
 		this.eChattingDivBox.appendChild(createChattingRoomButtonInMarkerClicker);
-		createChattingRoomButtonInMarkerClicker.addEventListener('click', function(e) {
+		createChattingRoomButtonInMarkerClicker.addEventListener('touchend', function(e) {
 			oCreateChattingRoom.visible(this.eMenuInfo.innerText, oLocationPoint);
 		}.bind(this), false);
 		
@@ -1202,7 +1200,7 @@ var oMarkerClicker = {
 		}.bind(this),false);
 	
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
-		oIcon.addEventListener('click', function(e) {
+		oIcon.addEventListener('touchend', function(e) {
 			e.preventDefault();
 		
 			var status = oIcon.getAttribute('status');
@@ -1219,6 +1217,36 @@ var oMarkerClicker = {
  * Marker Interaction 메뉴에 대한 소스코드 끝
  **********************************************************************************************************/
 
+
+/*********************************************************************************************************
+* Reverse Geo code 시작 
+ **********************************************************************************************************/
+//results : 배열로, 클릭한 좌표에 대한 주소 값을 가지고 있다. 0부터 7까지 8개의 주소가 있고,
+//가장 상세한 주소는 0번에 저장되어 있고 가장 넓은 범위의 주소(대한민국)은 7번에 저장되어있다.
+//status: geocoder의 상태에 대한 값이 저장되어 있다. OK, UNKNOWN_ERROR등이 있다.
+
+var oReverseGeoCode = {
+		oGeoCoder: null,
+		getAddress: function(latitude, longitude, callback) {
+			var clickedLatlng = new google.maps.LatLng(latitude, longitude);
+			//callback function get Parameter -> results, status
+			this.oGeoCoder.geocode({'latLng': clickedLatlng}, callback);
+		},
+		init: function() {
+			this.oGeoCoder = new google.maps.Geocoder();
+		}
+		//results[0]의 types에 있는 값에 따라 ex)강남역 등만 뽑아올 수도 있음
+		//하지만 types가 수십여개인데 그에 따라 나누는 것보다는 naver 검색 API로 돌리는것이 낫지않나싶음
+		//문제는, 특정 주소에 대하여 네이버 검색 API를 돌린 값이 nul값... 
+		//
+		//TODO: 이거 왜 안되는지 알아내서 주소값 받아올 수 있도록 바꿔야됨 
+		//아마도 .geocode가 바로 함수를 실행하는 형태이기 때문인듯 
+		//그니까 뒤에 function(results,status)이거를 따로 빼서 정의해야할것 같다는 말 으으 
+};
+
+/*********************************************************************************************************
+* Reverse Geo code 끝 
+ **********************************************************************************************************/
 
 /*********************************************************************************************************
  * Chatting에 대한 소스코드 시작
@@ -1707,7 +1735,7 @@ var oChat = {
 			}.bind(this), false);
 			
 			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
-			this.eExitButton.addEventListener("click", function(e) {
+			this.eExitButton.addEventListener("touchend", function(e) {
 				if ( confirm("Are you sure Exit Chatting Room?")) {
 					this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
 				}
@@ -1769,13 +1797,87 @@ var oChat = {
 			this.getMyChatInfoAndUpdateListInPanel();
 			
 			//채팅방 참여자리스트에서 보기메뉴를 클릭할때 발생하는 이벤트
-			this.eMemberIcon.addEventListener("click",this.memberPanelHandler.bind(this));
+			this.eMemberIcon.addEventListener("touchend",this.memberPanelHandler.bind(this));
 		}
 };
 /*********************************************************************************************************
  * Chatting에 대한 소스코드 종료
  **********************************************************************************************************/
 
+/*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 시작
+ **********************************************************************************************************/
+//초록색 마커 
+var oMapClicker = {
+	//MapClickerk 전체 Element. 
+	eMapClicker: document.getElementById('mapClicker'),
+	
+	//Add버튼에 해당하는 Element.
+	//TODO 변수명 변경
+	clickAdd: document.querySelector('#mapClicker .icon-add'),
+	
+	//즐겨찾기 버튼에 해당하는 Element.
+	//TODO 변수명 변경
+	clickBookMark: document.querySelector('#mapClicker .icon-star'),
+	
+	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
+	oClickPoint: null,
+	
+	//위치정보를 보여주는 Element
+	eLocationName: document.querySelector("#mapClicker .locationName div"),
+	
+	//MapClicker 상단에 표기되는 위치정보를 변경한다.
+	setLocationName: function(locationName) {
+		this.eLocationName.innerText = locationName;
+	},
+	//Client width, height값을 계산해서 위치를 변경한다.
+	move: function(clientPosX, clientPosY) {
+		this.eMapClicker.style.left = clientPosX+'px';
+		this.eMapClicker.style.top = clientPosY +'px';
+	},
+	//click element가 보이지 않도록 하는 함수
+	invisible: function() {
+		this.eMapClicker.style.top = "-2000px";
+	},
+	//click element 초기화 함수
+	initialize: function() {
+		
+		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
+		this.invisible();
+
+		//mapClicker 메뉴중, plus 버튼을 클릭했을때
+		this.clickAdd.addEventListener('click', function(e) {
+			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
+		}.bind(this), false);
+		
+		//mapClicker 메뉴중, star 버튼을 클릭했을때
+		this.clickBookMark.addEventListener('click', function(e) {
+			alert('clickBookMark');
+
+		
+		}, false);
+	},	
+};
+
+var oKeyboardAction = {
+	escPress: function() {
+		//채팅방 생성페이지가 열려있을경우, 보이지 않게 처리
+		if ( oUtil.getStyle(oCreateChattingRoom.oCreateChatRoom, "display") !== "none" )
+			oCreateChattingRoom.invisible();
+	},
+	initialize: function() {
+		document.onkeydown = function(event) {
+			//alert("in : " + event.keyCode);
+			if ( event.keyCode == 27 ) {
+				this.escPress();
+			}
+		}.bind(this);
+	}	
+};
+
+/*********************************************************************************************************
+ * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
+ **********************************************************************************************************/
 
 
 /*********************************************************************************************************
@@ -1795,7 +1897,8 @@ function initialize() {
 	oChat.init();
 
 	oNaverMap.init();
-	
+	oReverseGeoCode.init();
+	oMarkerClicker.init();
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
 	 */
