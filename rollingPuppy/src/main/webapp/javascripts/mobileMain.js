@@ -51,6 +51,10 @@ var oNav = {
 		var nClickedPanelIndex = parseInt(event.target.parentNode.id.match(/\d/g)[0]);
 		oPanel.setCurrentPanelIndex(nClickedPanelIndex);
 		oPanel.setPanelPosition();
+		
+		if (oPanel.isPanelWrapperFolded()) {
+			oPanel.unfoldPanelWrapper();
+		}
 	},
 	
 	setCurrentMenuMarker: function(nCenterIndex) {
@@ -139,11 +143,9 @@ var oPanel = {
 		}
 
 		if (boolFold) {
-			oUtil.removeClassName(this.ePanelWrapper, "unfoldedPanel");
-			oUtil.addClassName(this.ePanelWrapper, "foldPanel");
+			this.foldPanelWrapper();
 		} else {
-			oUtil.removeClassName(this.ePanelWrapper, "foldedPanel");
-			oUtil.addClassName(this.ePanelWrapper, "unfoldPanel");
+			this.unfoldPanelWrapper();
 		}
 	},
 	
@@ -159,6 +161,24 @@ var oPanel = {
 		else {
 			return ;
 		}
+	},
+	
+	foldPanelWrapper: function() {
+		oUtil.removeClassName(this.ePanelWrapper, "unfoldedPanel");
+		oUtil.addClassName(this.ePanelWrapper, "foldPanel");
+	},
+	
+	unfoldPanelWrapper: function() {
+		oUtil.removeClassName(this.ePanelWrapper, "foldedPanel");
+		oUtil.addClassName(this.ePanelWrapper, "unfoldPanel");
+	},
+	
+	isPanelWrapperFolded: function() {
+		if (this.ePanelWrapper.className === "unfoldedPanel") {
+			return false;
+		}
+		
+		return true;
 	},
 	
 	ePanel: document.querySelector("#panel"),
