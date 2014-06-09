@@ -147,17 +147,17 @@
 		<div id="account"></div>
 		<div id="nav_menu">
 			<div class="on">
-				<a href="#">검색</a>
+				<a>검색</a>
 			</div>
 			<div>
-				<a href="#">채팅방</a>
+				<a>채팅방</a>
 				<div class="notification">0</div>
 			</div>
 			<div>
-				<a href="#">관심장소</a>
+				<a>관심장소</a>
 			</div>
 			<div>
-				<a href="#">설정</a>
+				<a>설정</a>
 			</div>
 		</div>
 	</div>
@@ -279,6 +279,7 @@
 			document.addEventListener("touchmove", function(event) {
 				event.preventDefault();
 			});
+
 			initialize();
 		}
 	</script>
