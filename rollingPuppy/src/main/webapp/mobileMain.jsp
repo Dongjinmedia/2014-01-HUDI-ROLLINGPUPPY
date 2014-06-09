@@ -11,6 +11,8 @@
 <link rel="stylesheet" type="text/css" href="/stylesheets/reset.css">
 <link rel="stylesheet" type="text/css"
 	href="/stylesheets/mobileMain.css">
+<script type="text/javascript"
+	src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=f154abb26c9c79ed5a4a25d000a9349c"></script>
 </head>
 
 <body>
@@ -142,43 +144,10 @@
 						<div class="scroll_area">
 							<h1>검색</h1>
 							<ul class="section">
-								<li class="card cell search">
-									<p class="title icon-title">카페 에이에이 삼청동점</p>
-									<p class="category">카페, 디저트>카페]</p>
-									<p class="address">서울특별시 중구 명동 2가 52-8 은좌빌팅 1,2층여기거기여가거가
-										우리우</p>
+								<li class="card default">
+									<p class="icon-warning"></p>
+									<p class="comment">상단의 검색창을 이용해주세요.</p>
 								</li>
-								<li class="card cell search">
-									<p class="title icon-title">제목입니당</p>
-									<p class="category">카테고리고리</p>
-									<p class="address">주소주소주</p>
-								</li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
 							</ul>
 						</div>
 					</div>
@@ -238,9 +207,18 @@
 				</div>
 			</div>
 		</div>
+		<div id="map">
+			<!-- 지도 영역 -->
+			<div id="naver_map" class="naver_map"></div>
+			
+			<!-- 줌인/줌아웃 버튼 영역 -->
+			<div id="zoomButton">
+				<div id="zoomInButton"></div>
+				<div id="zoomOutButton"></div>
+			</div>
+		</div>
 	</div>
 
-	<div id="map"></div>
 
 	<footer></footer>
 	<script type="text/javascript" src="/javascripts/ajax.js?20140607"></script>
@@ -249,7 +227,8 @@
 	<script type="text/javascript">
 		window.onload = function() {
 			document.addEventListener("touchmove", function(event) {
-				event.preventDefault();
+				//event.preventDefault();
+				console.log("test");
 			});
 
 			initialize();

@@ -35,14 +35,14 @@ public class MainController implements Controller {
 			return;
 		}
 		
-		if ( isThisRequestCommingFromAMobileDevice(request) ) {
-			response.sendRedirect("/mobile");
-		} else {
+//		if ( isThisRequestCommingFromAMobileDevice(request) ) {
+//			response.sendRedirect("/mobile");
+//		} else {
 			RequestDispatcher view = null;
 			getEnteredChattingRoomList(request, response);
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
-		}
+//		}
 		
 	}
 
