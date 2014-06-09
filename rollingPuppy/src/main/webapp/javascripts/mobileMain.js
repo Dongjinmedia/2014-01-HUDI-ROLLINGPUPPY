@@ -422,6 +422,8 @@ var oPanelContents = {
 			
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
+			
+			oScrolls["scroll1"].refresh();
 		},
 		
 		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
