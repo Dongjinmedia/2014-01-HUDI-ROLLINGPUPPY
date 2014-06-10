@@ -1840,21 +1840,22 @@ var oMapClicker = {
 		this.eMapClicker.style.top = "-2000px";
 	},
 	//click element 초기화 함수
-	initialize: function() {
+	init: function() {
 		
 		//초기상태에서는 마커를 노출하지 않기 위해 invisible호출
 		this.invisible();
 
+		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.clickAdd.addEventListener('click', function(e) {
+		this.clickAdd.addEventListener('touchend', function(e) {
+			console.log("clickadd");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		this.clickBookMark.addEventListener('click', function(e) {
+		this.clickBookMark.addEventListener('touchend', function(e) {
+			console.log("addBookMark");
 			alert('clickBookMark');
-
-		
 		}, false);
 	},	
 };
@@ -1879,6 +1880,166 @@ var oKeyboardAction = {
  * Marker가 없는 Map클릭시 사용자와 Interaction해야 하는 메뉴에 대한 소스코드 종료
  **********************************************************************************************************/
 
+/*********************************************************************************************************
+ * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 시작
+ **********************************************************************************************************/
+//TODO oChat안으로 들어가야 한다.
+var oCreateChattingRoom = {
+		//채팅방 생성에 해당하는 중앙창에 대한 element
+		oCreateChatRoom: document.getElementById('createChatRoom'),
+		
+		//채팅방명을 입력하는 input box element
+		eRoomNameInput: document.querySelector('#createChatRoom .roomName'),
+		
+		//채팅방 참여인원 제한 수를 입력하는 input box element
+		eLimitNumberInput: document.querySelector('#createChatRoom .limitNum'),
+		
+		//채팅방 생성취소 버튼
+		eCancle: document.querySelector('#createChatRoom .cancle'),
+		
+		//채팅방을 생성하려고 하는 곳의 주소 
+		//TODO 나중에는 좌표를받아서 서버단에서 해당하는 장소명을 가져오도록 변경해야 합니다.
+		eRoomAddress: document.querySelector('#createChatRoom .createAddress'),
+		
+		//채팅방 생성 위치 좌표
+		oLocationPoint: null,
+		
+		//채팅방 생성창을 열고, 다른메뉴와의 인터렉션을 막는 함수
+		visible: function(locationName, oClickPoint) {
+			this.oCreateChatRoom.style.display = "block";
+			this.eRoomAddress.innerText = locationName;
+			this.oLocationPoint = oClickPoint;
+		},
+		
+		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
+		invisible: function() {
+			this.oCreateChatRoom.style.display = "none";
+			this.clearLimitNumValue();
+			this.clearRoomNameValue();
+		},
+		
+		init: function() {
+			
+			var eOuterBg = this.oCreateChatRoom.querySelector('.outer.bg'); 
+			
+			//중앙 입력영역을 제외한 곳을 클릭하면 focus off 하는 이벤트
+			eOuterBg.addEventListener('touchend', function() {
+				this.invisible();
+			}.bind(this), false);
+			
+			//채팅방 생성요청에 대한 action 이벤트
+			var eSubmit = this.oCreateChatRoom.querySelector('input[type=submit]');
+			eSubmit.addEventListener('touchend', this.requestCreate.bind(this), false);
+			
+			//채팅방생성 취소에 대한 이벤트
+			this.eCancle.addEventListener("touchend", this.invisible.bind(this));
+		},
+		
+		//제한숫자 인풋값 초기화
+		clearLimitNumValue: function() {
+			this.eLimitNumberInput.value = "";
+		},
+		//채팅방명 인풋값 초기화
+		clearRoomNameValue: function() {
+			this.eRoomNameInput.value = "";
+		},
+		
+		//채팅방 생성에 대한 요청이벤트 함수
+		requestCreate: function(e) {
+			e.preventDefault();
+			//Validation Check를 위한 form의 데이터가져오기
+			var roomNameValue = this.eRoomNameInput.value
+			var limitNumValue = parseInt(this.eLimitNumberInput.value, 10);
+			
+			// WORKING SEHUN
+			console.log(this.oLocationPoint);
+			oMapClicker.oClickPoint = this.oLocationPoint;
+			
+			//숫자가 아닌값일 경우, value값이 넘어오지 않음
+			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
+
+			//입력값이 없을경우
+			if ( roomNameValue === null || roomNameValue === "") {
+				alert('채팅방 제목을 입력해 주세요.');
+				return;
+			} else if ( roomNameValue.length <= 4 ) {
+				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
+				this.clearRoomNameValue();
+				return;
+			} else if ( roomNameValue.length > 15 ) {
+				alert("채팅방 제목은 15글자 이상을 넘을 수 없습니다.");
+				this.clearRoomNameValue();
+				return;
+			};
+			
+			//참여인원 제한에 입력값이 숫자 형식이 아닐경우
+			if ( isNaN( limitNumValue ) ) {
+				alert("인원수 제한에는 숫자값을 입력해 주세요.");
+				this.clearLimitNumValue();
+				return;
+			};
+			
+			//참여인원 제한숫자가 1일경우
+			if ( limitNumValue === 1 ) {
+				alert("인원수는 1 이상으로 설정해야 합니다.");
+				this.clearLimitNumValue();
+				return;
+			} else if (limitNumValue >= 100 ){
+				alert("채팅 인원은 100을 넘을 수 없습니다.");
+				this.clearLimitNumValue();
+				return;
+			};
+			
+			//서버와 통신하는 코드
+			var oRequest = {
+					"title": roomNameValue,
+					"max": ""+limitNumValue,
+					//TODO 검색기능 구현전까지의 Temp Data 가져오기. 
+					//검색기능 구현 이후, 검색 object에 질의하는 형태로 변경되어야 한다. 
+					"locationName": ""+this.eRoomAddress.innerText,
+					"locationLatitude": oMapClicker.oClickPoint['y'],
+					"locationLongitude": oMapClicker.oClickPoint['x'],
+					//TODO 현재의 줌레벨을 넣어야 한다.
+					"zoom": oNaverMap.getZoom()
+			};
+			
+			var callback = function(request) {
+    			var oResponse = JSON.parse(request.responseText);
+    			
+    			var isSuccess = oResponse['isSuccess'];
+    			var newMarker = oResponse["newMarker"];
+    			var markerNumber = newMarker["id"];
+    			
+    			if ( isSuccess === true 
+    					&& markerNumber !== null 
+    					&& markerNumber !== undefined 
+    					&& isNaN(markerNumber) === false ) {
+    				
+    				oNaverMap.updateViewPointMarker(newMarker);
+    				
+    		    	//현재 화면에 있는  oMapClicker Element를 보이지 않게 한다.
+    		    	oMapClicker.invisible();
+    		    	
+    		    	//createChatRoom의 input value값들을 초기화한다.
+    		    	this.clearRoomNameValue();
+    		    	this.clearLimitNumValue();
+    		    	
+    		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
+    		    	this.invisible();
+    			} else {
+    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
+    			} 
+			};
+			
+			//oAjax모듈에게 request요청을 보내고, callback함수를 실행한다.
+			oAjax.getObjectFromJsonPostRequest("/chat/create", oRequest, callback.bind(this));
+		}
+}
+
+/*********************************************************************************************************
+ * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 종료
+ **********************************************************************************************************/
+
 
 /*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
@@ -1899,6 +2060,8 @@ function initialize() {
 	oNaverMap.init();
 	oReverseGeoCode.init();
 	oMarkerClicker.init();
+	oMapClicker.init();
+	oCreateChattingRoom.init();
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
 	 */

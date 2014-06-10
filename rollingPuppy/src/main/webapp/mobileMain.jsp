@@ -50,7 +50,29 @@
 	<div style="display: none;">
 		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
 	</div>
-	
+	<div id="createChatRoom">
+		<div class="outer bg"></div>
+		<p class="cancle">X</p>
+		<div class="centerArea">
+			<div class="inner bg"></div>
+			<div class="inputArea">
+				<p class="createAddress">성남시 분당구 삼평동 H스퀘어 N동 4층 NHN NEXT</p>
+				<form action="/room" method="post">
+					<p>
+						<label class="icon-chatting"></label> <input class="roomName"
+							type="text" name="title" placeholder="Room name" />
+					</p>
+					<p>
+						<label class="icon-people"></label> <input class="limitNum"
+							type="number" name="max" placeholder="Limit Number" />
+					</p>
+					<p>
+						<input type="submit" value="Create Chatting Room" />
+					</p>
+				</form>
+			</div>
+		</div>
+	</div>
 	<div id="template" class="hidden" style="display: none;">
 		<ul>
 			<li class="card default">

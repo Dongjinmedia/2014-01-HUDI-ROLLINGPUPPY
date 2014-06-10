@@ -1008,6 +1008,8 @@ var oChat = {
 		
 		invisibleChatWindow: function() {
 			this.eChatWindow.style.display = "none";
+			this.clearLimitNumValue();
+			this.clearRoomNameValue();
 		},
 		
 		isChatWindowVisible: function() {

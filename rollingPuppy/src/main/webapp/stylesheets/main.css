@@ -1,6 +1,6 @@
 body {
 	positon: relative;
-	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "돋움", Times;
+	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "������", Times;
 	margin: 0;
 	
 	-webkit-user-select: NONE;
@@ -283,7 +283,7 @@ div#panel {
 }
 
 /*  
-** Panel 검색결과 리스트 스타일 시작
+** Panel 寃����寃곌낵 由ъ�ㅽ�� ��ㅽ����� ������
 */
 
 #panel_contents .default {
@@ -443,7 +443,7 @@ li.chatRoom .notification {
 }
 
 /*  
-** Panel 검색결과 리스트 스타일 종료
+** Panel 寃����寃곌낵 由ъ�ㅽ�� ��ㅽ����� 醫�猷�
 working
 */
 
@@ -471,7 +471,7 @@ div#content {
 }
 
 /*
-** Create Chatting Room에 대한 CSS영역 시작
+** Create Chatting Room��� ������ CSS������ ������
 */
 #createChatRoom {
 	position: absolute;
@@ -562,8 +562,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	font-size: 200%;
 	left: 50%;
 	top: 50%;
-	margin-top: -25%;
-	margin-left: -25%;
+	margin-top: -20%;
+	margin-left: -30%;
 }
 
 #createChatRoom input[type="text"], #createChatRoom input[type="number"] {
@@ -594,10 +594,10 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	width: 450px;
 }
 /*
-** Create Chatting Room에 대한 CSS영역 종료
+** Create Chatting Room��� ������ CSS������ 醫�猷�
 */
 
-/* 채팅방 스타일 영역 시작 */
+/* 梨����諛� ��ㅽ����� ������ ������ */
 #chatWindow *{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -900,9 +900,9 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   border-top: 15px solid #C7C7C7;
   opacity: 0.3;
 }
-/* 채팅방 스타일 영역 끝 */
+/* 梨����諛� ��ㅽ����� ������ ��� */
 
-/* 줌인/줌아웃 버튼 시작 */
+/* 以����/以������� 踰���� ������ */
 #zoomButton {
 	position: absolute;
 	width: 30px;
@@ -926,11 +926,11 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	background: url(/images/zoom_button.png) no-repeat;
 	background-position: -30px 0px;
 }
-/* 줌인/줌아웃 버튼 스타일 끝 */
+/* 以����/以������� 踰���� ��ㅽ����� ��� */
 
 
 /*
-** 맵상에서 마커를 클릭시 보여지는 메뉴에 대한 CSS
+** 留듭�������� 留�而ㅻ�� ��대┃��� 蹂댁�ъ����� 硫���댁�� ������ CSS
 */
 /*
 ** Font Setting
@@ -967,7 +967,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 /*  
-** 마커 클릭시 나타나는 영역에 대한 CSS 시작
+** 留�而� ��대┃��� ������������ ��������� ������ CSS ������
 */
 .menu-button {
 	text-align: center;
@@ -1079,12 +1079,12 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	margin: 22.5px 0 0 -47.631395px;
 }
 /*  
-** 마커 클릭시 나타나는 영역에 대한 CSS 종료
+** 留�而� ��대┃��� ������������ ��������� ������ CSS 醫�猷�
 */
 
 /*
-** TODO 주석달기
-** 마커 클릭시 나타나는 메뉴바에서, 각각의 메뉴를 별 컨텐츠 영역에 대한 설정 시작
+** TODO 二쇱����ш린
+** 留�而� ��대┃��� ������������ 硫���대��������, 媛�媛���� 硫���대�� 蹂� 而⑦��痢� ��������� ������ ��ㅼ�� ������
 */
 #menu {
 	width: 75px;
@@ -1113,7 +1113,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 	/*
-	** 마커에서 채팅방 아이콘을 클릭, hover시 나타나는 Contents영역
+	** 留�而ㅼ����� 梨����諛� �����댁����� ��대┃, hover��� ������������ Contents������
 	*/
 .menu-chatting {
 	position: absolute;
@@ -1207,7 +1207,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 	/*
-	** 마커에서 info 아이콘을 클릭, hover시 나타나는 Contents영역
+	** 留�而ㅼ����� info �����댁����� ��대┃, hover��� ������������ Contents������
 	*/
 .menu-info {
 	position: absolute;
@@ -1221,12 +1221,12 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
   
 }
 /*
-** 마커 클릭시 나타나는 메뉴바에서, 각각의 메뉴를 별 컨텐츠 영역에 대한 설정 종료
+** 留�而� ��대┃��� ������������ 硫���대��������, 媛�媛���� 硫���대�� 蹂� 而⑦��痢� ��������� ������ ��ㅼ�� 醫�猷�
 */
 
 
 /*
-** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 시작
+** 留듭�������� 留�而ㅺ�� ������ ��������� ��대┃��� 諛���������� ��명�곕�������� ������ CSS ������
 */
 #mapClicker {
 	z-index: 10;
@@ -1383,11 +1383,11 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
   }
 }
 /*
-** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 종료
+** 留듭�������� 留�而ㅺ�� ������ ��������� ��대┃��� 諛���������� ��명�곕�������� ������ CSS 醫�猷�
 */
 
 /*
-**새로운 메세지가 올때 생성되는 newMessage 영역 시
+**���濡���� 硫���몄��媛� ��щ�� �����깅����� newMessage ������ ���
 */
 #wrapper #noticeBox {
 	position: absolute;
@@ -1411,7 +1411,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	opacity: 0;
 	bottom: 0;
 	z-index: 300;
-	font-family: 'Nanum Gothic', 'Apple SD Gothic Neo', 돋움, Times;
+	font-family: 'Nanum Gothic', 'Apple SD Gothic Neo', ������, Times;
 	overflow: hidden;
 }
 
@@ -1455,5 +1455,5 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 /*
-**새로운 메세지가 올때 생성되는 newMessage 영역 종료 
+**���濡���� 硫���몄��媛� ��щ�� �����깅����� newMessage ������ 醫�猷� 
 */
