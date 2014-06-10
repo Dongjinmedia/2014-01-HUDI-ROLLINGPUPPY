@@ -62,7 +62,7 @@ div#sf {
 }
 
 /* sb = searchBox */
-#sb_wrapper {
+.input_wrapper {
 	position: absolute;
 	top: 5px;
 	right: 5px;
@@ -74,11 +74,11 @@ div#sf {
 	border: 1px solid #ABABAB;
 }
 
-.onFocus #sb_wrapper {
+.onFocus .input_wrapper {
 	right: 55px;
 }
 
-#sb_positioner {
+.input_positioner {
 	position: absolute;
 	top: 0px;
 	right: 10px;
@@ -952,24 +952,197 @@ li.chatRoom .notification {
 }
 
 #chatWindow {
-	width: 100%;
-	height: 100%;
 	position: absolute;
 	display: none;
+	width: 100%;
+	height: 100%;
 	z-index: 200;
 }
 
 #chatWindow .leftArea {
-	position:relative;
-	width: 100%;
-	height: 100%;
-	float: left;
-	border: 0.1em solid #3a4655;
-	border-right: 0;
-	border-radius: 0.2em 0 0 0.2em;
+	position: absolute;
+	
+	top: 0px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+	
 	background-color: #fff;
 	z-index: 1;
 }
+
+.leftArea .top {
+	position: absolute;
+	width: 100%;
+	height: 50px; 
+	
+	background-color: #424f5f;
+	opacity: 1;
+	
+	color: #fff;
+	text-align: center;
+}
+
+.top .title {
+	display: inline-block;
+	width: 50%;
+	min-width: 150px;
+	margin-left: 8px;
+
+	font-size: 1.1em;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	line-height: 48px;
+}
+
+.top [class^=icon-]:before,[class*=" icon-"]:before {
+	margin-right: 4px;
+}
+
+.top .menu {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+	top: 0px;
+	
+	cursor: pointer;
+}
+
+.top .menu .icon-aside:before {
+	content: "\f019";
+	font-size: 1.8em;
+	color: #7a8696;
+	margin-right: 5px;
+	display: inline;
+}
+
+.top .menu .icon-exit:before {
+	content: "\f08b";
+	font-size: 1.8em;
+	color: #7a8696;
+}
+
+.top .menu .icon-member:before {
+	content: "\f0c9";
+	font-size: 1.8em;
+	color: #7a8696;
+}
+
+/* .top .menu .icon-member:hover:before {
+	color: #fff;
+} */
+
+.top .menu .leftMenu {
+	position: absolute;
+	top: 50%;
+	left: 15px;
+	margin-top: -10px;
+	
+	float: left;
+}
+
+.top .menu .rightMenu {
+	position: absolute;
+	top: 50%;
+	right: 15px;
+	margin-top: -10px;
+}
+
+.leftArea .middle {
+	position: absolute;
+	display: block;
+	width: 100%;
+	top: 50px;
+	bottom: 45px;
+}
+
+.middle .scroll_wrapper {
+	position: absolute;
+	top: 0px;
+	bottom: 0px;
+	overflow: hidden;
+}
+
+.middle .scroll_area {
+	width: 100%;
+}
+
+.chattingContents {
+	width: 100%;
+}
+
+.chattingContents li{
+	clear: both;
+	position: relative;
+	margin-bottom: 20px;
+}
+
+.leftArea .bottom {
+	position: absolute;
+	width: 100%;
+	height: 45px;
+	bottom: 0px;
+	border-top: 1px solid #C7C7C7;
+}
+
+.bottom .input_wrapper {
+	left: 5px;
+	right: 50px;
+	background-color: white;
+	border-radius: 4px;
+	-webkit-border-radius: 4px;
+	border: 1px solid #ABABAB;
+}
+
+.bottom .input_positioner {
+	left: 7px;
+	right: 7px;	
+}
+
+.inputArea {
+	position: absolute;
+	display: inline-block;
+	
+	width: 100%;
+	height: 27px;
+	top: 7px;
+	
+	font-size: 17px;
+	color: #000;
+	
+	background: none;
+	resize: none;
+	outline: none;
+	border: 0;
+}
+
+.leftArea .bottom .send {
+	position: absolute;
+
+	width: 40px;
+	height: 35px !important;
+	top: 5px;
+	right: 5px;
+	
+	border: 1px solid #C7C7C7;
+	border-radius: 4px;	
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+
+	color: #646f7f;
+	text-decoration: none;
+	font-size: 13px;
+	font-weight: bold;
+	line-height: 33px;
+	text-align: center;
+	
+	background-color: #EEE;
+}
+
+.leftArea .bottom .send:hover {
+	color: #212b3b;
+}
+
 
 #chatWindow .rightArea {
 	top:-92%;
@@ -1064,7 +1237,7 @@ li.chatRoom .notification {
 }
 */
 
- .rightArea.unfold {
+.rightArea.unfold {
 	left: 80%;
 	-webkit-transition: all 2s ease-in-out;
 	-moz-transition: all 2s ease-in-out;
@@ -1072,7 +1245,7 @@ li.chatRoom .notification {
 	transition: all 2s ease-in-out;
 }
 
- default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 
+ /* default가 fold상태로,  #chatWindow .rightArea 에 정의되어 있는 상태 */ 
 .rightArea.fold {
 	left: 100%;
 	-webkit-transition: all 2s ease-in-out;
@@ -1080,135 +1253,6 @@ li.chatRoom .notification {
 	-o-transition: all 2s ease-in-out;
 	transition: all 2s ease-in-out;
 } 
-/* 채팅방 참여리스트 스타일*/
-
-.leftArea .top {
-	position: relative;
-	width: 100%;
-	border-bottom: 0.1em solid #3a4655;
-	border-right: 0.1em solid #384652;
-	background-color: #424f5f;
-	opacity: 1;
-	overflow: hidden;
-	color: #fff;
-	text-align: center;
-	padding: 3%;
-}
-
-.top .title {
-	display: inline-block;
-	margin-top: 0.7em;
-	font-size: 1.1em;
-	white-space: nowrap;
-	width:150px;
-	text-overflow: ellipsis;
-	overflow: hidden;
-	margin-left: 20px;
-}
-
-.top .menu {
-	margin-top: 0.7em;
-	position: absolute;
-	top: 0px;
-	width: 100%;
-	height: 1em;
-	cursor: pointer;
-	right: 1%;
-}
-
-.top .menu .icon-aside:before {
-	content: "\f019";
-	font-size: 1.8em;
-	color: #7a8696;
-	margin-right: 5px;
-	display: inline;
-}
-
-.top .menu .icon-exit:before {
-	content: "\f08b";
-	font-size: 1.8em;
-	color: #7a8696;
-}
-
-.top .menu .icon-member:before {
-	content: "\f0c9";
-	font-size: 1.8em;
-	color: #7a8696;
-}
-
-/* .top .menu .icon-member:hover:before {
-	color: #fff;
-} */
-
-.top .menu .leftMenu {
-	position: relative;
-	left: 5%;
-	top: 40%;
-	float: left;
-	display: inline-block;
-}
-
-.top .menu .rightMenu {
-	position: relative;
-	right: 5%;
-	top: 40%;
-	float: right;
-	text-align: right;
-	display: inline-block;
-}
-
-
-.leftArea .middle {
-	display: inline-block;
-	width: 100%;
-	height: 85%;
-}
-
-.leftArea .bottom {
-	display: inline-block;
-	width: 100%;
-	border-top: 0.1em solid #C7C7C7;
-}
-
-.inputArea {
-	width: 85%;
-	height: 40px;
-	font-size: 1em;
-	background: none;
-	color: #000;
-	resize: none;
-	outline: none;
-	border: 0;
-	padding: 0.5em 0.6em;
-	color: #92a2c2;
-	line-height: 35px;
-}
-
-.leftArea .bottom .send {
-	float: right;
-	width:13%;
-	height: 40px !important;
-	line-height: 35px;
-	border: none;
-	position:relative;
-	height: 100%;
-	
-	border: 1px solid #C7C7C7;
-	
-	border-radius: 4px;	
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-
-	color: #C7C7C7;
-	text-decoration: none;
-	font-size: 13px;
-	font-weight: bold;
-	text-align: center;
-}
-
-.leftArea .bottom .send:hover {
-	color: #424f5f;
-}
 
 .chattingMemberList ul{
 	display: inline-block;
@@ -1230,25 +1274,6 @@ li.chatRoom .notification {
 	margin: 0px;
 	font-size: 0.7em;
 }
-
-.chattingContents li{
-  clear: both;
-  position: relative;
-  margin-bottom: 30px;
-}
-
-.chattingContents {
-  float: left;
-  display: inline-block;
-  width: 100%;
-  padding: 5% 2.5% 0 2.5%;
-  height: 100%;
-  margin: auto;
-  list-style: none;
-  overflow-y: scroll;
-  overflow-x: hidden;
-}
-
 .profile {
   width: 3em;
   height: 3em;

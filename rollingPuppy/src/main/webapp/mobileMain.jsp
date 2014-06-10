@@ -128,14 +128,21 @@
 					<div class = "rightMenu">
 						<i class ="icon-member" title="채팅멤버 보여주기"></i>
 					</div>
-			</div>
+				</div>
 			</div>
 			<div class="middle">
-				<ul class="chattingContents">
-				</ul>
+				<div id="chat_scroll" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="chattingContents"></ul>
+					</div>
+				</div>
 			</div>
 			<div class="bottom">
-				<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
+				<div class="input_wrapper">
+					<div class="input_positioner">
+						<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
+					</div>
+				</div>
 				<div class="send">전송</div>
 			</div>
 		</div>
@@ -156,9 +163,8 @@
 		<div id="sf_wrapper">
 			
 			<div id="sf"> 
-				<!-- sb = searchBox(검색창) -->
-				<div id="sb_wrapper">
-					<div id="sb_positioner">
+				<div class="input_wrapper">
+					<div class="input_positioner">
 						<input id="searchBox" type="text"></input>
 					</div>
 				</div>
@@ -190,7 +196,7 @@
 		<div id="panel">
 			<div id="panel_contents">
 				<div class="section_wrapper">
-					<div id="scroll0" class="scroll_wrapper">
+					<div id="panel_scroll0" class="scroll_wrapper">
 						<div class="scroll_area">
 							<h1>검색</h1>
 							<ul class="section">
@@ -203,7 +209,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll1" class="scroll_wrapper">
+					<div id="panel_scroll1" class="scroll_wrapper">
 						<div class="scroll_area">
 							<h1>채팅방</h1>
 							<ul class="section">
@@ -221,7 +227,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll2" class="scroll_wrapper">
+					<div id="panel_scroll2" class="scroll_wrapper">
 						<div class="scroll_area">
 							<h1>관심장소</h1>
 							<ul class="section">
@@ -234,7 +240,7 @@
 					</div>
 				</div>
 				<div class="section_wrapper">
-					<div id="scroll3" class="scroll_wrapper">
+					<div id="panel_scroll3" class="scroll_wrapper">
 						<div class="scroll_area">
 							<h1>설정</h1>
 							<ul class="section">
@@ -287,10 +293,9 @@
 	<script type="text/javascript" src="/javascripts/iscroll.js"></script>
 	<script type="text/javascript">
 		window.onload = function() {
-/* 			document.addEventListener("touchmove", function(event) {
-				//event.preventDefault();
-				console.log("test");
-			}); */
+			document.addEventListener("touchmove", function(event) {
+				event.preventDefault();
+			});
 
 			initialize();
 		}

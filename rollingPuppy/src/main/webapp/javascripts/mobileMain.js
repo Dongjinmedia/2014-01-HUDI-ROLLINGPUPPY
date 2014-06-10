@@ -220,7 +220,7 @@ var oPanel = {
 		
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
-		window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].disable();
+		window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].disable();
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -262,7 +262,7 @@ var oPanel = {
 			} else {
 				this.isScroll = true;
 				// 스크롤을 해도 되는 상황입니다! enable 해줍시다!!
-				window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
+				window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
 			}
 		}
 		
@@ -301,7 +301,7 @@ var oPanel = {
 		this.isScroll = null;
 
 		// touchStart에서 disable 했던 스크롤을 풀어둡니다.
-		window.oScrolls["scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
+		window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
 
 		if (tempIsScroll) {
 			this.isPanelMove = false;
@@ -380,9 +380,11 @@ var oPanel = {
 var oScrolls = {
 	init: function() {
 		for (var idx = 0; idx < 4; idx++) {
-			oScrolls["scroll" + idx]
-					= new IScroll("#scroll" + idx, { mouseWheel: true });
+			oScrolls["panel_scroll" + idx]
+					= new IScroll("#panel_scroll" + idx, { mouseWheel: true });
 		}
+		oScrolls["chat_scroll"]
+				= new IScroll("#chat_scroll", { mouseWheel: true });
 	}
 	
 };
@@ -397,7 +399,8 @@ var oScrolls = {
 var oPanelContents = {
 		
 		//panel contents 영역
-		eChattingListTarget: document.querySelector("#scroll1 ul"),
+		//init 시에 
+		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
 		eChattingTemplate: document.querySelector("#template .chatRoom"),
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
@@ -442,7 +445,7 @@ var oPanelContents = {
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
 			
-			oScrolls["scroll1"].refresh();
+			oScrolls["panel_scroll1"].refresh();
 		},
 		
 		deleteFromChattingList: function(chatRoomNumber) {
@@ -504,7 +507,7 @@ var oSearching = {
 					//template element가져오기
 					var eTemplate = document.getElementById("template").querySelector(".search");			
 					//aResult를 for문을 돌며 template element를 복사한 변수를 가져와서 데이터 삽입 
-					var eTarget = document.getElementById("scroll0").querySelector("ul");
+					var eTarget = document.getElementById("panel_scroll0").querySelector("ul");
 					//이미 존재하는 검색 결과가 있다면 지운다.
 					while (eTarget.firstChild) {
 						eTarget.removeChild(eTarget.firstChild);
@@ -526,7 +529,7 @@ var oSearching = {
 						eTarget.appendChild(eCopiedTemplate);
 						
 						//스크롤 영역 크기 조절
-						oScrolls["scroll0"].refresh();
+						oScrolls["panel_scroll0"].refresh();
 						oPanel.setCurrentPanelIndex(0);
 						oPanel.setPanelPosition();
 					}
@@ -1325,6 +1328,7 @@ var oChat = {
 
 		visibleChatWindow: function() {
 			this.eChatWindow.style.display = "block";
+			oScrolls["chat_scroll"].refresh();
 		},
 		
 		invisibleChatWindow: function() {
@@ -1689,7 +1693,7 @@ var oChat = {
 			
 			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
 			
-			oScrolls["scroll1"].refresh();
+			oScrolls["panel_scroll1"].refresh();
 		},
 		
 		init: function() {
