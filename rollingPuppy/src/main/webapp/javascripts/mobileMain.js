@@ -843,7 +843,9 @@ var oNaverMap = {
 	    },
 	    
 	    clickEvent: function(oCustomEvent) {
-	    	console.log("clickEvent");
+
+	    	oMarkerClicker.mouseOut();
+	    	
 	    	var oTarget = oCustomEvent.target;
 	        this.oMarkerInfoWindow.setVisible(false);
 	        // 마커 클릭하면
@@ -987,7 +989,7 @@ var oMarkerClicker = {
 	init: function() {
 		
 		this.menu.addEventListener("touchstart", this.mouseOver.bind(this), false);
-		this.menu.addEventListener('touchstart', this.mouseOut.bind(this), false);
+		//this.menu.addEventListener('touchstart', this.mouseOut.bind(this), false);
 		
 		//채팅리스트가 속해있는 영역을 클릭할 경우, 이벤트가 발생하도록 등록
 		this.eChattingDivBox.addEventListener('touchend', this.clickChatRoomList, false);
@@ -1129,19 +1131,6 @@ var oMarkerClicker = {
 		}
 	},
 	
-	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
-	isClickedComponentExists: function() {
-		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
-			var iconStatus = this.aIcons[index].getAttribute("status");
-		
-			if ( iconStatus === "clicked") {
-				return true;
-			}
-		}
-		
-		return false;
-	},
-	
 	//메뉴버튼위에 마우스가 올라갔을때
 	mouseOver: function() {
 		//메뉴크기를 늘리면서 메뉴버튼들이 보인다. (애니메이션 효과가 css를 통해 자동으로 동작)
@@ -1150,11 +1139,10 @@ var oMarkerClicker = {
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
 	mouseOut: function() {
+		console.log("mouseOut");
 		//클릭된 메뉴가 없을경우
-		if (!this.isClickedComponentExists()) {
-			//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
-			this.menu.style.cssText = "width:75px;height:75px;margin:-37.5px 0 0 -37.5px";
-		}
+		//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
+		this.menu.style.cssText = "width:75px;height:75px;margin:-37.5px 0 0 -37.5px";
 	},
 	
 	//아이콘이 클릭되지 않았던 상태에서 클릭을 했을경우
@@ -1168,14 +1156,9 @@ var oMarkerClicker = {
 	//클릭되었던 상태의 아이콘을 다시 클릭 했을경우
 	changeNoneClickStatus: function(oIcon, oMenu) {
 		oMenu.style.display = 'none';
-	
 		oIcon.setAttribute('status','none');
 		oIcon.style.status = 'none';
 		oIcon.children[0].style.backgroundColor = "#8cc";
-		
-		if (!this.isClickedComponentExists()) {
-			this.mouseOut();		
-		}
 	},
 	
 	//외부에서 addListener 함수를 통해서 새로적용되는 메뉴버튼과, 메뉴 컨텐츠영역을 전달받는다.
@@ -1188,17 +1171,10 @@ var oMarkerClicker = {
 		//마커를 이동할 때마다 reset해줘야 하는 정보를 위해서 Array에 담아둔다.
 		this.aMenues.push(oMenu);
 		//마우스가 메뉴아이콘 위에 위치할경우, Content영역이 보여지도록 한다.
-		oIcon.addEventListener('mouseover', function() {
+		oIcon.addEventListener('touchstart', function() {
 			oMenu.style.display = 'block';
 		}.bind(this),false);
   
-		oIcon.addEventListener('mouseout', function() {
-			var status = oIcon.getAttribute('status');
-		
-			if ( status != 'clicked')
-				oMenu.style.display = 'none';
-		}.bind(this),false);
-	
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
 		oIcon.addEventListener('touchend', function(e) {
 			e.preventDefault();
