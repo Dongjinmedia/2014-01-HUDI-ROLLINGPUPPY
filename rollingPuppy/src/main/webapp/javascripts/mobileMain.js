@@ -445,6 +445,15 @@ var oPanelContents = {
 			oScrolls["scroll1"].refresh();
 		},
 		
+		deleteFromChattingList: function(chatRoomNumber) {
+			var eTarget = oChat.oInfo[chatRoomNumber]["eTarget"];
+			this.eChattingListTarget.removeChild(eTarget);
+			
+			if ( this.eChattingListTarget.childNodes.length === 0 ) {
+				this.vacantChattingList();
+			}
+		},
+		
 		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 		chattingSelectHandler: function(event) {
 			console.log("into chattingSelectHandler");
@@ -1139,7 +1148,6 @@ var oMarkerClicker = {
 	
 	//메뉴버튼위에서 마우스가 빠져나갈때
 	mouseOut: function() {
-		console.log("mouseOut");
 		//클릭된 메뉴가 없을경우
 		//메뉴크기를 줄어들면서 메뉴버튼들이 사라진다. (애니메이션 효과가 css를 통해 자동으로 동작)
 		this.menu.style.cssText = "width:75px;height:75px;margin:-37.5px 0 0 -37.5px";
@@ -1176,7 +1184,7 @@ var oMarkerClicker = {
 		}.bind(this),false);
   
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
-		oIcon.addEventListener('touchend', function(e) {
+		oIcon.addEventListener('touchstart', function(e) {
 			e.preventDefault();
 		
 			var status = oIcon.getAttribute('status');
@@ -2014,6 +2022,21 @@ var oCreateChattingRoom = {
 
 /*********************************************************************************************************
  * Create Chat Room 채팅방 생성에 대한 Hidden Area에 대한 소스코드 종료
+ **********************************************************************************************************/
+
+/*********************************************************************************************************
+ * mobileMain.js와 웹의 main.js의 호환을 위한 Object, 채팅서버에서 호출한다.
+ **********************************************************************************************************/
+var oAside = {
+		deleteFromChattingList: function(chatRoomNumber) {
+			oPanelContents.deleteFromChattingList(chatRoomNumber);
+		},
+		addChattingList: function(chatRoomNumber, oResult) {
+			oPanelContents.addChattingList(chatRoomNumber, oResult);
+		}
+};
+/*********************************************************************************************************
+ * mobileMain.js와 웹의 main.js의 호환을 위한 Object
  **********************************************************************************************************/
 
 
