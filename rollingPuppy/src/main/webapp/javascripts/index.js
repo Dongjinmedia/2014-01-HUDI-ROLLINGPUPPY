@@ -13,7 +13,36 @@ var oUtil = {
 	getStyleValue: function(node, style) {
 		var totalStyle= window.getComputedStyle(node , null);
 		return totalStyle.getPropertyValue(style);
-	}
+	},
+	//Node에 className를 추가하는 함수
+	addClassName: function (node, strClassName) {
+		// 기존에 className가 없던 경우
+		if (node.className === "") {
+			node.className = strClassName;
+			return ;
+		}
+		
+		// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+		node.className += " " + strClassName;
+	},
+
+	//Node에 특정 className을 제거하는 함수
+	removeClassName: function (node, strClassName) {
+		// 기존에 className가 없는 경우 함수를 종료합니다
+		if (node.className === "") {
+			return ;
+		}
+		
+		// node에 className이 존재하고, target className 하나만 있는 경우
+		if (node.className.length === strClassName.length) {
+			node.className = "";
+			return ;
+		}
+		
+		// node에 className가 다수 존재하는 경우의 target className 삭제
+		// node.className에 replace 결과물을 대입합니다.
+		node.className = node.className.replace(" " + strClassName, "").toString();
+	}	
 }
 
 var oSelectBox = {
@@ -50,7 +79,6 @@ var oSelectBox = {
 		this.eTitle = document.querySelector(".title");
 		this.eComment = this.eTitle.nextElementSibling;
 		
-		
 		this.eLoginSelector.addEventListener(
 				boolIsMobile ? "touchend" : "click",
 				function() {
@@ -60,6 +88,8 @@ var oSelectBox = {
 							"Welcome!",
 							"Welcome My Neighbor"
 					);
+					oUtil.addClassName(this.eLoginSelector, "clicked");
+					oUtil.removeClassName(this.eJoinSelector, "clicked");
 				}.bind(this), false);
 		
 		this.eJoinSelector.addEventListener(
@@ -71,6 +101,8 @@ var oSelectBox = {
 							"Be My Neighbor",
 							"And Chat On The Map"
 					);
+					oUtil.addClassName(this.eJoinSelector, "clicked");
+					oUtil.removeClassName(this.eLoginSelector, "clicked");
 				}.bind(this), false);
 	}	
 };
@@ -96,7 +128,7 @@ var oLogin = {
 	},
 	
 	login: function (event) {
-		event.preventDefault();
+		//event.preventDefault();
 		
 		var form = event.currentTarget.form;
 		
@@ -120,28 +152,6 @@ var oLogin = {
 			"password": form[1].value,
 			"keepEmail": form[2].value
 		};
-
-		var callback = function(request) {
-			var oResult = JSON.parse(request.responseText);
-				
-			var result = oResult['ThreeWayResult'];
-			console.log("ThreeWayResult:",result);
-				
-			if ( result === "SUCCESS" ) {
-				//debugging의 불편함으로 일시적 주석 처리 
-				//alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
-				console.log("nickname",oResult["nickname"])
-				window.location = "/main";
-			} else if ( result === "FAIL" ) {
-				alert("아이디와 비밀번호를 다시 확인해 주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
-				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
-		}
-		
-		oAjax.getObjectFromJsonPostRequest("/login", oParameter, callback);
 	},
 	initialize: function() {
 		var lastLoggedEmail = oCookie.getEmailCoockieValue();
@@ -181,14 +191,12 @@ var oJoin = {
 		}
 	},
 	join: function (event) {
-		event.preventDefault();
-
 		var form = event.currentTarget.form;
 		
 		//check input value
 		var email = form[0].value;
 		var password = form[1].value;
-		var passwordR = form[2].value;
+		var passwordR = form[2].value;	
 		
 		if ( email.length===0 || password.length===0 || passwordR===0 ) {
 			alert ("공란은 허용되지 않습니다. 모두 입력해 주세요");
@@ -205,30 +213,6 @@ var oJoin = {
 			return;
 		}
 		//check input value END
-		
-		var oParameter = {
-				"email": form[0].value,
-				"password": form[1].value,
-				"radio-input": form[2].value
-		};
-
-		var callback = function(request) {
-			var oResult = JSON.parse(request.responseText);
-			var result = oResult['ThreeWayResult'];
-			if ( result === "SUCCESS" ) {
-				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
-				window.location = "/";
-			} else if ( result === "ALREADY_EXISTS"){
-				alert("이미 존재하는 아이디입니다.\n다른 아이디로 시도해주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
-
-				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
-		}
-		oAjax.getObjectFromJsonPostRequest("/join", oParameter, callback);
-		
 	},
 	initialize: function() {
 		document.querySelector("#join_button").addEventListener(

@@ -87,7 +87,7 @@ a {
 	} */
 }
 
-.c_login:hover {
+.c_login:hover,  .c_login.clicked{
 	background: #750807;
 	color: #f33634;
 	border-bottom: .2em solid #f33634;
@@ -112,7 +112,7 @@ a {
     } */
 }
 
-.c_join:hover {
+.c_join:hover, .c_join.clicked {
 	background: #026f78;
 	color: #38edfb;
 	border-bottom: .2em solid #38edfb;
