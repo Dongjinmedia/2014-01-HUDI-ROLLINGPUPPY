@@ -96,7 +96,7 @@ var oLogin = {
 	},
 	
 	login: function (event) {
-		event.preventDefault();
+		//event.preventDefault();
 		
 		var form = event.currentTarget.form;
 		
@@ -120,28 +120,6 @@ var oLogin = {
 			"password": form[1].value,
 			"keepEmail": form[2].value
 		};
-
-		var callback = function(request) {
-			var oResult = JSON.parse(request.responseText);
-				
-			var result = oResult['ThreeWayResult'];
-			console.log("ThreeWayResult:",result);
-				
-			if ( result === "SUCCESS" ) {
-				//debugging의 불편함으로 일시적 주석 처리 
-				//alert("\""+oResult["nickname"] +"\" 님 환영합니다.");
-				console.log("nickname",oResult["nickname"])
-				window.location = "/main";
-			} else if ( result === "FAIL" ) {
-				alert("아이디와 비밀번호를 다시 확인해 주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
-				alert("예기치 못한 에러가 발생하였습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
-		}
-		
-		oAjax.getObjectFromJsonPostRequest("/login", oParameter, callback);
 	},
 	initialize: function() {
 		var lastLoggedEmail = oCookie.getEmailCoockieValue();
@@ -181,14 +159,12 @@ var oJoin = {
 		}
 	},
 	join: function (event) {
-		event.preventDefault();
-
 		var form = event.currentTarget.form;
 		
 		//check input value
 		var email = form[0].value;
 		var password = form[1].value;
-		var passwordR = form[2].value;
+		var passwordR = form[2].value;	
 		
 		if ( email.length===0 || password.length===0 || passwordR===0 ) {
 			alert ("공란은 허용되지 않습니다. 모두 입력해 주세요");
@@ -205,30 +181,6 @@ var oJoin = {
 			return;
 		}
 		//check input value END
-		
-		var oParameter = {
-				"email": form[0].value,
-				"password": form[1].value,
-				"radio-input": form[2].value
-		};
-
-		var callback = function(request) {
-			var oResult = JSON.parse(request.responseText);
-			var result = oResult['ThreeWayResult'];
-			if ( result === "SUCCESS" ) {
-				alert("이웃님. 반갑습니다.\n초기 닉네임은 자동설정됩니다. ^^\n")
-				window.location = "/";
-			} else if ( result === "ALREADY_EXISTS"){
-				alert("이미 존재하는 아이디입니다.\n다른 아이디로 시도해주세요.");
-			} else if ( result === "UNEXPECTED_ERROR"){ 
-
-				alert("예기치 못한 에러로 회원가입에 실패했습니다.\n다시 시도해 주세요.");
-			} else {
-				alert("비정상적 접근입니다.");
-			}
-		}
-		oAjax.getObjectFromJsonPostRequest("/join", oParameter, callback);
-		
 	},
 	initialize: function() {
 		document.querySelector("#join_button").addEventListener(

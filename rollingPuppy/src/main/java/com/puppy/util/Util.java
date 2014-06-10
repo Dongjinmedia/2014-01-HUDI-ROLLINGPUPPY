@@ -1,5 +1,7 @@
 package com.puppy.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -327,5 +329,32 @@ public class Util {
 		}
 		
 		return returnData;
+	}
+
+	public static String  getJavscriptStringValueThatAlertMessageAndRedirectParameterURL(String message, String redirectUrl) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));window.location='"+redirectUrl+"';</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
+	}
+	
+	public static String  getJavscriptStringValueThatAlertMessageAndMovePrevious(String message) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));history.back(-1);</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
+	}
+	
+	public static String  getJavscriptStringValueThatAlertMessage(String message) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
 	}
 }
