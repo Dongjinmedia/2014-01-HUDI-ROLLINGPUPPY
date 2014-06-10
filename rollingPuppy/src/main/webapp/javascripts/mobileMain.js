@@ -128,7 +128,7 @@ var oPanel = {
 		this.ePanel.addEventListener(
 				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
 						sTransitionEnd.toLower() : sBrowserPrefix + sTransitionEnd,
-				this.setPanelPosition.bind(this)
+				this.panelTransitionEnd.bind(this)
 		);
 	},
 
@@ -197,8 +197,11 @@ var oPanel = {
 	//setTimeout에 사용되는 시간값
 	nAnimateTime: 0,
 	
-	//isPanelMove로 터치 이벤트 받을지 말지 판별.
-	isPanelMove: false,
+	//isPanelTransition으로 transition 중 추가적인 터치 이벤트 받을지 말지 판별.
+	isPanelTransition: false,
+	//스크롤인지 스와이프인지 판별
+	isScroll: null,
+	isPanelAction: false,
 	
 	//터치시작점 저장
 	nTouchStartX: 0,
@@ -209,18 +212,17 @@ var oPanel = {
 	//scroll or swipe를 판별하기 위한 값
 	nTotalMoveX: 0,
 	nTotalMoveY: 0,
-	isScroll: null,
 	
 	//터치 이벤트 시작시 호출되는 함수
 	panelTouchStart: function(event) {
 		//TODO IOS에서 링크영역을 잡고 플리킹할때, 플리킹종료 후 링크로 이동되는현상을 막아야 한다.
-		if (this.isPanelMove) {
+		if (this.isPanelTransition) {
 			return;
 		}
 		
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
-		window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].disable();
+		window.oScroll.disable("panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4));
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -231,7 +233,7 @@ var oPanel = {
 	
 	//터치 이벤트 도중에 호출되는 함수
 	panelTouchMove: function(event) {
-		if (this.isPanelMove) {
+		if (this.isPanelTransition) {
 			return;
 		}
 		
@@ -257,12 +259,13 @@ var oPanel = {
 		//   ** isScroll은 기본값이 null이고, touchEnd 시점에도 null로 초기화 합니다.
 		//   ** 따라서 아래 if문은 한 번만 수행되게 되어있습니다.
 		if (this.isScroll == null) {
+			this.isPanelAction = true;
 			if( this.nTotalMoveX > this.nTotalMoveY) {
 				this.isScroll = false; 
 			} else {
 				this.isScroll = true;
 				// 스크롤을 해도 되는 상황입니다! enable 해줍시다!!
-				window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
+				window.oScroll.enable("panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4));
 			}
 		}
 		
@@ -279,10 +282,10 @@ var oPanel = {
 	
 	//터치가 종료될때 호출되는 함수
 	panelTouchEnd: function(event) {
-		if (this.isPanelMove) {
+		if (this.isPanelTransition) {
 			return;
 		}
-		this.isPanelMove = true;
+		this.isPanelTransition = true;
 		
 		oUtil.addClassName(this.ePanelContents, "translate");
 		console.log("panelTouchEnd Event : ", event);
@@ -301,10 +304,10 @@ var oPanel = {
 		this.isScroll = null;
 
 		// touchStart에서 disable 했던 스크롤을 풀어둡니다.
-		window.oScrolls["panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4)].enable();
+		window.oScroll.enable("panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4));
 
 		if (tempIsScroll) {
-			this.isPanelMove = false;
+			this.isPanelTransition = false;
 			return;
 		}
 		
@@ -317,11 +320,21 @@ var oPanel = {
 			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(100%)";
 			this.nCurrentPanelIndex--;
 		} else if (nMoveLengthX === 0) {
-			this.isPanelMove = false;
+			this.isPanelTransition = false;
 		} else {
-			this.isPanelMove = false;
+			this.isPanelTransition = false;
 			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
 		}
+	},
+	
+	panelTransitionEnd: function() {
+		oUtil.removeClassName(this.ePanelContents, "translate");
+		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
+		
+		this.setPanelPosition();
+
+		this.isPanelTransition = false;
+		this.isPanelAction = false;
 	},
 	
 	setCurrentPanelIndex: function(idx) {
@@ -330,9 +343,6 @@ var oPanel = {
 	
 	//인덱스 값을 확인해 패널의 left속성을 처리하는 함수
 	setPanelPosition: function() {
-		oUtil.removeClassName(this.ePanelContents, "translate");
-		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
-
 		var nLeftIndex = oUtil.mod(this.nCurrentPanelIndex - 1, 4);
 		var nCenterIndex = oUtil.mod(this.nCurrentPanelIndex, 4);
 		var nRightIndex = oUtil.mod(this.nCurrentPanelIndex + 1, 4);
@@ -344,29 +354,26 @@ var oPanel = {
 		this.aSectionWrapper[nCenterIndex].style.left = "0%";
 		this.aSectionWrapper[nRightIndex].style.left = "100%";
 		this.aSectionWrapper[nRightEndIndex].style.left = "200%";
-
-		this.isPanelMove = false;
 	},
 	
-	//읽지 않은 메세지갯수 뷰를 업데이트한다.
-	 updateTotalNotificationView: function() {
-		 var unreadMessageNum = 0;
-		 for (var key in oChat.oInfo) {
-			 if (oChat.oInfo.hasOwnProperty(key)) {
-				 var oTarget = oChat.oInfo[key];
- 	
-				 unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
-			 }
-		 }
+	// 읽지 않은 메세지갯수 뷰를 업데이트한다.
+	updateTotalNotificationView: function() {
+		var unreadMessageNum = 0;
+		for (var key in oChat.oInfo) {
+			if (oChat.oInfo.hasOwnProperty(key)) {
+				var oTarget = oChat.oInfo[key];
+				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
+			}
+		}
  		
-		 if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
-			 this.eChattingNotification.style.display = "none";
-		 } else {
-			 this.eChattingNotification.innerText = unreadMessageNum;
-			 this.eChattingNotification.style.display = "inline-block";
-		 }
-	 },
-	
+		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
+			this.eChattingNotification.style.display = "none";
+		} else {
+			this.eChattingNotification.innerText = unreadMessageNum;
+			this.eChattingNotification.style.display = "inline-block";
+		}
+	},
+
 	init : function(){
 		this.addEvents();
 		// 초기화 시점에 setPanelPosition을 한 번 실행하여 좌측 panel도 만들어 둡니다.
@@ -377,16 +384,27 @@ var oPanel = {
 /*********************************************************************************************************
  * 스크롤에 대한 소스코드 시작 
  **********************************************************************************************************/
-var oScrolls = {
+var oScroll = {
+	disable: function(name) {
+		this[name].disable();
+	},
+	
+	enable: function(name) {
+		this[name].enable();
+	},
+	
+	refresh: function(name) {
+		this[name].refresh();
+	},
+	
 	init: function() {
 		for (var idx = 0; idx < 4; idx++) {
-			oScrolls["panel_scroll" + idx]
+			oScroll["panel_scroll" + idx]
 					= new IScroll("#panel_scroll" + idx, { mouseWheel: true });
 		}
-		oScrolls["chat_scroll"]
+		oScroll["chat_scroll"]
 				= new IScroll("#chat_scroll", { mouseWheel: true });
 	}
-	
 };
 /*********************************************************************************************************
  * 스크롤에 대한 소스코드 종료 
@@ -445,7 +463,7 @@ var oPanelContents = {
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
 			
-			oScrolls["panel_scroll1"].refresh();
+			oScroll.refresh("panel_scroll1");
 		},
 		
 		deleteFromChattingList: function(chatRoomNumber) {
@@ -459,6 +477,9 @@ var oPanelContents = {
 		
 		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 		chattingSelectHandler: function(event) {
+			if (oPanel.isPanelAction) {
+				return;
+			}
 			console.log("into chattingSelectHandler");
 			var clickedTarget = event.target;	
 			if(clickedTarget.tagName == "P"){
@@ -487,11 +508,11 @@ var oPanelContents = {
  * 검색에 대한 소스코드 시작 
  **********************************************************************************************************/
 var oSearching = {
-		eSearchBox: document.getElementById("sb_positioner"),
+		eSearchBox: document.querySelector("#searchBox"),
 		eSubmit: document.querySelector(".submit"),
 		getResultXml: function() {
 			var oParameters = {
-				"queryKeyword" : this.eSearchBox.children[0].value	
+				"queryKeyword" : this.eSearchBox.value	
 			};
 			
 			var url = "/search"
@@ -529,7 +550,7 @@ var oSearching = {
 						eTarget.appendChild(eCopiedTemplate);
 						
 						//스크롤 영역 크기 조절
-						oScrolls["panel_scroll0"].refresh();
+						oScroll.refresh("panel_scroll0");
 						oPanel.setCurrentPanelIndex(0);
 						oPanel.setPanelPosition();
 					}
@@ -1324,11 +1345,11 @@ var oChat = {
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
 			//때문에 가장 마지막에 실행해준다.
 			oChat.updateInitializeMessage(chatRoomNum);
+			oScroll.refresh("chat_scroll");
 		},
 
 		visibleChatWindow: function() {
 			this.eChatWindow.style.display = "block";
-			oScrolls["chat_scroll"].refresh();
 		},
 		
 		invisibleChatWindow: function() {
@@ -1693,7 +1714,7 @@ var oChat = {
 			
 			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
 			
-			oScrolls["panel_scroll1"].refresh();
+			oScroll.refresh("panel_scroll1");
 		},
 		
 		init: function() {
@@ -2051,7 +2072,7 @@ function initialize() {
 	sBrowserPrefix = oUtil.getBrowserPrefix();
 	boolIsMobile = oUtil.isMobile();
 
-	oScrolls.init();
+	oScroll.init();
 	oHeader.init();
 	oNav.init();
 	oPanel.init();
