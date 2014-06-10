@@ -22,7 +22,7 @@
 	
 	<div class="interactBox">
 		<div class="choiceBlock">
-			<a href="#" class="choice c_login">LOGIN</a>
+			<a href="#" class="choice c_login clicked">LOGIN</a>
 			<a href="#" class="choice c_join">JOIN</a>
 			<span class="devider">OR</span>
 		</div>
