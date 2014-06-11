@@ -99,8 +99,6 @@ var oPanel = {
 		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
 		var sAnimationEnd = "AnimationEnd";
-		var sBrowserPrefix = oUtil.getBrowserPrefix();
-		
 		this.ePanelWrapper.addEventListener(
 				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
 						sAnimationEnd.toLower() : sBrowserPrefix + sAnimationEnd,
@@ -386,15 +384,31 @@ var oPanel = {
  **********************************************************************************************************/
 var oScroll = {
 	disable: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].disable();
 	},
 	
 	enable: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].enable();
 	},
 	
 	refresh: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].refresh();
+	},
+	
+	_printError: function(name) {
+		console.log("Can't find \"" + name + "\". Please check the oScroll.init()");
 	},
 	
 	init: function() {
