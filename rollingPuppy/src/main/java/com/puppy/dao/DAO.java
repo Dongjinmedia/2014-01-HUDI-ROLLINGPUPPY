@@ -265,4 +265,9 @@ public class DAO {
 		
 		return successQueryNumber;
 	}
+	
+	public int deleteQuery(PreparedStatement preparedStatement) throws SQLException {
+		logger.info("DAO deleteQuery");
+		return updateQuery(preparedStatement);
+	}
 }

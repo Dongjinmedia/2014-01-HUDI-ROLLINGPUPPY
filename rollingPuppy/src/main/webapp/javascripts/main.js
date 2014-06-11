@@ -69,12 +69,21 @@ var oAside= {
 	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
 	eSettingMenu: document.querySelector("#nav_list .settings"),
 
+	
+	//template
+	eDefaultTemplate: document.querySelector("#template .default"),
+	eChattingTemplate: document.querySelector("#template .chatRoom"),
+	eBookmarkTemplate: document.querySelector("#template .bookmark"),
+	
+	
 	//채팅방 패널관련
 	eChattingMenu: document.querySelector("#nav_list .chatting"),
 	eChattingNotification: document.querySelector("#nav_list .notification"),
-	eChattingTemplate: document.querySelector("#template .chatRoom"),
 	eChattingListTarget: document.querySelector("#pc_chatting ul"),
 
+	
+	//즐겨찾기 패널관련
+	eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
 	
 	commingSoon: function(event) {
 		event.preventDefault();
@@ -95,7 +104,7 @@ var oAside= {
 		this.eSearchMenu.addEventListener("click", this.clickSearchMenu.bind(this));
 		this.eChattingMenu.addEventListener("click", this.clickChattingMenu.bind(this));
 		this.eRecommendMenu.addEventListener("click", this.commingSoon.bind(this));
-		this.eBookmarkMenu.addEventListener("click", this.commingSoon.bind(this));
+		this.eBookmarkMenu.addEventListener("click", this.clickBookmarkMenu.bind(this));
 		this.eSettingMenu.addEventListener("click", this.commingSoon.bind(this));
 		
 		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
@@ -104,6 +113,9 @@ var oAside= {
 		
 		var eChattingPanelContents = this.ePanel.querySelector("#pc_chatting");
 		eChattingPanelContents.addEventListener("click", this.chattingSelectHandler.bind(this));
+		
+		var eBookmarkContents = this.ePanel.querySelector("#pc_bookmark");
+		eBookmarkContents.addEventListener("click", this.bookmarkSelectHandler.bind(this));
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
@@ -125,8 +137,8 @@ var oAside= {
 	},
 	
 	vacantChattingList: function() {
-		var eDefaultTemplate = document.getElementById("template").querySelector(".default");			
-		var eTarget = document.getElementById("pc_chatting").querySelector("ul");
+		var eDefaultTemplate = this.eDefaultTemplate;			
+		var eTarget = this.eChattingListTarget;
 
 		//이미 존재하는 채팅방 목록이 있면 지운다.
 		while (eTarget.firstChild) {
@@ -135,6 +147,21 @@ var oAside= {
 		
 		var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
 		eCopiedDefaultTemplate.querySelector(".comment").innerText = "채팅 중인 채팅방이 없습니다.";
+		//template을 원하는 위치에 삽입
+		eTarget.appendChild(eCopiedDefaultTemplate);
+	},
+	
+	vacantBookmarkList: function() {
+		var eDefaultTemplate = this.eDefaultTemplate;			
+		var eTarget = this.eBookmarkTemplate;
+
+		//이미 존재하는 채팅방 목록이 있면 지운다.
+		while (eTarget.firstChild) {
+			eTarget.removeChild(eTarget.firstChild);
+		}
+		
+		var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+		eCopiedDefaultTemplate.querySelector(".comment").innerText = "현재 설정된 북마크가 없습니다.";
 		//template을 원하는 위치에 삽입
 		eTarget.appendChild(eCopiedDefaultTemplate);
 	},
@@ -189,6 +216,46 @@ var oAside= {
 			this.vacantChattingList();
 		}
 	},
+	/*
+	 * oBookmark  Schema
+	 * 		{
+	 * 				id: "",
+	 *				locationName: "",
+	 * 				locationLatitude: "",
+	 * 				locationLongitude: ""
+	 * 		}
+	 */
+	addBookmarkList: function(oBookmark) {
+		console.log("oBookmark : ",oBookmark);
+		var eTemplate = this.eBookmarkTemplate;
+		var eTarget = this.eBookmarkListTarget;
+		
+		var bookmarkId = oBookmark["id"];
+		var bookmarkName = oBookmark["bookmarkName"]
+		var locationName = oBookmark["locationName"];
+		var locationLatitude = oBookmark["locationLatitude"];
+		var locationLongitude = oBookmark["locationLongitude"];
+		
+		var eCopiedTemplate = eTemplate.cloneNode(true);
+		eCopiedTemplate.querySelector(".title").innerText = bookmarkName;
+		eCopiedTemplate.querySelector(".address").innerText = locationName;
+		
+		//클릭시 이벤트를 처리할 수 있도록 bookmark정보를 attribute로 담는다.
+		eCopiedTemplate["id"] = bookmarkId;
+		eCopiedTemplate["locationName"] = locationName;
+		eCopiedTemplate["locationLatitude"] = locationLatitude;
+		eCopiedTemplate["locationLongitude"] = locationLongitude;
+		eCopiedTemplate["eTarget"] = eCopiedTemplate;
+		
+		//template을 원하는 위치에 삽입
+		eTarget.appendChild(eCopiedTemplate);
+		this.clickBookmarkMenu();
+	},
+	
+	deleteFromBookmarkList: function(eBookmark) {
+		this.eBookmarkListTarget.removeChild(eBookmark);
+	},
+	
 	// panel 접기 버튼에 발생하는 click이벤트 콜백함수  
 	// CSS3 animation은 CSS 속성으로 동작합니다.
 	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
@@ -242,6 +309,13 @@ var oAside= {
 		this.unfoldByMenuElement(this.eChattingMenu);
 	},
 	
+	clickBookmarkMenu: function(event) {
+		if ( event !== undefined ) 
+			event.preventDefault();
+		
+		this.unfoldByMenuElement(this.eBookmarkMenu);
+	},
+	
 	//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 	chattingSelectHandler: function(event) {
 		var clickedTarget = event.target;	
@@ -255,6 +329,55 @@ var oAside= {
 			oChat.showChatWindow(chatRoomNum);
 			this._foldPanelContents();
 		}
+	},
+	
+	//관심장소리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
+	//working
+	bookmarkSelectHandler: function(event) {
+		var clickedTarget = event.target;
+		var destinationTarget = clickedTarget.parentNode;
+		var clickedTagName = clickedTarget.tagName;
+		
+		if ( clickedTagName == "P" || clickedTagName == "I") {
+			clickedTarget.parentNode;
+		}
+		
+		//cell을 선택했으면 
+		//현재, cell의 속성으로 bookmark 지역명, 좌표, 대상 element 주소값을 넣어두었다. 
+		var bookmarkId = destinationTarget["id"];
+		var bookmarkName = destinationTarget["bookmarkName"]
+		var locationName = destinationTarget["locationName"];
+		var locationLatitude = destinationTarget["locationLatitude"];
+		var locationLongitude = destinationTarget["locationLongitude"];
+		
+		if ( clickedTagName == "I" ) {
+
+			var oParameters = {
+    			"bookmarkId": bookmarkId
+    		};
+    		
+    		var callback = function(request) {
+    			var oResponse = JSON.parse(request.responseText);
+    			console.log(oResponse);
+    			var isSuccess = oResponse['isSuccess'];
+
+    			if ( isSuccess ) {
+    				oAside.deleteFromBookmarkList(destinationTarget["eTarget"]);
+    			} else {
+	    			alert("북마크삭제에 실패했습니다.\n잠시후 다시 시도해주세요.");
+	    		}
+    		}
+    		
+    		oAjax.getObjectFromJsonPostRequest("/bookmark/delete", oParameters, callback.bind(this));
+			
+		} else {
+			var oPoint = new nhn.api.map.LatLng(locationLatitude, locationLongitude);
+			//찾은 좌표로 지도의 중심을 재설정한다. 
+			oNaverMap.oMap.setCenter(oPoint);
+			//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+			oNaverMap.oMap.setLevel(13);
+		}
+		//working
 	},
 	
 	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
@@ -1642,12 +1765,10 @@ var oMapClicker = {
 	eMapClicker: document.getElementById('mapClicker'),
 	
 	//Add버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickAdd: document.querySelector('#mapClicker .icon-add'),
+	ePlus: document.querySelector('#mapClicker .icon-add'),
 	
 	//즐겨찾기 버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickBookMark: document.querySelector('#mapClicker .icon-star'),
+	ePin: document.querySelector('#mapClicker .icon-star'),
 	
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
@@ -1655,10 +1776,47 @@ var oMapClicker = {
 	//위치정보를 보여주는 Element
 	eLocationName: document.querySelector("#mapClicker .locationName div"),
 	
+	//Memory Data
+	//마지막으로 클릭한 x,y 정보를 담은 Object
+	oClickPoint: null,
+	//마지막으로 클릭한 지역명을 담은 String Value
+	sClickLocationName: null,
+	
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
 		this.eLocationName.innerText = locationName;
+		this.sClickLocationName = locationName;
 	},
+	
+	addBookmark: function() {
+		var sInputFromUser = prompt("관심장소 이름");
+		
+		if ( sInputFromUser === null ) {
+			return;
+		}
+		
+		var oParameters = {
+			"bookmarkName": sInputFromUser,
+			"locationName": this.sClickLocationName,
+			"locationLatitude": oMapClicker.oClickPoint['y'],
+			"locationLongitude": oMapClicker.oClickPoint['x'],
+		};
+
+		var callback = function(request) {
+			var oResponse = JSON.parse(request.responseText);
+			var isSuccess = oResponse['isSuccess'];
+
+			if ( isSuccess ) {
+				oAside.addBookmarkList(oResponse["bookmark"]);
+    		} else {
+    			alert("즐겨찾기 등록에 실패했습니다.\n다시 시도해주세요.");
+    		}
+		}
+		
+		oAjax.getObjectFromJsonPostRequest("/bookmark/add", oParameters, callback.bind(this));
+		//working
+	},
+	
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
 		this.eMapClicker.style.left = clientPosX+'px';
@@ -1675,16 +1833,12 @@ var oMapClicker = {
 		this.invisible();
 
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.clickAdd.addEventListener('click', function(e) {
+		this.ePlus.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		this.clickBookMark.addEventListener('click', function(e) {
-			alert('clickBookMark');
-
-		
-		}, false);
+		this.ePin.addEventListener('click', this.addBookmark.bind(this));
 	},	
 };
 

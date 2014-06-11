@@ -68,4 +68,9 @@
 		<url>/markerClicker/getCurrentNumOfParticipant</url>
 		<controller>com.puppy.controller.chat.NumOfParticipantController</controller>
 	</mapping>
+	
+	<mapping>
+		<url>/bookmark/*</url>
+		<controller>com.puppy.controller.BookmarkController</controller>
+	</mapping>
 </mappings>

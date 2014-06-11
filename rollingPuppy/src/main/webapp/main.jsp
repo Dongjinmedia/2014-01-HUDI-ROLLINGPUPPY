@@ -39,8 +39,8 @@
 					<div class="notification"></div>
 			</li>
 			<li class="cell bookmark">
-				<p class="title"></p>
-				<p class="address"></p>
+					<p class="title icon-bookmark"></p> <i class="icon-delete"></i>
+					<p class="address"></p>
 			</li>
 			<li class="person chatMember">
 				<span class="profile"></span>
@@ -191,10 +191,6 @@
 						</div>
 						<div id="pc_bookmark">
 							<ul>
-								<li class="cell bookmark">
-									<p class="title icon-bookmark">우리집</p> <i class="icon-delete"></i>
-									<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
-								</li>
 							</ul>
 							<ul class="pcFooter"></ul>
 						</div>

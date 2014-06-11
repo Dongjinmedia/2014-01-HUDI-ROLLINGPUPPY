@@ -104,10 +104,10 @@ public class ChatController implements Controller {
 			//각각의 Part객체를 가져온다.
 			title = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_CHATROOM_TITLE); 
 			max = ServletRequestUtils.getIntParameterFromPart(request, Constants.REQUEST_CHATROOM_MAX);
-			name = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_CHATROOM_NAME);
+			name = ServletRequestUtils.getStringParameterFromPart(request, Constants.REQUEST_LOCATION_NAME);
 			
-			latitude = ServletRequestUtils.getBigDecimalParameterFromPart(request, Constants.REQUEST_CHATROOM_LATITUDE);
-			longitude = ServletRequestUtils.getBigDecimalParameterFromPart(request, Constants.REQUEST_CHATROOM_LONGITUDE);
+			latitude = ServletRequestUtils.getBigDecimalParameterFromPart(request, Constants.REQUEST_LOCATION_LATITUDE);
+			longitude = ServletRequestUtils.getBigDecimalParameterFromPart(request, Constants.REQUEST_LOCATION_LONGITUDE);
 			zoom = ServletRequestUtils.getIntParameterFromPart(request, Constants.REQUEST_CHATROOM_ZOOM);
 			
 			//database에 입력해야하는 모든 데이터가 존재한다면
