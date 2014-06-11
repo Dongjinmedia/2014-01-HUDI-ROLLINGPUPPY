@@ -209,10 +209,10 @@ div#sf {
 }
 
 #panel_contents.translate {
-	-webkit-transition: all 0.2s ease-out;
-	 -moz-transition: all 0.2s ease-out;
-	 -o-transition: all 0.2s ease-out;
-	 transition: all 0.2s ease-out;
+	-webkit-transition: all 0.3s ease-out;
+	 -moz-transition: all 0.3s ease-out;
+	 -o-transition: all 0.3s ease-out;
+	 transition: all 0.3s ease-out;
 }
 
 .section_wrapper {
@@ -222,22 +222,18 @@ div#sf {
 }
 
 .section_wrapper:nth-of-type(1) {
-	left: 0%;
 	background-color: #5d8bfc;
 }
 
 .section_wrapper:nth-of-type(2) {
-	left: 100%;
 	background-color: #aac700;
 }
 
 .section_wrapper:nth-of-type(3) {
-	left: 200%;
 	background-color: #febd01;
 }
 
 .section_wrapper:nth-of-type(4) {
-	left: 300%;
 	background-color: #f16559;
 }
 

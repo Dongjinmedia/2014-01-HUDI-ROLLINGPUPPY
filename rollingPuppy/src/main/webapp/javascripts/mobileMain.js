@@ -99,8 +99,6 @@ var oPanel = {
 		// mobile 페이지에서 animation을 정상적으로 종료시키지 않을 경우 성능저하가 발생했습니다.
 		// 이에 각 브라우저 별 animationEnd 이벤트 리스너를 달았습니다.
 		var sAnimationEnd = "AnimationEnd";
-		var sBrowserPrefix = oUtil.getBrowserPrefix();
-		
 		this.ePanelWrapper.addEventListener(
 				sBrowserPrefix === "ms" || sBrowserPrefix === "moz" ?
 						sAnimationEnd.toLower() : sBrowserPrefix + sAnimationEnd,
@@ -277,7 +275,7 @@ var oPanel = {
 		/* 플리킹 로직 */
 		// nMoveLengthX 만큼 좌 우로 이동시킵니다.
 		this.ePanelContents.style[oUtil.getBrowserPrefix() + "Transform"] =
-				"translate(" + nMoveLengthX + "px)";
+				"translate3d(" + nMoveLengthX + "px, 0, 0)";
 	},
 	
 	//터치가 종료될때 호출되는 함수
@@ -314,22 +312,22 @@ var oPanel = {
 		//TODO 변화값은 조절하도록
 		var nMoveLengthX = this.nTouchStartX - this.nTouchEndX;
 		if (nMoveLengthX > 50) {
-			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(-100%)";
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate3d(-100%, 0, 0)";
 			this.nCurrentPanelIndex++;
 		} else if (nMoveLengthX < -50) {
-			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(100%)";
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate3d(100%, 0, 0)";
 			this.nCurrentPanelIndex--;
 		} else if (nMoveLengthX === 0) {
 			this.isPanelTransition = false;
 		} else {
 			this.isPanelTransition = false;
-			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
+			this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate3d(0, 0, 0)";
 		}
 	},
 	
 	panelTransitionEnd: function() {
 		oUtil.removeClassName(this.ePanelContents, "translate");
-		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate(0)";
+		this.ePanelContents.style[sBrowserPrefix + "Transform"] = "translate3d(0, 0, 0)";
 		
 		this.setPanelPosition();
 
@@ -350,10 +348,10 @@ var oPanel = {
 		
 		oNav.setCurrentMenuMarker(nCenterIndex);
 		
-		this.aSectionWrapper[nLeftIndex].style.left = "-100%";
-		this.aSectionWrapper[nCenterIndex].style.left = "0%";
-		this.aSectionWrapper[nRightIndex].style.left = "100%";
-		this.aSectionWrapper[nRightEndIndex].style.left = "200%";
+		this.aSectionWrapper[nLeftIndex].style[sBrowserPrefix + "Transform"] = "translate3d(-100%, 0, 0)";
+		this.aSectionWrapper[nCenterIndex].style[sBrowserPrefix + "Transform"] = "translate3d(0, 0, 0)";
+		this.aSectionWrapper[nRightIndex].style[sBrowserPrefix + "Transform"] = "translate3d(100%, 0, 0)";
+		this.aSectionWrapper[nRightEndIndex].style[sBrowserPrefix + "Transform"] = "translate3d(200%, 0, 0)";
 	},
 	
 	// 읽지 않은 메세지갯수 뷰를 업데이트한다.
@@ -386,15 +384,31 @@ var oPanel = {
  **********************************************************************************************************/
 var oScroll = {
 	disable: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].disable();
 	},
 	
 	enable: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].enable();
 	},
 	
 	refresh: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
 		this[name].refresh();
+	},
+	
+	_printError: function(name) {
+		console.log("Can't find \"" + name + "\". Please check the oScroll.init()");
 	},
 	
 	init: function() {
