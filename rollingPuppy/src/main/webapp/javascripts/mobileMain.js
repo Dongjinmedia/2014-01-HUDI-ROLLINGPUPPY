@@ -407,6 +407,14 @@ var oScroll = {
 		this[name].refresh();
 	},
 	
+	scrollToBottom: function(name) {
+		if (typeof this[name] === undefined) {
+			this._printError(name);
+			return;
+		}
+		this[name].scrollTo(0, this[name].maxScrollY);
+	},
+	
 	_printError: function(name) {
 		console.log("Can't find \"" + name + "\". Please check the oScroll.init()");
 	},
@@ -1440,14 +1448,17 @@ var oChat = {
 			}
 		},
 		setMessageBoxScrollTop: function() {
+			// TODO IScroll을 사용함에 따라 동작하지 않을 것. 
 			this.eChatWindowMessageBox.scrollTop = this.eChatWindowMessageBox.scrollHeight;
 		},
 		
 		getMessageBoxScrollTop: function() {
+			// TODO IScroll을 사용함에 따라 동작하지 않을 것. 
 			return this.eChatWindowMessageBox.scrollHeight;
 		},
 		
 		updateMessageBoxScrollTop: function(height) {
+			// TODO IScroll을 사용함에 따라 동작하지 않을 것. 
 			this.eChatWindowMessageBox.scrollTop = height;
 		},
 		
@@ -1527,7 +1538,10 @@ var oChat = {
 				this.eChatWindowMessageBox.appendChild(eTarget);
 			}
 			
+			// TODO 기존의 -scrollTop 함수를 어떻게 처리할 지 결정할 것!
 			this.setMessageBoxScrollTop();
+			oScroll.refresh("chat_scroll");
+			oScroll.scrollToBottom("chat_scroll");
 		},
 		
 		updateLastMessageDayNum: function(nDay) {
