@@ -610,7 +610,7 @@ var http = require('http');
 function getOption() {
 
 	options= {
-  	  host: 'localhost',
+  	  host: '125.209.195.202',
   	  path: 'url',
   	  port: '8080',
   	  method: 'GET',

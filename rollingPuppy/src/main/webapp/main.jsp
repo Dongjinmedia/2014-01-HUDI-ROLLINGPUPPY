@@ -8,7 +8,7 @@
 <link type="text/css" rel="stylesheet"
 	href="/stylesheets/reset.css?20140501">
 <link type="text/css" rel="stylesheet"
-	href="/stylesheets/main.css?20140504">
+	href="/stylesheets/main.css?20140613">
 <script type="text/javascript"
 	src="http://openapi.map.naver.com/openapi/naverMap.naver?ver=2.0&key=77d830d7ec61e9dd0504dcee5411c636"></script>
 <script type="text/javascript"
