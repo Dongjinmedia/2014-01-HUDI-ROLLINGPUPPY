@@ -1417,22 +1417,6 @@ var oChat = {
 			this.saveCurrentChatRoomNumber(null);
 		},
 		
-		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
-		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChatInfoObject").innerText;
-			var chattingRoomListToJson = JSON.parse(chattingRoomList);
-			var chattingRoomIdList = new Array();
-			
-			for ( var i = 0; i < chattingRoomListToJson.length ; i++ ) {
-				chattingRoomIdList.push(chattingRoomListToJson[i].chatRoomId);
-			}
-			
-			for ( var i = 0; i < chattingRoomIdList.length ; i++ ) {
-				var chatRoomNum = chattingRoomIdList[i];
-				this.socket.emit('autoConnectWithEnteredChattingRoom', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
-			}
-		},
-		
 		//새로운 chatInfo항목을 추가한다.
 		addChatInfo: function(chatRoomNumber, oResult) {
 			oChat.oInfo[chatRoomNumber] = oResult;
@@ -1574,9 +1558,6 @@ var oChat = {
 					}					
 				}
 			}, false);
-			
-			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
-			this.connectSocketWithEnteredChattingRoom();
 			
 			//사용자가 참여하고있는 채팅방의 데이터를 oInfo객체에 저장한다.
 			

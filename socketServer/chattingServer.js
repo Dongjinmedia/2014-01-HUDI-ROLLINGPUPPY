@@ -123,6 +123,44 @@ io.sockets.on('connection', function (socket) {
 		}.bind(this);
 		/********************************************************************************************************************/
 		requestQuery(query, aQueryValues, callback);
+
+
+		// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
+		//이미 참여하고 있는 채팅방들에 대한 소켓연결을 해줘야 한다.
+		//그를 위한 Query실행
+		/********************************************************************************************************************/
+		var reconnectQuery = "SELECT tbl_chat_room_id FROM tbl_chat_room_has_tbl_member WHERE tbl_member_id = ?";
+		
+		var aReconnectQueryValues = [userId];
+		
+		var reconnectCallback = function(aResult) {
+			console.log("reconnect aResult : ",aResult);
+			if (isUndefinedOrNull(aResult)) {
+				console.log("unexpected error occur");
+				return;
+			}
+			
+			
+			//기존에 참여하고 있던 채팅방이 없는 경우
+			if ( aResult.length === 0 ) {
+				//TODO
+				//announce("잘못된 접근");
+				return;
+
+			//기존에 참여하던 채팅방이 존재하는경우
+			} else {
+				for (var i = 0 ; i < aResult.length ; ++i ) {
+					var chatRoomId = aResult[i]["tbl_chat_room_id"];
+					console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", chatRoomId + '\u001b[0m');
+
+					socket.join(chatRoomId);
+				}
+			}
+
+		}.bind(this);
+		/********************************************************************************************************************/		
+		requestQuery(reconnectQuery, aReconnectQueryValues, reconnectCallback);
+
 	}
 
 //***************************************************************************************
@@ -184,13 +222,6 @@ io.sockets.on('connection', function (socket) {
 
 		io.sockets.in(chatRoomNumber).emit('execute', oCallback);	
 	}
-	
-	// 사용자 로그인시 자동으로 접속해있는 채팅방과의 소켓 연결을 맺어줍니다.
-	//TODO connection시 node에서 join을 실행하도록 변경한다.
-	socket.on('autoConnectWithEnteredChattingRoom', function(data) {
-		console.log('\u001b[32m', "Socket Connect With Entered Chatting Room -> chatRoomNumber : ", data.chatRoomNumber + '\u001b[0m');
-		socket.join(data.chatRoomNumber);
-	})
 
 	function getMessageDataObject(userId, chatRoomNumber, message) {
 		var date = new Date();
