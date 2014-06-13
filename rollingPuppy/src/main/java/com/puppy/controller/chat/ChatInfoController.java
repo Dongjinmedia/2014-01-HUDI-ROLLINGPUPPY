@@ -64,49 +64,5 @@ public class ChatInfoController implements Controller {
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("indo doPost of ChatInfoController");
-
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		Map<String, JsonChatInfo> returnData = null;
-		
-		int userId = 0;
-		
-		try {
-			userId = ServletSessionUtils.getIntParameter(request, Constants.SESSION_MEMBER_ID); 
-
-			if ( userId != 0 ) {
-				ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
-				List<ChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
-				
-				/*
-				 * chatInfoList를 이용해서 
-				 * 다음과 같은 형태의 데이터를 만들 수 있도록 Util클래스에 요청한다. 
-				 * 
-				 * {
-						"채팅방번호": {
-							title: "",
-							locationName: "", 
-							max: "",
-							unreadMessageNum: "",
-							participantNum: "", 
-							oParticipant: {
-								"회원아이디": 
-								{
-									nickname: "",
-								}
-							}
-						}
-					} 
-				 */
-				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);
-			}
-		} catch (Exception e ) {
-			logger.error("Request Get Entered Chatting Room List With User ID", e);
-		}
-		
-		out.println(gson.toJson(returnData));
-	}
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	}
 }

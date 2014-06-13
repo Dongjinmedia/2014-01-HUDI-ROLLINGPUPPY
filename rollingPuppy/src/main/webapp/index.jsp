@@ -47,7 +47,7 @@
 				<input type="radio" value="M" name="radio-input" checked="checked">Male
 				<input type="radio" value="W" name="radio-input">Female
 
-				<input type="submit" value="Sign In" />
+				<input type="submit" id="join_button" value="Sign In" />
 			</form>
 		</div>
 		

@@ -169,9 +169,7 @@ public class Util {
 		 * for문을 돌면서 원하는 형태로 데이터를 담는다.
 		 * 
 		 */
-		logger.info("thisthis?!!!!!");
 		for (ChatInfo chatRoom : myChatInfoList) {
-			logger.info("yesyes?!!!!!");	
 			//chatRoomId를 가져온다.
 			int chatRoomId = chatRoom.getChatRoomId();
 			
