@@ -28,6 +28,11 @@ var oUtil = {
 				return ;
 			}
 			
+			// node에 className가 존재하는 경우
+			if (node.className.toString().search(strClassName) !== -1) {
+				return;
+			}
+			
 			// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
 			node.className += " " + strClassName;
 		},
