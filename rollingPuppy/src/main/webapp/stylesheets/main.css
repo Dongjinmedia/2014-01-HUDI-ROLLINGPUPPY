@@ -602,6 +602,10 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 */
 
 /* 채팅방 스타일 영역 시작 */
+#chatWindow {
+	z-index: 10;
+}
+
 #chatWindow *{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -1233,7 +1237,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 ** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 시작
 */
 #mapClicker {
-	z-index: 10;
+	z-index: 5;
 	position: absolute;
 	margin-top: -70px;
 	left: 50%;
