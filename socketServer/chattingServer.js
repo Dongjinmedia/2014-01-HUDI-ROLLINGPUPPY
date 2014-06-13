@@ -428,6 +428,10 @@ io.sockets.on('connection', function (socket) {
 					//  changedRows: 0 
 					// }					
 					requestQuery(query, aQueryValues, function(oResult) {
+						if ( isUndefinedOrNull(affectedRows)) {
+							announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
+							return;
+						}
 
 						var affectedRows = oResult["affectedRows"];
 						//TODO Log console.log("affectedRows : ",affectedRows);
