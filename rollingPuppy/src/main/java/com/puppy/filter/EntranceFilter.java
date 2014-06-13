@@ -13,10 +13,11 @@ import javax.servlet.http.HttpServletResponse;
 
 public class EntranceFilter implements Filter{
 
+	
+//	private static final Logger logger = LoggerFactory.getLogger(ChatController.class);
+	
 	@Override
-	public void init(FilterConfig filterConfig) throws ServletException {
-	}
-
+	public void init(FilterConfig filterConfig) throws ServletException {}
 	
 	//TODO 하단링크방식으로 구현해보자
 	//http://slipp.net/wiki/pages/viewpage.action?pageId=19530191
@@ -28,7 +29,10 @@ public class EntranceFilter implements Filter{
 		HttpServletRequest request = (HttpServletRequest) servletRequest;
 		
 		if ( request.getCharacterEncoding() == null )
-			response.setCharacterEncoding("UTF-8");
+			request.setCharacterEncoding("UTF-8");
+		
+		//TODO Research
+		response.setCharacterEncoding("UTF-8");
 		
 		//String path = req.getRequestURI().substring(req.getContextPath().length());
 

@@ -19,6 +19,8 @@ import com.puppy.dao.impl.ChatInfoDaoImpl;
 import com.puppy.dto.ChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
+import com.puppy.util.ServletRequestUtils;
+import com.puppy.util.ServletSessionUtils;
 import com.puppy.util.Util;
 
 /*
@@ -44,68 +46,23 @@ public class ChatInfoController implements Controller {
 		Map<String, JsonChatInfo> returnData = null;
 		
 		
-		int chatRoomNumber = Integer.parseInt(request.getParameter("chatRoomNumber"));
-		
-		ChatInfoDaoImpl chatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
-		ChatInfo chatInfo = chatInfoDaoImpl.selectChatInfo(chatRoomNumber);
-		
-		if ( chatInfo == null ) {
-			return;
+		try {
+			int chatRoomNumber = ServletRequestUtils.getIntParameter(request, (Constants.REQUEST_CHATROOM_NUMBER));
+			ChatInfoDaoImpl chatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
+			ChatInfo chatInfo = chatInfoDaoImpl.selectChatInfo(chatRoomNumber);
+			
+			if ( chatInfo != null ) {
+				List<ChatInfo> tempList = new ArrayList<ChatInfo>();
+				tempList.add(chatInfo);
+				returnData = Util.getChatRoomInfoObjectFromQueryResult(tempList);			
+			}
+			
+		} catch (Exception e) {
+			
 		}
-		
-		List<ChatInfo> tempList = new ArrayList<ChatInfo>();
-		tempList.add(chatInfo);
-		returnData = Util.getChatRoomInfoObjectFromQueryResult(tempList);
-		
-		logger.info("ChattingInfomation From ChatRoomNumber : "+gson.toJson(returnData));
 		out.println(gson.toJson(returnData));
 	}
 
 	@Override
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		logger.info("indo doPost of ChatInfoController");
-
-		response.setContentType("application/json");
-		PrintWriter out = response.getWriter();
-		Gson gson = new Gson();
-		Map<String, JsonChatInfo> returnData = null;
-		
-		int userId = 0;
-		
-		try {
-			userId = Integer.parseInt(request.getSession().getAttribute( Constants.SESSION_MEMBER_ID ).toString());
-
-			if ( userId != 0 ) {
-				ChatInfoDaoImpl myChatInfoDaoImpl = ChatInfoDaoImpl.getInstance();
-				List<ChatInfo> chatInfoList = myChatInfoDaoImpl.selectMyChatInfo(userId);
-				
-				/*
-				 * chatInfoList를 이용해서 
-				 * 다음과 같은 형태의 데이터를 만들 수 있도록 Util클래스에 요청한다. 
-				 * 
-				 * {
-						"채팅방번호": {
-							title: "",
-							locationName: "", 
-							max: "",
-							unreadMessageNum: "",
-							participantNum: "", 
-							oParticipant: {
-								"회원아이디": 
-								{
-									nickname: "",
-								}
-							}
-						}
-					} 
-				 */
-				returnData = Util.getChatRoomInfoObjectFromQueryResult(chatInfoList);
-			}
-		} catch (Exception e ) {
-			logger.error("Request Get Entered Chatting Room List With User ID", e);
-		}
-		
-		logger.info("User Participant ChattingInfomation : "+gson.toJson(returnData));
-		out.println(gson.toJson(returnData));
-	}
+	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {	}
 }

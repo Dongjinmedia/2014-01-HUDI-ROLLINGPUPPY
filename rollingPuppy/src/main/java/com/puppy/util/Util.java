@@ -1,42 +1,25 @@
 package com.puppy.util;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.Part;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.puppy.dao.impl.ChatInfoDaoImpl;
+import com.puppy.dto.ChatInfo;
 import com.puppy.dto.ChatRoom;
 import com.puppy.dto.Member;
-import com.puppy.dto.ChatInfo;
 
 public class Util {
 	
 	private static final Logger logger = LoggerFactory.getLogger(Util.class);
 	
-	/*
-	 * getParameterValue From Javascript FormData
-	 * 바이너리데이터를 String데이터로 가져오기 위한 함수
-	 */
-	public static String getStringValueFromPart(Part part) throws IOException {
-	    BufferedReader reader = new BufferedReader(new InputStreamReader(part.getInputStream(), "UTF-8"));
-	    StringBuilder value = new StringBuilder();
-	    char[] buffer = new char[1024];
-	    for (int length = 0; (length = reader.read(buffer)) > 0;) {
-	        value.append(buffer, 0, length);
-	    }
-	    return value.toString();
-	}
-
 	/*
 	 * zoomLevel별 어느거리까지의 마커로 합칠것인지를 위해 존재하는 함수
 	 * TODO 알맞은 거리 리서치 (위,경도)
@@ -186,9 +169,7 @@ public class Util {
 		 * for문을 돌면서 원하는 형태로 데이터를 담는다.
 		 * 
 		 */
-		logger.info("thisthis?!!!!!");
 		for (ChatInfo chatRoom : myChatInfoList) {
-			logger.info("yesyes?!!!!!");	
 			//chatRoomId를 가져온다.
 			int chatRoomId = chatRoom.getChatRoomId();
 			
@@ -346,5 +327,32 @@ public class Util {
 		}
 		
 		return returnData;
+	}
+
+	public static String  getJavscriptStringValueThatAlertMessageAndRedirectParameterURL(String message, String redirectUrl) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));window.location='"+redirectUrl+"';</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
+	}
+	
+	public static String  getJavscriptStringValueThatAlertMessageAndMovePrevious(String message) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));history.back(-1);</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
+	}
+	
+	public static String  getJavscriptStringValueThatAlertMessage(String message) {
+		try {
+			return "<script>alert(decodeURI('"+URLEncoder.encode(message,"utf8").replace("+",  "%20")+"'));</script>";
+		} catch (UnsupportedEncodingException e) {
+			logger.info("getJavascript Fail");
+			return "<script>alert('Unexpected Error Occur!! Notice Homepage Administer And Try Again!')</script>";
+		}
 	}
 }

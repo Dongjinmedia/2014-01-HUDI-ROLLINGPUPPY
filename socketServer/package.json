@@ -3,7 +3,7 @@
 	"description": "RollingPuppy ChattingServer Dependency",
 	"devDependencies": 
 	{
-  	  "socket.io"	: ">= 0.9.16"
+  	  "socket.io"	: "= 0.9.16"
 	  ,"mysql"		: ">= 2.1.1"
 	}
 }

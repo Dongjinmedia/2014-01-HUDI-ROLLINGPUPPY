@@ -1,6 +1,6 @@
 body {
 	positon: relative;
-	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "돋움", Times;
+	font-family: "Nanum Gothic", "Apple SD Gothic Neo", "������", Times;
 	margin: 0;
 	
 	-webkit-user-select: NONE;
@@ -12,6 +12,10 @@ body {
 
 a {
 	text-decoration: none;
+}
+
+.hidden {
+	display: none;
 }
 
 .button {
@@ -362,7 +366,7 @@ li.bookmark .icon-delete:before {
 }
 
 li.bookmark .icon-delete:hover:before {
-	color: #000;
+	color: #FF3B3B;
 	top: 10px;
 	right: 10px;
 }
@@ -562,8 +566,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	font-size: 200%;
 	left: 50%;
 	top: 50%;
-	margin-top: -25%;
-	margin-left: -25%;
+	margin-top: -20%;
+	margin-left: -30%;
 }
 
 #createChatRoom input[type="text"], #createChatRoom input[type="number"] {
@@ -598,6 +602,10 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 */
 
 /* 채팅방 스타일 영역 시작 */
+#chatWindow {
+	z-index: 10;
+}
+
 #chatWindow *{
 	-webkit-box-sizing: border-box;
 	-moz-box-sizing: border-box;
@@ -794,7 +802,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 .chattingContents li{
   clear: both;
   position: relative;
-  margin-top: 2em;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .chattingContents {
@@ -842,6 +851,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 .chattingContents .user .message {
   max-width: 80%;
+  margin-top: 0px;
   text-align: justify;
   color: #92a2c2;
 }
@@ -1003,7 +1013,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item-back {
-	background: #8cc;
+	background-color: #8cc;
 	width: 87.5px;
 	height: 75px;
 	position: absolute;
@@ -1017,7 +1027,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item-back:hover {
-	background: #9dd;
+	background-color: #9dd !important;
 }
 
 .menu-item {
@@ -1211,11 +1221,15 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	*/
 .menu-info {
 	position: absolute;
-	margin: -260px 0 0 -105px;
+	font-family: Courier;
+  	font-size: 15px;
+  	font-weight: bold;
+	margin: -230px 0 0 -105px;
 	display: none;
 	width: 200px;
-	height: 100px;
+	height: 50px;
 	background: #fff;
+	padding: 10px;
 }
 .bookmark {
   
@@ -1229,7 +1243,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 ** 맵상에서 마커가 없는 영역을 클릭시 발생하는 인터렉션에 대한 CSS 시작
 */
 #mapClicker {
-	z-index: 10;
+	z-index: 5;
 	position: absolute;
 	margin-top: -70px;
 	left: 50%;
@@ -1387,17 +1401,73 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 */
 
 /*
-**새로운 메세지가 올때 생성되는 newMessage 영역 시
+**새로운 메세지가 올때 생성되는 newMessage 영역 시작
 */
-#wrapper #newMessage {
+#wrapper #noticeBox {
 	position: absolute;
-	right:20px;
-	bottom:20px;
-	width: 240px;
-	height: 110px;
-	background-color: #000;
-	display: none;
+	right:250px;
+	bottom: 10px;
+	display: block;
 }
+
+#noticeBox .notice {
+	display: none;
+	position: absolute;
+	width: 210px;
+	height: 80px;
+	list-style: none;
+	background-color: #FAFAFA;
+	border-radius: 8px;
+	box-shadow: inset -1px -1px 1px 1px #333;
+	margin: 20px;
+	webkit-transition: all 0.5s linear;
+	transition: all 0.5s linear;
+	opacity: 0;
+	bottom: 0;
+	z-index: 300;
+	font-family: 'Nanum Gothic', 'Apple SD Gothic Neo', ������, Times;
+	overflow: hidden;
+}
+
+#noticeBox .notice * {
+	position: absolute;
+}
+
+#noticeBox .title {
+	top: 10%;
+	width: 95%;
+	left: 5%;
+	font-size: 15px;
+	white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden;
+}
+
+#noticeBox .nickname {
+	top: 40%;
+	left: 25%;
+	font-size: 11px;
+	color: #A6A5A4;
+}
+
+#noticeBox .message {
+	top: 60%;
+	left: 25%;
+	width: 75%;
+	font-size: 13px;
+	font-weight: bold;
+	white-space: nowrap;
+  	text-overflow: ellipsis;
+  	overflow: hidden;
+}
+
+#noticeBox .profile {
+	top: 40%;
+	left: 5%;
+	width: 32px;
+	height: 32px;
+}
+
 /*
-**새로운 메세지가 올때 생성되는 newMessage 영역 종 
+**새로운 메세지가 올때 생성되는 newMessage 영역 종료  
 */

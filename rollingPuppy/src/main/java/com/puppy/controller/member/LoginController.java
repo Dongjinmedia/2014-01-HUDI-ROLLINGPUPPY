@@ -19,7 +19,9 @@ import com.puppy.controller.Controller;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
 import com.puppy.util.Constants;
+import com.puppy.util.ServletRequestUtils;
 import com.puppy.util.ThreeWayResult;
+import com.puppy.util.Util;
 
 /*
  * 로그인 요청에 대한 컨트롤러
@@ -30,34 +32,15 @@ public class LoginController implements Controller {
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
-		logger.info("into doPost");
-		
-		response.setContentType("application/json");
 		PrintWriter out = response.getWriter();
-		Map<String, Object> resultJsonData = new HashMap<String, Object>();
-		Gson gson = new Gson();
 		
 		//초기설정은 예기치못한 에러
 		ThreeWayResult loginResult = ThreeWayResult.UNEXPECTED_ERROR;
 		
 		// POST 정보를 저장합니다.
-		String email = null;
-		String password = null;
-		String keepEmail = null;
-		
-		
-		Object emailObject = request.getAttribute(Constants.REQUEST_EMAIL);
-		Object passwordObject = request.getAttribute(Constants.REQUEST_PASSWORD);
-		Object keepEmailObject = request.getAttribute(Constants.REQUEST_KEEP_EMAIL);
-		
-		if ( emailObject !=null 
-				&& passwordObject != null
-				&& keepEmailObject != null ) {
-			email = emailObject.toString();
-			password = passwordObject.toString();
-			keepEmail = keepEmailObject.toString();
-		}
-			
+		String email = ServletRequestUtils.getParameter(request, Constants.REQUEST_EMAIL);
+		String password = ServletRequestUtils.getParameter(request, Constants.REQUEST_PASSWORD);
+		String keepEmail = ServletRequestUtils.getParameter(request, Constants.REQUEST_KEEP_EMAIL);
 		
 		//TODO 이건 왜 있는거지?? <윤성>
 		if (keepEmail == null) {
@@ -108,20 +91,20 @@ public class LoginController implements Controller {
 			//logger.info("nickname"+member.getNicknameNoun());
 			//로그인 성공
 			loginResult = ThreeWayResult.SUCCESS;
-			resultJsonData.put(
-					Constants.JSON_RESPONSE_NICKNAME, //key 
-					member.getNicknameAdjective() + " "+member.getNicknameNoun()); //value
 		} else {
 			//일치하는 비밀번호가 데이터베이스에 존재하지 않음
 			loginResult = ThreeWayResult.FAIL;
 		}
-		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, loginResult);
-		out.println(gson.toJson(resultJsonData));
+		
+		if ( loginResult == ThreeWayResult.SUCCESS ) {
+			response.sendRedirect("/main");
+		} else if ( loginResult == ThreeWayResult.FAIL){
+			out.println(Util.getJavscriptStringValueThatAlertMessageAndMovePrevious("아이디 및 비밀번호를 다시 확인해 주세요"));
+		} else {
+			out.println(Util.getJavscriptStringValueThatAlertMessageAndMovePrevious("비정상적인 접근입니다."));
+		}
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		
-	}
+	public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
 }

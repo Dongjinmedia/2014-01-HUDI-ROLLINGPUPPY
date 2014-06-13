@@ -2,9 +2,6 @@
 	pageEncoding="UTF-8" isELIgnored="false"%>
 <!DOCTYPE html>
 <html>
-<%!final String SESSION_NICKNAME_NOUN = "member.nickname_noun";
-	final String SESSION_NICKNAME_ADJECTIVE = "member.nickname_adjective";%>
-
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>Neighbor</title>
@@ -39,8 +36,8 @@
 					<div class="notification"></div>
 			</li>
 			<li class="cell bookmark">
-				<p class="title"></p>
-				<p class="address"></p>
+					<p class="title icon-bookmark"></p> <i class="icon-delete"></i>
+					<p class="address"></p>
 			</li>
 			<li class="person chatMember">
 				<span class="profile"></span>
@@ -65,8 +62,7 @@
 			</li> 
 		</ul>
 	</div>
-	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
-	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
+	
 	<div id="createChatRoom">
 		<div class="outer bg"></div>
 		<div class="centerArea">
@@ -115,10 +111,10 @@
 	</div>
 
 	<!-- hidden Area2 (For Entered Chatting Room List) -->
-	<div style="display: none;">
-		<p id="enteredChattingRoomList">${requestScope["enteredChattingRoomList"]}</p>
-	</div>
-
+	<script type="text/template" class="hidden" id = "enteredChatInfoObject">${requestScope["enteredChatInfoObject"]}</script>
+	<script type="text/template" class="hidden" id = "bookmarkList">${requestScope["bookmarkList"]}</script>
+	<script type="text/template" class="hidden" id="email">${sessionScope['member.email']}</script>
+	<script type="text/template" class="hidden" id="id">${sessionScope['member.id']}</script>
 
 	<!--페이지 전체를 감싸는 영역-->
 	<div id="wrapper">
@@ -133,8 +129,7 @@
 				<button class="button" type="submit">검색</button>
 			</div>
 			<!-- 사용자 별명 -->
-			<p id="user_name">${sessionScope["member.nickname_adjective"]}
-				${sessionScope["member.nickname_noun"]}</p>
+			<p id="user_name">${sessionScope["member.nickname_adjective"]} ${sessionScope["member.nickname_noun"]}</p>
 
 			<!--  로그아웃 버튼 -->
 			<a id="logout_button" class="button" href="/logout">Logout</a>
@@ -191,10 +186,6 @@
 						</div>
 						<div id="pc_bookmark">
 							<ul>
-								<li class="cell bookmark">
-									<p class="title icon-bookmark">우리집</p> <i class="icon-delete"></i>
-									<p class="address">서울특별시 서초구 방배동 797-7 베로니스타운 지하 1층</p>
-								</li>
 							</ul>
 							<ul class="pcFooter"></ul>
 						</div>
@@ -265,18 +256,12 @@
 			</div>
 		</div>
 		
-		<ul id="newMessage"></ul>
+		<ul id="noticeBox"></ul>
 	</div>
 </body>
-<<<<<<< HEAD
 <script type="text/javascript" src="http://125.209.195.202:3080/socket.io/socket.io.js"></script>
-<script type="text/javascript" src="/javascripts/main.js?20140509"></script>
-=======
-<script type="text/javascript"
-	src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
+<script type="text/javascript" src="/javascripts/main.js?20140613"></script>
 <script type="text/javascript" src="/javascripts/ajax.js?20140522"></script>
-<script type="text/javascript" src="/javascripts/main.js?20140501"></script>
->>>>>>> develop
 <script>
 	window.onload = initialize();
 </script>
