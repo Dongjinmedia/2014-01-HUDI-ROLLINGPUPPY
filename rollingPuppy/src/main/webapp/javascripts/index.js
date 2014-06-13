@@ -178,9 +178,9 @@ var oJoin = {
 				console.log(result);
 
 				if( result === "FAIL" ){
-					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
+					duplicateCheckPtag.className = "fail";
 				}else if (result === "SUCCESS"){
-					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+					duplicateCheckPtag.className = "pass";
 				}else {
 					alert("예기치 못한 사건이 발생했다!!");
 				}
