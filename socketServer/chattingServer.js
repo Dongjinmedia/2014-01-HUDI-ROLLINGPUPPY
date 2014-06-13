@@ -428,7 +428,8 @@ io.sockets.on('connection', function (socket) {
 					//  changedRows: 0 
 					// }					
 					requestQuery(query, aQueryValues, function(oResult) {
-						if ( isUndefinedOrNull(affectedRows)) {
+
+						if ( isUndefinedOrNull(oResult) ) {
 							announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
 							return;
 						}
@@ -439,6 +440,7 @@ io.sockets.on('connection', function (socket) {
 						if ( affectedRows == 0 ) {
 							announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
 							return;
+							
 						} else {
 							getChatInfoFromWebServer(chatRoomNumber, function(oResultFromWebServer) {
 								
@@ -507,21 +509,10 @@ io.sockets.on('connection', function (socket) {
 			"DELETE FROM tbl_chat_room_has_tbl_member WHERE tbl_chat_room_id = ? AND tbl_member_id = ?",
 			[data.chatRoomNumber, getUserId()],
 			function(oResult) {
-				//working
-				if ( isUndefinedOrNull(oResult) ) {
-					announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
-					return;
-				}
-
 				var affectedRows = oResult[affectedRows];
-
-				if ( isUndefinedOrNull(affectedRows) ) {
-					announce("방입장중 에러가 발생했습니다.\n다시 시도해주세요.");
-					return;
-				}
-
+				console.log("oResult : ",oResult);
 				
-				if ( affectedRows.length === 0 ) {
+				if ( affectedRows === 0 ) {
 					//TODO 에러별 클라이언트 처리
 					console.log("Delete Fail");
 				} else {					
@@ -619,7 +610,7 @@ var http = require('http');
 function getOption() {
 
 	options= {
-  	  host: 'localhost',//'125.209.195.202',
+  	  host: 'localhost',
   	  path: 'url',
   	  port: '8080',
   	  method: 'GET',
