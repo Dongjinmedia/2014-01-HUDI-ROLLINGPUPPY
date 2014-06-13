@@ -6,7 +6,9 @@
  * 모두에게 공통되는 유틸함수 영역
 *********************************************************************************************************/
 //temp key variable.
-var mapAPIkeyRealServer = "5c935084c09a23e331aee090a0f2270c";
+//     ip     : 5c935084c09a23e331aee090a0f2270c
+//domain : 77d830d7ec61e9dd0504dcee5411c636
+//   local   : f154abb26c9c79ed5a4a25d000a9349c    
 
 var oUtil = {
 		getStyle: function (node, style) {
@@ -1229,7 +1231,7 @@ var oChat = {
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
 			
@@ -2045,7 +2047,7 @@ Message.prototype.setVisible = function() {
 	
 	setTimeout(function() {
 		this.setInvisible();
-	}.bind(this), 1000);
+	}.bind(this), 5000);
 	
 };
 
