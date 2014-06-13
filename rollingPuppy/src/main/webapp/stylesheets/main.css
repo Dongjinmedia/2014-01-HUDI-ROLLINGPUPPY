@@ -802,7 +802,8 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 .chattingContents li{
   clear: both;
   position: relative;
-  margin-top: 2em;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
 .chattingContents {
@@ -850,6 +851,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 .chattingContents .user .message {
   max-width: 80%;
+  margin-top: 0px;
   text-align: justify;
   color: #92a2c2;
 }
@@ -1011,7 +1013,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item-back {
-	background: #8cc;
+	background-color: #8cc;
 	width: 87.5px;
 	height: 75px;
 	position: absolute;
@@ -1025,7 +1027,7 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 }
 
 .menu-item-back:hover {
-	background: #9dd;
+	background-color: #9dd !important;
 }
 
 .menu-item {
@@ -1219,11 +1221,15 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 	*/
 .menu-info {
 	position: absolute;
-	margin: -260px 0 0 -105px;
+	font-family: Courier;
+  	font-size: 15px;
+  	font-weight: bold;
+	margin: -230px 0 0 -105px;
 	display: none;
 	width: 200px;
-	height: 100px;
+	height: 50px;
 	background: #fff;
+	padding: 10px;
 }
 .bookmark {
   
@@ -1399,8 +1405,8 @@ li[class^=icon-]:before,li[class*=" icon-"]:before {
 */
 #wrapper #noticeBox {
 	position: absolute;
-	right:180px;
-	bottom: 0;
+	right:250px;
+	bottom: 10px;
 	display: block;
 }
 

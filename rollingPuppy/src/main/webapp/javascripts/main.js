@@ -1231,7 +1231,7 @@ var oChat = {
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
 			
@@ -2047,7 +2047,7 @@ Message.prototype.setVisible = function() {
 	
 	setTimeout(function() {
 		this.setInvisible();
-	}.bind(this), 1000);
+	}.bind(this), 5000);
 	
 };
 
