@@ -1719,12 +1719,6 @@ var oChat = {
 			var incompleteUrl = "/chat/getMyChatInfo";
 			
 			var callback = function(request){
-				if (request.responseText == "") {
-					console.log("oChat.getMyChatInfoAndUpdateListInPanel(): /chat/getMyChatInfo returns null");
-					console.log("(Maybe user is not logged in)");
-					return;
-				}
-				
 				var oResult = JSON.parse(request.responseText);
 				
 				//oInfo에 요청데이터를 저장
