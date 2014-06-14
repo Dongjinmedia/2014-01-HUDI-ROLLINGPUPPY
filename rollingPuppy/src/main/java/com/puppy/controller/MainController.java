@@ -9,9 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.puppy.dao.impl.BookmarkDaoImpl;
 import com.puppy.dao.impl.ChatInfoDaoImpl;
@@ -28,7 +25,7 @@ import com.puppy.util.Util;
  */
 public class MainController implements Controller {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
@@ -43,9 +40,9 @@ public class MainController implements Controller {
 			return;
 		}
 		
-//		if ( isThisRequestCommingFromAMobileDevice(request) ) {
-//			response.sendRedirect("/mobile");
-//		} else {
+		if ( isThisRequestCommingFromAMobileDevice(request) ) {
+			response.sendRedirect("/mobile");
+		} else {
 			RequestDispatcher view = null;
 			Map<String, JsonChatInfo> enteredChatInfoObject = getEnteredChatInfoObjectFromList(userId);
 			List<Bookmark> bookmarkList = getBookmarkList(userId);
@@ -55,7 +52,7 @@ public class MainController implements Controller {
 			
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
-//		}
+		}
 		
 	}
 
