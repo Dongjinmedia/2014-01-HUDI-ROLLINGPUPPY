@@ -444,8 +444,11 @@ var oPanelContents = {
 		eChattingTemplate: document.querySelector("#template .chatRoom"),
 		eBookmarkTemplate: document.querySelector("#template .bookmark"),
 		
-		//채팅방 패널관
+		//채팅방 패널관련
 		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
+		
+		//검색 패널관련
+		eSearchListTarget: document.querySelector("#panel_scroll0 ul"),
 		
 		//즐겨찾기 패널관련
 		eBookmarkListTarget: document.querySelector("#panel_scroll2 ul"),
@@ -593,7 +596,6 @@ var oPanelContents = {
 				var chatRoomNum = destinationTarget["chatRoomNumber"];
 				
 				oChat.showChatWindow(chatRoomNum);
-				//this._foldPanelContents();
 			}
 		},
 
@@ -646,8 +648,41 @@ var oPanelContents = {
 			//working
 		},
 		
+		//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
+		searchSelectHandler: function(event){
+			//만약 검색결과가 없어서 default영역이 panelContent안에 존재할 경우
+			if (this.eSearchListTarget.querySelector(".comment")) {
+				return;
+			}
+			
+			var clickedTarget = event.target;
+			//현재 하나의 cell은 세개의 p태그로 이루어져있다.
+			//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
+			if(clickedTarget.tagName == "P"){
+				//cell을 선택했으면 
+				//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+				//그 cell의 속성으로 저장된 좌표를 불러온다. 
+				var destinationTarget = clickedTarget.parentNode;
+				var destinationCartesianX = destinationTarget["cartesianX"];
+				var destinationCartesianY = destinationTarget["cartesianY"];
+				//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
+				var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
+				//찾은 좌표로 지도의 중심을 재설정한다. 
+				oNaverMap.oMap.setCenter(oPoint);
+				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+				oNaverMap.oMap.setLevel(13);
+			}
+		},
+		
 		init: function() {
+			//검색패널 리스트 클릭시 호출되는 이벤트 등록
+			this.eSearchListTarget.addEventListener("touchend", this.searchSelectHandler.bind(this));
+			
+			//채팅패널 리스트 클릭시 호출되는 이벤트 등록
 			this.eChattingListTarget.addEventListener("touchend", this.chattingSelectHandler.bind(this));
+			
+			//즐겨찾기 리스트 클릭시 호출되는 이벤트 등록
+			this.eBookmarkListTarget.addEventListener("touchend", this.bookmarkSelectHandler.bind(this));
 		}
 };
 /*********************************************************************************************************
@@ -2103,7 +2138,7 @@ var oCreateChattingRoom = {
 			// WORKING SEHUN
 			console.log(this.oLocationPoint);
 			oMapClicker.oClickPoint = this.oLocationPoint;
-			
+		
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
 
