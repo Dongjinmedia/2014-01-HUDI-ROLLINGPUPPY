@@ -495,11 +495,11 @@ div.panelUnfold {
 ** MapClicker Style Start
 */
 #mapClicker {
-	z-index: 10;
 	position: absolute;
 	margin-top: -120px;
 	left: 50%;
 	top: 50%;
+	z-index: 5;
 }
 
 .locationName {
@@ -929,6 +929,8 @@ li.chatRoom .limit {
 
   	color: #fff;
  	font-size: 13px;
+ 	line-hiehgt: 13px;
+	text-align: center;
 }
 
 #nav .notification {
@@ -938,7 +940,6 @@ li.chatRoom .limit {
 	right: initial;
 	
 	font-size: 10px;
-	text-align: center;
 	line-height: 11px;
 }
 
