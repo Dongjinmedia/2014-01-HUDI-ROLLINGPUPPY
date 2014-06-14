@@ -13,7 +13,8 @@ public class ServletSessionUtils {
 	}
 
 	public static int getIntParameter(HttpServletRequest request, String key) {
-		return Integer.parseInt(getStringParameter(request, key));
+		String value = getStringParameter(request, key);
+		return ( value == null ) ? 0 : Integer.parseInt(value);
 	}
 
 }
