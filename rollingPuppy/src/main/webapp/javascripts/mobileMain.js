@@ -448,7 +448,7 @@ var oPanelContents = {
 		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
 		
 		//즐겨찾기 패널관련
-		eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
+		eBookmarkListTarget: document.querySelector("#panel_scroll2 ul"),
 		
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
@@ -628,7 +628,7 @@ var oPanelContents = {
 	    			var isSuccess = oResponse['isSuccess'];
 
 	    			if ( isSuccess ) {
-	    				oAside.deleteFromBookmarkList(destinationTarget["eTarget"]);
+	    				oPanelContents.deleteFromBookmarkList(destinationTarget["eTarget"]);
 	    			} else {
 		    			alert("북마크삭제에 실패했습니다.\n잠시후 다시 시도해주세요.");
 		    		}
@@ -707,7 +707,7 @@ var oSearching = {
 					}
 				}
 				//검색결과 Panel을 열어준다.
-				//oAside.clickSearchMenu();
+				//oPanelContents.clickSearchMenu();
 			};
 			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
 		},
@@ -1488,6 +1488,7 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
+			console.log("into showChatWindow");
 			if ( oChat.isChatWindowVisible() ) {
 				oChat.foldChattingRoom();
 			}
@@ -1575,7 +1576,7 @@ var oChat = {
 				oChat.alertNewMessage(oMessageInfo);
 				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
 				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
-				oAside.updateTotalNotificationView();
+				oPanel.updateTotalNotificationView();
 			}
 		},
 		
@@ -1625,7 +1626,7 @@ var oChat = {
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + " "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
 			
@@ -1842,18 +1843,18 @@ var oChat = {
 		 	//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
 		 	for (var key in oEnteredChatInfo) {
 		 		if (oEnteredChatInfo.hasOwnProperty(key)) {
-		 			oAside.addChattingList(key, oEnteredChatInfo[key]);
+		 			oPanelContents.addChattingList(key, oEnteredChatInfo[key]);
 		 			isEmpty = false;
 		 		}
 		 	}
 		 
 		 	//입장한 채팅방이 존재하지 않을경우
 		 	 if ( isEmpty ) {
-		 		 oAside.vacantChattingList();
+		 		oPanelContents.vacantChattingList();
 		 	 }
 		 	 
 		 	//확인하지 않은 메세지갯수를 업데이트한다.
-		 	oAside.updateTotalNotificationView();
+		 	oPanel.updateTotalNotificationView();
 			oScroll.refresh("panel_scroll1");
 		},
 		
@@ -2245,10 +2246,10 @@ var oBookmark = {
 				
 				var nBookmarkListLength = aBookmarkList.length;
 				if ( nBookmarkListLength === 0 ) {
-					oAside.vacantBookmarkList();
+					oPanelContents.vacantBookmarkList();
 				} else {
 					for (var i = 0 ; i < nBookmarkListLength ; ++i ) {
-						oAside.addBookmarkToList(aBookmarkList[i]);
+						oPanelContents.addBookmarkToList(aBookmarkList[i]);
 					}
 				}
 				

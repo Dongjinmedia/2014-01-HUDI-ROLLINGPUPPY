@@ -219,15 +219,6 @@
 						<div class="scroll_area">
 							<h1>채팅방</h1>
 							<ul class="section">
-								<li class="card chatRoom">
-									<p class="title icon-chatting">강남역 지하상가안내</p>
-									<p class="limit icon-participant">4 / 30</p>
-									<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
-									<div class="notification" style="display: inline-block;">5</div>
-								</li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
 							</ul>
 						</div>
 					</div>
