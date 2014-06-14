@@ -9,9 +9,6 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.google.gson.Gson;
 import com.puppy.dao.impl.BookmarkDaoImpl;
 import com.puppy.dao.impl.ChatInfoDaoImpl;
@@ -28,7 +25,7 @@ import com.puppy.util.Util;
  */
 public class MainController implements Controller {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MainController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(MainController.class);
 	
 	@Override
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
