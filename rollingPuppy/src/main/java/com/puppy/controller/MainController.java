@@ -43,10 +43,11 @@ public class MainController implements Controller {
 			return;
 		}
 		
-//		if ( isThisRequestCommingFromAMobileDevice(request) ) {
-//			response.sendRedirect("/mobile");
-//		} else {
-			RequestDispatcher view = null;
+		RequestDispatcher view = null;
+		if ( isThisRequestCommingFromAMobileDevice(request) ) {
+			view = request.getRequestDispatcher("mobileMain.jsp");
+			view.forward(request, response);
+		} else {
 			Map<String, JsonChatInfo> enteredChatInfoObject = getEnteredChatInfoObjectFromList(userId);
 			List<Bookmark> bookmarkList = getBookmarkList(userId);
 			
@@ -55,7 +56,7 @@ public class MainController implements Controller {
 			
 			view = request.getRequestDispatcher("main.jsp");
 			view.forward(request, response); 
-//		}
+		}
 		
 	}
 
