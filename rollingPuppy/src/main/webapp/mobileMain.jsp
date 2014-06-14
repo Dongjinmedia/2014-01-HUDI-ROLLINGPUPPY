@@ -18,9 +18,10 @@
 </head>
 
 <body>
-	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
-	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
-	
+	<script type="text/template" class="hidden" id = "enteredChatInfoObject">${requestScope["enteredChatInfoObject"]}</script>
+ 	<script type="text/template" class="hidden" id = "bookmarkList">${requestScope["bookmarkList"]}</script>
+ 	<script type="text/template" class="hidden" id="email">${sessionScope['member.email']}</script>
+ 	<script type="text/template" class="hidden" id="id">${sessionScope['member.id']}</script>	
 	<!-- hidden Area (For Menu Control Box) -->
 	<div style="display: none;">
 		<div id="controlBox">

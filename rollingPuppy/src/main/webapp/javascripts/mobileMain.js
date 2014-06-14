@@ -1128,7 +1128,7 @@ var oNaverMap = {
 	        //메모리상에 현재 화면에 존재하는 마커정보를 담기위한 Object 선언
 	        //맵 드래그, 데이터 업데이트 등을 수행할때
 	        //이미 맵에 추가된 마커는 정보만 업데이트 하는 등을 판별하기 위해서 필요하다.
-	        this.oCurrentViewPointMarkers = new Object();
+	        this.oCurrentViewPointMarkers = {};
 	        
 	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
 	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
@@ -1160,7 +1160,7 @@ var oMarkerClicker = {
 		//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 		controlBox: document.getElementById("controlBox"),
 		
-		//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
+		//채팅방 리스트를 모두 담고 있는 컨텐츠 엘리먼트
 		eChatList: document.querySelector("#controlBox ol"),
 		
 		//채팅방 내용을 담고있는 division <div> element
@@ -1193,6 +1193,9 @@ var oMarkerClicker = {
 		var iconChatting = controlBox.querySelector('.icon-chatting');
 		var menuChatting = controlBox.querySelector('.menu-chatting');
 		this.addListener(iconChatting, menuChatting);
+		
+		var bookmarkAnchor = controlBox.querySelector(".icon-bookmark a");
+		bookmarkAnchor.addEventListener("click", oBookmark.addBookmark);
 	},
 	
 	// Ajax통신을 통해 마커 안에 있는 채팅방들의 현재 채팅 인원 수를 가져와 리턴하는 메서드
@@ -1470,7 +1473,7 @@ var oChat = {
 				
 				//eTarget은 초기화시 추가해주는 동적 attribute이다.
 				//어차피 채팅방번호에 해당하는 element를 자주참조해야하므로 주소값을 저장하는 것이다.
-				//자세한 내용은 getMyChatInfoAndUpdateListInPanel 함수를 참조하자.
+				//자세한 내용은 initializeChatRoomListInPanelAndSaveChatInfo 함수를 참조하자.
 			}
 		} 
 	    */
@@ -1812,7 +1815,7 @@ var oChat = {
 		
 		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
 		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
+			var chattingRoomList = document.getElementById("enteredChatInfoObject").innerText;
 			console.log("chattingRoomList :",chattingRoomList);
 			var chattingRoomListToJson = JSON.parse(chattingRoomList);
 			var chattingRoomIdList = new Array();
@@ -1833,62 +1836,49 @@ var oChat = {
 		},
 		
 		//chatInfo를 초기화한다.
-		saveChatInfo: function(aParameter) {
-			window.oChat.oInfo =  aParameter
+		saveChatInfo: function(oParameter) {
+			window.oChat.oInfo =  oParameter;
 		},
 		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
-		 * 
-		 * TODO jsp에서 내려주는 형태로 리팩토링 되어야 합니다.
 		 */
-		getMyChatInfoAndUpdateListInPanel: function(){
+		initializeChatRoomListInPanelAndSaveChatInfo: function(){
+			var eEnteredChatInfoObject = document.getElementById("enteredChatInfoObject");
+
+			if ( eEnteredChatInfoObject == null || eEnteredChatInfoObject == undefined)
+				return;
 			
-			var incompleteUrl = "/chat/getMyChatInfo";
-			
-			var callback = function(request){
-				if (request.responseText == "") {
-					console.log("oChat.getMyChatInfoAndUpdateListInPanel(): /chat/getMyChatInfo returns null");
-					console.log("(Maybe user is not logged in)");
-					return;
-				}
-				
-				var oResult = JSON.parse(request.responseText);
-				
-				//oInfo에 요청데이터를 저장
-				this.saveChatInfo.apply(request, [oResult]);
-				
-				if(oResult === null || oResult.length === 0 ){
-					oAside.vacantChattingList();
-				} else {
-					//이미 존재하는 채팅방 목록이 있면 지운다.
-					var eTarget = oPanelContents.eChattingListTarget;
-					while (eTarget.firstChild) {
-						eTarget.removeChild(eTarget.firstChild);
-					}
-					
-					//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
-					for (var key in oResult) {
-						if (oResult.hasOwnProperty(key)) {
-							oPanelContents.addChattingList(key, oResult[key]);
-						}
-					}
-				}
-				//확인하지 않은 메세지갯수를 업데이트한다.
-				oPanel.updateTotalNotificationView();
-			};
-			
-			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
-			
+			var oEnteredChatInfo = JSON.parse(eEnteredChatInfoObject.innerText);
+			 
+		 	//oInfo에 요청데이터를 저장
+		 	this.saveChatInfo(oEnteredChatInfo);
+		 	
+		 	var isEmpty = true;
+		 	//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
+		 	for (var key in oEnteredChatInfo) {
+		 		if (oEnteredChatInfo.hasOwnProperty(key)) {
+		 			oAside.addChattingList(key, oEnteredChatInfo[key]);
+		 			isEmpty = false;
+		 		}
+		 	}
+		 
+		 	//입장한 채팅방이 존재하지 않을경우
+		 	 if ( isEmpty ) {
+		 		 oAside.vacantChattingList();
+		 	 }
+		 	 
+		 	//확인하지 않은 메세지갯수를 업데이트한다.
+		 	oAside.updateTotalNotificationView();
 			oScroll.refresh("panel_scroll1");
 		},
 		
 		init: function() {
-			var email = document.getElementById("email").value;
+			var email = document.getElementById("email").innerText;
 			//hidden attribute. User Identifier Database id Value.
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
-			this.userId = document.getElementById("id").value;
+			this.userId = document.getElementById("id").innerText;
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
 			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
@@ -1970,7 +1960,7 @@ var oChat = {
 //					}
 //				}
 //			}
-			this.getMyChatInfoAndUpdateListInPanel();
+			this.initializeChatRoomListInPanelAndSaveChatInfo();
 			
 			//채팅방 참여자리스트에서 보기메뉴를 클릭할때 발생하는 이벤트
 			this.eMemberIcon.addEventListener("touchend",this.memberPanelHandler.bind(this));
@@ -2028,13 +2018,13 @@ var oMapClicker = {
 
 		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.ePlus.addEventListener('touchend', function(e) {
+		this.ePlus.addEventListener('touchend', function() {
 			console.log("clickadd");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
-		}.bind(this), false);
+		}.bind(this));
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		this.ePin.addEventListener('click', oBookmark.addBookmark.bind(this));
+		this.ePin.addEventListener('click', oBookmark.addBookmark);
 	},	
 };
 
@@ -2307,20 +2297,21 @@ function initialize() {
 	oSearching.initialize();
 	oPanelContents.init();
 	
-	oChat.init();
-
 	oNaverMap.init();
 	oReverseGeoCode.init();
 	oMarkerClicker.init();
 	oMapClicker.init();
 	oCreateChattingRoom.init();
+	oBookmark.initialize();
+	oChat.init();
+	
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
 	 */
 	//------------------------------------------------------------------------------------//
-	var aHiddenElement = document.querySelectorAll("input[type=hidden]");
-	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
-		aHiddenElement[index].remove();
-	}
+	var aHiddenElement = document.querySelectorAll("script.hidden");
+  	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+  		aHiddenElement[index].remove();
+  	}
 	//------------------------------------------------------------------------------------//
 }
