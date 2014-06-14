@@ -671,6 +671,9 @@ var oPanelContents = {
 				oNaverMap.oMap.setCenter(oPoint);
 				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
 				oNaverMap.oMap.setLevel(13);
+				
+				//이동한 장소의 Marker정보를 업데이트합니다.
+				oNaverMap.updateViewPointMarkers();
 			}
 		},
 		
@@ -2317,6 +2320,14 @@ function initialize() {
 	oCreateChattingRoom.init();
 	oBookmark.initialize();
 	oChat.init();
+	
+	/*
+	 * TODO 초기 updateViewPointMarkers를 서버에서 전달해주는 식으로 변경되어야 한다.
+	 */
+	//------------------------------------------------------------------------------------//
+	//Map 에 위치한 Marker 초기화
+	oNaverMap.updateViewPointMarkers();
+	//------------------------------------------------------------------------------------//
 	
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
