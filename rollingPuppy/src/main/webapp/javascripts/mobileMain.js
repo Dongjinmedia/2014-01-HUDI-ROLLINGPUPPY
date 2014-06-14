@@ -2111,13 +2111,11 @@ var oCreateChattingRoom = {
 			if ( roomNameValue === null || roomNameValue === "") {
 				alert('채팅방 제목을 입력해 주세요.');
 				return;
-			} else if ( roomNameValue.length <= 4 ) {
-				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length <= 1 ) {
+				alert('채팅방 제목은 2글자 이상 입력되어야 합니다.');
 				return;
-			} else if ( roomNameValue.length > 15 ) {
-				alert("채팅방 제목은 15글자 이상을 넘을 수 없습니다.");
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length > 100 ) {
+				alert("채팅방 제목은 100글자 이상을 넘을 수 없습니다.");
 				return;
 			};
 			
@@ -2129,13 +2127,12 @@ var oCreateChattingRoom = {
 			};
 			
 			//참여인원 제한숫자가 1일경우
-			if ( limitNumValue === 1 ) {
+			if ( limitNumValue <= 1 ) {
 				alert("인원수는 1 이상으로 설정해야 합니다.");
 				this.clearLimitNumValue();
 				return;
-			} else if (limitNumValue >= 100 ){
-				alert("채팅 인원은 100을 넘을 수 없습니다.");
-				this.clearLimitNumValue();
+			} else if (limitNumValue > 300 ){
+				alert("채팅 인원은 300을 넘을 수 없습니다.");
 				return;
 			};
 			
