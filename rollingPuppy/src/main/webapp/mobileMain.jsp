@@ -85,10 +85,15 @@
 				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
 				<div class="notification" style="display: inline-block;">5</div>
 			</li>
-			<li class="card cell search">
+			<li class="card search">
 				<p class="title icon-title"></p>
 				<p class="category"></p>
 				<p class="address"></p>
+			</li>
+			<li class="card bookmark">
+				<p class="title icon-bookmark"></p>
+				<i class="icon-delete"></i>
+ 				<p class="address"></p>
 			</li>
 			
 			<li class="person chatMember">

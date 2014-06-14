@@ -438,10 +438,18 @@ var oScroll = {
 **********************************************************************************************************/
 var oPanelContents = {
 		
-		//panel contents 영역
-		//init 시에 
-		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
+		
+		//template
+		eDefaultTemplate: document.querySelector("#template .default"),
 		eChattingTemplate: document.querySelector("#template .chatRoom"),
+		eBookmarkTemplate: document.querySelector("#template .bookmark"),
+		
+		//채팅방 패널관
+		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
+		
+		//즐겨찾기 패널관련
+		eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
+		
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
 			//TODO 변수삭제. 하단부 참조항목들 변경
@@ -497,6 +505,79 @@ var oPanelContents = {
 			}
 		},
 		
+		vacantChattingList: function() {
+			var eDefaultTemplate = this.eDefaultTemplate;			
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+			
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(".comment").innerText = "참여중인 채팅방이 없습니다.";
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		
+		/*
+		 * oBookmark  Schema
+		 * 		{
+		 * 				id: "",
+		 *				locationName: "",
+		 * 				locationLatitude: "",
+		 * 				locationLongitude: ""
+		 * 		}
+		 */
+		addBookmarkToList: function(oBookmark) {
+			console.log("oBookmark : ",oBookmark);
+			var eTemplate = this.eBookmarkTemplate;
+			var eTarget = this.eBookmarkListTarget;
+			
+			var bookmarkId = oBookmark["id"];
+			var bookmarkName = oBookmark["bookmarkName"]
+			var locationName = oBookmark["locationName"];
+			var locationLatitude = oBookmark["locationLatitude"];
+			var locationLongitude = oBookmark["locationLongitude"];
+			
+			var eCopiedTemplate = eTemplate.cloneNode(true);
+			eCopiedTemplate.querySelector(".title").innerText = bookmarkName;
+			eCopiedTemplate.querySelector(".address").innerText = locationName;
+			
+			//클릭시 이벤트를 처리할 수 있도록 bookmark정보를 attribute로 담는다.
+			eCopiedTemplate["id"] = bookmarkId;
+			eCopiedTemplate["locationName"] = locationName;
+			eCopiedTemplate["locationLatitude"] = locationLatitude;
+			eCopiedTemplate["locationLongitude"] = locationLongitude;
+			eCopiedTemplate["eTarget"] = eCopiedTemplate;
+			
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedTemplate);
+		},
+		
+		deleteFromBookmarkList: function(eBookmark) {
+			this.eBookmarkListTarget.removeChild(eBookmark);
+			
+			if ( this.eBookmarkListTarget.childNodes.length === 0 ) {
+				this.vacantBookmarkList();
+			}
+		},
+		
+		vacantBookmarkList: function() {
+			var eDefaultTemplate = this.eDefaultTemplate;			
+			var eTarget = this.eBookmarkListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+			
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(".comment").innerText = "현재 설정된 북마크가 없습니다.";
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		
 		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 		chattingSelectHandler: function(event) {
 			if (oPanel.isPanelAction) {
@@ -516,6 +597,54 @@ var oPanelContents = {
 			}
 		},
 
+		//관심장소리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
+		//working
+		bookmarkSelectHandler: function(event) {
+			var clickedTarget = event.target;
+			var destinationTarget = clickedTarget.parentNode;
+			var clickedTagName = clickedTarget.tagName;
+			
+			if ( clickedTagName == "P" || clickedTagName == "I") {
+				clickedTarget.parentNode;
+			}
+			
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 bookmark 지역명, 좌표, 대상 element 주소값을 넣어두었다. 
+			var bookmarkId = destinationTarget["id"];
+			var bookmarkName = destinationTarget["bookmarkName"]
+			var locationName = destinationTarget["locationName"];
+			var locationLatitude = destinationTarget["locationLatitude"];
+			var locationLongitude = destinationTarget["locationLongitude"];
+			
+			if ( clickedTagName == "I" ) {
+
+				var oParameters = {
+	    			"bookmarkId": bookmarkId
+	    		};
+	    		
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			console.log(oResponse);
+	    			var isSuccess = oResponse['isSuccess'];
+
+	    			if ( isSuccess ) {
+	    				oAside.deleteFromBookmarkList(destinationTarget["eTarget"]);
+	    			} else {
+		    			alert("북마크삭제에 실패했습니다.\n잠시후 다시 시도해주세요.");
+		    		}
+	    		}
+	    		
+	    		oAjax.getObjectFromJsonPostRequest("/bookmark/delete", oParameters, callback.bind(this));
+				
+			} else {
+				var oPoint = new nhn.api.map.LatLng(locationLatitude, locationLongitude);
+				//찾은 좌표로 지도의 중심을 재설정한다. 
+				oNaverMap.oMap.setCenter(oPoint);
+				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+				oNaverMap.oMap.setLevel(13);
+			}
+			//working
+		},
 		
 		init: function() {
 			this.eChattingListTarget.addEventListener("touchend", this.chattingSelectHandler.bind(this));
@@ -1860,12 +1989,10 @@ var oMapClicker = {
 	eMapClicker: document.getElementById('mapClicker'),
 	
 	//Add버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickAdd: document.querySelector('#mapClicker .icon-add'),
+	ePlus: document.querySelector('#mapClicker .icon-add'),
 	
 	//즐겨찾기 버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickBookMark: document.querySelector('#mapClicker .icon-star'),
+	ePin: document.querySelector('#mapClicker .icon-star'),
 	
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
@@ -1873,9 +2000,16 @@ var oMapClicker = {
 	//위치정보를 보여주는 Element
 	eLocationName: document.querySelector("#mapClicker .locationName div"),
 	
+	//Memory Data
+	//마지막으로 클릭한 x,y 정보를 담은 Object
+	oClickPoint: null,
+	//마지막으로 클릭한 지역명을 담은 String Value
+	sClickLocationName: null,
+	
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
 		this.eLocationName.innerText = locationName;
+		this.sClickLocationName = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
@@ -1894,16 +2028,13 @@ var oMapClicker = {
 
 		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.clickAdd.addEventListener('touchend', function(e) {
+		this.ePlus.addEventListener('touchend', function(e) {
 			console.log("clickadd");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this), false);
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		this.clickBookMark.addEventListener('touchend', function(e) {
-			console.log("addBookMark");
-			alert('clickBookMark');
-		}, false);
+		this.ePin.addEventListener('click', oBookmark.addBookmark.bind(this));
 	},	
 };
 
@@ -2101,6 +2232,65 @@ var oAside = {
 /*********************************************************************************************************
  * mobileMain.js와 웹의 main.js의 호환을 위한 Object
  **********************************************************************************************************/
+
+
+/*********************************************************************************************************
+ * 관심장소에 대한 소스코드 시작
+ **********************************************************************************************************/
+var oBookmark = {
+		addBookmark: function() {
+			var sInputFromUser = prompt("관심장소 이름");
+			
+			if ( sInputFromUser === null ) {
+				return;
+			}
+			
+			var oParameters = {
+				"bookmarkName": sInputFromUser,
+				"locationName": this.sClickLocationName,
+				"locationLatitude": oMapClicker.oClickPoint['y'],
+				"locationLongitude": oMapClicker.oClickPoint['x'],
+			};
+
+			var callback = function(request) {
+				var oResponse = JSON.parse(request.responseText);
+				var isSuccess = oResponse['isSuccess'];
+
+				if ( isSuccess ) {
+					oAside.addBookmarkToList(oResponse["bookmark"]);
+					oAside.clickBookmarkMenu();
+	    		} else {
+	    			alert("즐겨찾기 등록에 실패했습니다.\n다시 시도해주세요.");
+	    		}
+			}
+			
+			oAjax.getObjectFromJsonPostRequest("/bookmark/add", oParameters, callback.bind(this));
+			//working
+		},
+		initializeBookmarkListInPanel: function() {
+			var sBookmarkList = document.getElementById("bookmarkList").innerText;
+			
+			if ( sBookmarkList != null && sBookmarkList.length !=0 ) {
+				var aBookmarkList = JSON.parse(sBookmarkList);
+				
+				var nBookmarkListLength = aBookmarkList.length;
+				if ( nBookmarkListLength === 0 ) {
+					oAside.vacantBookmarkList();
+				} else {
+					for (var i = 0 ; i < nBookmarkListLength ; ++i ) {
+						oAside.addBookmarkToList(aBookmarkList[i]);
+					}
+				}
+				
+			}
+		},
+		initialize: function() {
+			this.initializeBookmarkListInPanel();
+		}
+} 
+/*********************************************************************************************************
+ * 관심장소에 대한 소스코드 종료
+ **********************************************************************************************************
 
 
 /*********************************************************************************************************
