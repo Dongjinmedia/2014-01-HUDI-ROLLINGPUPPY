@@ -367,7 +367,7 @@ var oPanel = {
 		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
 			this.eChattingNotification.style.display = "none";
 		} else {
-			this.eChattingNotification.innerText = unreadMessageNum;
+			this.eChattingNotification.innerText = unreadMessageNum >= 99 ?  "99+" : unreadMessageNum;
 			this.eChattingNotification.style.display = "inline-block";
 		}
 	},
@@ -1746,7 +1746,7 @@ var oChat = {
 			if ( unreadMessageNum === 0 ) {
 				eChattingRoomNotification.style.display = "none";
 	 		} else {
-	 			eChattingRoomNotification.innerText = unreadMessageNum;
+	 			eChattingRoomNotification.innerText = (unreadMessageNum >= 99 ) ? "99+" : unreadMessageNum ;
 	 			eChattingRoomNotification.style.display = "inline-block";
 	 		}
 		},
