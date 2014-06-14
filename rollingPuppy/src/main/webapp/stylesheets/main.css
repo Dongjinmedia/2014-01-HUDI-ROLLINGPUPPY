@@ -644,18 +644,20 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 
 .rightArea:after {
 	position: absolute;  
-	top: -1px;
-	right: -20px;
+	display: inline-block;
 	width: 20px;
 	height: 100%;
+	top: -1px;
+	right: -20px;
+
 	background-color: #424f5f;
 	border-bottom: 2px solid #3a4655;
 	border-radius: 0 0.2em 0.2em 0;
+	
 	color: #fff;
 	!line-height: 35em;
-	line-height: 300%;
+	line-height: 500px;
 	text-align: center;
-	display: inline-block;
 }
 
 .rightArea.unfold {
