@@ -918,15 +918,28 @@ li.chatRoom .limit {
 }
 
 .notification {
-	position: absolute;
+ 	position: absolute;
+  	display: inline-block;
+ 	top: -5px;
+ 	right: -20px;
+ 	padding: 7px 10px;
+
+  	border-radius: 20px;
+  	background-color: #FF3B3B;
+
+  	color: #fff;
+ 	font-size: 13px;
+}
+
+#nav .notification {
 	padding: 3px 5px;
-	border-radius: 20px;
-	background-color: #FF3B3B;
-	color: #fff;
-	font-size: 10px;
-	line-height: 11px;
-	display: inline-block;
+	min-width: 8px;
 	top: 2px;
+	right: initial;
+	
+	font-size: 10px;
+	text-align: center;
+	line-height: 11px;
 }
 
 li.chatRoom .notification {
