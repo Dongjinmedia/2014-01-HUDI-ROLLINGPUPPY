@@ -93,7 +93,7 @@ var oAside= {
 	eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
 	
 	commingSoon: function(event) {
-		event.preventDefault();
+		//event.preventDefault();
 		alert("Comming Soon~\n준비중인 메뉴입니다.^^");
 	},
 	
@@ -1710,11 +1710,15 @@ var oCreateChattingRoom = {
     			var oResponse = JSON.parse(request.responseText);
     			
     			var isSuccess = oResponse['isSuccess'];
-    			var newMarker = oResponse["newMarker"];
-    			var markerNumber = newMarker["id"];
+    			if (isSuccess) {
+    				var newMarker = oResponse["newMarker"];
+    				var markerNumber = newMarker["id"];
+    			} else {
+    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
+    				return;
+    			} 
     			
-    			if ( isSuccess === true 
-    					&& markerNumber !== null 
+    			if ( markerNumber !== null 
     					&& markerNumber !== undefined 
     					&& isNaN(markerNumber) === false ) {
     				
@@ -1729,8 +1733,6 @@ var oCreateChattingRoom = {
     		    	
     		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
     		    	this.invisible();
-    			} else {
-    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
     			} 
 			};
 			
