@@ -40,10 +40,11 @@ public class MainController implements Controller {
 			return;
 		}
 		
+		RequestDispatcher view = null;
 		if ( isThisRequestCommingFromAMobileDevice(request) ) {
-			response.sendRedirect("/mobile");
+			view = request.getRequestDispatcher("mobileMain.jsp");
+			view.forward(request, response);
 		} else {
-			RequestDispatcher view = null;
 			Map<String, JsonChatInfo> enteredChatInfoObject = getEnteredChatInfoObjectFromList(userId);
 			List<Bookmark> bookmarkList = getBookmarkList(userId);
 			
