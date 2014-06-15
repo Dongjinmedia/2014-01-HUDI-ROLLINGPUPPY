@@ -3,6 +3,7 @@ package com.puppy.controller;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -38,13 +39,11 @@ public class SearchController implements Controller {
 		
 		String searchKeyword = ServletRequestUtils.getParameter(request, Constants.REQUEST_SEARCH_QUERY);
 		
-		if ( searchKeyword == null ) {
-			out.println(gson.toJson(null));
-		} else {
-			String requestURLString = REQUEST_URL_FRONT + "&query=" + searchKeyword + REQUEST_URL_TAIL;
-			logger.info("searchKeyword : " + searchKeyword);
+		if ( searchKeyword != null ) {
+			String requestURLString = REQUEST_URL_FRONT + "&query=" + URLEncoder.encode(searchKeyword, "UTF-8") + REQUEST_URL_TAIL;
+			logger.info("requestURLString: " + requestURLString);
 			
-			URL requestURL = new URL(requestURLString);	
+			URL requestURL = new URL(requestURLString);
 			XMLReader xmlReader = new XMLReader(requestURL);
 			resultList = xmlReader.getListFromXPath(SEARCH_EXPRESSION);
 			logger.info(gson.toJson(resultList));

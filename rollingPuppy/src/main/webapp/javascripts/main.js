@@ -71,11 +71,6 @@ var oAside= {
 	// 기본값은 search로 되어 있습니다.
 	eLatestClickedMenu: document.querySelector("#nav_list>.on"),
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
-	eSearchMenu: document.querySelector("#nav_list .search"),
-	eRecommendMenu: document.querySelector("#nav_list .recommendation"),
-	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
-	eSettingMenu: document.querySelector("#nav_list .settings"),
-
 	
 	//template
 	eDefaultTemplate: document.querySelector("#template .default"),
@@ -88,9 +83,18 @@ var oAside= {
 	eChattingNotification: document.querySelector("#nav_list .notification"),
 	eChattingListTarget: document.querySelector("#pc_chatting ul"),
 
+	//검색 패널관련
+	eSearchMenu: document.querySelector("#nav_list .search"),
+	eSearchListTarget: document.querySelector("#pc_search ul"),
 	
 	//즐겨찾기 패널관련
+	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
 	eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
+	
+	//준비중인 영역
+	eRecommendMenu: document.querySelector("#nav_list .recommendation"),
+	eSettingMenu: document.querySelector("#nav_list .settings"),
+	
 	
 	commingSoon: function(event) {
 		//event.preventDefault();
@@ -114,15 +118,14 @@ var oAside= {
 		this.eBookmarkMenu.addEventListener("click", this.clickBookmarkMenu.bind(this));
 		this.eSettingMenu.addEventListener("click", this.commingSoon.bind(this));
 		
-		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
-		var eSearchPanelContents = this.ePanel.querySelector("#pc_search");
-		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
+		//검색패널 리스트 클릭시 호출되는 이벤트 등록
+		this.eSearchListTarget.addEventListener("click", this.searchSelectHandler.bind(this));
 		
-		var eChattingPanelContents = this.ePanel.querySelector("#pc_chatting");
-		eChattingPanelContents.addEventListener("click", this.chattingSelectHandler.bind(this));
+		//채팅패널 리스트 클릭시 호출되는 이벤트 등록
+		this.eChattingListTarget.addEventListener("click", this.chattingSelectHandler.bind(this));
 		
-		var eBookmarkContents = this.ePanel.querySelector("#pc_bookmark");
-		eBookmarkContents.addEventListener("click", this.bookmarkSelectHandler.bind(this));
+		//즐겨찾기 리스트 클릭시 호출되는 이벤트 등록
+		this.eBookmarkListTarget.addEventListener("click", this.bookmarkSelectHandler.bind(this));
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
@@ -391,8 +394,10 @@ var oAside= {
 	},
 	
 	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
-	searchResultSelectHandler: function(event){
-		if (this.ePanel.querySelector("#pc_search .comment")) {
+	searchSelectHandler: function(event){
+		
+		//만약 검색결과가 없어서 default영역이 panelContent안에 존재할 경우
+		if (this.eSearchListTarget.querySelector(".comment")) {
 			return;
 		}
 		
@@ -412,6 +417,9 @@ var oAside= {
 			oNaverMap.oMap.setCenter(oPoint);
 			//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
 			oNaverMap.oMap.setLevel(13);
+			
+			//이동한 장소의 Marker정보를 업데이트합니다.
+			oNaverMap.updateViewPointMarkers();
 		}
 	},
 	
@@ -2148,6 +2156,9 @@ function initialize() {
 	oCreateChattingRoom.initialize();
 	//------------------------------------------------------------------------------------//
 	
+	/*
+	 * TODO 초기 updateViewPointMarkers를 서버에서 전달해주는 식으로 변경되어야 한다.
+	 */
 	//------------------------------------------------------------------------------------//
 	//Map 에 위치한 Marker 초기화
 	oNaverMap.updateViewPointMarkers();
