@@ -630,16 +630,24 @@ var oPanelContents = {
 			}
 			
 			console.log("into chattingSelectHandler");
-			var clickedTarget = event.target;	
-			if(clickedTarget.tagName == "P"){
-				//cell을 선택했으면 
-				//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
-				//그 cell의 속성으로 저장된 채팅방번호를 가져온다.
-				var destinationTarget = clickedTarget.parentNode;
-				var chatRoomNum = destinationTarget["chatRoomNumber"];
-				
-				oChat.showChatWindow(chatRoomNum);
+			var clickedTarget = event.target;
+			var destinationTarget = null;
+			
+			if (clickedTarget.tagName != "P" && clickedTarget.tagName != "LI") {
+				return;
 			}
+			
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+			//그 cell의 속성으로 저장된 채팅방번호를 가져온다.
+			if(clickedTarget.tagName == "P"){
+				destinationTarget = clickedTarget.parentNode;
+			} else {
+				destinationTarget = clickedTarget;
+			}
+			var chatRoomNum = destinationTarget["chatRoomNumber"];
+			
+			oChat.showChatWindow(chatRoomNum);
 		},
 
 		//관심장소리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
@@ -648,12 +656,16 @@ var oPanelContents = {
 			if (oPanel.isPanelAction) {
 				return;
 			}
+			var destinationTarget = null;
 			var clickedTarget = event.target;
-			var destinationTarget = clickedTarget.parentNode;
 			var clickedTagName = clickedTarget.tagName;
 			
 			if ( clickedTagName == "P" || clickedTagName == "I") {
-				clickedTarget.parentNode;
+				destinationTarget = clickedTarget.parentNode;
+			} else if (clickedTagName == "LI") {
+				destinationTarget = clickedTarget;
+			} else {
+				return;
 			}
 			
 			//cell을 선택했으면 
@@ -710,23 +722,30 @@ var oPanelContents = {
 			var clickedTarget = event.target;
 			//현재 하나의 cell은 세개의 p태그로 이루어져있다.
 			//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
-			if(clickedTarget.tagName == "P"){
-				//cell을 선택했으면 
-				//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
-				//그 cell의 속성으로 저장된 좌표를 불러온다. 
-				var destinationTarget = clickedTarget.parentNode;
-				var destinationCartesianX = destinationTarget["cartesianX"];
-				var destinationCartesianY = destinationTarget["cartesianY"];
-				//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
-				var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
-				//찾은 좌표로 지도의 중심을 재설정한다. 
-				oNaverMap.oMap.setCenter(oPoint);
-				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
-				oNaverMap.oMap.setLevel(13);
-				
-				//이동한 장소의 Marker정보를 업데이트합니다.
-				oNaverMap.updateViewPointMarkers();
+			if (clickedTarget.tagName != "P" && clickedTarget.tagName != "LI") {
+				return;
 			}
+
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+			//그 cell의 속성으로 저장된 좌표를 불러온다. 
+			var destinationTarget = null;			
+			if(clickedTarget.tagName == "P"){
+				destinationTarget = clickedTarget.parentNode;
+			} else {
+				destinationTarget = clickedTarget;
+			}
+			
+			var destinationCartesianX = destinationTarget["cartesianX"];
+			var destinationCartesianY = destinationTarget["cartesianY"];
+			//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
+			var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
+			//찾은 좌표로 지도의 중심을 재설정한다. 
+			oNaverMap.oMap.setCenter(oPoint);
+			//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+			oNaverMap.oMap.setLevel(13);
+			//이동한 장소의 Marker정보를 업데이트합니다.
+			oNaverMap.updateViewPointMarkers();
 
 			oPanel.foldPanelWrapper();
 		},
@@ -1249,23 +1268,21 @@ var oMarkerClicker = {
 			}
 			
 			var clickedTarget = event.target;
+			if (clickedTarget.tagName != "P" && clickedTarget.tagName != "LI") {
+				return;
+			}
+			
 			var destinationTarget = null;
-			var isPtag = false;
-			var isLiTag = false;
 			
 			if(clickedTarget.tagName == "P"){
-				isPtag = true;
 				destinationTarget = clickedTarget.parentNode;
-			} else if (clickedTarget.tagName == "LI") {
-				isLiTag = true;
+			} else {
 				destinationTarget = clickedTarget;
 			}
 			
-			if ( isPtag || isLiTag ) {
-				var chatRoomNum = destinationTarget["chatRoomNumber"];
-				console.log("chatRoomNumber : ", chatRoomNum);
-				oChat.enterChatRoom(chatRoomNum);
-			}
+			var chatRoomNum = destinationTarget["chatRoomNumber"];
+			console.log("chatRoomNumber : ", chatRoomNum);
+			oChat.enterChatRoom(chatRoomNum);
 			
 		}.bind(this));
 	},
