@@ -1428,6 +1428,10 @@ var oChat = {
 			this.eChatWindow.style.display = "none";
 		},
 		
+		isChatWindowVisible: function() {
+			return (this.eChatWindow.style.display == "block");
+		},
+		
 		//채팅방 참여자 리스트보기 메뉴를 클릭할때 실행되는 함수
 		memberPanelHandler: function() {
 			if ( this.eRightArea.className.indexOf("unfold") !== -1 ) {
@@ -2214,4 +2218,17 @@ function initialize() {
   		aHiddenElement[index].remove();
   	}
 	//------------------------------------------------------------------------------------//
-}
+  	
+  	/*
+	 * 윈도우창을 닫거나 강제종료하려고 할때 발생하는 이벤트
+	 */
+	//------------------------------------------------------------------------------------//
+  	window.onbeforeunload = (function () {
+		if ( oChat.isChatWindowVisible() ) {
+			oChat.foldChattingRoom();
+		}
+		
+        return "현재 창에서 유지하던 정보를 모두 잃어버립니다.\n정말로 실행하시겠습니까?";
+    });
+  	//------------------------------------------------------------------------------------//
+});
