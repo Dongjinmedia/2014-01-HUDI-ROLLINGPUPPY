@@ -428,6 +428,8 @@ var oScroll = {
 		}
 		oScroll["chat_scroll"]
 				= new IScroll("#chat_scroll", { mouseWheel: true });
+		oScroll["marker_scroll"]
+				= new IScroll("#marker_scroll", { mouseWheel: true });
 	}
 };
 /*********************************************************************************************************
