@@ -1082,7 +1082,8 @@ li.chatRoom .notification {
 .chattingContents li{
 	clear: both;
 	position: relative;
-	margin-bottom: 20px;
+	margin-top: 8px;
+	margin-bottom: 8px;
 }
 
 .leftArea .bottom {
@@ -1313,10 +1314,11 @@ li.chatRoom .notification {
 }
 
 .chattingContents .user .message {
-  max-width: 80%;
-  text-align: justify;
-  padding-left: 14px;
-  color: #92a2c2;
+	margin-top: 0px;
+	max-width: 80%;
+	text-align: justify;
+	padding-left: 14px;
+	color: #92a2c2;
 }
 
 .chattingContents li .message {
