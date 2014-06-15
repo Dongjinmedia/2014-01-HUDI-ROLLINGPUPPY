@@ -33,7 +33,7 @@
 				<input type="password" name="password" placeholder="Password">
 				<input type="checkbox" name="keepEmail"  value="true"> Keep Email Address
 				
-				<input type="submit" id="login_button" value="Enter House">
+				<input type="submit" id="login_button" value="Sign In">
 			</form>
 		</div>
 		
@@ -50,7 +50,7 @@
 				<input type="radio" value="M" name="radio-input" checked="checked">Male
 				<input type="radio" value="W" name="radio-input">Female
 
-				<input type="submit" id="join_button" value="Sign In" />
+				<input type="submit" id="join_button" value="Sign Up" />
 			</form>
 		</div>
 		
