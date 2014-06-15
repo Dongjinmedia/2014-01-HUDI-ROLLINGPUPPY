@@ -629,7 +629,7 @@ function getOption() {
 	options= {
   	  host: '125.209.195.202',
   	  path: 'url',
-  	  port: '8080',
+  	  port: '80',
   	  method: 'GET',
 	  headers: {
 	              "accept": 'application/json'
