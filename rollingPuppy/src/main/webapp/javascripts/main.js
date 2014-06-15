@@ -1179,8 +1179,6 @@ var oChat = {
 		
 		invisibleChatWindow: function() {
 			this.eChatWindow.style.display = "none";
-			this.clearLimitNumValue();
-			this.clearRoomNameValue();
 		},
 		
 		isChatWindowVisible: function() {
@@ -1272,8 +1270,12 @@ var oChat = {
 
 		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
+			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null || imgUrl == null )
+				return;
+			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+			
 			
 			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
@@ -1662,6 +1664,8 @@ var oCreateChattingRoom = {
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.style.display = "none";
+			this.clearLimitNumValue();
+			this.clearRoomNameValue();
 		},
 		
 		initialize: function() {
