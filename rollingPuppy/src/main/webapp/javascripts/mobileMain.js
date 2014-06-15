@@ -222,7 +222,7 @@ var oPanel = {
 		
 		// 일단 스크롤은 disable 시킵니다. 
 		// 뒤에 panelTouchMove에서 스크롤 여부를 판별한 다음 enable 시킵니다.
-		window.oScroll.disable("panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4));
+		oScroll.disable("panel_scroll" + oUtil.mod(this.nCurrentPanelIndex, 4));
 		console.log("panelTouchStart Event : ", event);
 
 		var touch = event.touches[0];
@@ -308,6 +308,7 @@ var oPanel = {
 
 		if (tempIsScroll) {
 			this.isPanelTransition = false;
+			this.isPanelAction = false;
 			return;
 		}
 		
@@ -644,6 +645,9 @@ var oPanelContents = {
 		//관심장소리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 		//working
 		bookmarkSelectHandler: function(event) {
+			if (oPanel.isPanelAction) {
+				return;
+			}
 			var clickedTarget = event.target;
 			var destinationTarget = clickedTarget.parentNode;
 			var clickedTagName = clickedTarget.tagName;
@@ -688,10 +692,16 @@ var oPanelContents = {
 				oNaverMap.oMap.setLevel(13);
 			}
 			//working
+			
+			oPanel.foldPanelWrapper();
 		},
 		
 		//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
 		searchSelectHandler: function(event){
+			if (oPanel.isPanelAction) {
+				return;
+			}
+			
 			//만약 검색결과가 없어서 default영역이 panelContent안에 존재할 경우
 			if (this.eSearchListTarget.querySelector(".comment")) {
 				return;
@@ -717,6 +727,8 @@ var oPanelContents = {
 				//이동한 장소의 Marker정보를 업데이트합니다.
 				oNaverMap.updateViewPointMarkers();
 			}
+
+			oPanel.foldPanelWrapper();
 		},
 		
 		init: function() {
@@ -1232,6 +1244,10 @@ var oMarkerClicker = {
 		
 		//채팅방 리스트 클릭시 이벤트
 		this.eChatRoomListTarget.addEventListener("touchend", function(e) {
+			if(oMarkerInfo.isScroll) {
+				return;
+			}
+			
 			var clickedTarget = event.target;
 			var destinationTarget = null;
 			var isPtag = false;
@@ -1240,7 +1256,7 @@ var oMarkerClicker = {
 			if(clickedTarget.tagName == "P"){
 				isPtag = true;
 				destinationTarget = clickedTarget.parentNode;
-			} else if (clickedTarget.tagName == "li") {
+			} else if (clickedTarget.tagName == "LI") {
 				isLiTag = true;
 				destinationTarget = clickedTarget;
 			}
@@ -1271,17 +1287,7 @@ var oMarkerClicker = {
 		
 		return this.currentNumOfParticipants;
 	},
-	
-	clickChatRoomList: function(e) {
-		//클릭된 지점이 채팅방 생성 버튼 지점이면 채팅방 입장 요청을 하지 않는다.
-		if(e.target.className === "createChattingRoomButtonInMarkerClicker") {
-			return;
-		}
-		//클릭되는 대상의 부모인 li태그 element를 가져와서, 
-		//추가될때 저장되어 있던 chatRoomNumber Attribute를 가져온후, 채팅방 입장을 요청한다.
-		oChat.enterChatRoom(e.target.parentNode.chatRoomNumber);
-	},
-	
+
 	//사용자가 새로 클릭한 마커에 대한 정보를, 마커 인터렉션 창에 업데이트 시켜주는 함수이다.
 	//예를들어 채팅방목록, 장소 정보 등등
 	setVisible: function(markerNumber) {
@@ -1338,6 +1344,48 @@ var oMarkerClicker = {
 /*********************************************************************************************************
  * Marker Interaction 메뉴에 대한 소스코드 끝
  **********************************************************************************************************/
+
+var oMarkerInfo = {
+	eChatRoomList: document.querySelector(".mi_chatRoomList"),
+	isScroll: false,
+	
+	addEvents: function() {
+		this.eChatRoomList.addEventListener(
+				"touchstart",
+				this.listTouchStart.bind(this)
+		);
+		
+		this.eChatRoomList.addEventListener(
+				"touchmove",
+				this.listTouchMove.bind(this)
+		);
+		
+		this.eChatRoomList.addEventListener(
+				"touchend",
+				this.listTouchEnd.bind(this)
+		);
+	},
+	
+	listTouchStart: function(evnet) {
+		this.isScroll = false;
+		oScroll.disable("marker_scroll");
+	},
+	
+	listTouchMove: function(event) {
+		if (this.isScroll == false) {
+			this.isScroll = true;
+			oScroll.enable("marker_scroll");
+		}
+	},
+	
+	listTouchEnd: function(event) {
+		oScroll.enable("marker_scroll");
+	},
+	
+	init: function() {
+		this.addEvents();
+	}
+}
 
 
 /*********************************************************************************************************
@@ -2241,6 +2289,7 @@ function initialize() {
 	oNaverMap.init();
 	oReverseGeoCode.init();
 	oMarkerClicker.init();
+	oMarkerInfo.init();
 	oMapClicker.init();
 	oCreateChattingRoom.init();
 	oBookmark.initialize();
