@@ -177,7 +177,6 @@ var oAside= {
 	},
 	
 	addChattingList: function(chatRoomNumber, oTarget) {
-		
 		var eTemplate = this.eChattingTemplate;
 		var eTarget = this.eChattingListTarget;
 		
