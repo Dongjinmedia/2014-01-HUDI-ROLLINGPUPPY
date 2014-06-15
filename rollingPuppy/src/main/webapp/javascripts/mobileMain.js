@@ -464,8 +464,6 @@ var oPanelContents = {
 			var eTarget = this.eChattingListTarget;
 			
 			if (eTarget.querySelector(".comment")) {
-				var eTarget = this.eChattingListTarget;
-
 				//이미 존재하는 채팅방 목록이 있면 지운다.
 				while (eTarget.firstChild) {
 					eTarget.removeChild(eTarget.firstChild);
@@ -547,9 +545,15 @@ var oPanelContents = {
 		 * 		}
 		 */
 		addBookmarkToList: function(oBookmark) {
-			console.log("oBookmark : ",oBookmark);
 			var eTemplate = this.eBookmarkTemplate;
 			var eTarget = this.eBookmarkListTarget;
+			
+			if (eTarget.querySelector(".comment")) {
+				//이미 존재하는 채팅방 목록이 있면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+			}
 			
 			var bookmarkId = oBookmark["id"];
 			var bookmarkName = oBookmark["bookmarkName"]
@@ -2167,7 +2171,7 @@ var oBookmark = {
 			
 			var oParameters = {
 				"bookmarkName": sInputFromUser,
-				"locationName": this.sClickLocationName,
+				"locationName": oMapClicker.sClickLocationName,
 				"locationLatitude": oMapClicker.oClickPoint['y'],
 				"locationLongitude": oMapClicker.oClickPoint['x'],
 			};
@@ -2177,8 +2181,7 @@ var oBookmark = {
 				var isSuccess = oResponse['isSuccess'];
 
 				if ( isSuccess ) {
-					oAside.addBookmarkToList(oResponse["bookmark"]);
-					oAside.clickBookmarkMenu();
+					oPanelContents.addBookmarkToList(oResponse["bookmark"]);
 	    		} else {
 	    			alert("즐겨찾기 등록에 실패했습니다.\n다시 시도해주세요.");
 	    		}

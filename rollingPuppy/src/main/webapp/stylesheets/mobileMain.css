@@ -907,6 +907,12 @@ li.search .category {
 	margin-top: 10px;
 }
 
+li.bookmark {
+	position: relative;
+	left: 0;
+	right: 0;
+}
+
 li.bookmark .title:before {
 	content: "\f005";
 	margin-right: 5px;
