@@ -1286,7 +1286,8 @@ var oMarkerClicker = {
 			eCopiedTemplate.querySelector(".limit").innerText = currentParticipant + "/" +newChatRoom["max"];;
 			this.eChatRoomListTarget.appendChild(eCopiedTemplate);
 		}
-		//oScroll.refresh("panel_scroll1");		
+		
+		oScroll.refresh("marker_scroll");		
 	},
 	
 	setInvisible: function() {

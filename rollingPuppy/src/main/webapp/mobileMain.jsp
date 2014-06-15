@@ -289,6 +289,5 @@
 		}
 	</script>
 	<script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
-	<!-- <script type="text/javascript" src="http://10.73.43.102:3080/socket.io/socket.io.js"></script> -->
 </body>
 </html>
