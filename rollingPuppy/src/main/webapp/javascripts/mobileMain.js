@@ -1555,7 +1555,8 @@ var oChat = {
 			};
 			
 			this.socket.emit('message', oMessageInfo);
-			this.eInputBox.value="";
+			this.eInputBox.value = "";
+			this.eInputBox.focus();
 		},
 		
 		getMessage: function(oMessageInfo) {
