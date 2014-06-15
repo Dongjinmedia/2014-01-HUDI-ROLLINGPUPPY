@@ -367,7 +367,7 @@ var oPanel = {
 		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
 			this.eChattingNotification.style.display = "none";
 		} else {
-			this.eChattingNotification.innerText = unreadMessageNum;
+			this.eChattingNotification.innerText = unreadMessageNum >= 99 ?  "99+" : unreadMessageNum;
 			this.eChattingNotification.style.display = "inline-block";
 		}
 	},
@@ -426,6 +426,8 @@ var oScroll = {
 		}
 		oScroll["chat_scroll"]
 				= new IScroll("#chat_scroll", { mouseWheel: true });
+		oScroll["marker_scroll"]
+				= new IScroll("#marker_scroll", { mouseWheel: true });
 	}
 };
 /*********************************************************************************************************
@@ -438,10 +440,21 @@ var oScroll = {
 **********************************************************************************************************/
 var oPanelContents = {
 		
-		//panel contents 영역
-		//init 시에 
-		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
+		
+		//template
+		eDefaultTemplate: document.querySelector("#template .default"),
 		eChattingTemplate: document.querySelector("#template .chatRoom"),
+		eBookmarkTemplate: document.querySelector("#template .bookmark"),
+		
+		//채팅방 패널관련
+		eChattingListTarget: document.querySelector("#panel_scroll1 ul"),
+		
+		//검색 패널관련
+		eSearchListTarget: document.querySelector("#panel_scroll0 ul"),
+		
+		//즐겨찾기 패널관련
+		eBookmarkListTarget: document.querySelector("#panel_scroll2 ul"),
+		
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
 			//TODO 변수삭제. 하단부 참조항목들 변경
@@ -497,6 +510,79 @@ var oPanelContents = {
 			}
 		},
 		
+		vacantChattingList: function() {
+			var eDefaultTemplate = this.eDefaultTemplate;			
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+			
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(".comment").innerText = "참여중인 채팅방이 없습니다.";
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		
+		/*
+		 * oBookmark  Schema
+		 * 		{
+		 * 				id: "",
+		 *				locationName: "",
+		 * 				locationLatitude: "",
+		 * 				locationLongitude: ""
+		 * 		}
+		 */
+		addBookmarkToList: function(oBookmark) {
+			console.log("oBookmark : ",oBookmark);
+			var eTemplate = this.eBookmarkTemplate;
+			var eTarget = this.eBookmarkListTarget;
+			
+			var bookmarkId = oBookmark["id"];
+			var bookmarkName = oBookmark["bookmarkName"]
+			var locationName = oBookmark["locationName"];
+			var locationLatitude = oBookmark["locationLatitude"];
+			var locationLongitude = oBookmark["locationLongitude"];
+			
+			var eCopiedTemplate = eTemplate.cloneNode(true);
+			eCopiedTemplate.querySelector(".title").innerText = bookmarkName;
+			eCopiedTemplate.querySelector(".address").innerText = locationName;
+			
+			//클릭시 이벤트를 처리할 수 있도록 bookmark정보를 attribute로 담는다.
+			eCopiedTemplate["id"] = bookmarkId;
+			eCopiedTemplate["locationName"] = locationName;
+			eCopiedTemplate["locationLatitude"] = locationLatitude;
+			eCopiedTemplate["locationLongitude"] = locationLongitude;
+			eCopiedTemplate["eTarget"] = eCopiedTemplate;
+			
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedTemplate);
+		},
+		
+		deleteFromBookmarkList: function(eBookmark) {
+			this.eBookmarkListTarget.removeChild(eBookmark);
+			
+			if ( this.eBookmarkListTarget.childNodes.length === 0 ) {
+				this.vacantBookmarkList();
+			}
+		},
+		
+		vacantBookmarkList: function() {
+			var eDefaultTemplate = this.eDefaultTemplate;			
+			var eTarget = this.eBookmarkListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+			
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(".comment").innerText = "현재 설정된 북마크가 없습니다.";
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		
 		//채팅리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
 		chattingSelectHandler: function(event) {
 			if (oPanel.isPanelAction) {
@@ -512,13 +598,96 @@ var oPanelContents = {
 				var chatRoomNum = destinationTarget["chatRoomNumber"];
 				
 				oChat.showChatWindow(chatRoomNum);
-				//this._foldPanelContents();
 			}
 		},
 
+		//관심장소리스트중 하나의 cell을 선택했을 때 실행되는 콜백함수
+		//working
+		bookmarkSelectHandler: function(event) {
+			var clickedTarget = event.target;
+			var destinationTarget = clickedTarget.parentNode;
+			var clickedTagName = clickedTarget.tagName;
+			
+			if ( clickedTagName == "P" || clickedTagName == "I") {
+				clickedTarget.parentNode;
+			}
+			
+			//cell을 선택했으면 
+			//현재, cell의 속성으로 bookmark 지역명, 좌표, 대상 element 주소값을 넣어두었다. 
+			var bookmarkId = destinationTarget["id"];
+			var bookmarkName = destinationTarget["bookmarkName"]
+			var locationName = destinationTarget["locationName"];
+			var locationLatitude = destinationTarget["locationLatitude"];
+			var locationLongitude = destinationTarget["locationLongitude"];
+			
+			if ( clickedTagName == "I" ) {
+
+				var oParameters = {
+	    			"bookmarkId": bookmarkId
+	    		};
+	    		
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			console.log(oResponse);
+	    			var isSuccess = oResponse['isSuccess'];
+
+	    			if ( isSuccess ) {
+	    				oPanelContents.deleteFromBookmarkList(destinationTarget["eTarget"]);
+	    			} else {
+		    			alert("북마크삭제에 실패했습니다.\n잠시후 다시 시도해주세요.");
+		    		}
+	    		}
+	    		
+	    		oAjax.getObjectFromJsonPostRequest("/bookmark/delete", oParameters, callback.bind(this));
+				
+			} else {
+				var oPoint = new nhn.api.map.LatLng(locationLatitude, locationLongitude);
+				//찾은 좌표로 지도의 중심을 재설정한다. 
+				oNaverMap.oMap.setCenter(oPoint);
+				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+				oNaverMap.oMap.setLevel(13);
+			}
+			//working
+		},
+		
+		//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
+		searchSelectHandler: function(event){
+			//만약 검색결과가 없어서 default영역이 panelContent안에 존재할 경우
+			if (this.eSearchListTarget.querySelector(".comment")) {
+				return;
+			}
+			
+			var clickedTarget = event.target;
+			//현재 하나의 cell은 세개의 p태그로 이루어져있다.
+			//그런데, cell이외의 page부분은 li태그로 이루어져있으므로 p태그인지 아닌지를 확인하는것이 cell을 선택했는지 여부의 척도가 될 수 있다.
+			if(clickedTarget.tagName == "P"){
+				//cell을 선택했으면 
+				//현재, cell의 속성으로 좌표를 넣어두었다. 따라서 태그의 부모노드인 cell을 찾아서 
+				//그 cell의 속성으로 저장된 좌표를 불러온다. 
+				var destinationTarget = clickedTarget.parentNode;
+				var destinationCartesianX = destinationTarget["cartesianX"];
+				var destinationCartesianY = destinationTarget["cartesianY"];
+				//검색 결과에서 주는 좌표는 우리가 이제껏 받아온 위도 경도가 아니라 카텍좌표계이다.
+				var oPoint = new nhn.api.map.TM128(destinationCartesianX, destinationCartesianY);
+				//찾은 좌표로 지도의 중심을 재설정한다. 
+				oNaverMap.oMap.setCenter(oPoint);
+				//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
+				oNaverMap.oMap.setLevel(13);
+				
+				//이동한 장소의 Marker정보를 업데이트합니다.
+				oNaverMap.updateViewPointMarkers();
+			}
+		},
 		
 		init: function() {
+			//검색패널 리스트 클릭시 호출되는 이벤트 등록
+			this.eSearchListTarget.addEventListener("touchend", this.searchSelectHandler.bind(this));
+			
+			//채팅패널 리스트 클릭시 호출되는 이벤트 등록
 			this.eChattingListTarget.addEventListener("touchend", this.chattingSelectHandler.bind(this));
+			
+			//즐겨찾기 리스트 클릭시 호출되는 이벤트 등록
+			this.eBookmarkListTarget.addEventListener("touchend", this.bookmarkSelectHandler.bind(this));
 		}
 };
 /*********************************************************************************************************
@@ -578,7 +747,7 @@ var oSearching = {
 					}
 				}
 				//검색결과 Panel을 열어준다.
-				//oAside.clickSearchMenu();
+				//oPanelContents.clickSearchMenu();
 			};
 			oAjax.getObjectFromJsonPostRequest(url, oParameters, callback);
 		},
@@ -600,14 +769,19 @@ var oUtil = {
 		return ( (target % division) + division ) % division;
 	},
 	
-	addClassName: function(node, strClassName) {
+	addClassName: function (node, strClassName) {
 		// 기존에 className가 없던 경우
 		if (node.className === "") {
 			node.className = strClassName;
+			return ;
+		}
+		
+		// node에 className가 존재하는 경우
+		if (node.className.toString().search(strClassName) !== -1) {
 			return;
 		}
-	
-	// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
+		
+		// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
 		node.className += " " + strClassName;
 	},
 	
@@ -994,7 +1168,7 @@ var oNaverMap = {
 	        //메모리상에 현재 화면에 존재하는 마커정보를 담기위한 Object 선언
 	        //맵 드래그, 데이터 업데이트 등을 수행할때
 	        //이미 맵에 추가된 마커는 정보만 업데이트 하는 등을 판별하기 위해서 필요하다.
-	        this.oCurrentViewPointMarkers = new Object();
+	        this.oCurrentViewPointMarkers = {};
 	        
 	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
 	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
@@ -1026,7 +1200,7 @@ var oMarkerClicker = {
 		//마커 클릭액션시 나타나는 content, 메뉴바 등을 모두 포함하는 div
 		controlBox: document.getElementById("controlBox"),
 		
-		//채팅방 리스트를 모두 담고 있는 컨텐츠 OL엘리먼트
+		//채팅방 리스트를 모두 담고 있는 컨텐츠 엘리먼트
 		eChatList: document.querySelector("#controlBox ol"),
 		
 		//채팅방 내용을 담고있는 division <div> element
@@ -1059,6 +1233,9 @@ var oMarkerClicker = {
 		var iconChatting = controlBox.querySelector('.icon-chatting');
 		var menuChatting = controlBox.querySelector('.menu-chatting');
 		this.addListener(iconChatting, menuChatting);
+		
+		var bookmarkAnchor = controlBox.querySelector(".icon-bookmark a");
+		bookmarkAnchor.addEventListener("click", oBookmark.addBookmark);
 	},
 	
 	// Ajax통신을 통해 마커 안에 있는 채팅방들의 현재 채팅 인원 수를 가져와 리턴하는 메서드
@@ -1336,7 +1513,7 @@ var oChat = {
 				
 				//eTarget은 초기화시 추가해주는 동적 attribute이다.
 				//어차피 채팅방번호에 해당하는 element를 자주참조해야하므로 주소값을 저장하는 것이다.
-				//자세한 내용은 getMyChatInfoAndUpdateListInPanel 함수를 참조하자.
+				//자세한 내용은 initializeChatRoomListInPanelAndSaveChatInfo 함수를 참조하자.
 			}
 		} 
 	    */
@@ -1351,6 +1528,7 @@ var oChat = {
 		
 		//채팅창을 열고, 필요한 데이터를 채팅창에 채움니다.
 		showChatWindow: function(chatRoomNum) {
+			console.log("into showChatWindow");
 			if ( oChat.isChatWindowVisible() ) {
 				oChat.foldChattingRoom();
 			}
@@ -1438,7 +1616,7 @@ var oChat = {
 				oChat.alertNewMessage(oMessageInfo);
 				oChat.oInfo[chatRoomNumber]["unreadMessageNum"]++;
 				oChat.updateNotificationView(oMessageInfo["tblChatRoomId"]);
-				oAside.updateTotalNotificationView();
+				oPanel.updateTotalNotificationView();
 			}
 		},
 		
@@ -1488,7 +1666,7 @@ var oChat = {
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + oMemberInfo["nicknameNoun"];
+			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + " "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
 			eCopiedTemplate.querySelector(".time").innerText = time;
 			
@@ -1609,7 +1787,7 @@ var oChat = {
 			if ( unreadMessageNum === 0 ) {
 				eChattingRoomNotification.style.display = "none";
 	 		} else {
-	 			eChattingRoomNotification.innerText = unreadMessageNum;
+	 			eChattingRoomNotification.innerText = (unreadMessageNum >= 99 ) ? "99+" : unreadMessageNum ;
 	 			eChattingRoomNotification.style.display = "inline-block";
 	 		}
 		},
@@ -1676,80 +1854,55 @@ var oChat = {
 			this.saveCurrentChatRoomNumber(null);
 		},
 		
-		// oChat객체가 initialize되는 시점에 호출되어 사용자가 채팅중인 채팅방의 소켓 연결을 맺어준다.
-		connectSocketWithEnteredChattingRoom: function() {
-			var chattingRoomList = document.getElementById("enteredChattingRoomList").innerText;
-			console.log("chattingRoomList :",chattingRoomList);
-			var chattingRoomListToJson = JSON.parse(chattingRoomList);
-			var chattingRoomIdList = new Array();
-			
-			for ( var i = 0; i < chattingRoomListToJson.length ; i++ ) {
-				chattingRoomIdList.push(chattingRoomListToJson[i].chatRoomId);
-			}
-			
-			for ( var i = 0; i < chattingRoomIdList.length ; i++ ) {
-				var chatRoomNum = chattingRoomIdList[i];
-				this.socket.emit('autoConnectWithEnteredChattingRoom', {'email': this.socket.email, 'chatRoomNumber': chatRoomNum});
-			}
-		},
-		
 		//새로운 chatInfo항목을 추가한다.
 		addChatInfo: function(chatRoomNumber, oResult) {
 			oChat.oInfo[chatRoomNumber] = oResult;
 		},
 		
 		//chatInfo를 초기화한다.
-		saveChatInfo: function(aParameter) {
-			window.oChat.oInfo =  aParameter
+		saveChatInfo: function(oParameter) {
+			window.oChat.oInfo =  oParameter;
 		},
 		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
-		 * 
-		 * TODO jsp에서 내려주는 형태로 리팩토링 되어야 합니다.
 		 */
-		getMyChatInfoAndUpdateListInPanel: function(){
-			
-			var incompleteUrl = "/chat/getMyChatInfo";
-			
-			var callback = function(request){
+		initializeChatRoomListInPanelAndSaveChatInfo: function(){
+			var eEnteredChatInfoObject = document.getElementById("enteredChatInfoObject");
 
-				var oResult = JSON.parse(request.responseText);
-				
-				//oInfo에 요청데이터를 저장
-				this.saveChatInfo.apply(request, [oResult]);
-				
-				if(oResult === null || oResult.length === 0 ){
-					oAside.vacantChattingList();
-				} else {
-					//이미 존재하는 채팅방 목록이 있면 지운다.
-					var eTarget = oPanelContents.eChattingListTarget;
-					while (eTarget.firstChild) {
-						eTarget.removeChild(eTarget.firstChild);
-					}
-					
-					//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
-					for (var key in oResult) {
-						if (oResult.hasOwnProperty(key)) {
-							oPanelContents.addChattingList(key, oResult[key]);
-						}
-					}
-				}
-				//확인하지 않은 메세지갯수를 업데이트한다.
-				oPanel.updateTotalNotificationView();
-			};
+			if ( eEnteredChatInfoObject == null || eEnteredChatInfoObject == undefined)
+				return;
 			
-			oAjax.getObjectFromJsonPostRequest(incompleteUrl, null, callback.bind(this));
-			
+			var oEnteredChatInfo = JSON.parse(eEnteredChatInfoObject.innerText);
+			 
+		 	//oInfo에 요청데이터를 저장
+		 	this.saveChatInfo(oEnteredChatInfo);
+		 	
+		 	var isEmpty = true;
+		 	//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
+		 	for (var key in oEnteredChatInfo) {
+		 		if (oEnteredChatInfo.hasOwnProperty(key)) {
+		 			oPanelContents.addChattingList(key, oEnteredChatInfo[key]);
+		 			isEmpty = false;
+		 		}
+		 	}
+		 
+		 	//입장한 채팅방이 존재하지 않을경우
+		 	 if ( isEmpty ) {
+		 		oPanelContents.vacantChattingList();
+		 	 }
+		 	 
+		 	//확인하지 않은 메세지갯수를 업데이트한다.
+		 	oPanel.updateTotalNotificationView();
 			oScroll.refresh("panel_scroll1");
 		},
 		
 		init: function() {
-			var email = document.getElementById("email").value;
+			var email = document.getElementById("email").innerText;
 			//hidden attribute. User Identifier Database id Value.
 			//TODO 설정탭의 개인정보 수정과 함께 처리되어야 할 여지가 있다.
-			this.userId = document.getElementById("id").value;
+			this.userId = document.getElementById("id").innerText;
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
 			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
@@ -1813,9 +1966,6 @@ var oChat = {
 //				}
 //			}, false);
 			
-			// 기존에 접속해있던 채팅방의 소켓 연결을 맺어준다.
-			this.connectSocketWithEnteredChattingRoom();
-			
 			//사용자가 참여하고있는 채팅방의 데이터를 oInfo객체에 저장한다.
 			
 //			"채팅방번호": {
@@ -1831,7 +1981,7 @@ var oChat = {
 //					}
 //				}
 //			}
-			this.getMyChatInfoAndUpdateListInPanel();
+			this.initializeChatRoomListInPanelAndSaveChatInfo();
 			
 			//채팅방 참여자리스트에서 보기메뉴를 클릭할때 발생하는 이벤트
 			this.eMemberIcon.addEventListener("touchend",this.memberPanelHandler.bind(this));
@@ -1850,12 +2000,10 @@ var oMapClicker = {
 	eMapClicker: document.getElementById('mapClicker'),
 	
 	//Add버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickAdd: document.querySelector('#mapClicker .icon-add'),
+	ePlus: document.querySelector('#mapClicker .icon-add'),
 	
 	//즐겨찾기 버튼에 해당하는 Element.
-	//TODO 변수명 변경
-	clickBookMark: document.querySelector('#mapClicker .icon-star'),
+	ePin: document.querySelector('#mapClicker .icon-star'),
 	
 	//naverMap에서 클릭된 지점에 대한 Point Object를 저장하는 변수.
 	oClickPoint: null,
@@ -1863,9 +2011,16 @@ var oMapClicker = {
 	//위치정보를 보여주는 Element
 	eLocationName: document.querySelector("#mapClicker .locationName div"),
 	
+	//Memory Data
+	//마지막으로 클릭한 x,y 정보를 담은 Object
+	oClickPoint: null,
+	//마지막으로 클릭한 지역명을 담은 String Value
+	sClickLocationName: null,
+	
 	//MapClicker 상단에 표기되는 위치정보를 변경한다.
 	setLocationName: function(locationName) {
 		this.eLocationName.innerText = locationName;
+		this.sClickLocationName = locationName;
 	},
 	//Client width, height값을 계산해서 위치를 변경한다.
 	move: function(clientPosX, clientPosY) {
@@ -1884,16 +2039,13 @@ var oMapClicker = {
 
 		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.clickAdd.addEventListener('touchend', function(e) {
+		this.ePlus.addEventListener('touchend', function() {
 			console.log("clickadd");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
-		}.bind(this), false);
+		}.bind(this));
 		
 		//mapClicker 메뉴중, star 버튼을 클릭했을때
-		this.clickBookMark.addEventListener('touchend', function(e) {
-			console.log("addBookMark");
-			alert('clickBookMark');
-		}, false);
+		this.ePin.addEventListener('click', oBookmark.addBookmark);
 	},	
 };
 
@@ -1991,7 +2143,7 @@ var oCreateChattingRoom = {
 			// WORKING SEHUN
 			console.log(this.oLocationPoint);
 			oMapClicker.oClickPoint = this.oLocationPoint;
-			
+		
 			//숫자가 아닌값일 경우, value값이 넘어오지 않음
 			//TODO keydown event를 통해서 아에 입력조차 되지 않도록 변경해야 한다.
 
@@ -1999,13 +2151,11 @@ var oCreateChattingRoom = {
 			if ( roomNameValue === null || roomNameValue === "") {
 				alert('채팅방 제목을 입력해 주세요.');
 				return;
-			} else if ( roomNameValue.length <= 4 ) {
-				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length <= 1 ) {
+				alert('채팅방 제목은 2글자 이상 입력되어야 합니다.');
 				return;
-			} else if ( roomNameValue.length > 15 ) {
-				alert("채팅방 제목은 15글자 이상을 넘을 수 없습니다.");
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length > 100 ) {
+				alert("채팅방 제목은 100글자 이상을 넘을 수 없습니다.");
 				return;
 			};
 			
@@ -2017,13 +2167,12 @@ var oCreateChattingRoom = {
 			};
 			
 			//참여인원 제한숫자가 1일경우
-			if ( limitNumValue === 1 ) {
+			if ( limitNumValue <= 1 ) {
 				alert("인원수는 1 이상으로 설정해야 합니다.");
 				this.clearLimitNumValue();
 				return;
-			} else if (limitNumValue >= 100 ){
-				alert("채팅 인원은 100을 넘을 수 없습니다.");
-				this.clearLimitNumValue();
+			} else if (limitNumValue > 300 ){
+				alert("채팅 인원은 300을 넘을 수 없습니다.");
 				return;
 			};
 			
@@ -2094,6 +2243,65 @@ var oAside = {
 
 
 /*********************************************************************************************************
+ * 관심장소에 대한 소스코드 시작
+ **********************************************************************************************************/
+var oBookmark = {
+		addBookmark: function() {
+			var sInputFromUser = prompt("관심장소 이름");
+			
+			if ( sInputFromUser === null ) {
+				return;
+			}
+			
+			var oParameters = {
+				"bookmarkName": sInputFromUser,
+				"locationName": this.sClickLocationName,
+				"locationLatitude": oMapClicker.oClickPoint['y'],
+				"locationLongitude": oMapClicker.oClickPoint['x'],
+			};
+
+			var callback = function(request) {
+				var oResponse = JSON.parse(request.responseText);
+				var isSuccess = oResponse['isSuccess'];
+
+				if ( isSuccess ) {
+					oAside.addBookmarkToList(oResponse["bookmark"]);
+					oAside.clickBookmarkMenu();
+	    		} else {
+	    			alert("즐겨찾기 등록에 실패했습니다.\n다시 시도해주세요.");
+	    		}
+			}
+			
+			oAjax.getObjectFromJsonPostRequest("/bookmark/add", oParameters, callback.bind(this));
+			//working
+		},
+		initializeBookmarkListInPanel: function() {
+			var sBookmarkList = document.getElementById("bookmarkList").innerText;
+			
+			if ( sBookmarkList != null && sBookmarkList.length !=0 ) {
+				var aBookmarkList = JSON.parse(sBookmarkList);
+				
+				var nBookmarkListLength = aBookmarkList.length;
+				if ( nBookmarkListLength === 0 ) {
+					oPanelContents.vacantBookmarkList();
+				} else {
+					for (var i = 0 ; i < nBookmarkListLength ; ++i ) {
+						oPanelContents.addBookmarkToList(aBookmarkList[i]);
+					}
+				}
+				
+			}
+		},
+		initialize: function() {
+			this.initializeBookmarkListInPanel();
+		}
+} 
+/*********************************************************************************************************
+ * 관심장소에 대한 소스코드 종료
+ **********************************************************************************************************
+
+
+/*********************************************************************************************************
  * 모두에게 공통되는 초기화 함수영역
  **********************************************************************************************************/
 function initialize() {
@@ -2107,20 +2315,29 @@ function initialize() {
 	oSearching.initialize();
 	oPanelContents.init();
 	
-	oChat.init();
-
 	oNaverMap.init();
 	oReverseGeoCode.init();
 	oMarkerClicker.init();
 	oMapClicker.init();
 	oCreateChattingRoom.init();
+	oBookmark.initialize();
+	oChat.init();
+	
+	/*
+	 * TODO 초기 updateViewPointMarkers를 서버에서 전달해주는 식으로 변경되어야 한다.
+	 */
+	//------------------------------------------------------------------------------------//
+	//Map 에 위치한 Marker 초기화
+	oNaverMap.updateViewPointMarkers();
+	//------------------------------------------------------------------------------------//
+	
 	/*
 	 * 모든 초기화 작업이후, hidden element를 삭제한다.
 	 */
 	//------------------------------------------------------------------------------------//
-	var aHiddenElement = document.querySelectorAll("input[type=hidden]");
-	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
-		aHiddenElement[index].remove();
-	}
+	var aHiddenElement = document.querySelectorAll("script.hidden");
+  	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+  		aHiddenElement[index].remove();
+  	}
 	//------------------------------------------------------------------------------------//
 }

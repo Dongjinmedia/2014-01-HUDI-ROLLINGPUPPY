@@ -28,6 +28,11 @@ var oUtil = {
 				return ;
 			}
 			
+			// node에 className가 존재하는 경우
+			if (node.className.toString().search(strClassName) !== -1) {
+				return;
+			}
+			
 			// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
 			node.className += " " + strClassName;
 		},
@@ -66,11 +71,6 @@ var oAside= {
 	// 기본값은 search로 되어 있습니다.
 	eLatestClickedMenu: document.querySelector("#nav_list>.on"),
 	eLatestPanelContents: document.querySelector("#panel_contents>.on"),
-	eSearchMenu: document.querySelector("#nav_list .search"),
-	eRecommendMenu: document.querySelector("#nav_list .recommendation"),
-	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
-	eSettingMenu: document.querySelector("#nav_list .settings"),
-
 	
 	//template
 	eDefaultTemplate: document.querySelector("#template .default"),
@@ -83,9 +83,18 @@ var oAside= {
 	eChattingNotification: document.querySelector("#nav_list .notification"),
 	eChattingListTarget: document.querySelector("#pc_chatting ul"),
 
+	//검색 패널관련
+	eSearchMenu: document.querySelector("#nav_list .search"),
+	eSearchListTarget: document.querySelector("#pc_search ul"),
 	
 	//즐겨찾기 패널관련
+	eBookmarkMenu: document.querySelector("#nav_list .bookmark"),
 	eBookmarkListTarget: document.querySelector("#pc_bookmark ul"),
+	
+	//준비중인 영역
+	eRecommendMenu: document.querySelector("#nav_list .recommendation"),
+	eSettingMenu: document.querySelector("#nav_list .settings"),
+	
 	
 	commingSoon: function(event) {
 		event.preventDefault();
@@ -109,15 +118,14 @@ var oAside= {
 		this.eBookmarkMenu.addEventListener("click", this.clickBookmarkMenu.bind(this));
 		this.eSettingMenu.addEventListener("click", this.commingSoon.bind(this));
 		
-		//검색 결과를 클릭 이벤트에 대한 핸들러 붙이기
-		var eSearchPanelContents = this.ePanel.querySelector("#pc_search");
-		eSearchPanelContents.addEventListener("click", this.searchResultSelectHandler.bind(this));
+		//검색패널 리스트 클릭시 호출되는 이벤트 등록
+		this.eSearchListTarget.addEventListener("click", this.searchSelectHandler.bind(this));
 		
-		var eChattingPanelContents = this.ePanel.querySelector("#pc_chatting");
-		eChattingPanelContents.addEventListener("click", this.chattingSelectHandler.bind(this));
+		//채팅패널 리스트 클릭시 호출되는 이벤트 등록
+		this.eChattingListTarget.addEventListener("click", this.chattingSelectHandler.bind(this));
 		
-		var eBookmarkContents = this.ePanel.querySelector("#pc_bookmark");
-		eBookmarkContents.addEventListener("click", this.bookmarkSelectHandler.bind(this));
+		//즐겨찾기 리스트 클릭시 호출되는 이벤트 등록
+		this.eBookmarkListTarget.addEventListener("click", this.bookmarkSelectHandler.bind(this));
 	},
 	//읽지 않은 메세지갯수 뷰를 업데이트한다.
 	updateTotalNotificationView: function() {
@@ -133,7 +141,7 @@ var oAside= {
 		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
 			this.eChattingNotification.style.display = "none";
 		} else {
-			this.eChattingNotification.innerText = unreadMessageNum;
+			this.eChattingNotification.innerText = unreadMessageNum >= 99 ?  "99+" : unreadMessageNum;
 			this.eChattingNotification.style.display = "inline-block";
 		}
 	},
@@ -298,15 +306,17 @@ var oAside= {
 	},
 	
 	clickSearchMenu: function(event) {
-		if ( event !== undefined )
+		if ( event !== undefined ) {
 			event.preventDefault();
+		}
 		
 		this.unfoldByMenuElement(this.eSearchMenu);
 	},
 	
 	clickChattingMenu: function(event) {
-		if ( event !== undefined )
+		if ( event !== undefined ) {
 			event.preventDefault();
+		}
 		
 		//채팅방 Notification을 보이지 않도록 처리
 		this.eChattingNotification.style.display = "none";
@@ -386,8 +396,10 @@ var oAside= {
 	},
 	
 	//검색 결과 중 하나의 cell을 선택했을 때 실행되는 콜백함수 
-	searchResultSelectHandler: function(event){
-		if (this.ePanel.querySelector("#pc_search .comment")) {
+	searchSelectHandler: function(event){
+		
+		//만약 검색결과가 없어서 default영역이 panelContent안에 존재할 경우
+		if (this.eSearchListTarget.querySelector(".comment")) {
 			return;
 		}
 		
@@ -407,6 +419,9 @@ var oAside= {
 			oNaverMap.oMap.setCenter(oPoint);
 			//결과를 명확하게 하기 위해 zoomlevel을 키운다 . 
 			oNaverMap.oMap.setLevel(13);
+			
+			//이동한 장소의 Marker정보를 업데이트합니다.
+			oNaverMap.updateViewPointMarkers();
 		}
 	},
 	
@@ -1352,7 +1367,7 @@ var oChat = {
 			if ( unreadMessageNum === 0 ) {
 				eChattingRoomNotification.style.display = "none";
 	 		} else {
-	 			eChattingRoomNotification.innerText = unreadMessageNum;
+	 			eChattingRoomNotification.innerText = (unreadMessageNum >= 99 ) ? "99+" : unreadMessageNum ;
 	 			eChattingRoomNotification.style.display = "inline-block";
 	 		}
 		},
@@ -1661,13 +1676,11 @@ var oCreateChattingRoom = {
 			if ( roomNameValue === null || roomNameValue === "") {
 				alert('채팅방 제목을 입력해 주세요.');
 				return;
-			} else if ( roomNameValue.length <= 4 ) {
-				alert('채팅방 제목은 5글자 이상 입력되어야 합니다.');
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length <= 1 ) {
+				alert('채팅방 제목은 2글자 이상 입력되어야 합니다.');
 				return;
-			} else if ( roomNameValue.length > 15 ) {
-				alert("채팅방 제목은 15글자 이상을 넘을 수 없습니다.");
-				this.clearRoomNameValue();
+			} else if ( roomNameValue.length > 100 ) {
+				alert("채팅방 제목은 100글자 이상을 넘을 수 없습니다.");
 				return;
 			};
 			
@@ -1679,13 +1692,12 @@ var oCreateChattingRoom = {
 			};
 			
 			//참여인원 제한숫자가 1일경우
-			if ( limitNumValue === 1 ) {
+			if ( limitNumValue <= 1 ) {
 				alert("인원수는 1 이상으로 설정해야 합니다.");
 				this.clearLimitNumValue();
 				return;
-			} else if (limitNumValue >= 100 ){
-				alert("채팅 인원은 100을 넘을 수 없습니다.");
-				this.clearLimitNumValue();
+			} else if (limitNumValue > 300 ){
+				alert("채팅 인원은 300을 넘을 수 없습니다.");
 				return;
 			};
 			
@@ -1706,11 +1718,15 @@ var oCreateChattingRoom = {
     			var oResponse = JSON.parse(request.responseText);
     			
     			var isSuccess = oResponse['isSuccess'];
-    			var newMarker = oResponse["newMarker"];
-    			var markerNumber = newMarker["id"];
+    			if (isSuccess) {
+    				var newMarker = oResponse["newMarker"];
+    				var markerNumber = newMarker["id"];
+    			} else {
+    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
+    				return;
+    			} 
     			
-    			if ( isSuccess === true 
-    					&& markerNumber !== null 
+    			if ( markerNumber !== null 
     					&& markerNumber !== undefined 
     					&& isNaN(markerNumber) === false ) {
     				
@@ -1725,8 +1741,6 @@ var oCreateChattingRoom = {
     		    	
     		    	//현재 포커싱된 createChatRoom  Area를 보이지 않게 한다.
     		    	this.invisible();
-    			} else {
-    				alert("채팅방 생성에 실패했습니다.\n잠시후 다시 시도해주세요.");
     			} 
 			};
 			
@@ -2145,6 +2159,9 @@ function initialize() {
 	oCreateChattingRoom.initialize();
 	//------------------------------------------------------------------------------------//
 	
+	/*
+	 * TODO 초기 updateViewPointMarkers를 서버에서 전달해주는 식으로 변경되어야 한다.
+	 */
 	//------------------------------------------------------------------------------------//
 	//Map 에 위치한 Marker 초기화
 	oNaverMap.updateViewPointMarkers();

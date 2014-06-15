@@ -18,10 +18,56 @@
 </head>
 
 <body>
-	<input type="hidden" id="email" value="${sessionScope['member.email']}" />
-	<input type="hidden" id="id" value="${sessionScope['member.id']}" />
-	
+	<script type="text/template" class="hidden" id = "enteredChatInfoObject">${requestScope["enteredChatInfoObject"]}</script>
+ 	<script type="text/template" class="hidden" id = "bookmarkList">${requestScope["bookmarkList"]}</script>
+ 	<script type="text/template" class="hidden" id="email">${sessionScope['member.email']}</script>
+ 	<script type="text/template" class="hidden" id="id">${sessionScope['member.id']}</script>	
 	<!-- hidden Area (For Menu Control Box) -->
+	<div id="markerInfo">
+		<div class="mi_header">
+			<div class="mi_foldButton"></div>
+		</div>
+		<div class="mi_body">
+			<div class="mi_info">
+				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 737 역삼</p>
+				<div class="mi_bookmarkButton"><div>관심장소 추가</div></div>
+				<div class="mi_addChatRoomButton"><div>채팅방 만들기</div></div>
+			</div>
+			<div class="mi_chatRoomList">
+				<div id="marker_scroll" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="section">
+							<li class="card chatRoom">
+								<p class="title icon-chatting">역삼역은내가지배한다</p>
+								<p class="limit icon-participant">6/6</p>
+								<div class="notification" style="display: none;">5</div>
+							</li>
+							<li class="card chatRoom">
+								<p class="title icon-chatting">여기서집에갈수있다면</p>
+								<p class="limit icon-participant">3/6</p>
+								<div class="notification" style="display: none;">5</div>
+							</li>
+							<li class="card chatRoom">
+								<p class="title icon-chatting">Project Demo</p>
+								<p class="limit icon-participant">2/30</p>
+								<div class="notification" style="display: none;">5</div>
+							</li>
+							<li class="card chatRoom">
+								<p class="title icon-chatting">웰빙 휴먼시아 크린토피아</p>
+								<p class="limit icon-participant">2/2</p>
+								<div class="notification" style="display: none;">5</div>
+							</li>
+							<li class="card chatRoom">
+								<p class="title icon-chatting">the class</p>
+								<p class="limit icon-participant">1/99</p>
+								<div class="notification" style="display: none;">5</div>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 	<div style="display: none;">
 		<div id="controlBox">
 			<ul id='menu'>
@@ -85,10 +131,15 @@
 				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
 				<div class="notification" style="display: inline-block;">5</div>
 			</li>
-			<li class="card cell search">
+			<li class="card search">
 				<p class="title icon-title"></p>
 				<p class="category"></p>
 				<p class="address"></p>
+			</li>
+			<li class="card bookmark">
+				<p class="title icon-bookmark"></p>
+				<i class="icon-delete"></i>
+ 				<p class="address"></p>
 			</li>
 			
 			<li class="person chatMember">
@@ -213,15 +264,6 @@
 						<div class="scroll_area">
 							<h1>채팅방</h1>
 							<ul class="section">
-								<li class="card chatRoom">
-									<p class="title icon-chatting">강남역 지하상가안내</p>
-									<p class="limit icon-participant">4 / 30</p>
-									<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
-									<div class="notification" style="display: inline-block;">5</div>
-								</li>
-								<li class="card"></li>
-								<li class="card"></li>
-								<li class="card"></li>
 							</ul>
 						</div>
 					</div>

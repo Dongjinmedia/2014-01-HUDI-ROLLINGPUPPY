@@ -284,6 +284,12 @@ io.sockets.on('connection', function (socket) {
 			[chatRoomNumber, userId, message],
 			//Param3
 			function(oResult) {
+				if ( isUndefinedOrNull(oResult) ) {
+					announce("메세지 전송중 에러가 발생했습니다.\n잠시후 다시 시도해주세요.");
+					return;
+				}
+
+
 				var affectedRows = oResult["affectedRows"];
 				
 				//TODO 결과가 없을때를 대비한 error event를 만들자						

@@ -22,6 +22,11 @@ var oUtil = {
 			return ;
 		}
 		
+		// node에 className가 존재하는 경우
+		if (node.className.toString().search(strClassName) !== -1) {
+			return;
+		}
+		
 		// 기존에 className가 있는 경우 공백문자를 추가하여 넣어줍니다
 		node.className += " " + strClassName;
 	},
@@ -178,9 +183,9 @@ var oJoin = {
 				console.log(result);
 
 				if( result === "FAIL" ){
-					duplicateCheckPtag.innerText = "이미 존재하는 이메일 입니다.";
+					duplicateCheckPtag.className = "fail";
 				}else if (result === "SUCCESS"){
-					duplicateCheckPtag.innerText = "가입 가능한 이메일 입니다."
+					duplicateCheckPtag.className = "pass";
 				}else {
 					alert("예기치 못한 사건이 발생했다!!");
 				}
