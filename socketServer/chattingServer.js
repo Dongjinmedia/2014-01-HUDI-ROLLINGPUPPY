@@ -226,6 +226,17 @@ io.sockets.on('connection', function (socket) {
 	function getMessageDataObject(userId, chatRoomNumber, message) {
 		var date = new Date();
 		
+		var nHour = date.getHours();
+		var nMinutes = date.getMinutes();
+
+		if ( nHour.length === 1 ) {
+			nHour = "0"+nHour;
+		}
+
+		if ( nMinutes.length === 1 ) {
+			nMinutes = "0"+nMinutes;
+		}
+
 		var oMessageInfo = {
 			"tblMemberId": userId,
 			"tblChatRoomId": chatRoomNumber,
@@ -233,7 +244,7 @@ io.sockets.on('connection', function (socket) {
 			"month": date.getMonth()+1,
 			"week": aWeek[date.getDay()],
 			"day": date.getDate(),
-			"time": date.getHours() + ":" + date.getMinutes()
+			"time": nHour + ":" + nMinutes
 		};
 		
 		return oMessageInfo;
