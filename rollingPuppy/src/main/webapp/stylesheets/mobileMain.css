@@ -535,7 +535,7 @@ div.panelUnfold {
 }
 
 .clicker {
-	font-size: 27px;
+	font-size: 26px;
   	font-family: FontAwesome;
   	font-style: normal;
   	text-decoration: inherit;
@@ -560,8 +560,18 @@ div.panelUnfold {
 	content: "\f055";
 }
 
+.clickerMenu .icon-add:before {
+	position: absolute;
+	left: 5px;
+}
+
 .icon-star:before {
 	content: "\f005";
+}
+
+.clickerMenu .icon-star:before {
+	position: absolute;
+	right: 2px;
 }
 
 .marker {
@@ -657,54 +667,72 @@ div.panelUnfold {
 */
 #createChatRoom {
 	position: absolute;
+	display: none; 
 	width: 100%;
 	height: 100%;
 	z-index: 120;
 	overflow: hidden;
-	display: none; 
 }
 
 #createChatRoom .centerArea {
 	position: absolute;
-	width: 90%;
-	height: 70%;
-	left: 5%;
-	top: 25%;
-	overflow: scroll;
+	width: 280px;
+	height: 300px;
+	
+	top: 50%;
+	left: 50%;
+	margin-top: -150px;
+	margin-left: -140px;
+	
+	overflow: hidden;
 }
 
 #createChatRoom .cancle {
-	display: inline-block;
-	text-align: right;
 	position: absolute;
-	right: 6%;
-	font-size: 1em;
-	top: 20%;
-	color: #fff;
-	width: 7%;
-	height: 5%;
+	display: block;
+	width: 20px;
+	height: 20px;
+	right: 0px;
+	margin: 5px;
+	
+	border: 1px solid #F88;
+	border-radius: 10px;
+	background-color: #E55;
+	
+	color: white;
+	font-size: 10px;
+	font-weight: 400;
+	line-height: 20px;
+	text-align: center;
+	
+	z-index: 200;
 }
 
-#createChatRoom .inputArea {
+#createChatRoom .ccr_inputArea {
 	position: absolute;
-	padding: 5%;
-	width: 90%;
-	height: 90%;
-}
+ 	top: 25px;
+ 	right: 15px;
+ 	bottom: 30px;
+ 	left: 15px;
+ }
 
-.inputArea p {
+#createChatRoom .ccr_inputArea p {
 	position: relative;
-	margin-bottom: 20px;
+	margin-bottom: 8px;
 }
 
-.inputArea label {
+.ccr_inputArea label {
 	position: absolute;
-	left: 0px;
+	width: 40px;
 	height: 100%;
-	width: 20%;
-	color: #847384;
+	left: 0px;
+
 	background: #dedede;
 	border-radius: 3px 0 0 3px;
+	
+	color: #847384;
+	font-size: 25px;
+	text-align: center;
 }
 
 #createChatRoom .bg {
@@ -712,7 +740,6 @@ div.panelUnfold {
 	width: 100%;
 	height: 100%;
 	overflow: hidden;
-	border-radius: 5px;
 }
 
 /*outer bg*/
@@ -723,12 +750,12 @@ div.panelUnfold {
 
 /*inner bg*/
 #createChatRoom .inner {
-	background: #423142;
-	opacity: 0.8;	
+	background: #FAFAFA;
+	border-radius: 5px;
 }
 
 .createAddress {
-	font-size: 200%;
+	font-size: 17px;
 	font-weight: 700;
 	line-height: 150%;
 }
@@ -751,39 +778,50 @@ div.panelUnfold {
 
 label[class^=icon-]:before,label[class*=" icon-"]:before {
 	position: absolute;
-	text-align: center;
-	font-size: 200%;
-	left: 50%;
-	top: 50%;
-	margin-top: -25%;
-	margin-left: -25%;
+	width: 100%;
+	top: 12px;
+	left: 0px;
 }
+
+#createChatRoom form {
+	position: absolute;
+	top: 85px;
+	right: 0px;
+	bottom: 0px;
+	left: 0px;
+}
+
 
 #createChatRoom input[type="text"], #createChatRoom input[type="number"] {
 	background: #e5e5e5;
+	width: 80%;
+	height: 40px;
+
 	border: none;
-	border-radius: 0 3px 3px 0;
-	color: #5a5656;
-	font-size: 20px;
-	height: 50px;
+	border-radius: 0 8px 8px 0;
+	
+	color: #222;
+	font-size: 17px;
 	outline: none;
 	padding-left: 20%;
-	width: 80%;
 }
 
 #createChatRoom input[type="submit"] {
+	position: absolute;
+	width: 100%;
+	height: 40px;
+	bottom: 0px;
+	padding: 0px 10px;
+
 	background-color: #008dde;
 	border: none;
 	border-radius: 3px;
-	margin-top: 20px;
-	color: #f4f4f4;
+
 	cursor: pointer;
-	font-size: 20px;
-	height: 40px;
+	color: #f4f4f4;
+	font-size: 10px;
 	outline: none;
-	padding: 0px 10px;
 	text-transform: uppercase;
-	width: 100%;
 }
 /*
 ** Create Chatting Room Style End
@@ -796,7 +834,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 @font-face {
 	font-family: FontAwesome;
 	src:
-		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font//fontawesome-webfont.ttf)
+		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font/fontawesome-webfont.ttf)
 }
 
 [class^=icon-]:before,[class*=" icon-"]:before {
@@ -1318,7 +1356,7 @@ li.chatRoom .notification {
 	margin-top: 0px;
 	max-width: 80%;
 	text-align: justify;
-	padding-left: 14px;
+	padding-left: 10px;
 	color: #92a2c2;
 }
 

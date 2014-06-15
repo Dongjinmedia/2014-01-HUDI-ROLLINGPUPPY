@@ -133,7 +133,7 @@ var oLogin = {
 	},
 	
 	login: function (event) {
-		//event.preventDefault();
+		
 		
 		var form = event.currentTarget.form;
 		
@@ -142,11 +142,13 @@ var oLogin = {
 		var password = form[1].value;
 		
 		if ( email.length ===0 || password.length ===0 ) {
+			event.preventDefault();
 			alert ("아이디와 패스워드를 모두 입력해 주세요");
 			return;
 		}
 		
 		if ( ! oUtil.isValidateEmailFormat(email) ) {
+			event.preventDefault();
 			alert("이메일 형식에 맞춰 정확하게 입력해 주세요.")
 			return;		
 		}
@@ -196,6 +198,7 @@ var oJoin = {
 		}
 	},
 	join: function (event) {
+		
 		var form = event.currentTarget.form;
 		
 		//check input value
@@ -204,16 +207,19 @@ var oJoin = {
 		var passwordR = form[2].value;	
 		
 		if ( email.length===0 || password.length===0 || passwordR===0 ) {
+			event.preventDefault();
 			alert ("공란은 허용되지 않습니다. 모두 입력해 주세요");
 			return;
 		}
 		
 		if ( ! oUtil.isValidateEmailFormat(email) ) {
+			event.preventDefault();
 			alert("이메일 형식에 맞춰 정확하게 입력해 주세요.")
 			return;		
 		}
 		
 		if ( password != passwordR ) {
+			event.preventDefault();
 			alert ('입력된 비밀번호가 서로 다릅니다."');
 			return;
 		}

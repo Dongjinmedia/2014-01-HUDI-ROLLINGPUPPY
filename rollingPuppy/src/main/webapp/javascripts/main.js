@@ -920,9 +920,12 @@ var oMarkerClicker = {
 		var eTitle = null;
 		var eParticipant = null;
 		var newChatRoom = null;
+		
 		//메모리상에 있는 데이터를 가져온다.
 		//마커에 해당하는 채팅방목록을 하나씩 돌면서
-		for ( var index = 0 ; index < aChatRoomInMarker.length ; ++index ) {
+		
+		var nChatRoomInMarkerLength = aChatRoomInMarker.length;
+		for ( var index = 0 ; index < nChatRoomInMarkerLength ; ++index ) {
 			newChatRoom = aChatRoomInMarker[index];
 			
 			//채팅방의 현재 참여 인원을 Ajax 통신을 통해 가져온다.
@@ -948,6 +951,8 @@ var oMarkerClicker = {
 				"y": oMarkerInfo["location_latitude"],
 				"x": oMarkerInfo["location_longitude"]
 		};
+		
+		//TODO evemtListener init으로 변경
 		this.eChattingDivBox.appendChild(createChattingRoomButtonInMarkerClicker);
 		createChattingRoomButtonInMarkerClicker.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible(this.eMenuInfo.innerText, oLocationPoint);
@@ -966,14 +971,16 @@ var oMarkerClicker = {
 	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
 	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
 	reset: function() {
-		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
+		var nAiconLength = this.aIcons.length;
+		for(var i = 0 ; i < nAiconLength ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
 	},
 	
 	//클릭된 메뉴가 있는지 확인하는 함수, boolean값을 리턴한다.
 	isClickedComponentExists: function() {
-		for (var index = 0 ; index < this.aIcons.length ; ++index ) {
+		var nAiconLength = this.aIcons.length;
+		for (var index = 0 ; index < nAiconLength ; ++index ) {
 			var iconStatus = this.aIcons[index].getAttribute("status");
 		
 			if ( iconStatus === "clicked") {
@@ -1169,6 +1176,10 @@ var oChat = {
 		
 		sendMessage: function(message) {
 			
+			if ( message.length === 0 ) {
+				return;
+			}
+			
 			oMessageInfo = {
 				"message": message,
 				"chatRoomNumber": this.currentChatRoomNumber,
@@ -1310,7 +1321,8 @@ var oChat = {
 					|| aMessage.length === 0 )
 				return;
 			
-			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
+			var nMessageLength = aMessage.length;
+			for ( var index = 0 ; index <  nMessageLength; ++ index ) {
 				this._updateOneMessage(aMessage[index]);
 			}
 		},
@@ -1887,7 +1899,8 @@ var oSearching = {
 						eTarget.removeChild(eTarget.firstChild);
 					}
 					
-					for( var i = 0 ; i < aResult.length ; ++i){
+					var nResultLength = aResult.length; 
+					for( var i = 0 ; i <  nResultLength; ++i){
 						var eCopiedTemplate = eTemplate.cloneNode(true);
 						var eSearchedTitle = eCopiedTemplate.querySelector(".title");
 						var eSearchedCategory = eCopiedTemplate.querySelector(".category");
@@ -1944,7 +1957,9 @@ var oTemplate = {
 			eTarget.appendChild(eCopiedDefaultTemplate);
 		},
 		specifyTemplate : function(aResponse, eDefaultTemplate, eTarget, callback){
-			for( var i = 0 ; aResponse.length ; ++i){
+			
+			var nResponseLength = aResponse.length; 
+			for( var i = 0 ;  nResponseLength ; ++i){
 				var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(ture);
 				callback(aResponse[i], eDefaultTemplate);
 				eTarget.appendChild(eCopiedDefaultTemplate);
@@ -1958,25 +1973,52 @@ var oTemplate = {
 /*********************************************************************************************************
  * Message 객체에 대한 소스코드 시작
  **********************************************************************************************************/
+/*
+ * 			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+			
+			
+			for (var key in oChat.oInfo) {
+			if (oChat.oInfo.hasOwnProperty(key)) {
+				var oTarget = oChat.oInfo[key];
+				
+				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
+			}
+		}
+ */
 var Message = function(oMessageInfo) {
-	this.maxLength = 6;
 	
 	//최초 객체 생성자가 Message전체 element가 담기는 list를 생성한다.
-	if ( this.aList === undefined )
-		Message.prototype.aList = [];
+	if ( Message.prototype.oElement === undefined )
+		Message.prototype.oElement = {};
+	
+	
+	//alert("this.aList : " + this.aList);
+	//alert("this.aList.length : " +this.aList.length);
+	
+	//alert("this.aList : " + Message.prototype.oElement);
+	//alert("Message.prototype.oElement.length : " + Message.prototype.oElement.length);
+	
+	var nChatRoomId = oMessageInfo["tblChatRoomId"];
 	
 	//만약 최대 생성갯수를 초과하면, 가장 처음에 생성한 element를 리스트에서 가져온다.
-	if ( this.maxLength <= this.aList.length ) {
-		this.element = this.aList.shift();
-		this.aList.push(this.element);
-		
+	if ( Message.prototype.oElement[nChatRoomId] !== undefined) {
+		this.element = Message.prototype.oElement[nChatRoomId];
+		//working
 		this.moveListAward();
 	} else {
 		//새로운 element를 생성해서 리스트에 담는다.
 		this.element = this.getElement();
 		document.querySelector("#noticeBox").appendChild(this.element);
 		this.moveListAward();
-		this.aList.push(this.element);
+		Message.prototype.oElement[nChatRoomId] = this.element;
 	}
 	
 	//생성자 Parameter 데이터를 element에 저장.
@@ -2029,14 +2071,19 @@ Message.prototype.getElement = function() {
 };
 
 Message.prototype.moveListAward = function() {
-	for (var i = 0 ; i < this.aList.length ; ++i ) {
-		this.aList[i].style.bottom = (parseInt(this.aList[i].style.bottom) +100 )+"px"; 
+	for (var key in Message.prototype.oElement) {
+		if (Message.prototype.oElement.hasOwnProperty(key)) {
+			var targetElement = Message.prototype.oElement[key];
+			targetElement.style.bottom = (parseInt(targetElement.style.bottom) +100 )+"px";
+		}
 	}
 };
 
 Message.prototype.moveBottomest = function() {
+	this.element.className = "";
 	this.element.style.bottom = "0";
-	this.element.offsetHeight;	
+	//this.element.offsetHeight;
+	this.element.className="notice";
 	this.setVisible();
 };
 
@@ -2045,23 +2092,23 @@ Message.prototype.setInvisible = function() {
 	
 	setTimeout(function() {
 		this.element.style.display = "none";
-		
-		var position = this.aList.indexOf(this.element);
-		this.aList.splice(position, 1);
-		
 		this.element.style.bottom = "0";
 	}.bind(this), 800);
 };
 
 Message.prototype.setVisible = function() {
 	this.element.style.display = "inline-block";
-	this.element.offsetHeight;
+	//this.element.offsetHeight;
 	this.element.style.opacity = "1";
 	
-	this.element.offsetHeight;
+	//this.element.offsetHeight;
+	if ( this.timer !== undefined ) {
+		clearTimeout(this.timer);
+	}
 	
-	setTimeout(function() {
+	this.timer = setTimeout(function() {
 		this.setInvisible();
+		this.timer = undefined;
 	}.bind(this), 5000);
 	
 };
@@ -2198,8 +2245,22 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	var aHiddenElement = document.querySelectorAll("script.hidden");
-	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+	var nElementLength = aHiddenElement.length;
+	for ( var index = 0 ; index <  nElementLength ; ++ index ) {
 		aHiddenElement[index].remove();
 	}
+	//------------------------------------------------------------------------------------//
+	
+	/*
+	 * 윈도우창을 닫거나 강제종료하려고 할때 발생하는 이벤트
+	 */
+	//------------------------------------------------------------------------------------//
+	window.onbeforeunload = function () {
+		if ( oChat.isChatWindowVisible() ) {
+			oChat.foldChattingRoom();
+		}
+		
+        return "현재 창에서 유지하던 정보를 모두 잃어버립니다.\n정말로 실행하시겠습니까?";
+    };
 	//------------------------------------------------------------------------------------//
 }
