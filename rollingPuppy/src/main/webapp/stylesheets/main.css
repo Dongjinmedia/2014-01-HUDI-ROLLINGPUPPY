@@ -198,6 +198,11 @@ div#panel {
     animation-duration: 0.4s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
+    
+    -moz-animation: fold;
+    -moz-animation-duration: 0.4s;
+    -moz-animation-timing-function: ease;
+    -moz-animation-fill-mode: forwards;
 
     -webkit-animation: fold;
     -webkit-animation-duration: 0.4s;
@@ -205,8 +210,12 @@ div#panel {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes fold {
-	from { -webkit-transform: translateX(337px); }
-	to { -webkit-transform: translateX(0px); }
+	from { transform: translateX(337px); }
+	to { transform: translateX(0px); }
+}
+@-moz-ketframes fold {
+	from { -moz-transform: translateX(337px); }
+	to { -moz-transform: translateX(0px); } 
 }
 @-webkit-keyframes fold {
 	from { -webkit-transform: translateX(337px); }
@@ -218,6 +227,11 @@ div#panel {
     animation-duration: 0.4s;
     animation-timing-function: ease;
     animation-fill-mode: forwards;
+    
+    -moz-animation: unfold;
+    -moz-animation-duration: 0.4s;
+    -moz-animation-timing-function: ease;
+    -moz-animation-fill-mode: forwards;
 
     -webkit-animation: unfold;
     -webkit-animation-duration: 0.4s;
@@ -225,8 +239,12 @@ div#panel {
     -webkit-animation-fill-mode: forwards;
 }
 @keyframes unfold {
-	from { -webkit-transform: translateX(0px); }
-	to { -webkit-transform: translateX(337px); }
+	from { transform: translateX(0px); }
+	to { transform: translateX(337px); }
+}
+@-moz-keyframes unfold {
+	from { -moz-transform: translateX(0px); }
+	to { -moz-transform: translateX(337px); }
 }
 @-webkit-keyframes unfold {
 	from { -webkit-transform: translateX(0px); }
@@ -844,6 +862,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   font-weight: bold;
   font-size: 0.7em;
   padding: 0.5em 0;
+  margin-top: 0px;
 }
 
 .chattingContents .user {
@@ -954,7 +973,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 @font-face {
 	font-family: FontAwesome;
 	src:
-		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font//fontawesome-webfont.ttf)
+		url(https://netdna.bootstrapcdn.com/font-awesome/2.0/font/fontawesome-webfont.ttf)
 }
 
 [class^=icon-]:before,[class*=" icon-"]:before {

@@ -150,7 +150,7 @@ a {
 
 .joinArea #duplicateCheck {
 	position: absolute;
-	width: 60px;
+	width: 50px;
 	height: 45px;
 	right: 5px;
 	
@@ -161,9 +161,9 @@ a {
 #duplicateCheck .dc_pass {
 	position: absolute;
 	display: none;
-	width: 40px;
-	height: 40px;
-	top: 2px;
+	width: 30px;
+	height: 30px;
+	top: 6px;
 	right: 0px;
 	
 	background: url(/images/check.png) no-repeat;
@@ -177,10 +177,10 @@ a {
 #duplicateCheck .dc_fail {
 	position: absolute;
 	display: none;
-	width: 60px;
+	width: 100%;
 	top: 15px;
 	
-	text-align: right;
+	text-align: center;
 	font-weight: bold;
 	color: #B00;
 }
@@ -204,6 +204,10 @@ form input[type=text],input[type=password] {
 	border: none;
 	border-radius: 3px;
 	outline: none;
+}
+
+form input[type=text]::-ms-clear,input[type=password]::-ms-clear {
+	display: none;
 }
 
 .loginArea input[type=text], .loginArea input[type=password] {
