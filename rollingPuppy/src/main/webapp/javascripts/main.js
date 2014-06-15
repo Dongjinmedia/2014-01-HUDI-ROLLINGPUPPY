@@ -177,9 +177,18 @@ var oAside= {
 	},
 	
 	addChattingList: function(chatRoomNumber, oTarget) {
-		//TODO 변수삭제. 하단부 참조항목들 변경
+
 		var eTemplate = this.eChattingTemplate;
 		var eTarget = this.eChattingListTarget;
+		
+		if (eTarget.querySelector(".comment")) {
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		}
 		
 		var eCopiedTemplate = eTemplate.cloneNode(true);
 		var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
