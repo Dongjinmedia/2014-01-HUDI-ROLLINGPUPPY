@@ -527,6 +527,8 @@ var oPanelContents = {
 				console.log("test");
 				this.vacantChattingList();
 			}
+			
+			oScroll.refresh("panel_scroll1");
 		},
 		
 		vacantChattingList: function() {
@@ -583,6 +585,8 @@ var oPanelContents = {
 			
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
+			
+			oScroll.refresh("panel_scroll2");
 		},
 		
 		deleteFromBookmarkList: function(eBookmark) {
@@ -591,6 +595,8 @@ var oPanelContents = {
 			if ( this.eBookmarkListTarget.childNodes.length === 0 ) {
 				this.vacantBookmarkList();
 			}
+			
+			oScroll.refresh("panel_scroll2");
 		},
 		
 		vacantSearchList: function() {
@@ -935,7 +941,6 @@ var oNaverMap = {
 		} 
 	    */
 	    oCurrentViewPointMarkers: null,
-	    oZoomController: null, // 줌인, 줌아웃 동작을 위한 버튼 객체
 	    eClickedAddress : null, //역지오 코딩을 위한 클릭된 곳의 주소 element
 	    
 	    //지도위에 마커를 더하는 소스코드. 인자로 위도, 경도, 채팅방의 고유번호, 채팅방제목을 가져온다.
@@ -1098,24 +1103,6 @@ var oNaverMap = {
 	    	return this.oMap.getLevel();
 	    },
 
-	    // 줌 조절을 위해 줌인, 줌아웃 버튼에 클릭 이벤트 추가
-		addEventForZoom: function() {
-			this.oZoomController.zoomInButton.addEventListener('click', this.changeZoomLevel.bind(this));
-			this.oZoomController.zoomOutButton.addEventListener('click', this.changeZoomLevel.bind(this));
-		},
-
-		// 줌인, 줌아웃 버튼에 클릭 이벤트가 발생하면 호출되는 줌 조절 메서드
-		changeZoomLevel: function(e){
-			var currentZoomLevel = this.getZoom();
-
-			if(e.target.id === "zoomInButton") {
-				this.changeZoom(++currentZoomLevel);
-			}
-			else if(e.target.id === "zoomOutButton") {
-				this.changeZoom(--currentZoomLevel);
-			}
-		},
-
 	    // 원하는 동작을 구현한 이벤트 핸들러를 attach함수로 추가.
 	    // void attach( String sEvent, Function eventHandler) 이벤트명,  이벤트 핸들러 함수
 	    attachEvents : function(){
@@ -1210,14 +1197,6 @@ var oNaverMap = {
 	        //맵 드래그, 데이터 업데이트 등을 수행할때
 	        //이미 맵에 추가된 마커는 정보만 업데이트 하는 등을 판별하기 위해서 필요하다.
 	        this.oCurrentViewPointMarkers = {};
-	        
-	        // 줌인, 줌아웃 동작을 위해 줌인 버튼과 줌아웃 버튼을 생성하고
-	        // 각 버튼의 클릭 이벤트를 통해 줌 레벨 변경할 수 있게 만든다.
-	        this.oZoomController = {
-	        		zoomInButton: document.getElementById("zoomInButton"),
-	        		zoomOutButton: document.getElementById("zoomOutButton")
-	        }
-	        this.addEventForZoom();
 	        
 	        this.attachEvents();
 	    }
@@ -1647,7 +1626,7 @@ var oChat = {
 
 		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
-			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null || imgUrl == null )
+			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null )
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];

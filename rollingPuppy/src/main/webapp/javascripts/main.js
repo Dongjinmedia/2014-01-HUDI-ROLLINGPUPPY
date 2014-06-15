@@ -1270,7 +1270,7 @@ var oChat = {
 
 		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
-			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null || imgUrl == null )
+			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null )
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];

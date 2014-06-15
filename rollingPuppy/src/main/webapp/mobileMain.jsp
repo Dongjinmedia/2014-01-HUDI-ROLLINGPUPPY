@@ -269,12 +269,6 @@
 		<div id="map">
 			<!-- 지도 영역 -->
 			<div id="naver_map" class="naver_map"></div>
-			
-			<!-- 줌인/줌아웃 버튼 영역 -->
-			<div id="zoomButton">
-				<div id="zoomInButton"></div>
-				<div id="zoomOutButton"></div>
-			</div>
 		</div>
 	</div>
 
