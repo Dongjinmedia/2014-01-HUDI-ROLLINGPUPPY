@@ -190,6 +190,15 @@ var oAside= {
 			}
 		}
 		
+		if (eTarget.querySelector(".comment")) {
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		}
+		
 		var eCopiedTemplate = eTemplate.cloneNode(true);
 		var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
 		var eChattingRoomMax = eCopiedTemplate.querySelector(".limit");
@@ -2138,12 +2147,14 @@ var oBookmark = {
 			
 			var oParameters = {
 				"bookmarkName": sInputFromUser,
-				"locationName": this.sClickLocationName,
+				"locationName": oMapClicker.sClickLocationName,
 				"locationLatitude": oMapClicker.oClickPoint['y'],
 				"locationLongitude": oMapClicker.oClickPoint['x'],
 			};
 
 			var callback = function(request) {
+				//console.log("this.sClickLocationName", this.sClickLocationName);
+				//console.log("oParamInObookmark",oParameters["locationName"]);
 				var oResponse = JSON.parse(request.responseText);
 				var isSuccess = oResponse['isSuccess'];
 

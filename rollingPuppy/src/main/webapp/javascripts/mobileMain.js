@@ -459,11 +459,19 @@ var oPanelContents = {
 		
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
-
 			var eTemplate = this.eChattingTemplate;
 			var eTarget = this.eChattingListTarget;
 			
 			if (eTarget.querySelector(".comment")) {
+				//이미 존재하는 채팅방 목록이 있면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+			}
+			
+			if (eTarget.querySelector(".comment")) {
+				var eTarget = this.eChattingListTarget;
+
 				//이미 존재하는 채팅방 목록이 있면 지운다.
 				while (eTarget.firstChild) {
 					eTarget.removeChild(eTarget.firstChild);
