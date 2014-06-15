@@ -822,6 +822,11 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	font-size: 10px;
 	outline: none;
 	text-transform: uppercase;
+	
+			
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 /*
 ** Create Chatting Room Style End
@@ -900,6 +905,12 @@ li.search .category {
 	font-size: 1.0em;
 	color: #B9BBBD;
 	margin-top: 10px;
+}
+
+li.bookmark {
+	position: relative;
+	left: 0;
+	right: 0;
 }
 
 li.bookmark .title:before {
@@ -985,6 +996,7 @@ li.chatRoom .notification {
 	top: 5px;
 	left: 5px;
 	right: auto;
+	display: none;
 }
 
 /*

@@ -75,7 +75,7 @@
 				<p class="title icon-chatting">강남역 지하상가안내</p>
 				<p class="limit icon-participant">4 / 30</p>
 				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 821-1 강남역</p>
-				<div class="notification" style="display: inline-block;">5</div>
+				<div class="notification"></div>
 			</li>
 			<li class="card search">
 				<p class="title icon-title"></p>
@@ -210,6 +210,10 @@
 						<div class="scroll_area">
 							<h1>채팅방</h1>
 							<ul class="section">
+								<li class="card default">
+									<p class="icon-warning"></p>
+									<p class="comment">참여중인 채팅방이 없습니다.</p>
+								</li>
 							</ul>
 						</div>
 					</div>
@@ -289,6 +293,5 @@
 		}
 	</script>
 	<script type="text/javascript" src="http://127.0.0.1:3080/socket.io/socket.io.js"></script>
-	<!-- <script type="text/javascript" src="http://10.73.43.102:3080/socket.io/socket.io.js"></script> -->
 </body>
 </html>

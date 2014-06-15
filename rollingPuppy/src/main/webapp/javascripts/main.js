@@ -177,9 +177,27 @@ var oAside= {
 	},
 	
 	addChattingList: function(chatRoomNumber, oTarget) {
-		//TODO 변수삭제. 하단부 참조항목들 변경
+
 		var eTemplate = this.eChattingTemplate;
 		var eTarget = this.eChattingListTarget;
+		
+		if (eTarget.querySelector(".comment")) {
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		}
+		
+		if (eTarget.querySelector(".comment")) {
+			var eTarget = this.eChattingListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+		}
 		
 		var eCopiedTemplate = eTemplate.cloneNode(true);
 		var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
@@ -1161,8 +1179,6 @@ var oChat = {
 		
 		invisibleChatWindow: function() {
 			this.eChatWindow.style.display = "none";
-			this.clearLimitNumValue();
-			this.clearRoomNameValue();
 		},
 		
 		isChatWindowVisible: function() {
@@ -1254,8 +1270,12 @@ var oChat = {
 
 		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
+			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null || imgUrl == null )
+				return;
+			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+			
 			
 			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
 			eCopiedTemplate.querySelector(".message").innerText = message;
@@ -1645,6 +1665,8 @@ var oCreateChattingRoom = {
 		//채팅방 생성창을 닫고, 다른메뉴와의 인터렉션을 할 수 있도록 해주는 함수
 		invisible: function() {
 			this.oCreateChatRoom.style.display = "none";
+			this.clearLimitNumValue();
+			this.clearRoomNameValue();
 		},
 		
 		initialize: function() {
@@ -2130,12 +2152,14 @@ var oBookmark = {
 			
 			var oParameters = {
 				"bookmarkName": sInputFromUser,
-				"locationName": this.sClickLocationName,
+				"locationName": oMapClicker.sClickLocationName,
 				"locationLatitude": oMapClicker.oClickPoint['y'],
 				"locationLongitude": oMapClicker.oClickPoint['x'],
 			};
 
 			var callback = function(request) {
+				//console.log("this.sClickLocationName", this.sClickLocationName);
+				//console.log("oParamInObookmark",oParameters["locationName"]);
 				var oResponse = JSON.parse(request.responseText);
 				var isSuccess = oResponse['isSuccess'];
 
