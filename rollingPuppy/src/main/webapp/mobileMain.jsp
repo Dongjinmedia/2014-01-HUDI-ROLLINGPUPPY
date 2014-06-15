@@ -154,7 +154,7 @@
 	<!-- 검색창과 로고를 포함한 header -->
 	<header>
 		<div id="logo">
-			<a href="/mobile"></a>
+			<a></a>
 		</div>
 		<!-- sf = searchForm  -->
 		<div id="sf_wrapper">
