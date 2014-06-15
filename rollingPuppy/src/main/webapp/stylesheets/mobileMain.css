@@ -535,7 +535,7 @@ div.panelUnfold {
 }
 
 .clicker {
-	font-size: 27px;
+	font-size: 26px;
   	font-family: FontAwesome;
   	font-style: normal;
   	text-decoration: inherit;
@@ -560,8 +560,18 @@ div.panelUnfold {
 	content: "\f055";
 }
 
+.clickerMenu .icon-add:before {
+	position: absolute;
+	left: 5px;
+}
+
 .icon-star:before {
 	content: "\f005";
+}
+
+.clickerMenu .icon-star:before {
+	position: absolute;
+	right: 2px;
 }
 
 .marker {
@@ -700,7 +710,7 @@ div.panelUnfold {
 
 #createChatRoom .ccr_inputArea {
 	position: absolute;
- 	top: 30px;
+ 	top: 25px;
  	right: 15px;
  	bottom: 30px;
  	left: 15px;
@@ -1346,7 +1356,7 @@ li.chatRoom .notification {
 	margin-top: 0px;
 	max-width: 80%;
 	text-align: justify;
-	padding-left: 14px;
+	padding-left: 10px;
 	color: #92a2c2;
 }
 

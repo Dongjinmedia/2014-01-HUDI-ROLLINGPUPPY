@@ -366,7 +366,7 @@ var oPanel = {
 			}
 		}
  		
-		if ( unreadMessageNum === 0 || this.eChattingMenu.parentNode.className == "on") {
+		if ( unreadMessageNum <= 0) {
 			this.eChattingNotification.style.display = "none";
 		} else {
 			this.eChattingNotification.innerText = unreadMessageNum >= 99 ?  "99+" : unreadMessageNum;
@@ -1344,6 +1344,7 @@ var oChat = {
 		eInputBox: document.querySelector("#chatWindow .inputArea"),
 		eFoldButton: document.querySelector("#chatWindow .icon-aside"),
 		eExitButton: document.querySelector("#chatWindow .icon-exit"),
+		eSendButton: document.querySelector("#chatWindow .send"),
 		
 		//채팅창 안의 element
 		eChatWindowTopBar: document.querySelector("#chatWindow .top"),
@@ -1783,7 +1784,6 @@ var oChat = {
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
 			this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
-			//this.socket = io.connect("http://10.73.43.102:3080"+sParameters);
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {				
@@ -1807,6 +1807,15 @@ var oChat = {
 					this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
 				}
 			}.bind(this), false);
+			
+			// send 버튼을 누르면 메세지를 보냅니다
+			this.eSendButton.addEventListener(
+					"touchend",
+					function(event){
+						console.log(this.eInputBox.value);
+						this.sendMessage(this.eInputBox.value);
+					}.bind(this)
+			);
 			
 			
 			this.socket.on('message', function (oParameter) {
