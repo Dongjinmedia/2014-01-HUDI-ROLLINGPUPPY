@@ -862,6 +862,7 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
   font-weight: bold;
   font-size: 0.7em;
   padding: 0.5em 0;
+  margin-top: 0px;
 }
 
 .chattingContents .user {
