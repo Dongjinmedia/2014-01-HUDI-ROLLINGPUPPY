@@ -1082,8 +1082,8 @@ li.chatRoom .notification {
 .chattingContents li{
 	clear: both;
 	position: relative;
-	margin-top: 8px;
-	margin-bottom: 8px;
+	margin-top: 10px;
+	margin-bottom: 10px;
 }
 
 .leftArea .bottom {
