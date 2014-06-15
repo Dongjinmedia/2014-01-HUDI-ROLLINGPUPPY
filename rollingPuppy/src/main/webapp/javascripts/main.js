@@ -97,7 +97,7 @@ var oAside= {
 	
 	
 	commingSoon: function(event) {
-		//event.preventDefault();
+		event.preventDefault();
 		alert("Comming Soon~\n준비중인 메뉴입니다.^^");
 	},
 	
@@ -306,15 +306,17 @@ var oAside= {
 	},
 	
 	clickSearchMenu: function(event) {
-		if ( event !== undefined )
+		if ( event !== undefined ) {
 			event.preventDefault();
+		}
 		
 		this.unfoldByMenuElement(this.eSearchMenu);
 	},
 	
 	clickChattingMenu: function(event) {
-		if ( event !== undefined )
+		if ( event !== undefined ) {
 			event.preventDefault();
+		}
 		
 		//채팅방 Notification을 보이지 않도록 처리
 		this.eChattingNotification.style.display = "none";

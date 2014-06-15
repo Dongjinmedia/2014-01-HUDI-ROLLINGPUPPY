@@ -206,6 +206,10 @@ form input[type=text],input[type=password] {
 	outline: none;
 }
 
+form input[type=text]::-ms-clear,input[type=password]::-ms-clear {
+	display: none;
+}
+
 .loginArea input[type=text], .loginArea input[type=password] {
 	height: 60px;
 	margin-bottom: 15px;
