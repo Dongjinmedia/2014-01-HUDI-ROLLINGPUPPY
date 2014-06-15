@@ -460,9 +460,26 @@ var oPanelContents = {
 		
 		
 		addChattingList: function(chatRoomNumber, oTarget) {
-			//TODO 변수삭제. 하단부 참조항목들 변경
 			var eTemplate = this.eChattingTemplate;
 			var eTarget = this.eChattingListTarget;
+			
+			if (eTarget.querySelector(".comment")) {
+				var eTarget = this.eChattingListTarget;
+
+				//이미 존재하는 채팅방 목록이 있면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+			}
+			
+			if (eTarget.querySelector(".comment")) {
+				var eTarget = this.eChattingListTarget;
+
+				//이미 존재하는 채팅방 목록이 있면 지운다.
+				while (eTarget.firstChild) {
+					eTarget.removeChild(eTarget.firstChild);
+				}
+			}
 			
 			var eCopiedTemplate = eTemplate.cloneNode(true);
 			var eChattingRoomTitle = eCopiedTemplate.querySelector(".title");
@@ -508,7 +525,8 @@ var oPanelContents = {
 			var eTarget = oChat.oInfo[chatRoomNumber]["eTarget"];
 			this.eChattingListTarget.removeChild(eTarget);
 			
-			if ( this.eChattingListTarget.childNodes.length === 0 ) {
+			if ( this.eChattingListTarget.childNodes.length == 0 ) {
+				console.log("test");
 				this.vacantChattingList();
 			}
 		},
@@ -571,6 +589,21 @@ var oPanelContents = {
 			}
 		},
 		
+		vacantSearchList: function() {
+			var eDefaultTemplate = this.eDefaultTemplate;			
+			var eTarget = this.eSearchListTarget;
+
+			//이미 존재하는 채팅방 목록이 있면 지운다.
+			while (eTarget.firstChild) {
+				eTarget.removeChild(eTarget.firstChild);
+			}
+			
+			var eCopiedDefaultTemplate = eDefaultTemplate.cloneNode(true);
+			eCopiedDefaultTemplate.querySelector(".comment").innerText = "검색결과가 존재하지 않습니다.";
+			//template을 원하는 위치에 삽입
+			eTarget.appendChild(eCopiedDefaultTemplate);
+		},
+		
 		vacantBookmarkList: function() {
 			var eDefaultTemplate = this.eDefaultTemplate;			
 			var eTarget = this.eBookmarkListTarget;
@@ -591,6 +624,7 @@ var oPanelContents = {
 			if (oPanel.isPanelAction) {
 				return;
 			}
+			
 			console.log("into chattingSelectHandler");
 			var clickedTarget = event.target;	
 			if(clickedTarget.tagName == "P"){
@@ -725,9 +759,7 @@ var oSearching = {
 				
 				var aResult = JSON.parse(request.responseText); //json을 파싱해서 object로 넣는
 				if(aResult.length == 0){
-					console.log("search result is null!! TODO!!!");
-					//TODO
-					//oTemplate.showDefaultTemplate("pc_search", ".comment", "검색 결과가 존재하지 않습니다.")
+					oPanelContents.vacantSearchList();
 				} else {
 
 					//template element가져오기
@@ -1298,6 +1330,11 @@ var oMarkerClicker = {
 	
 	setInvisible: function() {
 		this.rootElement.style.display = "none";
+		var eTarget = this.eChatRoomListTarget;
+		
+		while (eTarget.firstChild) {
+			eTarget.removeChild(eTarget.firstChild);
+		}
 	},
 }
 /*********************************************************************************************************
@@ -1589,6 +1626,9 @@ var oChat = {
 
 		_getOtherMessageTemplateCloneElement: function(chatRoomNum, memberId, message, time, imgUrl) {
 			
+			if ( chatRoomNum == 0 || memberId == 0 || message == null || time == null || imgUrl == null )
+				return;
+			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
@@ -1806,20 +1846,13 @@ var oChat = {
 		 	//oInfo에 요청데이터를 저장
 		 	this.saveChatInfo(oEnteredChatInfo);
 		 	
-		 	var isEmpty = true;
 		 	//for문을 돌면서 Aside의 채팅방리스트에 추가한다.
 		 	for (var key in oEnteredChatInfo) {
 		 		if (oEnteredChatInfo.hasOwnProperty(key)) {
 		 			oPanelContents.addChattingList(key, oEnteredChatInfo[key]);
-		 			isEmpty = false;
 		 		}
 		 	}
 		 
-		 	//입장한 채팅방이 존재하지 않을경우
-		 	 if ( isEmpty ) {
-		 		oPanelContents.vacantChattingList();
-		 	 }
-		 	 
 		 	//확인하지 않은 메세지갯수를 업데이트한다.
 		 	oPanel.updateTotalNotificationView();
 			oScroll.refresh("panel_scroll1");
