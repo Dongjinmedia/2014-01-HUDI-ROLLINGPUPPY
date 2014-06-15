@@ -527,6 +527,8 @@ var oPanelContents = {
 				console.log("test");
 				this.vacantChattingList();
 			}
+			
+			oScroll.refresh("panel_scroll1");
 		},
 		
 		vacantChattingList: function() {
@@ -583,6 +585,8 @@ var oPanelContents = {
 			
 			//template을 원하는 위치에 삽입
 			eTarget.appendChild(eCopiedTemplate);
+			
+			oScroll.refresh("panel_scroll2");
 		},
 		
 		deleteFromBookmarkList: function(eBookmark) {
@@ -591,6 +595,8 @@ var oPanelContents = {
 			if ( this.eBookmarkListTarget.childNodes.length === 0 ) {
 				this.vacantBookmarkList();
 			}
+			
+			oScroll.refresh("panel_scroll2");
 		},
 		
 		vacantSearchList: function() {
