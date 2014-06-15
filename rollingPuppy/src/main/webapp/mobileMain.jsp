@@ -46,10 +46,10 @@
 		
 	<div id="createChatRoom">
 		<div class="outer bg"></div>
-		<p class="cancle">X</p>
 		<div class="centerArea">
+			<p class="cancle">✕</p>
 			<div class="inner bg"></div>
-			<div class="inputArea">
+			<div class="ccr_inputArea">
 				<p class="createAddress">성남시 분당구 삼평동 H스퀘어 N동 4층 NHN NEXT</p>
 				<form action="/room" method="post">
 					<p>
@@ -60,9 +60,7 @@
 						<label class="icon-people"></label> <input class="limitNum"
 							type="number" name="max" placeholder="Limit Number" />
 					</p>
-					<p>
-						<input type="submit" value="Create Chatting Room" />
-					</p>
+					<input type="submit" value="Create Chatting Room" />
 				</form>
 			</div>
 		</div>
