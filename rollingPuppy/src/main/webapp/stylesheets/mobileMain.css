@@ -822,6 +822,11 @@ label[class^=icon-]:before,label[class*=" icon-"]:before {
 	font-size: 10px;
 	outline: none;
 	text-transform: uppercase;
+	
+			
+	-webkit-appearance: none;
+	-moz-appearance: none;
+	appearance: none;
 }
 /*
 ** Create Chatting Room Style End
