@@ -1972,25 +1972,52 @@ var oTemplate = {
 /*********************************************************************************************************
  * Message 객체에 대한 소스코드 시작
  **********************************************************************************************************/
+/*
+ * 			var eTarget = null;
+			var day = oMessageInfo["day"];
+			var month = oMessageInfo["month"];
+			var time = oMessageInfo["time"];
+			var week = oMessageInfo["week"];
+			var message = oMessageInfo["message"];
+			var isMyMessage = oMessageInfo["isMyMessage"];
+			var chatRoomNum = oMessageInfo["tblChatRoomId"];
+			var memberId = oMessageInfo["tblMemberId"];
+			
+			
+			for (var key in oChat.oInfo) {
+			if (oChat.oInfo.hasOwnProperty(key)) {
+				var oTarget = oChat.oInfo[key];
+				
+				unreadMessageNum += parseInt(oTarget["unreadMessageNum"]);
+			}
+		}
+ */
 var Message = function(oMessageInfo) {
-	this.maxLength = 6;
 	
 	//최초 객체 생성자가 Message전체 element가 담기는 list를 생성한다.
-	if ( this.aList === undefined )
-		Message.prototype.aList = [];
+	if ( Message.prototype.oElement === undefined )
+		Message.prototype.oElement = {};
+	
+	
+	//alert("this.aList : " + this.aList);
+	//alert("this.aList.length : " +this.aList.length);
+	
+	//alert("this.aList : " + Message.prototype.oElement);
+	//alert("Message.prototype.oElement.length : " + Message.prototype.oElement.length);
+	
+	var nChatRoomId = oMessageInfo["tblChatRoomId"];
 	
 	//만약 최대 생성갯수를 초과하면, 가장 처음에 생성한 element를 리스트에서 가져온다.
-	if ( this.maxLength <= this.aList.length ) {
-		this.element = this.aList.shift();
-		this.aList.push(this.element);
-		
+	if ( Message.prototype.oElement[nChatRoomId] !== undefined) {
+		this.element = Message.prototype.oElement[nChatRoomId];
+		//working
 		this.moveListAward();
 	} else {
 		//새로운 element를 생성해서 리스트에 담는다.
 		this.element = this.getElement();
 		document.querySelector("#noticeBox").appendChild(this.element);
 		this.moveListAward();
-		this.aList.push(this.element);
+		Message.prototype.oElement[nChatRoomId] = this.element;
 	}
 	
 	//생성자 Parameter 데이터를 element에 저장.
@@ -2043,15 +2070,19 @@ Message.prototype.getElement = function() {
 };
 
 Message.prototype.moveListAward = function() {
-	var aListLength = this.aList.length; 
-	for (var i = 0 ; aListLength > i   ; ++i ) {
-		this.aList[i].style.bottom = (parseInt(this.aList[i].style.bottom) +100 )+"px"; 
+	for (var key in Message.prototype.oElement) {
+		if (Message.prototype.oElement.hasOwnProperty(key)) {
+			var targetElement = Message.prototype.oElement[key];
+			targetElement.style.bottom = (parseInt(targetElement.style.bottom) +100 )+"px";
+		}
 	}
 };
 
 Message.prototype.moveBottomest = function() {
+	this.element.className = "";
 	this.element.style.bottom = "0";
-	this.element.offsetHeight;	
+	//this.element.offsetHeight;
+	this.element.className="notice";
 	this.setVisible();
 };
 
@@ -2060,23 +2091,23 @@ Message.prototype.setInvisible = function() {
 	
 	setTimeout(function() {
 		this.element.style.display = "none";
-		
-		var position = this.aList.indexOf(this.element);
-		this.aList.splice(position, 1);
-		
 		this.element.style.bottom = "0";
 	}.bind(this), 800);
 };
 
 Message.prototype.setVisible = function() {
 	this.element.style.display = "inline-block";
-	this.element.offsetHeight;
+	//this.element.offsetHeight;
 	this.element.style.opacity = "1";
 	
-	this.element.offsetHeight;
+	//this.element.offsetHeight;
+	if ( this.timer !== undefined ) {
+		clearTimeout(this.timer);
+	}
 	
-	setTimeout(function() {
+	this.timer = setTimeout(function() {
 		this.setInvisible();
+		this.timer = undefined;
 	}.bind(this), 5000);
 	
 };
