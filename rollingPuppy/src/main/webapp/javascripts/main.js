@@ -949,6 +949,8 @@ var oMarkerClicker = {
 				"y": oMarkerInfo["location_latitude"],
 				"x": oMarkerInfo["location_longitude"]
 		};
+		
+		//TODO evemtListener init으로 변경
 		this.eChattingDivBox.appendChild(createChattingRoomButtonInMarkerClicker);
 		createChattingRoomButtonInMarkerClicker.addEventListener('click', function(e) {
 			oCreateChattingRoom.visible(this.eMenuInfo.innerText, oLocationPoint);
