@@ -44,7 +44,8 @@ var oNav = {
 	aMenu: document.querySelector("#nav_menu").children,
 	
 	addEvents: function() {
-		for (var idx = 0; idx < this.aMenu.length; idx++) {
+		var nMenuLength  = this.aMenu.length;
+		for (var idx = 0; idx < nMenuLength ; idx++) {
 			this.aMenu[idx].id = "menu" + idx;
 			this.aMenu[idx].addEventListener(
 					boolIsMobile ? "touchend" : "click",
@@ -64,7 +65,8 @@ var oNav = {
 	},
 	
 	setCurrentMenuMarker: function(nCenterIndex) {
-		for ( var index = 0 ; index < this.aMenu.length ; ++index ) {
+		var nMenuLength = this.aMenu.length;
+		for ( var index = 0 ; index < nMenuLength ; ++index ) {
 			oUtil.removeClassName(this.aMenu[index], "on");
 		};
 		
@@ -723,7 +725,8 @@ var oSearching = {
 						eTarget.removeChild(eTarget.firstChild);
 					}
 					
-					for( var i = 0 ; i < aResult.length ; ++i){
+					var nResultLength = aResult.length; 
+					for( var i = 0 ; i <  nResultLength ; ++i){
 						var eCopiedTemplate = eTemplate.cloneNode(true);
 						var eSearchedTitle = eCopiedTemplate.querySelector(".title");
 						var eSearchedCategory = eCopiedTemplate.querySelector(".category");
@@ -1312,7 +1315,8 @@ var oMarkerClicker = {
 		var newChatRoom = null;
 		//메모리상에 있는 데이터를 가져온다.
 		//마커에 해당하는 채팅방목록을 하나씩 돌면서
-		for ( var index = 0 ; index < aChatRoomInMarker.length ; ++index ) {
+		var nChatRoomInMarkerLength = aChatRoomInMarker.length;
+		for ( var index = 0 ; index < nChatRoomInMarkerLength ; ++index ) {
 			newChatRoom = aChatRoomInMarker[index];
 			
 			//채팅방의 현재 참여 인원을 Ajax 통신을 통해 가져온다.
@@ -1356,7 +1360,8 @@ var oMarkerClicker = {
 	//현재 메뉴아이콘의 클릭여부, 메뉴객체의 크기 등을 default상태로 변경해준다.
 	//메뉴 크기는 원래 작은크기로, 클릭된 여부는 "none"으로 초기화 하는 작업 등을 수행
 	reset: function() {
-		for(var i = 0 ; i < this.aIcons.length ; ++i ) {
+		var nIconLength = this.aIcons.length; 
+		for(var i = 0 ; i < nIconLength ; ++i ) {
 			this.changeNoneClickStatus(this.aIcons[i], this.aMenues[i]);
 		}
 	},
@@ -1584,6 +1589,10 @@ var oChat = {
 		
 		sendMessage: function(message) {
 			
+			if ( message.length === 0 ) {
+				return;
+			}
+			
 			oMessageInfo = {
 				"message": message,
 				"chatRoomNumber": this.currentChatRoomNumber,
@@ -1731,7 +1740,8 @@ var oChat = {
 					|| aMessage.length === 0 )
 				return;
 			
-			for ( var index = 0 ; index < aMessage.length ; ++ index ) {
+			var nMessageLength = aMessage.length;
+			for ( var index = 0 ; index < nMessageLength ; ++ index ) {
 				this._updateOneMessage(aMessage[index]);
 			}
 		},
@@ -2334,7 +2344,8 @@ function initialize() {
 	 */
 	//------------------------------------------------------------------------------------//
 	var aHiddenElement = document.querySelectorAll("script.hidden");
-  	for ( var index = 0 ; index < aHiddenElement.length ; ++ index ) {
+	var nElementLength = aHiddenElement.length;
+  	for ( var index = 0 ; index < nElementLength ; ++ index ) {
   		aHiddenElement[index].remove();
   	}
 	//------------------------------------------------------------------------------------//
