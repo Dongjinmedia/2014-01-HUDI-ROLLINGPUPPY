@@ -42,6 +42,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			logger.error("in selectDuplicateMemberExists", e);
 		}
 		
+		logger.info("selectDuplicateMemberResult : "+member.toString());
 		return member;
 	}
 
@@ -62,6 +63,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			logger.error("in selectCheckLoginInfo", e);
 		}
 		
+		logger.info("selectCheckLoginInfo : "+member.toString());
 		return member;
 	}
 
@@ -82,7 +84,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			member.setNicknameAdjective(tempMember.getNicknameAdjective());
 			member.setNicknameNoun(tempMember.getNicknameNoun());
 			
-			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun, created_time) VALUES (?, ?, ?, ?, NOW())";
+			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun, last_logged_time, created_time) VALUES (?, ?, ?, ?, NOW(), NOW())";
 			insertPreparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			insertPreparedStatement.setString(1, member.getEmail());
 			insertPreparedStatement.setString(2, member.getPw());
