@@ -225,7 +225,7 @@ var oJoin = {
 		
 		if ( password != passwordR ) {
 			event.preventDefault();
-			alert ('입력된 비밀번호가 서로 다릅니다."');
+			alert ('입력된 비밀번호가 서로 다릅니다.');
 			return;
 		}
 		//check input value END
