@@ -1874,6 +1874,13 @@ var oChat = {
 			window.oChat.oInfo =  oParameter;
 		},
 		
+		//chatInfo를 초기화한다.
+		addNicknameToChatInfo: function(chatRoomNumber, memberId, oParticipant) {
+			//window.oChat.oInfo =  oParameter
+			oChat.oInfo[chatRoomNumber]["oParticipant"][memberId] = oParticipant;
+		},
+
+		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.
