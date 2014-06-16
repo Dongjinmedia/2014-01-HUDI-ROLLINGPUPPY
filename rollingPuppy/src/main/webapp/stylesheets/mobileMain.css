@@ -1052,17 +1052,39 @@ li.chatRoom .notification {
 	cursor: pointer;
 }
 
+.top .menu .icon-aside {
+	position: absolute;
+	left: 0px;
+	width: 35px;
+	height: 50px;
+	text-align: center;
+}
+
 .top .menu .icon-aside:before {
+	margin-top: 3px;
+	margin-right: 0px;
+	
 	content: "\f019";
 	font-size: 1.8em;
+	line-height: 50px;
 	color: #7a8696;
-	margin-right: 5px;
-	display: inline;
+}
+
+.top .menu .icon-exit {
+	position: absolute;
+	left: 35px;
+	width: 35px;
+	height: 50px;
+	text-align: center;
 }
 
 .top .menu .icon-exit:before {
+	margin-top: 3px;
+	margin-right: 0px;
+	
 	content: "\f08b";
 	font-size: 1.8em;
+	line-height: 50px;
 	color: #7a8696;
 }
 
@@ -1078,11 +1100,10 @@ li.chatRoom .notification {
 
 .top .menu .leftMenu {
 	position: absolute;
-	top: 50%;
-	left: 15px;
-	margin-top: -10px;
+	width: 70px;
+	height: 50px;
 	
-	float: left;
+	left: 5px;
 }
 
 .top .menu .rightMenu {
