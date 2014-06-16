@@ -186,20 +186,15 @@ var oJoin = {
 		request.onload = function(){
 			var oResult = JSON.parse(request.responseText);
 			var result = oResult["ThreeWayResult"];
-			console.log(result);
 
 			if( result === "FAIL" ){
 				duplicateCheckPtag.className = "fail";
 			}else if (result === "SUCCESS"){
-				console.log(newbieEmail);
-				if ( oUtil.isValidateEmailFormat(newbieEmail) ) {
-					console.log("pass");
-					duplicateCheckPtag.className = "pass";
-				} else {
-					console.log("fail");
+				if ( !oUtil.isValidateEmailFormat(newbieEmail) ) {
 					duplicateCheckPtag.className = "form";
 					return;
 				}
+				duplicateCheckPtag.className = "pass";
 			}else {
 				alert("예기치 못한 사건이 발생했다!!");
 			}
