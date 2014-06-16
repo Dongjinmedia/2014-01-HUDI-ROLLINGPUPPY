@@ -1633,23 +1633,57 @@ var oChat = {
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
-			//console.log(memberId, oMemberInfo);
-			console.log(memberId, oChat.oInfo[chatRoomNum]["oParticipant"]);
+			
+			//나간멤버에 대한 메세지데이터일 경우, 
+			//TODO Best Solution은 아닙니다. 수정해야해요 <윤성>
 			if (typeof oMemberInfo == "undefined") {
-				return;
+				var oParameters = {
+		    			"memberId": memberId
+		    	};
+		    		
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			console.log(oResponse);
+	    			if ( oResponse ) {
+	    				
+	    				//working
+	    				oChat.addNicknameToChatInfo(chatRoomNum, memberId, oResponse);
+	    				//oChat.oInfo[chatRoomNum]["oParticipant"][memberId] =
+	    				
+	    				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+	    				
+	    				
+	    				eCopiedTemplate.querySelector(".nickname").innerText = oResponse["nicknameAdjective"] +" "+ oResponse["nicknameNoun"];
+	    				eCopiedTemplate.querySelector(".message").innerText = message;
+	    				eCopiedTemplate.querySelector(".time").innerText = time;
+	    				
+	    				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+	    				eTargetProfile.style.backgroundColor= oResponse["backgroundColor"];
+	    				eTargetProfile.style.backgroundImage="url("+oResponse["backgroundImage"]+")";
+	    				
+	    				return eCopiedTemplate;
+	    			} else {
+	    				alert("잘못된 접근입니다.\n다시입장해 주세요.");
+	    				oChat.invisibleChatWindow();
+		    		}
+	    		}
+		    		
+		    	oAjax.getObjectFromJsonGetRequest("/getNickname", oParameters, callback.bind(this));
+			} else {
+				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+				
+				
+				eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
+				eCopiedTemplate.querySelector(".message").innerText = message;
+				eCopiedTemplate.querySelector(".time").innerText = time;
+				
+				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+				eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
+				eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
+				
+				return eCopiedTemplate;
 			}
 			
-			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
-			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + " "+ oMemberInfo["nicknameNoun"];
-			eCopiedTemplate.querySelector(".message").innerText = message;
-			eCopiedTemplate.querySelector(".time").innerText = time;
-			
-			var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
-			eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
-			eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
-			
-			return eCopiedTemplate;
 		},
 		
 		_updateOneMessage: function(oMessageInfo) {
