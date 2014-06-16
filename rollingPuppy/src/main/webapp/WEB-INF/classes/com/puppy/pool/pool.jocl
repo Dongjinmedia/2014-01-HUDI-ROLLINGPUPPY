@@ -10,9 +10,6 @@
         
         <!-- max active 커넥션 풀이 제공할 최대 커넥션 개수 -->
         	<int value="1000" />
-         
-         <!-- max idle -->
-			<byte value="1" />  
     </object>
  
     <object class="org.apache.commons.pool.KeyedObjectPoolFactory" null="true"/> 
