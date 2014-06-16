@@ -6,7 +6,6 @@ import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +17,6 @@ import com.puppy.dto.Member;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonParticipant;
 import com.puppy.util.ServletRequestUtils;
-import com.puppy.util.ThreeWayResult;
 import com.puppy.util.Util;
 
 public class NicknameController implements Controller {

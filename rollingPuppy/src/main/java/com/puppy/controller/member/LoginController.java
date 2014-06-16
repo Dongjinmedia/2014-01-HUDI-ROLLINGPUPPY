@@ -2,8 +2,6 @@ package com.puppy.controller.member;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
@@ -14,7 +12,6 @@ import javax.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.puppy.controller.Controller;
 import com.puppy.dao.impl.MemberDaoImpl;
 import com.puppy.dto.Member;
