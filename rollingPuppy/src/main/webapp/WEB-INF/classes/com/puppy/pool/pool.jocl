@@ -6,7 +6,10 @@
     </object>
      
     <object class="org.apache.commons.pool.impl.GenericObjectPool">  
-        <object class="org.apache.commons.pool.PoolableObjectFactory" null="true" /> 
+        <object class="org.apache.commons.pool.PoolableObjectFactory" null="true" />
+        
+        <!-- max active 커넥션 풀이 제공할 최대 커넥션 개수 -->
+        	<int value="50" />
     </object>
  
     <object class="org.apache.commons.pool.KeyedObjectPoolFactory" null="true"/> 

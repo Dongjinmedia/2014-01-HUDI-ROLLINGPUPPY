@@ -175,31 +175,33 @@ var oJoin = {
 	eInputEmail: null,
 	eInputPassword: null,
 	eInputPasswordConfirm: null,
+	
 	checkEmailExsitsAndNoticeUser: function(){
 		var duplicateCheckPtag = document.getElementById("duplicateCheck");
 		var newbieEmail = document.getElementById("joinEmail").value;
 		var url = "/join?email="+newbieEmail;
-		if(oUtil.isValidateEmailFormat(newbieEmail)){
-			var request = new XMLHttpRequest();
-			request.open("GET", url , true );
-			request.onload = function(){
-				var oResult = JSON.parse(request.responseText);
-				var result = oResult["ThreeWayResult"];
-				console.log(result);
+		
+		var request = new XMLHttpRequest();
+		request.open("GET", url , true );
+		request.onload = function(){
+			var oResult = JSON.parse(request.responseText);
+			var result = oResult["ThreeWayResult"];
 
-				if( result === "FAIL" ){
-					duplicateCheckPtag.className = "fail";
-				}else if (result === "SUCCESS"){
-					duplicateCheckPtag.className = "pass";
-				}else {
-					alert("예기치 못한 사건이 발생했다!!");
+			if( result === "FAIL" ){
+				duplicateCheckPtag.className = "fail";
+			}else if (result === "SUCCESS"){
+				if ( !oUtil.isValidateEmailFormat(newbieEmail) ) {
+					duplicateCheckPtag.className = "form";
+					return;
 				}
+				duplicateCheckPtag.className = "pass";
+			}else {
+				alert("예기치 못한 사건이 발생했다!!");
 			}
-			request.send(); //request를 보내는것 callback 함수당 
-		} else {
-			return;
 		}
+		request.send(); //request를 보내는것 callback 함수당 
 	},
+	
 	join: function (event) {
 		
 		var form = event.currentTarget.form;
@@ -223,7 +225,7 @@ var oJoin = {
 		
 		if ( password != passwordR ) {
 			event.preventDefault();
-			alert ('입력된 비밀번호가 서로 다릅니다."');
+			alert ('입력된 비밀번호가 서로 다릅니다.');
 			return;
 		}
 		//check input value END

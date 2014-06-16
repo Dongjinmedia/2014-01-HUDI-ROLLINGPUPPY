@@ -68,7 +68,8 @@ public class FrontController extends HttpServlet {
 		} else if ( requestMethod.equalsIgnoreCase("GET")) {
 			method = Method.GET;
 		} else {
-			response.sendRedirect("/error?type=500");
+			response.sendRedirect("/error?type=404");
+			return;
 		}
 		
 		

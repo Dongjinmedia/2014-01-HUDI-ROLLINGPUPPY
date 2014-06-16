@@ -41,6 +41,7 @@
 			<div id="duplicateCheck">
 				<div class="dc_pass"></div>
 				<div class="dc_fail">사용중!</div>
+				<div class="dc_form">...</div>
 			</div>
 			<form id="join_form" action="/join" method="post">
 				<input type="text" id="joinEmail" name="email" placeholder="Email" />

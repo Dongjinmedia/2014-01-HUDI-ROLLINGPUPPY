@@ -2139,7 +2139,7 @@ var oCreateChattingRoom = {
 			eSubmit.addEventListener('touchend', this.requestCreate.bind(this), false);
 			
 			//채팅방생성 취소에 대한 이벤트
-			this.eCancle.addEventListener("touchend", this.invisible.bind(this));
+			this.eCancle.addEventListener("click", this.invisible.bind(this));
 		},
 		
 		//제한숫자 인풋값 초기화

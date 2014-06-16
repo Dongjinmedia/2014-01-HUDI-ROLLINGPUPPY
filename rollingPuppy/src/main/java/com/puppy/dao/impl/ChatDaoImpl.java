@@ -17,7 +17,7 @@ import com.puppy.util.Util;
 
 public class ChatDaoImpl extends DAO implements ChatDao {
 	
-	private static final Logger logger = LoggerFactory.getLogger(MemberDaoImpl.class);
+	private static final Logger logger = LoggerFactory.getLogger(ChatDaoImpl.class);
 	
 	private static ChatDaoImpl instance = null;
 	

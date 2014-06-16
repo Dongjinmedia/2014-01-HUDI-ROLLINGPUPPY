@@ -20,7 +20,6 @@ import com.puppy.dto.ChatInfo;
 import com.puppy.util.Constants;
 import com.puppy.util.JsonChatInfo;
 import com.puppy.util.ServletRequestUtils;
-import com.puppy.util.ServletSessionUtils;
 import com.puppy.util.Util;
 
 /*

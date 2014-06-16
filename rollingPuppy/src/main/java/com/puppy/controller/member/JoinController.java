@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.gson.Gson;
 import com.puppy.controller.Controller;
 import com.puppy.dao.impl.MemberDaoImpl;
@@ -24,6 +27,8 @@ import com.puppy.util.Util;
  * TODO 성별정보 저장하기
  */
 public class JoinController implements Controller {
+	
+	private static final Logger logger = LoggerFactory.getLogger(JoinController.class);
 	
 	public void doPost(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
@@ -74,12 +79,16 @@ public class JoinController implements Controller {
 		MemberDaoImpl memberDao = MemberDaoImpl.getInstance();
 		Member member = memberDao.selectDuplicateMemberExists(newbieEmail);
 		
+		logger.info("SelectDuplicateMember From JoinController : "+member);
 		if( member != null ) {
 			result = ThreeWayResult.FAIL;
+			logger.info("selectDuplicate Check QueryResult : "+member.toString());
 		} else {
 			result = ThreeWayResult.SUCCESS;
 		}
 		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, result);
+		
+		logger.info("selectDuplicate Check ThreeWayResult : "+result);
 		out.println(gson.toJson(resultJsonData));
 		
 	}

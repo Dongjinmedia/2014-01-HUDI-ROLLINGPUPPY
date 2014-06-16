@@ -20,12 +20,20 @@
         <div class="text-center error-box">
           <h1 class="error-text tada animated">Error 500</h1>
           <h2 class="font-xl"><strong>헉! 서버 오류가 발생했습니다.</strong></h2><br>
-          <p class="lead semi-bold"><strong>RollingPuppy팀을 찾아서 이 사실을 알려주세요! </strong>
+          <p class="lead semi-bold"><strong>RollingPuppy팀을 찾아서 이 사실을 알려주세요!</strong>
+          <br/>
           </p>
+          <p class="lead semi-bold">잠시 후 홈페이지로 이동합니다.</p>
+          <br/>
         </div>
       </div>
     </div>
   </div>
 </div>
 </body>
+<script>
+	setTimeout(function() {
+		location.href ="/logout";
+	}, 3000);
+</script>
 </html>

@@ -514,38 +514,30 @@ div.panelUnfold {
 	color: #64abd1;
 	font-weight: bold;
 	white-space: nowrap;
-	opacity: 0.5;
-}
-
-.locationName > div:hover {
-	opacity: 1.0;
+	
+	display: none;
 }
 
 .clickerMenu {
 	position: absolute;
-	width: 50px;
-	margin-left: -28px;
-	top: 40px;
-	height: 20px;
+	width: 80px;
+	margin-left: -44px;
+	top: 30px;
+	height: 35px;
 	background: #fff;
 	border-radius: 5px;
-	padding: 3px;
+	padding: 5px 3px 3px 3px;
 	opacity: 0.8;
 	border: 1px solid #5ccccc;
 }
 
 .clicker {
-	font-size: 26px;
+	font-size: 40px;
   	font-family: FontAwesome;
   	font-style: normal;
   	text-decoration: inherit;
   	color: #64abd1;
-  	opacity: 0.5;
   	text-align: center;
-}
-
-.clicker:hover {
-	opacity: 1.0;
 }
 
 .icon-add {
@@ -562,7 +554,7 @@ div.panelUnfold {
 
 .clickerMenu .icon-add:before {
 	position: absolute;
-	left: 5px;
+	left: 7px;
 }
 
 .icon-star:before {
@@ -919,18 +911,12 @@ li.bookmark .title:before {
 }
 
 li.bookmark .icon-delete:before {
-	color: #F0F0F0;
+	color: #E55;
 	content: "\f056";
 	position: absolute;
-	font-size: 20px;
-	top: 10px;
-	right: 10px;
-}
-
-li.bookmark .icon-delete:hover:before {
-	color: #FF3B3B;
-	top: 10px;
-	right: 10px;
+	font-size: 33px;
+	top: 5px;
+	right: 5px;
 }
 
 li.chatRoom .icon-chatting:before {
@@ -1066,17 +1052,39 @@ li.chatRoom .notification {
 	cursor: pointer;
 }
 
+.top .menu .icon-aside {
+	position: absolute;
+	left: 0px;
+	width: 35px;
+	height: 50px;
+	text-align: center;
+}
+
 .top .menu .icon-aside:before {
+	margin-top: 3px;
+	margin-right: 0px;
+	
 	content: "\f019";
 	font-size: 1.8em;
+	line-height: 50px;
 	color: #7a8696;
-	margin-right: 5px;
-	display: inline;
+}
+
+.top .menu .icon-exit {
+	position: absolute;
+	left: 35px;
+	width: 35px;
+	height: 50px;
+	text-align: center;
 }
 
 .top .menu .icon-exit:before {
+	margin-top: 3px;
+	margin-right: 0px;
+	
 	content: "\f08b";
 	font-size: 1.8em;
+	line-height: 50px;
 	color: #7a8696;
 }
 
@@ -1092,11 +1100,10 @@ li.chatRoom .notification {
 
 .top .menu .leftMenu {
 	position: absolute;
-	top: 50%;
-	left: 15px;
-	margin-top: -10px;
+	width: 70px;
+	height: 50px;
 	
-	float: left;
+	left: 5px;
 }
 
 .top .menu .rightMenu {

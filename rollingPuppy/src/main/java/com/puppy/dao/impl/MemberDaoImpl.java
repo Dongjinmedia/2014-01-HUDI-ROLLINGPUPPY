@@ -29,11 +29,12 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 	@Override
 	public Member selectDuplicateMemberExists(String email) {
 		logger.info("MemberDaoImpl selectDuplicateMemberExists");
+		logger.info("Duplicate Check Email : "+email);
 		
 		Member member = null;
 		
 		try {
-			String sql = "SELECT id, email, last_logged_time FROM tbl_member WHERE email = ?";
+			String sql = "SELECT email FROM tbl_member WHERE email = ?";
 			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
 			preparedStatement.setString(1, email);
 
@@ -60,7 +61,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		} catch (Exception e) {
 			logger.error("in selectCheckLoginInfo", e);
 		}
-		
+
 		return member;
 	}
 
