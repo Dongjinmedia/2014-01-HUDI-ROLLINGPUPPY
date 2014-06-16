@@ -180,10 +180,11 @@ public class DAO {
 		        
 			}
 			
-			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			logger.error("Query [Execute or Close] Exception" , e);
 		} finally {
+			connection = preparedStatement.getConnection();
+			
 			if (connection != null) 
 				connection.close();
 			
@@ -213,7 +214,7 @@ public class DAO {
 		List<Map<String, Object>> rows = new ArrayList<Map<String, Object>>();
 
 		try {
-
+			//개개긱...ㅠㅠㅠㅠㅠㅠ
 			resultSet = preparedStatement.executeQuery();
 
 			java.sql.ResultSetMetaData metaData = resultSet.getMetaData();
@@ -228,10 +229,10 @@ public class DAO {
 				rows.add(columns);
 			}
 			
-			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			logger.error("Query Select Error" , e);
 		} finally {
+			connection = preparedStatement.getConnection();
 			if (resultSet != null)
 				resultSet.close();
 				
@@ -252,15 +253,17 @@ public class DAO {
 		
 		try {
 			successQueryNumber = preparedStatement.executeUpdate();
-			connection = preparedStatement.getConnection();
 		} catch (Exception e) {
 			logger.error("Query [Execute or Close] Exception" , e);
 		} finally {
-			if (connection != null) 
+			connection = preparedStatement.getConnection();
+			if (connection != null)  {
 				connection.close();
+			}
 			
-			if ( preparedStatement != null) 
+			if ( preparedStatement != null) {
 				preparedStatement.close();
+			}
 		}
 		
 		return successQueryNumber;
