@@ -1558,6 +1558,7 @@ var oChat = {
 			
 			this.socket.emit('message', oMessageInfo);
 			this.eInputBox.value = "";
+			this.eInputBox.blur();
 			this.eInputBox.focus();
 		},
 		
@@ -1929,12 +1930,12 @@ var oChat = {
 			}.bind(this);
 			
 			// 접어두기 버튼을 누르면 채팅방을 접어두도록 이벤트를 등록한다.
-			this.eFoldButton.addEventListener("touchend", function(e) {
+			this.eFoldButton.addEventListener("click", function(e) {
 				this.foldChattingRoom();
 			}.bind(this), false);
 			
 			// 나가기 버튼을 누르면 채팅방에서 나가도록 이벤트를 등록한다.
-			this.eExitButton.addEventListener("touchend", function(e) {
+			this.eExitButton.addEventListener("click", function(e) {
 				if ( confirm("Are you sure Exit Chatting Room?")) {
 					this.socket.emit('exit', {'chatRoomNumber': this.currentChatRoomNumber});
 				}
