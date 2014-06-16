@@ -10,6 +10,7 @@ import com.puppy.dto.Member;
 public interface MemberDao {
 	public Member selectDuplicateMemberExists(String email);
 	public Member selectCheckLoginInfo(String email, String pw);
+	public Member selectNicknameFromMemberId(Member member);
 	public int insertMemberInfo(Member member);
 	public int updateLastLoggedTime(int dbTupleNumber);
 }

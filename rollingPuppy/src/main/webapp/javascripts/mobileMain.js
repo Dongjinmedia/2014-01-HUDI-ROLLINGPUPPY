@@ -1504,7 +1504,9 @@ var oChat = {
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
 			//때문에 가장 마지막에 실행해준다.
 			oChat.updateInitializeMessage(chatRoomNum);
+
 			oScroll.refresh("chat_scroll");
+			this.eInputBox.blur();
 		},
 
 		visibleChatWindow: function() {
@@ -1631,17 +1633,57 @@ var oChat = {
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
-			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + " "+ oMemberInfo["nicknameNoun"];
-			eCopiedTemplate.querySelector(".message").innerText = message;
-			eCopiedTemplate.querySelector(".time").innerText = time;
+			//나간멤버에 대한 메세지데이터일 경우, 
+			//TODO Best Solution은 아닙니다. 수정해야해요 <윤성>
+			if (typeof oMemberInfo == "undefined") {
+				var oParameters = {
+		    			"memberId": memberId
+		    	};
+		    		
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			console.log(oResponse);
+	    			if ( oResponse ) {
+	    				
+	    				//working
+	    				oChat.addNicknameToChatInfo(chatRoomNum, memberId, oResponse);
+	    				//oChat.oInfo[chatRoomNum]["oParticipant"][memberId] =
+	    				
+	    				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+	    				
+	    				
+	    				eCopiedTemplate.querySelector(".nickname").innerText = oResponse["nicknameAdjective"] +" "+ oResponse["nicknameNoun"];
+	    				eCopiedTemplate.querySelector(".message").innerText = message;
+	    				eCopiedTemplate.querySelector(".time").innerText = time;
+	    				
+	    				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+	    				eTargetProfile.style.backgroundColor= oResponse["backgroundColor"];
+	    				eTargetProfile.style.backgroundImage="url("+oResponse["backgroundImage"]+")";
+	    				
+	    				return eCopiedTemplate;
+	    			} else {
+	    				alert("잘못된 접근입니다.\n다시입장해 주세요.");
+	    				oChat.invisibleChatWindow();
+		    		}
+	    		}
+		    		
+		    	oAjax.getObjectFromJsonGetRequest("/getNickname", oParameters, callback.bind(this));
+			} else {
+				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+				
+				
+				eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
+				eCopiedTemplate.querySelector(".message").innerText = message;
+				eCopiedTemplate.querySelector(".time").innerText = time;
+				
+				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+				eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
+				eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
+				
+				return eCopiedTemplate;
+			}
 			
-			var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
-			eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
-			eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
-			
-			return eCopiedTemplate;
 		},
 		
 		_updateOneMessage: function(oMessageInfo) {
@@ -2009,8 +2051,8 @@ var oMapClicker = {
 
 		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.ePlus.addEventListener('touchend', function() {
-			console.log("clickadd");
+		this.ePlus.addEventListener('click', function() {
+			console.log("touch add");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this));
 		

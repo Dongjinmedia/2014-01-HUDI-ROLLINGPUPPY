@@ -42,6 +42,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			logger.error("in selectDuplicateMemberExists", e);
 		}
 		
+		logger.info("selectDuplicateMemberResult : "+member.toString());
 		return member;
 	}
 
@@ -62,6 +63,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			logger.error("in selectCheckLoginInfo", e);
 		}
 		
+		logger.info("selectCheckLoginInfo : "+member.toString());
 		return member;
 	}
 
@@ -82,7 +84,7 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			member.setNicknameAdjective(tempMember.getNicknameAdjective());
 			member.setNicknameNoun(tempMember.getNicknameNoun());
 			
-			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun, created_time) VALUES (?, ?, ?, ?, NOW())";
+			String query = "INSERT INTO tbl_member(email, pw, nickname_adjective, nickname_noun, last_logged_time, created_time) VALUES (?, ?, ?, ?, NOW(), NOW())";
 			insertPreparedStatement = ConnectionPool.getInsertPreparedStatement(query);
 			insertPreparedStatement.setString(1, member.getEmail());
 			insertPreparedStatement.setString(2, member.getPw());
@@ -112,6 +114,28 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		}
 		
 		return successQueryNumber;
+	}
+
+	@Override
+	public Member selectNicknameFromMemberId(Member member) {
+		logger.info("MemberDaoImpl selectCheckLoginInfo");
+		
+		int memberId = member.getId();
+		
+		if ( memberId == 0 )
+			return null;
+		
+		try {
+			String sql = "SELECT nickname_noun, nickname_adjective FROM tbl_member WHERE id = ?";
+			PreparedStatement preparedStatement = ConnectionPool.getPreparedStatement(sql);
+			preparedStatement.setInt(1, member.getId());
+
+			member = selectOne(Member.class, preparedStatement);
+		} catch (Exception e) {
+			logger.error("in selectCheckLoginInfo", e);
+		}
+		
+		return member;
 	}
 
 }
