@@ -62,8 +62,9 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		} catch (Exception e) {
 			logger.error("in selectCheckLoginInfo", e);
 		}
-		
-		logger.info("selectCheckLoginInfo : "+member.toString());
+		if ( member != null ) {
+			logger.info("selectCheckLoginInfo : "+member.toString());
+		}
 		return member;
 	}
 
