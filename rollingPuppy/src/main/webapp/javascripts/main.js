@@ -97,6 +97,9 @@ var oAside= {
 	
 	
 	commingSoon: function(event) {
+		if (!event.preventDefault) {
+			event.returnValue = false;
+		}
 		event.preventDefault();
 		alert("Comming Soon~\n준비중인 메뉴입니다.^^");
 	},
@@ -291,6 +294,9 @@ var oAside= {
 	// CSS3 animation은 CSS 속성으로 동작합니다.
 	// 따라서 .fold_panel과 .unfold_panel에 animation 속성이 들어가 있습니다.
 	fnPanelButtonsHandler: function(event) {
+		if (!event.preventDefault) {
+			event.returnValue = false;
+		}
 		event.preventDefault();
 
 		// panel_button에서 발생한 click 이벤트를 받고, 해당
@@ -325,6 +331,9 @@ var oAside= {
 	
 	clickSearchMenu: function(event) {
 		if ( event !== undefined ) {
+			if (!event.preventDefault) {
+				event.returnValue = false;
+			}
 			event.preventDefault();
 		}
 		
@@ -333,6 +342,9 @@ var oAside= {
 	
 	clickChattingMenu: function(event) {
 		if ( event !== undefined ) {
+			if (!event.preventDefault) {
+				event.returnValue = false;
+			}
 			event.preventDefault();
 		}
 		
@@ -343,8 +355,12 @@ var oAside= {
 	},
 	
 	clickBookmarkMenu: function(event) {
-		if ( event !== undefined ) 
-			event.preventDefault();
+		if ( event !== undefined ) {
+			if (!event.preventDefault) {
+				event.returnValue = false;
+			}
+			event.preventDefault();			
+		}
 		
 		this.unfoldByMenuElement(this.eBookmarkMenu);
 	},
@@ -1068,6 +1084,9 @@ var oMarkerClicker = {
 	
 		//클릭을 통해 Content영역을 고정할 수 있도록 하기 위한 이벤트
 		oIcon.addEventListener('click', function(e) {
+			if (!e.preventDefault) {
+				e.returnValue = false;
+			}
 			e.preventDefault();
 		
 			var status = oIcon.getAttribute('status');
@@ -1552,9 +1571,15 @@ var oChat = {
 			this.eInputBox.onkeydown = function(event) {				
 				if (event.keyCode == 13 && event.shiftKey) {
 					this.eInputBox.value = this.eInputBox.value + "\n";
+					if (!event.preventDefault) {
+						event.returnValue = false;
+					}
 					event.preventDefault();
 				} else if ( event.keyCode == 13 ) {
 					this.sendMessage( this.eInputBox.value );
+					if (!event.preventDefault) {
+						event.returnValue = false;
+					}
 					event.preventDefault();
 				}
 			}.bind(this);
@@ -1693,6 +1718,9 @@ var oCreateChattingRoom = {
 		
 		//채팅방 생성에 대한 요청이벤트 함수
 		requestCreate: function(e) {
+			if (!e.preventDefault) {
+				e.returnValue = false;
+			}
 			e.preventDefault();
 			//Validation Check를 위한 form의 데이터가져오기
 			var roomNameValue = this.eRoomNameInput.value

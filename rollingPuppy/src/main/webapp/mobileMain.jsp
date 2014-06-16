@@ -137,7 +137,7 @@
 			<div class="bottom">
 				<div class="input_wrapper">
 					<div class="input_positioner">
-						<textarea class="inputArea" name="chat-window-message" autofocus></textarea>
+						<textarea class="inputArea" name="chat-window-message"></textarea>
 					</div>
 				</div>
 				<div class="send">전송</div>

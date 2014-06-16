@@ -1504,7 +1504,9 @@ var oChat = {
 			//scrollHeight설정은 chatWindow가 보여질때만이 속성값 변경이 가능하다. 
 			//때문에 가장 마지막에 실행해준다.
 			oChat.updateInitializeMessage(chatRoomNum);
+
 			oScroll.refresh("chat_scroll");
+			this.eInputBox.blur();
 		},
 
 		visibleChatWindow: function() {
