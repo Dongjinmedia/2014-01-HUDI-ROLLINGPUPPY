@@ -41,8 +41,6 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 		} catch (Exception e) {
 			logger.error("in selectDuplicateMemberExists", e);
 		}
-		
-		logger.info("selectDuplicateMemberResult : "+member.toString());
 		return member;
 	}
 
@@ -63,7 +61,6 @@ public class MemberDaoImpl extends DAO implements MemberDao{
 			logger.error("in selectCheckLoginInfo", e);
 		}
 		
-		logger.info("selectCheckLoginInfo : "+member.toString());
 		return member;
 	}
 

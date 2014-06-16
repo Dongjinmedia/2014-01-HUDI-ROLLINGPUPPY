@@ -75,12 +75,10 @@ public class JoinController implements Controller {
 		Member member = memberDao.selectDuplicateMemberExists(newbieEmail);
 		
 		if( member != null ) {
-			if ( member.getId() != 0 ) {
-				result = ThreeWayResult.FAIL;
-			} else {
-				result = ThreeWayResult.SUCCESS;
-			}
-		} 
+			result = ThreeWayResult.FAIL;
+		} else {
+			result = ThreeWayResult.SUCCESS;
+		}
 		resultJsonData.put(Constants.JSON_RESPONSE_3WAY_RESULT, result);
 		out.println(gson.toJson(resultJsonData));
 		
