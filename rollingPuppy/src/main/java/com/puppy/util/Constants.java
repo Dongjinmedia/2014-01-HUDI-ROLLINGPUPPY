@@ -12,6 +12,7 @@ public class Constants {
 	public static final String REQUEST_KEEP_EMAIL = "keepEmail";
 	public static final String REQUEST_EMAIL = "email"; 
 	public static final String REQUEST_PASSWORD = "password";
+	public static final String REQUEST_MEMBER_ID = "memberId";
 	
 	public static final String REQUEST_CHATROOM_TITLE = "title";
 	public static final String REQUEST_CHATROOM_MAX = "max";

@@ -20,6 +20,12 @@
 	</mapping>
 
 	<mapping>
+		<url>/getNickname</url>
+		<controller>com.puppy.controller.member.NicknameController</controller>
+	</mapping>
+
+
+	<mapping>
 		<url>/main</url>
 		<controller>com.puppy.controller.MainController</controller>
 	</mapping>
