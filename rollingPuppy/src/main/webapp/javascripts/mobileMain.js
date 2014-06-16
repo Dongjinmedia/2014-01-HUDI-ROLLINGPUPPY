@@ -2016,8 +2016,8 @@ var oMapClicker = {
 
 		//working
 		//mapClicker 메뉴중, plus 버튼을 클릭했을때
-		this.ePlus.addEventListener('touchend', function() {
-			console.log("clickadd");
+		this.ePlus.addEventListener('click', function() {
+			console.log("touch add");
 			oCreateChattingRoom.visible(this.eLocationName.innerText, this.oClickPoint);
 		}.bind(this));
 		
