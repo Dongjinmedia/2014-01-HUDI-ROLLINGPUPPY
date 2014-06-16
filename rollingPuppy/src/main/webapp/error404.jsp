@@ -23,7 +23,7 @@
 								<strong>Page Not Found</strong>
 							</h2>
 							<br>
-							<p class="lead">주소가 잘못되었습니다. URL을 다시 확인해주세요</p>
+							<p class="lead">주소가 잘못되었습니다. 메인페이지로 이동합니다.</p>
 						</div>
 					</div>
 				</div>
@@ -31,4 +31,9 @@
 		</div>
 	</div>
 </body>
+<script>
+	setTimeout(function() {
+		location.href ="/";
+	}, 3000);
+</script>
 </html>

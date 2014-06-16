@@ -106,5 +106,7 @@ public class LoginController implements Controller {
 	}
 
 	@Override
-	public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {}
+	public void doGet(HttpServletRequest request, HttpServletResponse response)throws ServletException, IOException {
+		response.sendRedirect("/error?type=404");
+	}
 }
