@@ -24,25 +24,25 @@
  	<script type="text/template" class="hidden" id="id">${sessionScope['member.id']}</script>	
 	
 	<div id="markerInfo">
-			<div class="mi_header">
-				<div class="mi_foldButton"></div>
+		<div class="mi_header">
+			<div class="mi_foldButton"></div>
+		</div>
+		<div class="mi_body">
+			<div class="mi_info">
+				<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 737 역삼</p>
+				<div class="mi_bookmarkButton"><div>관심장소 추가</div></div>
+				<div class="mi_addChatRoomButton"><div>채팅방 만들기</div></div>
 			</div>
-			<div class="mi_body">
-				<div class="mi_info">
-					<p class="address icon-title">대한민국 서울특별시 강남구 역삼동 737 역삼</p>
-					<div class="mi_bookmarkButton"><div>관심장소 추가</div></div>
-					<div class="mi_addChatRoomButton"><div>채팅방 만들기</div></div>
-				</div>
-				<div class="mi_chatRoomList">
-					<div id="marker_scroll" class="scroll_wrapper">
-						<div class="scroll_area">
-							<ul class="section">
-							</ul>
-						</div>
+			<div class="mi_chatRoomList">
+				<div id="marker_scroll" class="scroll_wrapper">
+					<div class="scroll_area">
+						<ul class="section">
+						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 		
 	<div id="createChatRoom">
 		<div class="outer bg"></div>
@@ -65,6 +65,7 @@
 			</div>
 		</div>
 	</div>
+	
 	<div id="template" class="hidden" style="display: none;">
 		<ul>
 			<li class="card default">
