@@ -175,31 +175,38 @@ var oJoin = {
 	eInputEmail: null,
 	eInputPassword: null,
 	eInputPasswordConfirm: null,
+	
 	checkEmailExsitsAndNoticeUser: function(){
 		var duplicateCheckPtag = document.getElementById("duplicateCheck");
 		var newbieEmail = document.getElementById("joinEmail").value;
 		var url = "/join?email="+newbieEmail;
-		if(oUtil.isValidateEmailFormat(newbieEmail)){
-			var request = new XMLHttpRequest();
-			request.open("GET", url , true );
-			request.onload = function(){
-				var oResult = JSON.parse(request.responseText);
-				var result = oResult["ThreeWayResult"];
-				console.log(result);
+		
+		var request = new XMLHttpRequest();
+		request.open("GET", url , true );
+		request.onload = function(){
+			var oResult = JSON.parse(request.responseText);
+			var result = oResult["ThreeWayResult"];
+			console.log(result);
 
-				if( result === "FAIL" ){
-					duplicateCheckPtag.className = "fail";
-				}else if (result === "SUCCESS"){
+			if( result === "FAIL" ){
+				duplicateCheckPtag.className = "fail";
+			}else if (result === "SUCCESS"){
+				console.log(newbieEmail);
+				if ( oUtil.isValidateEmailFormat(newbieEmail) ) {
+					console.log("pass");
 					duplicateCheckPtag.className = "pass";
-				}else {
-					alert("예기치 못한 사건이 발생했다!!");
+				} else {
+					console.log("fail");
+					duplicateCheckPtag.className = "form";
+					return;
 				}
+			}else {
+				alert("예기치 못한 사건이 발생했다!!");
 			}
-			request.send(); //request를 보내는것 callback 함수당 
-		} else {
-			return;
 		}
+		request.send(); //request를 보내는것 callback 함수당 
 	},
+	
 	join: function (event) {
 		
 		var form = event.currentTarget.form;
