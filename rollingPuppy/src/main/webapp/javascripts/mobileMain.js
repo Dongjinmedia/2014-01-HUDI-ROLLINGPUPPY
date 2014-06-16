@@ -1633,6 +1633,12 @@ var oChat = {
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
+			//console.log(memberId, oMemberInfo);
+			console.log(memberId, oChat.oInfo[chatRoomNum]["oParticipant"]);
+			if (typeof oMemberInfo == "undefined") {
+				return;
+			}
+			
 			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
 			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] + " "+ oMemberInfo["nicknameNoun"];
