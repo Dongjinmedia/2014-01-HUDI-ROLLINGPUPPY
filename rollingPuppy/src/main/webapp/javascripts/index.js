@@ -58,6 +58,9 @@ var oSelectBox = {
 	eComment: null,
 	
 	changeView: function(targetElement, oppositeElement, titleText, commentText) {
+		if (!event.preventDefault) {
+			event.returnValue = false;
+		}
 		event.preventDefault();
 		
 		var targetStyle = oUtil.getStyleValue(targetElement, "display");
