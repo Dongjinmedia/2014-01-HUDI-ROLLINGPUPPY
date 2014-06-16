@@ -283,13 +283,15 @@ public class ChatDaoImpl extends DAO implements ChatDao {
 									+ "INNER JOIN tbl_chat_room_has_tbl_member AS t_has "
 									+ "ON t_message.tbl_member_id = t_has.tbl_member_id "
 											+ "AND t_message.tbl_chat_room_id = t_has.tbl_chat_room_id "
-											+ "AND t_message.created_time > t_has.fold_time "
 									+ "WHERE t_message.tbl_chat_room_id = ? "
+										+ "AND t_has.tbl_member_id = ?"
+										+ "AND t_has.fold_time < t_message.created_time "
 									+ "ORDER BY created_time ASC";
 			
 			preparedStatement = ConnectionPool.getPreparedStatement(query);
 			preparedStatement.setInt(1, memberId);
 			preparedStatement.setInt(2, chatRoomNumber);
+			preparedStatement.setInt(3, memberId);
 			
 			list = selectList(Message.class, preparedStatement);
 		} catch (Exception e) {

@@ -1293,18 +1293,57 @@ var oChat = {
 				return;
 			
 			var oMemberInfo = oChat.oInfo[chatRoomNum]["oParticipant"][memberId];
-			var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
 			
+			//나간멤버에 대한 메세지데이터일 경우, 
+			//TODO Best Solution은 아닙니다. 수정해야해요 <윤성>
+			if (typeof oMemberInfo == "undefined") {
+				var oParameters = {
+		    			"memberId": memberId
+		    	};
+		    		
+	    		var callback = function(request) {
+	    			var oResponse = JSON.parse(request.responseText);
+	    			console.log(oResponse);
+	    			if ( oResponse ) {
+	    				
+	    				//working
+	    				oChat.addNicknameToChatInfo(chatRoomNum, memberId, oResponse);
+	    				//oChat.oInfo[chatRoomNum]["oParticipant"][memberId] =
+	    				
+	    				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+	    				
+	    				
+	    				eCopiedTemplate.querySelector(".nickname").innerText = oResponse["nicknameAdjective"] +" "+ oResponse["nicknameNoun"];
+	    				eCopiedTemplate.querySelector(".message").innerText = message;
+	    				eCopiedTemplate.querySelector(".time").innerText = time;
+	    				
+	    				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+	    				eTargetProfile.style.backgroundColor= oResponse["backgroundColor"];
+	    				eTargetProfile.style.backgroundImage="url("+oResponse["backgroundImage"]+")";
+	    				
+	    				return eCopiedTemplate;
+	    			} else {
+	    				alert("잘못된 접근입니다.\n다시입장해 주세요.");
+	    				oChat.invisibleChatWindow();
+		    		}
+	    		}
+		    		
+		    	oAjax.getObjectFromJsonGetRequest("/getNickname", oParameters, callback.bind(this));
+			} else {
+				var eCopiedTemplate = oChat.eTemplateOther.cloneNode(true);
+				
+				
+				eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
+				eCopiedTemplate.querySelector(".message").innerText = message;
+				eCopiedTemplate.querySelector(".time").innerText = time;
+				
+				var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
+				eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
+				eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
+				
+				return eCopiedTemplate;
+			}
 			
-			eCopiedTemplate.querySelector(".nickname").innerText = oMemberInfo["nicknameAdjective"] +" "+ oMemberInfo["nicknameNoun"];
-			eCopiedTemplate.querySelector(".message").innerText = message;
-			eCopiedTemplate.querySelector(".time").innerText = time;
-			
-			var eTargetProfile = eCopiedTemplate.querySelector(".profile"); 
-			eTargetProfile.style.backgroundColor= oMemberInfo["backgroundColor"];
-			eTargetProfile.style.backgroundImage="url("+oMemberInfo["backgroundImage"]+")";
-			
-			return eCopiedTemplate;
 		},
 		
 		_updateOneMessage: function(oMessageInfo) {
@@ -1494,6 +1533,13 @@ var oChat = {
 		saveChatInfo: function(oParameter) {
 			window.oChat.oInfo =  oParameter
 		},
+		
+		//chatInfo를 초기화한다.
+		addNicknameToChatInfo: function(chatRoomNumber, memberId, oParticipant) {
+			//window.oChat.oInfo =  oParameter
+			oChat.oInfo[chatRoomNumber]["oParticipant"][memberId] = oParticipant;
+		},
+		
 		/*
 		 * 초기화때 1번 수행되는 함수입니다.
 		 * 채팅에서 가장 중요한 데이터들을 oInfo에 저장하고, 채팅방리스트를 업데이트합니다.

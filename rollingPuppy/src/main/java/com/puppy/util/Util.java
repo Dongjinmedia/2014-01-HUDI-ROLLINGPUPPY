@@ -222,12 +222,12 @@ public class Util {
 		return resultMap;
 	}
 	
-	private static String getBackgroundImageUrlFromSeed(int memberId) {
+	public static String getBackgroundImageUrlFromSeed(int memberId) {
 		int imageNum = (memberId % 15)+1;
 		return "/images/userIcons/"+ imageNum  +".png";
 	}
 
-	private static String getHexBackgroundColorFromSeed(int seed) {
+	public static String getHexBackgroundColorFromSeed(int seed) {
 		return "#"+Integer.toHexString((int) Math.floor((Math.abs(Math.sin(seed) * 16777215)) % 16777215));
 	}
 
