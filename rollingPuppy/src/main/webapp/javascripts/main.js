@@ -1612,7 +1612,7 @@ var oChat = {
 			
 			var sParameters = "?userId="+this.userId + "&email=" +email.replace("@", "&domain=");
 			//this.socket = io.connect("http://127.0.0.1:3080"+sParameters); 
-			this.socket = io.connect("http://125.209.195.202.nhnnext.org:3080"+sParameters);
+			this.socket = io.connect("http://125.209.195.202:3080"+sParameters);
 			
 			// 엔터버튼을 누르면 메시지가 전송되도록 이벤트를 등록한다.
 			this.eInputBox.onkeydown = function(event) {				
