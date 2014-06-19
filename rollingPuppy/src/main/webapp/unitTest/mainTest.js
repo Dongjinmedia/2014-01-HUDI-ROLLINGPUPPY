@@ -81,6 +81,7 @@ test("로그인 클릭 테스트", function(){
 var oChat = {
 		oInfo: {
 			"1": {
+				"title": "내가 조선의 국모이다.",
 				"oParticipant": {
 					"1": {
 						"backgroundColor": "#f57c0e",
@@ -92,6 +93,7 @@ var oChat = {
 			},
 
 			"2": {
+				"title": "안녕하세요",
 				"oParticipant": {
 					"1": {
 						"backgroundColor": "#f57c0e",
@@ -104,23 +106,23 @@ var oChat = {
 		} 
 };
 
-//Given
-var oMessageInfo = {
-	"day": 19,
-	"isMyMessage": 0,
-	"message": "안녕",
-	"month": 6,
-	"tblChatRoomId": 1,
-	"tblMemberId": "1",
-	"time": "22:30",
-	"week": "Fri"	
-};
 //==========Variable For Component Test END==========
 
 
-test("팝업창 메서드 테스트", function() {
+test("팝업창 Message 갯수 테스트", function() {
+	//Given
+	var oMessageInfo = {
+		"day": 19,
+		"isMyMessage": 0,
+		"message": "안녕",
+		"month": 6,
+		"tblChatRoomId": 1,
+		"tblMemberId": "1",
+		"time": "22:30",
+		"week": "Fri"	
+	};
 	
-	
+	//==========Given==========
 	var eNoticeBox = document.getElementById("noticeBox");
 	
 	//==========When==========
@@ -139,4 +141,48 @@ test("팝업창 메서드 테스트", function() {
 	new Message(oMessageInfo);
 	//Then
 	equal(eNoticeBox.children.length, 2);
+});
+
+
+test("팝업창 Element Data 테스트", function() {
+	//==========Given==========
+	
+	//Given
+	var oMessageInfo = {
+		"day": 19,
+		"isMyMessage": 0,
+		"message": "안녕",
+		"month": 6,
+		"tblChatRoomId": 1,
+		"tblMemberId": "1",
+		"time": "22:30",
+		"week": "Fri"	
+	};
+	
+	var fakeMessageBox = document.getElementById("fakeNoticeBox");
+	var messageBox = document.getElementById("noticeBox");
+	
+	var expectedLiString = 
+		"<li class=\"notice\" style=\"bottom: 0px; display: inline-block; opacity: 1;\">"
+		+ "<span class=\"title\">내가 조선의 국모이다.</span>"
+		+ "<span class=\"profile\""
+			+ "style=\"background-image: url('test.png');"
+			+ "background-color: #f57c0e;\">"
+		+ "</span>" 
+		+ "<span class=\"nickname\">늙은옥수수수염</span>"
+		+ "<span class=\"message\">안녕</span></li>";
+		
+	fakeMessageBox.innerHTML = expectedLiString;
+	fakeMessageBox.querySelector(".profile").style.backgroundImage = "url(/images/userIcons/6.png)";
+	//==========When==========
+	new Message(oMessageInfo);
+	
+	console.log("fakeMessageBox : ", fakeMessageBox);
+	console.log("messageBox : ", messageBox);
+	//==========Then==========
+	var resultLi = messageBox.querySelector("li");
+	var fakeResultLi = fakeMessageBox.querySelector("li");
+	
+	equal(resultLi.outerHTML, fakeResultLi.outerHTML);
+	
 });

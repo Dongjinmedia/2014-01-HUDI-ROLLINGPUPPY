@@ -13,6 +13,7 @@
 	<div id="qunit-fixture">
 		<!-- Test For Alert Component -->
 		<ul id="noticeBox"></ul>
+		<ul id="fakeNoticeBox"></ul>
 		
 		<!-- Test For Login Choice Box -->
 		<div class="header">
