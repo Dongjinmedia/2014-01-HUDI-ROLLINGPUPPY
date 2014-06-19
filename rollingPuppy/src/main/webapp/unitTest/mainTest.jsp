@@ -11,28 +11,21 @@
 <body>
 	<div id="qunit"></div>
 	<div id="qunit-fixture">
-	<div class="choiceBlock">
-			<a href="#" class="choice c_login">LOGIN</a>
-			<a href="#" class="choice c_join">JOIN</a>
-			<span class="devider">OR</span>
+		<!-- Test For Alert Component -->
+		<ul id="noticeBox"></ul>
+		
+		<!-- Test For Login Choice Box -->
+		<div class="header">
+			<h1 class="title">Welcome!</h1>
+			<p>Welcome My Neighbor</p>
 		</div>
-	<div class="loginArea">
-	
-			<form id="login_form" action="/login" method="post">
-				<p>
-					<input type="text" id="loginEmail" name="email" placeholder="Email" />
-				</p>
-				<p>
-					<input type="password" name="password" placeholder="Password" />
-				</p>
-				<p>
-					<input type="checkbox" name="keepEmail"  value="true"> 이메일 저장하기
-				</p>
-				<p>
-					<input type="submit" id="login_button" value="Enter House" />
-				</p>
-			</form>
-		</div>
+		<div class="choiceBlock">
+				<a href="#" class="choice c_login">LOGIN</a>
+				<a href="#" class="choice c_join">JOIN</a>
+				<span class="devider">OR</span>
+			</div>
+		<div class="loginArea"></div>
+		<div class="joinArea"></div>
 	</div>
 </body>
 <script type="text/javascript" src="/javascripts/main.js"></script>

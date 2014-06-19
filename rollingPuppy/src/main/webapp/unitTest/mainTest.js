@@ -42,20 +42,101 @@ asyncTest("리버스 지오코드 Object의 getAddress 메소드 테스트", fun
 
 
 test("로그인 클릭 테스트", function(){
+	
+	//==========Given==========
+	var eLoginEntireArea = document.querySelector(".loginArea");
+	var eJoinEntireArea = document.querySelector(".joinArea");
+	var eLoginSelector = document.querySelector(".c_login");
+	
+	var eTitle = document.querySelector(".title");
+	
+	oSelectBox.eTitle = eTitle; 
+	oSelectBox.eComment = eTitle.nextElementSibling;
+	
+	eLoginSelector.addEventListener(
+			"click",
+			function() {
+				oSelectBox.changeView(
+						eLoginEntireArea,
+						eJoinEntireArea,
+						"Welcome!",
+						"Welcome My Neighbor"
+				);
+				oUtil.addClassName(eLoginSelector, "clicked");
+				//oUtil.removeClassName(eJoinSelector, "clicked");
+			}.bind(this), false);
+	
+	
+	//==========When==========
+	eLoginEntireArea.style.display = "none";
+	fireEvent(eLoginSelector,"click");
 
-	//Given
-	var loginNode = document.querySelector(".loginArea");
-	var loginNodeStyle = getStyleValue(loginNode, "display");
+	//==========Then==========
+	equal(eLoginEntireArea.style.display, "block");
 	
-	var loginButton = document.querySelector(".c_login");
-	loginButton.addEventListener("click",loginChoiceONOFF);
-	
-	loginNode.style.display = "none";
-	
-	//When
-	fireEvent(loginButton,"click");
+});
 
+
+//==========Variable For Component Test START========== 
+var oChat = {
+		oInfo: {
+			"1": {
+				"oParticipant": {
+					"1": {
+						"backgroundColor": "#f57c0e",
+						"backgroundImage": "/images/userIcons/6.png",
+						"nicknameAdjective": "늙은",
+						"nicknameNoun": "옥수수수염"
+					}
+				}
+			},
+
+			"2": {
+				"oParticipant": {
+					"1": {
+						"backgroundColor": "#f57c0e",
+						"backgroundImage": "/images/userIcons/6.png",
+						"nicknameAdjective": "늙은",
+						"nicknameNoun": "옥수수수염"
+					}
+				}
+			}
+		} 
+};
+
+//Given
+var oMessageInfo = {
+	"day": 19,
+	"isMyMessage": 0,
+	"message": "안녕",
+	"month": 6,
+	"tblChatRoomId": 1,
+	"tblMemberId": "1",
+	"time": "22:30",
+	"week": "Fri"	
+};
+//==========Variable For Component Test END==========
+
+
+test("팝업창 메서드 테스트", function() {
+	
+	
+	var eNoticeBox = document.getElementById("noticeBox");
+	
+	//==========When==========
+	new Message(oMessageInfo);
 	//Then
-	equal(loginNode.style.display, "block");
+	equal(eNoticeBox.children.length, 1);
 	
+	//==========When==========
+	oMessageInfo["tblChatRoomId"] = 2;
+	new Message(oMessageInfo);
+	//Then
+	equal(eNoticeBox.children.length, 2);
+	
+	//==========When==========
+	oMessageInfo["tblChatRoomId"] = 1;
+	new Message(oMessageInfo);
+	//Then
+	equal(eNoticeBox.children.length, 2);
 });
